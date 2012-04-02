@@ -1,13 +1,9 @@
 function [fx] = f_nsess(x,P,u,in)
 %
-    fx = zeros(size(x));
-
-dfdx = eye(size(x,1),size(x,1));
-dfdP = zeros(size(x,1),size(P,1));
+tic
+fx = zeros(size(x));
 
 for i=1:in.nsess
-% 
-         fx_sess = fx(in.sess(i).ind.x);
 
 
     [fi] = feval(...
@@ -19,10 +15,8 @@ for i=1:in.nsess
     
     fx(in.sess(i).ind.x) = fi;
     
-    
-    
-%    dfdx(in.sess(i).ind.x,in.sess(i).ind.x) = dfdxi;
- %   dfdP(in.sess(i).ind.x,in.sess(i).ind.theta) = dfdPi;
+
     
 end
 
+toc

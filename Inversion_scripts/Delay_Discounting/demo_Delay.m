@@ -1,57 +1,40 @@
-% binomial data inversion of two models for delay discounting
-%%% This script is divided into the following parts : 
-% - Simulation of data from one of the two models
-% - Inversion of the generated data for both model
-% - Model comparison based on the 
-
-
+% Inversion of the synthetic data from and with a hyperbolic discount
+% model with softmax decision in a binary decision task
 
 close all
 clear all
 clc
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DESCRIPTION OF THE TASK
-
+%--------------------- Task
 % Two alternatives choice task
 % - At each Trial, two alternatives are proposed by the experimenter
 %   Each of which has two dimensions (value, time of delivery)
 %   Delay between alternatives is kept constant 
 % - The Subject chooses one among the two alternatives
-% 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DESCRIPTION OF MODEL ONE
+%--------------------- Model
 % Hyperbolic discount v(d) = 1 / (1 + k*d) + softmax decision rule
 % Hidden states : None
 % Observed variable : chosen alternative (1*Ntrials)
 % Parameters : k, be
+%---------------------------
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%% SIMULATION OF DATA WITH MODEL ONE
 
+%--------------------------- Simulation
 % simulation parameters
-K = 1/15;
-beta = 0.5;
-
-
+K = 1/15; % discount parameter
+beta = 0.5; % inverse temperature
 % Experimenter data
-N = 100;
-
+N = 100; % number of trials
 T = zeros(2,N); % time of reception of alternatives
 T(1,:) = zeros(1,N); % random choice (uniform)  
-T(2,:) = T(1,:) + rand(1,N)*30; % T2 = T1 + delay  
+T(2,:) = T(1,:) + rand(1,N)*30; % T2 = T1 + random delay  
 OV = zeros(2,N); % value of alternatives
-OV(1,:) = 10; % random choice (uniform)
-OV(2,:) = 20; % random choice of values
-
+OV(1,:) = 10; % fixed objective value
+OV(2,:) = 20; % fixed objective value
 % Simulating data
-SV = (OV)./(1+K*T);
+SV = (OV)./(1+K*T); % subjective value (time discounted)
 p1 = 1./(1+exp(-beta*(SV(1,:)-SV(2,:))));
 a = rand(1,N)<p1; % subject choices
-
-
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -87,7 +70,6 @@ options.inG = inG;
 
 
 y = a'; % subject choices
-
 [posterior1,out1] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);  % Inversion function
  phi = [log(K),log(beta)]; 
 displayResults(posterior1,out1,y,[],[],[],phi,Inf,Inf)

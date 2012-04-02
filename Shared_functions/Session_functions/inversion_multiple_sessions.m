@@ -81,7 +81,7 @@ options.inG = in;
 options.priors = priors;
 try in_sessions.DisplayWin
      options.DisplayWin = in_sessions.DisplayWin;
-else
+catch
      options.DisplayWin = 1;
 end
 options.GnFigs = 0;

@@ -88,10 +88,10 @@ in_sessions.binomial = 1;
 %%% MODEL INVERSION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[posterior,out] = inversion_multiple_sessions(in_sessions, Y, U, IsYout, priors);
-sigm(posterior.muTheta,struct('INV',0))
-log(posterior.muPhi)
-
+[posterior,out] = inversion_multiple_sessions1(in_sessions, ~Y, U, IsYout, priors);
+% sigm(posterior.muTheta,struct('INV',0))
+% log(posterior.muPhi)
+% 
 
 
 
