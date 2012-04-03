@@ -1,41 +1,47 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% In this script, I inverse a simple reinforcement learning model with
+% In this script, inversion of a reinforcement learning model with
 % softmax decision rule.
-% The task consists of a sequential decision task among two alternatives
+% RL model : 2 Qvalues, feedback for the selected action, Rescorla Wagner
+% update rule
+% Task : sequential decision task among two alternatives
 % that are probabilistically rewarded 
 % p(reward) = 0.8 for the first // p(reward) = 0.2 for the second
+% Probability reversal at mid course
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear all 
 close all
 clc
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% DATA SIMULATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-% Simulate data from multiple sessions
-Ntrials = 200;
+% Simulate data from single session
+Ntrials = 500;
 % Simulation parameters
 alpha = 0.05; % learning rate
 beta =3; % inverse temperature
 Q0 = [0;0];
 
+% Probabilistic reward. Correlated probabilities (complementary p1 = 1-p2)
+% Fixed probabilities (p1 =0.8) with probability reversal at mid course
 R = rand(2,Ntrials); % Rewards for each alternatives
 R(1,1:Ntrials/2) = R(1,1:Ntrials/2)<0.8;R(1,Ntrials/2+1:end) = R(1,Ntrials/2+1:end)<0.2;
 R(2,1:Ntrials/2) = R(2,1:Ntrials/2)<0.2;R(2,Ntrials/2+1:end) = R(2,Ntrials/2+1:end)<0.8;
 
-[A,r,q] = simulateQLearning(Q0,alpha,beta,R); % simulate RL model
+[A,r,q] = simulate_QLearning_2Q(Q0,alpha,beta,R); % simulate RL model
 u = [A;r];
 y = A;
 isYout = zeros(1,Ntrials);
 
+plot(q')
+%%
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% SPECIFY MODEL
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 
 dim_output = 1; % the delta reaction-time
 dim_data = 2; % reward/index of sequence 
@@ -77,9 +83,9 @@ theta = sigm(alpha,struct('INV',1));
 phi = log(beta);
 [posterior,out] = VBA_NLStateSpaceModel(y,u,@f_Qlearn_2Q,@g_softmax_2Q,dim,options);
 
+% Reformating for plot (getting rid of copy of Qvalues)
 posterior2 = posterior;
 posterior2.muX = posterior.muX([1,3],:);
-
 for i = 1:Ntrials
 posterior2.SigmaX.current{i} = posterior.SigmaX.current{i}([1,3],[1,3]);
 end
