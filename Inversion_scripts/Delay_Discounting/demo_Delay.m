@@ -76,7 +76,7 @@ displayResults(posterior1,out1,y,[],[],[],phi,Inf,Inf)
 
 
 disp('//////////  Obtained parameters for hyperbolic model')
-disp([' K = ', num2str(posterior1.muPhi(1))])
+disp([' K = ', num2str(exp(posterior1.muPhi(1)))])
 disp([' beta = ', num2str(exp(posterior1.muPhi(2)))])
     
     
