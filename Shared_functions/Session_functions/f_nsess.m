@@ -1,6 +1,6 @@
 function [fx] = f_nsess(x,P,u,in)
 %
-tic
+
 fx = zeros(size(x));
 
 for i=1:in.nsess
@@ -19,4 +19,3 @@ for i=1:in.nsess
     
 end
 
-toc
