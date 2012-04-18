@@ -1,13 +1,12 @@
-clear all;
-close all;
-clc
+[posterior,out] = invert_data_Pessiglione2006_M2(Y,U,IsYout);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%% Inverting data of all groups together
 %%%%%%%%%%%%%%% Each group having different parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-[Y,U,IsYout] = Simulate_data_Pessiglione2006();
+
 Nsessions_tot = size(Y,1);
  Ntrials =  size(Y,2);
 

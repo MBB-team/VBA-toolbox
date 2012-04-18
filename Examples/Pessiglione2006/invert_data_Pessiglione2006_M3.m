@@ -1,6 +1,5 @@
-clear all;
-close all;
-clc
+[posterior,out] = invert_data_Pessiglione2006_M3(Y,U,IsYout);
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%% Inverting data of all groups together
