@@ -27,7 +27,7 @@ Q = zeros(2,N+1); % Q-values
 % action emission
 p1 = 1/(1+exp(beta*(Q0(2)-Q0(1)))); % Probability of choosing choice 2
 p(:,1) = [p1;1-p1];
-a = ~sampleFromArbitraryP(p(:,1)',[0,1],1);   % Sample action
+a = sampleFromArbitraryP(p(:,1)',[0,1],1);   % Sample action
 A(1)=a;
 r(1) = V(a+1,1); % feedback
 Q(:,1)= Q0; % Q-values update
