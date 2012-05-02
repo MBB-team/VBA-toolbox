@@ -6,9 +6,6 @@ function [lev] = lev_GLM(y,X)
 %   - X: dXr design matrix
 % OUT:
 %   - lev: nX1 log-evidence array
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 [d,r] = size(X);
 XtX = X'*X;

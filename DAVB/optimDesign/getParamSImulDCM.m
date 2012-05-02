@@ -10,9 +10,6 @@ function [theta,phi] = getParamSImulDCM(homogeneous,dim,options,pa,pc)
 %   - pa/pc: values for the A and C simulated parameters
 % OUT:
 %   - options: optional structure for VB inversion of the specified model.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 [nreg,nu] = size(options.inF.C);
 

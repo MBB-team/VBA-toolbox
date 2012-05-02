@@ -13,9 +13,6 @@ function [priors] = getPriors(nreg,n_t,options,reduced_f,stochastic)
 % OUT:
 %   - priors: the 'priors' structure that can be used to invert the DCM
 %   using VBA_NLStateSpaceModel.m
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 dim.n_theta = options.inF.ind5(end);
 if options.inG.homogeneous

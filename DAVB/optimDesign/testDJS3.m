@@ -1,8 +1,6 @@
 function testDJS3
 % test the influence of data dimension on Chernoff bound (with variance scaling)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 alpha1 = 1;
 alpha2 = 4;

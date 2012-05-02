@@ -1,8 +1,6 @@
 function [IX0,SigmaX0,deltaMuX0,suffStat] = VBA_IX0(X0,y,posterior,suffStat,dim,u,options)
 % Gauss-Newton update of initial conditions
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 
 if options.DisplayWin % Display progress
@@ -25,7 +23,7 @@ x0 = muX0;
 x0(indIn) = X0;
 
 % Evaluate evolution function at current mode
-[fx0,dF_dX0] = VBA_evalFun('f',x0,posterior.muTheta,u(:,1),options,dim);
+[fx0,dF_dX0] = VBA_evalFun('f',x0,posterior.muTheta,u(:,1),options,dim,1);
 
 % error terms
 dx = IN*(posterior.muX(:,1)- fx0);

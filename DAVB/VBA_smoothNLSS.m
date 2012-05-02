@@ -15,11 +15,8 @@ function [gx,dgdx,dgdp] = VBA_smoothNLSS(Xt,P,ut,in)
 %   - dgdx: the derivative wrt states
 %   - dgdp: the derivatives wrt the parameters
 %   - d2gdxdp: the double derivatives
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
-persistent xt dxdTheta dxdx0
+persistent t xt dxdTheta dxdx0
 
 % extract parameters and optional input for observation/evolution functions
 if in.old.dim.n_theta > 0
@@ -33,23 +30,24 @@ options = in.old.options;
 dim = in.old.dim;
 
 % Check whether the system is at initial state
-if isempty(xt)  % (t=0)
+if isempty(t)
+    t = 1;
     dxdTheta = zeros(in.old.dim.n_theta,in.old.dim.n);
     if options.updateX0
         xt = P(in.old.dim.n_phi+in.old.dim.n_theta+1:end);
     else
         xt = in.x0;
     end
+else
+    t = t+1;
 end
 
 % apply ODE forward step:
-[xt,dF_dX,dF_dP] = ...
-    VBA_evalFun('f',xt,Theta,ut,options,dim);
+[xt,dF_dX,dF_dP] = VBA_evalFun('f',xt,Theta,ut,options,dim,t);
 % Add AR(1) hidden state:
 xt = xt + Xt;
 % apply observation mapping:
-[gx,dG_dX,dG_dP] = ...
-    VBA_evalFun('g',xt,Phi,ut,options,dim);
+[gx,dG_dX,dG_dP] = VBA_evalFun('g',xt,Phi,ut,options,dim,t);
 
 
 % Obtain derivatives of path wrt parameters...
@@ -71,13 +69,11 @@ if in.old.dim.n_phi > 0
 end
 % ... evolution parameters
 if in.old.dim.n_theta > 0
-    dgdp(in.old.dim.n_phi+1:in.old.dim.n_phi+in.old.dim.n_theta,:) = ...
-        dxdTheta*dG_dX;
+    dgdp(in.old.dim.n_phi+1:in.old.dim.n_phi+in.old.dim.n_theta,:) = dxdTheta*dG_dX;
 end
 % ... and initial conditions
 if options.updateX0
-    dgdp(in.old.dim.n_phi+in.old.dim.n_theta+1:end,:) = ...
-        dxdx0*dG_dX;
+    dgdp(in.old.dim.n_phi+in.old.dim.n_theta+1:end,:) = dxdx0*dG_dX;
 end
 
 % Fill in last derivatives

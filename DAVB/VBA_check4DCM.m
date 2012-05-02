@@ -1,7 +1,5 @@
 function [options] = VBA_check4DCM(options)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 A = options.inF.A;
 B = options.inF.B;
 C = options.inF.C;

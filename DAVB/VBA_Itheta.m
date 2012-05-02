@@ -1,8 +1,5 @@
 function [Itheta,SigmaTheta,deltaMuTheta,suffStat] = VBA_Itheta(theta,y,posterior,suffStat,dim,u,options)
 % Gauss-Newton update of the evolution parameters
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if options.DisplayWin % Display progress
     set(options.display.hm(1),'string',...
@@ -33,7 +30,7 @@ div = 0;
 %--- Initial condition ---%
 
 % evaluate evolution function at current mode
-[fx,dF_dX,dF_dTheta,d2F_dXdTheta] = VBA_evalFun('f',posterior.muX0,Theta,u(:,1),options,dim);
+[fx,dF_dX,dF_dTheta,d2F_dXdTheta] = VBA_evalFun('f',posterior.muX0,Theta,u(:,1),options,dim,1);
 
 % check infinite precision transition pdf
 iQ2 = VB_inv(iQx{1},indInx{1},'replace');
@@ -62,7 +59,7 @@ for t=1:dim.n_t-1
     iQ2 = VB_inv(iQx{t+1},indInx{t+1},'replace');
     
     % evaluate evolution function at current mode
-    [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = VBA_evalFun('f',posterior.muX(:,t),Theta,u(:,t+1),options,dim);  
+    [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = VBA_evalFun('f',posterior.muX(:,t),Theta,u(:,t+1),options,dim,t+1);  
     
     % mean-field terms
     Sthetad2fdtheta2 = Sthetad2fdtheta2 + trace(dF_dTheta*iQ2*dF_dTheta'*posterior.SigmaTheta);

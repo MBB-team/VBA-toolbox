@@ -1,8 +1,6 @@
 function [x,y,xhat,vx,yhat,vy] = comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim)
 % compares inferred predictive density and real samples
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 if isempty(u)
     if options.microU
         u = zeros(1,n_t*options.decim);

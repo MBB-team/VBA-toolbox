@@ -11,10 +11,6 @@ function [theta,phi] = get_HRFparams(TR,microDT,lin,verbose)
 % OUT:
 %   - theta: fitted evolution parameters
 %   - phi: fitted observation parameters
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
-
 
 % try, [theta,phi] = defaultHRFparams; return; end
 

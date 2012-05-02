@@ -10,9 +10,6 @@ function [gx] = g_Gaussian(Xt,P,ut,in)
 %   gaussian bump gunction
 % OUT:
 %   - gx: the Gaussian bump function evaluated on the grid.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 mu = P(1);
 sig = exp(P(2));    % positivity constraint

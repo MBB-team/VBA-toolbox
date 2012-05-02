@@ -3,9 +3,7 @@
 % have been estimated on real data.
 % The demo then inverts a model based on a mixture of two Gamma functions,
 % estimating parameters and deriving the model evidence.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 close all
 clear all

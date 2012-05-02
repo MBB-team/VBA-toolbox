@@ -1,9 +1,6 @@
 function [y,post,out,post123,out123] = demo_fool_dcmWhrf(lo,i,j)
 
 % Demo for sDCM for fMRI (with 'missing region')
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 close all
 % clear variables

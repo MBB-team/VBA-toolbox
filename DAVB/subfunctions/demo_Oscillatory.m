@@ -1,9 +1,6 @@
 % Demo for partially observable oscillatory system.
 % This demo inverts a model of a linear oscillatory system, which is
 % observed through a nonlinear sigmoid function.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

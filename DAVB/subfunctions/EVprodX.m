@@ -8,9 +8,7 @@ function [m,v] = EVprodX(mu,Sigma)
 % OUT:
 %   - m: expectation of the product of the two variables
 %   - v: variance of the product of the two variables
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 A = [ 0 1
       1 0 ];

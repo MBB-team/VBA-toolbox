@@ -25,9 +25,7 @@ function [pX,gX,pY,gY,X,Y] = get_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,op
 %   - pX/gY: [id, but for observed data]
 %   - X: the dim.nXn_tXN set of MCMC samples used to form the histograms
 %   - Y: [id, but for observed data]
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 % Get time
 et0 = clock;

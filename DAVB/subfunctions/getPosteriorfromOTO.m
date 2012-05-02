@@ -1,8 +1,5 @@
 function [] = getPosteriorfromOTO(posterior,out)
 % OTO: recovers posterior sufficient statistics from VB inversion
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 mux = posterior.muX(1:2,:);
 sx = [mux(1,:).*(1-mux(1,:));posterior.muX(3,:)];

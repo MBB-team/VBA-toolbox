@@ -1,8 +1,5 @@
 function testDJS
 % test the influence of variance scaling on Chernoff bound
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 alpha1 = 1;
 alpha2 = 1:4:33;

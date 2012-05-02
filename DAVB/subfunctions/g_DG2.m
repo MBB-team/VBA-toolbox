@@ -1,8 +1,6 @@
 function [gx] = g_DG2(Xt,Phi,ut,inG)
 % double-Gamma function HRF observation function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 grid = inG.grid;
 
 a1 = exp(Phi(1));

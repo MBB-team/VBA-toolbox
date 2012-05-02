@@ -1,8 +1,5 @@
 function [I,NextSigma,NextdeltaMu] = VarVolatility(x,mu,va,a,b)
 % OTO: varational energy (and curvature) of volatile observer
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if ~isinf(va)
     iva = va.^-1;

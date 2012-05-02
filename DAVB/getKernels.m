@@ -13,9 +13,6 @@ function [H1,K1,tgrid] = getKernels(posterior,out,dcm)
 %   number of states. NB: for DCM models, this is the neural impulse
 %   response function...
 %   - tgrid: the time grid over which the kernels are estimated
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if isequal(out.dim.n_t,1) ...
         || out.dim.u < 1 ...

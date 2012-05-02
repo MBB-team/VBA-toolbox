@@ -9,9 +9,6 @@ function uu = VBA_getU(u,options,dim,flag)
 %   back...)
 % OUT:
 %   - uu: reshaped micro-resolution driving input
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if options.microU && ~isequal(options.decim,1)
     switch flag

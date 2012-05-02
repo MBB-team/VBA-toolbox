@@ -14,9 +14,6 @@ function [iQ] = VB_inv(Q,indIn,flag,v)
 % OUT:
 %   - iQ: the nxn matrix that is either the inverse of Q or v-padded Q (for
 %   flag='replace').
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if nargin < 4
     v = 0;

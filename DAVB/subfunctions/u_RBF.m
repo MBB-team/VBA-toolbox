@@ -13,9 +13,6 @@ function [u,dudx,dudp] = u_RBF(x,P,t,in)
 %   argument t.
 %   - dudx: [useless]
 %   - dudp: gradient wrt the parameters
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % construct Fourier basis at time t
 X = zeros(length(in.centres),length(t));

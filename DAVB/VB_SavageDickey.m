@@ -21,9 +21,7 @@ function [F2,po2] = VB_SavageDickey(po1,pr1,F1,dim1,pr2)
 %   - po2: posterior structure of the reduced model. note that the
 %   posterior structure is obtained without having to invert the reduced
 %   model...
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 pr1 = checkPriors(pr1,dim1);
 pr2 = checkPriors(pr2,dim1);

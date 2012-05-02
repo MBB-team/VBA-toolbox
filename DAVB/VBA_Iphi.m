@@ -3,9 +3,6 @@ function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi(phi,y,posterior,suffStat
 % !! When the observation function is @VBA_odeLim, this Gauss-Newton update
 % actually implements a gradient ascent on the variational energy of the
 % equivalent deterministic DCM.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % check if called during initialization
 if isequal(suffStat,VBA_getSuffStat(options))
@@ -67,7 +64,7 @@ div = 0;
 for t=1:dim.n_t
     
     % evaluate observation function at current mode
-    [gx(:,t),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim);
+    [gx(:,t),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
     
     if isequal(options.g_fname,@VBA_odeLim)
         % get sufficient statistics of the hidden states from unused i/o in

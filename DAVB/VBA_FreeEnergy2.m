@@ -16,9 +16,6 @@ function [F] = VBA_FreeEnergy2(posterior,suffStat,options)
 % OUT:
 %   - F: the free energy under the Laplace approximation (with correction
 %   terms due to precision hyperparameters).
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if options.DisplayWin % Display progress
     try

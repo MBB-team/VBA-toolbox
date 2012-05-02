@@ -1,8 +1,5 @@
 function [IX,SigmaX,deltaMuX,suffStat] = VBA_IX_lagged(X,y,posterior,suffStat,dim,u,options)
 % lagged Laplace-EKF (Gauss-Newton update of hidden states)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 
 %  Look-up which hidden states to update
@@ -47,14 +44,14 @@ S0(indx0,indx0) = posterior.SigmaX0;
 
 % evaluate evolution function at current mode
 if ~options.priors.AR
-    [fx0,dF_dX0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim);
+    [fx0,dF_dX0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
 else
     clear VBA_smoothNLSS
-    [fx0,dF_dX0] = VBA_evalFun('f',zeros(dim.n,1),posterior.muTheta,u(:,1),options,dim);
+    [fx0,dF_dX0] = VBA_evalFun('f',zeros(dim.n,1),posterior.muTheta,u(:,1),options,dim,1);
 end
 
 % evaluate observation function at current mode
-[gx(:,1),dG_dX{1},dG_dPhi{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim);
+[gx(:,1),dG_dX{1},dG_dPhi{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim,1);
 
 % check infinite precision transition pdf
 iQ = VB_inv(iQx{1},indIn{1},'replace');
@@ -105,10 +102,10 @@ for t = 2:dim.n_t
     iQ = VB_inv(iQx{t},indIn{t},'replace');
     
     % evaluate evolution function at current mode
-    [fx(:,t-1),dF_dX{t-1}] = VBA_evalFun('f',X(:,t-1),posterior.muTheta,u(:,t),options,dim);
+    [fx(:,t-1),dF_dX{t-1}] = VBA_evalFun('f',X(:,t-1),posterior.muTheta,u(:,t),options,dim,t);
     
     % evaluate observation function at current mode
-    [gx(:,t),dG_dX{t},dG_dPhi{t}] = VBA_evalFun('g',X(:,t),posterior.muPhi,u(:,t),options,dim);
+    [gx(:,t),dG_dX{t},dG_dPhi{t}] = VBA_evalFun('g',X(:,t),posterior.muPhi,u(:,t),options,dim,t);
     
     % mean-field terms
     SXd2gdx2 = SXd2gdx2 + trace(dG_dX{t}*iQy{t}*dG_dX{t}'*posterior.SigmaX.current{t});

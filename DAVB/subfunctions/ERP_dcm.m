@@ -9,9 +9,6 @@ function [fx,dF_dX,dF_dTheta] = ERP_dcm(x,Theta,u,in)
 %   - 1 excitatory population in the granular layers
 %   - 2 excitatory populations (pyramidal cells) in the infragranular
 %   layers.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 delta_t = in.delta_t;
 

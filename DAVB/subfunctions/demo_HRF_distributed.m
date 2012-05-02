@@ -1,7 +1,5 @@
 % Demo for distributed (locally multivariate) HRF
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 close all
 clear variables

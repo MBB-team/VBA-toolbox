@@ -1,8 +1,5 @@
 function [gx,dG_dX,dG_dPhi,d2G_dXdPhi] = g_Id(Xt,Phi,ut,inG)
 % Identity observation mapping (partially observable)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 n = size(Xt,1);
 try

@@ -6,9 +6,6 @@ function [posterior,out] = VBA_wrapup(posterior,options,dim,suffStat,u,y,it,from
 % OUT:
 %   - posterior: the final 'posterior' structure
 %   - out: the final 'out' structure
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; fromPause; catch; fromPause = 0; end
 
@@ -18,8 +15,7 @@ end
 
 %------- Summary output structure -----%
 % Restore posterior from ODE limit if required
-[posterior,options,dim,suffStat] = VBA_odeLim2NLSS(...
-    posterior,options,dim,suffStat,u,1);
+[posterior,options,dim,suffStat] = VBA_odeLim2NLSS(posterior,options,dim,suffStat,u,1);
 % Store options, sufficient statistics, etc...
 out.F = suffStat.F(end);
 out.options = options;

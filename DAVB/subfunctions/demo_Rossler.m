@@ -1,9 +1,6 @@
 % Demo for Rossler oscillator.
 % This demo inverts a model of chaotic Rossler system, which is
 % observed through a nonlinear sigmoid observation function.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 % close all

@@ -1,4 +1,4 @@
-function [fx,J,dfdP,d2fdxdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim)
+function [fx,J,dfdP,d2fdxdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim,t)
 % smart wrapper for evolution and observation functions
 % function [fx,J,dfdP,d2fdxdP] =
 % VBA_evalFun(flagFun,posterior,u,options,dim)
@@ -28,9 +28,7 @@ function [fx,J,dfdP,d2fdxdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim)
 %   - dfdP: the derivatives of the eof wrt the parameters
 %   - d2fdxdP: the double derivatives of the eof wrt the hidden states and
 %   the parameters.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 % Number of output arguments?
 nout0 = nargout;
@@ -43,13 +41,26 @@ switch flagFun
         d = [dim.n,dim.n_theta,dim.n];
         nout = options.f_nout;
         N = options.decim;
+        if t~=0 && options.skipf(t)
+            [fx,J,dfdP] = f_Id(Xt,P,ut,in);
+            d2fdxdP = zeros(d);
+            return
+        end
     case 'g'
         fname = options.g_fname;
         in = options.inG;
         d = [dim.n,dim.n_phi,dim.p];
         nout = options.g_nout;
         N = 1;
+        if t~=0 && all(options.isYout(:,t)) && ~isequal(fname,@VBA_odeLim)
+            [fx] = feval(fname,Xt,P,ut,in);
+            J = zeros([d(1),d(3)]);
+            dfdP = zeros([d(2),d(3)]);
+            d2fdxdP = zeros(d);
+            return
+        end
 end
+
 
 % Evaluate function, Jacobian and gradients
 [fx,J,dfdP,d2fdxdP] = EvalFunN(fname,Xt,P,ut,in,dim,nout,nout0,options,d,N);

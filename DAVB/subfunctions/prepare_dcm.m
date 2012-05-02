@@ -8,9 +8,6 @@ function [inF] = prepare_dcm(A,B,C,D)
 %   - D: cell-array of binay matrices for gating effects
 % OUT:
 %   - inF: the optional input structure to @f_dcm4fmri
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 [indA,indB,indC,indD,indself] = find_dcm(A,B,C,D);
 

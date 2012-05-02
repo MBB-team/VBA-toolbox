@@ -3,9 +3,6 @@ function [fx,J,dfdp] = f_DCMwHRF(Xt,Theta,ut,inF)
 % function [fx,dF_dX,dF_dTheta] = f_DCMwHRF(Xt,Theta,ut,inF)
 % This function evaluates the evolution function DCM for fMRI, including
 % the Balloon HRF model.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 ut = ut(inF.confounds.indu);
 

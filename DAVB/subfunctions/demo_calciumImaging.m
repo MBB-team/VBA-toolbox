@@ -1,7 +1,4 @@
 % Demo for calcium imaging of spike trains
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

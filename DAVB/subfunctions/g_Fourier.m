@@ -1,8 +1,5 @@
 function [gx,dG_dX,dG_dPhi,d2G_dXdPhi] = g_Fourier(Xt,Phi,ut,inG)
 % Fourier basis set observation function (dummy HRF model)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % creating the discrete cosine Fourier set
 K = size(Phi,1);     % number of Fourier basis functions

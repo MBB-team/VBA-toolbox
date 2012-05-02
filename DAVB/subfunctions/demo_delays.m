@@ -27,9 +27,7 @@
 % Thus, one has to specify a full delay matrix D, whose i^th row contains
 % the delays applied to each state when deriving the evolution of the i^th
 % state.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 clear variables
 close all

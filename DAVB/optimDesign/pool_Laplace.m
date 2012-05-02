@@ -11,9 +11,7 @@ function [mu,S,pf] = pool_Laplace(m,Q,families,pm)
 %   - mu: nfX1 cell array of prior means
 %   - S: nfX1 cell array of prior covariance matrices
 %   - pf: nfX1 vector of families prior probabilities
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 nf = length(families);
 nm = length(m);

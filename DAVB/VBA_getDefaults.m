@@ -4,9 +4,6 @@ function [y,u,f_fname,g_fname,dim,options,in]    = VBA_getDefaults()
 %
 % This function provides the defaults inputs to the main
 % VBA_NLStateSpaceModel.m routine. See VBA_check.m routine.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 %------- Main inputs ------------%
 y                   = 'pxn_t measured data matrix';

@@ -2,9 +2,6 @@
 % This demo exemplifies how to wrap the VBA model inversion scheme to make
 % it estimate multipe covariance components within the context of a GLM
 % analysis.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % function demo_covComp
 

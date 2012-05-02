@@ -5,9 +5,6 @@ function flag = isbinary(X)
 %   - X: N-D matrix (or cell array of matrices) to be checked
 % OUT:
 %   - flag: 1 id X is binary, 0 if not
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 if iscell(X)
     ok = 1;
     for i=1:numel(X)

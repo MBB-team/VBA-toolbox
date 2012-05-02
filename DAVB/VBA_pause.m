@@ -1,9 +1,7 @@
 function [] = VBA_pause(options)
 % used to pause the VB inversion from the GUI interactively
 % NB: when paused, the inversion allows interactive diagnosis...
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 try
     dt = toc(options.tStart);
     if floor(dt./60) == 0

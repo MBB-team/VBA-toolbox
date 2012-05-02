@@ -1,8 +1,6 @@
 function [SigmaX] = laggedCovX(SigmaX,muX,t,...
     dim,iR,indIn,iRp,sigmaHat,dG_dX,dF_dX,iQy,disp)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 % computes lagged covariance of hidden states x(t) and x(t+1) 
 
 Sinter = SigmaX.inter{t};

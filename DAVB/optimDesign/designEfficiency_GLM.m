@@ -10,9 +10,7 @@ function [r1,r2,r3,e1,e2] = designEfficiency_GLM(X,c,alpha,sigma)
 %   - r1,r2,r3: three expressions for the design Bayesian risk.
 %   Note: these expressions should give the exact same result.
 %   - e1,e2: two expressions for the clqssicql design efficiency.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 n = size(X,1);
 X1 = X;

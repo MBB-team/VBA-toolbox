@@ -1,8 +1,5 @@
 function [gx,dG_dX,dG_dPhi,d2G_dXdPhi] = g_ERP(x,Phi,u,inG)
 % neural mass observation function (DCM for ERPs)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 n = size(x,1);          % should be 9
 nPhi = length(Phi);     % should be 1

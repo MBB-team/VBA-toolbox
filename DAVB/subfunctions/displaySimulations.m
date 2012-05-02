@@ -1,8 +1,6 @@
 function [] = displaySimulations(y,x,eta,e)
 % plots simulated time series (including state-space SVD projections)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 if isweird({y,x,eta,e})
     return
 end

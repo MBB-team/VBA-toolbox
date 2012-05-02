@@ -1,7 +1,5 @@
 function [gx,dgdx,dgdp] = g_classif(x,P,u,in)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 gx = sss([in.X',ones(size(in.X,2),1)]*P);
 dgdx = [];
 dgdp = diag(gx.*(1-gx))*[in.X',ones(size(in.X,2),1)];

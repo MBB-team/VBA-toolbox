@@ -1,8 +1,5 @@
 function [E0,V0,tau0,kaf,kas,eps,alpha] = BOLD_parameters()
 % prior values for the Balloon HRF model
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 E0 = 0.34;
 V0 = 4;%0.02;

@@ -11,9 +11,6 @@ function [py,gridy] = empiricalHist(y)
 % Note: the following lines of code plots the empirical histogram:
 % > [py,gridy] = empiricalHist(y);
 % > figure,plot(gridy,py)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 [n,p] = size(y);
 D = (diag(ones(n,1),0)+diag(ones(n-1,1),1))./2;

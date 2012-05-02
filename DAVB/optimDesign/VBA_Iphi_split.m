@@ -4,9 +4,6 @@ function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_split(...
 % !! When the observation function is @VBA_odeLim, this Gauss-Newton update
 % actually implements a gradient ascent on the variational energy of the
 % equivalent deterministic DCM.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % check if called during initialization
 if isequal(suffStat,VBA_getSuffStat(options))

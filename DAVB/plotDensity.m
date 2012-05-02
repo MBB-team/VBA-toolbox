@@ -18,9 +18,6 @@ function [h] = plotDensity(f_fname,g_fname,u,n_t,options,dim,pX,gX,pY,gY)
 %   empirical histograms on each dimension of the hidden states
 %   - pX/gY: [id, but for observed data]
 % See also: get_MCMC_predictiveDensity.m
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % fill in option structure
 try

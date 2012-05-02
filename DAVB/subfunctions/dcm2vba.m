@@ -18,9 +18,6 @@ function [y,u,f_fname,g_fname,dim,options] = dcm2vba(DCM,stochastic,augment,conf
 %   - g_fname: handle of the observation function for VBA inversion
 %   - dim: model's dimension structure
 %   - options: I/O structure for VBA inversion
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; stochastic; catch, stochastic=0; end
 try; augment; catch, augment=0; end

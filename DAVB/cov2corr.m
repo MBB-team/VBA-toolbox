@@ -1,8 +1,5 @@
 function [C] = cov2corr(V)
 % computes correlation matrix from covariance matrix
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 dv = diag(V);
 n = size(V,1);

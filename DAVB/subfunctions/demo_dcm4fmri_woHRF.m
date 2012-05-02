@@ -1,9 +1,7 @@
 % Demo for DCM for fMRI (without Balloon observer)
 % This demo inverts the DCM for fMRI model, without the ballon model, which
 % is replaced by a nonlinear sigmoid observation function.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 close all
 clear variables

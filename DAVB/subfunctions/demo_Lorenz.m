@@ -1,9 +1,6 @@
 % Demo for Lorenz choatic system.
 % This demo inverts a chaotic Lorenz system model, which is observed
 % through a nonlinear sigmoid observation function.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

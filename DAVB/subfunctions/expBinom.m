@@ -1,8 +1,5 @@
 function [I,NextSigma,NextdeltaMu] = expBinom(x,mu,va,p)
 % OTO: varational energy (and curvature) of associative strength
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 in.G0 = 1;
 in.beta = 1;
 [sx] = sigm(x,in);

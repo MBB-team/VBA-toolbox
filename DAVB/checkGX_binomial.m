@@ -8,9 +8,6 @@ function x = checkGX_binomial(x,lim)
 %   - lim: probability threshold
 % OUT:
 %   - x: vector of corrected binomial probabilities
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if nargin==1
     lim = 1e-8;

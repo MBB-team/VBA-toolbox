@@ -1,8 +1,5 @@
 
 % display evaluation of VB inversion (missing region pb)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 lo.theta = [1];
 lo.sigma = [1e0 1e1 1e2 1e4];

@@ -3,9 +3,7 @@ function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_2DneuralField(Xt,Theta,ut,inF)
 % function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_2DneuralField(Xt,Theta,ut,inF)
 % This function evaluates the evolution function of a linear 2D neural
 % field.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 deltat = inF.deltat;
 try
     L = inF.L;

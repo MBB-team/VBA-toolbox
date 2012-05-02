@@ -1,7 +1,4 @@
 % plot MoG approximations to the N(0,1) density
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 nmax = 4;
 hf = figure('color',[1 1 1]);

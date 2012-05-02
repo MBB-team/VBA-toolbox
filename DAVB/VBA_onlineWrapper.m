@@ -8,9 +8,6 @@ function [posterior,out] = VBA_onlineWrapper(y,u,f_fname,g_fname,dim,options)
 % other. It returns a time-dependent posterior density over all unknown
 % variables. See VBA_NLStateSpaceModel.m for I/O arguments.
 % NB: this online wrapper does not deal with ODE state-space models.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 tStart = tic;
 

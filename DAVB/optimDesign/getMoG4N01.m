@@ -20,9 +20,6 @@ function [m,s,w] = getMoG4N01(nmog,cmog,verbose)
 %   - m: nmogx1 vector of means
 %   - s: nmogx1 vector of variances
 %   - w: nmogx1 vector of weights
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try, cmog; catch, cmog = 1; end
 try, verbose; catch, verbose = 0; end

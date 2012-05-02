@@ -16,9 +16,7 @@ function [haf,hf,hp] = plotUncertainTimeSeries(muX,SX,dTime,hParent,ind)
 %   - haf: the current axes handle
 %   - hf: the patchs handles (for later error bar corrections)
 %   - hp: the bar/line plot handles
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 
 % Get dimensions

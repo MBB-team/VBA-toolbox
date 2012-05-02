@@ -9,9 +9,7 @@ function V = getVar(Sigma,T)
 % OUT:
 %   - V: a nXT matrix containing the variances in the leading diagonal of
 %   the nXn matrices contained in the cell array Sigma.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 if iscell(Sigma)
     try;T;catch;T=length(Sigma);end

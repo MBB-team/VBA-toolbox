@@ -1,9 +1,6 @@
 function h = plotElipse(center,axesLength,hParent)
 
 % This function plots 2D-ellipses in given axes
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try
     haf = hParent;

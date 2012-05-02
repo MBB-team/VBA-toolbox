@@ -6,9 +6,6 @@ function [suffStat] = VBA_getSuffStat(options,suffStat,flag)
 %   here)
 %   - suffStat: {[]}
 %   - flag: {0}, 1 if online version
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try
     flag;

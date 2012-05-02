@@ -14,9 +14,6 @@ function [hfp] = VBA_ReDisplay(posterior,out,newFig,fromPause)
 %     out.options.g_fname,...
 %     out.dim,...
 %     out.options);
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; newFig; catch; newFig = 0; end
 try; fromPause; catch; fromPause = 0; end

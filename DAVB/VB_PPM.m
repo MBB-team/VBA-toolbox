@@ -11,9 +11,6 @@ function [p] = VB_PPM(m,v,t,disp)
 %   exceedance probability onto the posterior pdf.
 % OUT:
 %   - p: the exceedance probability
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try, disp; catch disp=0; end
 

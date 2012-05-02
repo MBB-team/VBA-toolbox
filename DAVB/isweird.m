@@ -5,9 +5,6 @@ function [flag] = isweird(X)
 %   - X: N-D matrix (or cell array of matrices) to be checked
 % OUT:
 %   - flag: 1 id X is weird, 0 if not, -1 if not numeric (e.g. string)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if iscell(X)
     ok = 1;

@@ -7,9 +7,6 @@ function [hi,px,gx,x] = plotGraph3D(px,gx,x,ha,va)
 %   - x: a 1Xp trajectory to plot onto the 3D surface
 %   - ha: the handle of the parent axes
 %   - va: the smoothing value
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if ~exist('x','var')
     x = [];

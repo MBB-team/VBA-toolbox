@@ -1,8 +1,5 @@
 function [fx,dF_dX,dF_dP] = f_dcm_withU(x,P,ut,in)
 % linear evolution function with parameterized input
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = in.deltat;
 

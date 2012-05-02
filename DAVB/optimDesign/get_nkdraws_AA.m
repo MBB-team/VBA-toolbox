@@ -27,9 +27,6 @@ function [C,dt] = get_nkdraws_AA(k,n,verbose)
 %   {1,2,...,k}.
 % OUT:
 %   - C: a nXn^p matrix, whose columns are the n-draws
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; verbose; catch verbose = 0; end
 tic

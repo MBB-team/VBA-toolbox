@@ -17,9 +17,6 @@ function [options,dim] = getOptions4dcm(A,B,C,D,TR,microDT,n_t,homogeneous,reduc
 %   - lin: a flag for using the linearized Balloon model
 % OUT:
 %   - options: optional structure for VB inversion of the specified model.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 nreg = size(A,1);
 

@@ -7,9 +7,6 @@ function [posterior,suffStat,options] = VBA_Initialize(y,u,f_fname,g_fname,dim,o
 % NB: stochastic DCMs are initialized with their deterministic limit.
 % This ensures that stochastic innovations (state noise) only explain what
 % could not be explained by the deterministic DCM.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % Initialize posterior with priors
 posterior = options.priors;

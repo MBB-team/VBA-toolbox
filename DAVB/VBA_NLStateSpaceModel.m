@@ -175,15 +175,7 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       the convergence criteria
 %       .suffStat: a structure containing internal variables that act as
 %       sufficient statistics for the VB updates (e.g. predicted data ...)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau
-% 
-% This program is free software; you can redistribute it and/or
-% modify it under the terms of the GNU General Public License version 2
-% as published by the Free Software Foundation.
-% 
-% contact : jean.daunizeau@gmail.com
-%------------------------------------------------------------
+
 
 % JD, 26/02/2007
 

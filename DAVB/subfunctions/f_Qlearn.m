@@ -1,13 +1,9 @@
 function  [ fx,dfdx,dfdP ] = f_Qlearn( x_t,P,u_t,in )
-%%% Fonction d'apprentissage
-% INPUT 
-% - x_t : Les états cachés sont les Qvalues (2*1)
+% IN: 
+% - x_t : Q-values (2*1)
 % - P : learning rate (1*1)
-% - u_t : l'action et la récompense ( 2*1 = 1:actions, 2:récompenses) 
+% - u_t : previous action and feedback
 % - in : []
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 alpha = 1./(1+exp(-P));
 a = u_t(1)+1;

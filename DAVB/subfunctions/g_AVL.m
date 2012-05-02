@@ -16,9 +16,6 @@ function [gx,dgdx,dgdp] = g_AVL(x,Phi,u,in)
 % OUT:
 %   - gx: expected reaction time
 %   - dgdx: derivative wrt states
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 y = 2*exp(Phi(1)-Phi(2)).*(x(1)-x(end)).*(2*u(in.uc)-1);
 le = y;

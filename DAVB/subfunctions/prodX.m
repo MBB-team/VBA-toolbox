@@ -9,9 +9,6 @@ function [gx,dgdx,d2gdx2] = prodX(X1,X2)
 %   - gx: the product of the two vectors (X1'*X2)
 %   - dgdx: the 1st order derivative of the product
 %   - d2gdx2: the 2nd order derivative of the product
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if ~isequal(size(X1),size(X2))
     if ~isequal(numel(X1),1) && ~isequal(numel(X2),1)

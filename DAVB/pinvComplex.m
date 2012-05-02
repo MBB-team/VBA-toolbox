@@ -1,8 +1,6 @@
 function iA = pinvComplex(A)
 % computes complex matrix inversion
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 if any(imag(A(:)))
     
     rA = real(A);

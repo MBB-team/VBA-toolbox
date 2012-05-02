@@ -1,9 +1,6 @@
 function [fx,J,dfdp] = f_embed0(Xt,Theta,ut,in)
 % evolution function for dynamical system's delay embedding
 % function [fx,J,dfdp] = f_embed(Xt,Theta,ut,in)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % First form delayed state vector and input
 iX = (1:in.dim.n) + (in.options.delays(:)'.*in.dim.n);

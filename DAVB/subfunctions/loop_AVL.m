@@ -1,7 +1,4 @@
 % OTO : loop over subjects
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 ana = 'load';
 full_results = 1;

@@ -11,9 +11,6 @@ function [LLH0] = VBA_LMEH0(y,priors)
 %   - y: the data matrix;
 % OUT:
 %   - LLH0: the log evidence of the null model
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 n = numel(y);
 if ~isbinary(y)

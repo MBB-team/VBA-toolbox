@@ -1,8 +1,6 @@
 function testDJS2
 % test the influence of number of models on Chernoff bound (with scaled variance)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 alpha1 = 1;
 alpha2 = 1:4:33;

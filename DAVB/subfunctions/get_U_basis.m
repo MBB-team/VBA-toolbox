@@ -9,9 +9,6 @@ function [u] = get_U_basis(T,dt,n,btype)
 % OUT:
 %   - u: nX(T/dt) matrix of basis functions evaluated on the temporal
 %   grid [0:dt:floor(n_t*dt)].
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; T; catch; T = 1e2; end
 try; dt; catch; dt = 1; end

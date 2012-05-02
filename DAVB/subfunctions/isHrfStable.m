@@ -1,7 +1,4 @@
 function [flag] = isHrfStable(X,kas,kaf,phi)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; phi; catch phi = -0.5785; end
 

@@ -1,8 +1,5 @@
 function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_Lorenz(Xt,Theta,ut,inF)
 % Lorenz chaotic evolution function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = inF.deltat;
 

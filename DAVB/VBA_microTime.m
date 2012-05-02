@@ -1,8 +1,5 @@
 function [x,gx,microTime,sampleInd] = VBA_microTime(posterior,u,out)
 % gets micro-time time series from posterior
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 options = out.options;
 try
@@ -53,7 +50,11 @@ for t=1:options.dim.n_t
         else
             tu = t;
         end
-        [x(:,indT)] = feval(options.f_fname,x(:,indT-1),theta,u(:,tu),options.inF);
+        if options.skipf(t)
+            x(:,indT) = f_Id(x(:,indT-1),theta,u(:,tu),[]);
+        else
+            x(:,indT) = feval(options.f_fname,x(:,indT-1),theta,u(:,tu),options.inF);
+        end
         if isfield(out,'suffStat') && isfield(out.suffStat,'dx') && ...
                 ~isempty(out.suffStat.dx) && isequal(i,options.decim)
             % add state noise to evolution mapping

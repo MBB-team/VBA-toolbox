@@ -5,8 +5,8 @@ function [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sig
 %
 % This function creates the time series of hidden-states and measurements
 % under the following nonlinear state-space model:
-%   y_t   = g(x_t,Phi,u_t,t) + e_t
-%   x_t+1 = f(x_t,Theta,u_t,t) + f_t
+%   x_t = f(x_t-1,Theta,u_t) + f_t
+%   y_t = g(x_t,Phi,u_t) + e_t
 % where f and g are the evolution and observation, respectively.
 % IN:
 %   - n_t: the number of time bins for the time series of hidden-states and
@@ -27,11 +27,8 @@ function [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sig
 %   - x: the nxt (noisy) hidden-states time series
 %   - x0: the nx1 initial conditions
 %   - eta: the nxt stochastic innovations time series
-%   - e: the pxt measurement errors (for non binomial data) or the
-%   likelihood p(y=1|P,m) for binomial data.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+%   - e: the pxt measurement errors (e:=y-<y>)
+
 % 27/03/2007: JD.
 
 % get system dimensions
@@ -75,7 +72,13 @@ iQx = options.priors.iQx;
 % Get time
 et0 = clock;
 
-%-- initial hidden-states value
+% pre-allocate variables
+x = zeros(dim.n,dim.n_t);
+eta = zeros(dim.n,dim.n_t);
+e = zeros(dim.p,dim.n_t);
+y = zeros(dim.p,dim.n_t);
+
+% Initial hidden-states value
 if dim.n > 0
     try
         x0;
@@ -89,20 +92,16 @@ else
     x0 = [];
 end
 
-% pre-allocate variables
-x = zeros(dim.n,dim.n_t);
-eta = zeros(dim.n,dim.n_t);
-e = zeros(dim.p,dim.n_t);
-y = zeros(dim.p,dim.n_t);
+% Evaluate evolution function at initial conditions
 if dim.n > 0
-    % Evaluate evolution function at initial conditions
-    x(:,1) = VBA_evalFun('f',x0,theta,u(:,1),options,dim);
+    x(:,1) = VBA_evalFun('f',x0,theta,u(:,1),options,dim,1);
     C = getISqrtMat(iQx{1});
     eta(:,1) = (1./sqrt(alpha))*C*randn(dim.n,1);
     x(:,1) = x(:,1) + eta(:,1);
 end
-% Evaluates observation function at x(:,1)
-gt = VBA_evalFun('g',x(:,1),phi,u(:,1),options,dim);
+
+% Evaluate observation function at x(:,1)
+gt = VBA_evalFun('g',x(:,1),phi,u(:,1),options,dim,1);
 if ~options.binomial
     C = getISqrtMat(iQy{1});
     e(:,1) = (1./sqrt(sigma))*C*randn(dim.p,1);
@@ -111,24 +110,29 @@ else
     for i=1:dim.p
         y(i,1) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0],1);
     end
-    e(:,1) = gt;
+    e(:,1) = y(:,1) - gt;
 end
 
+
 %-- Loop over time points
+
 % Display progress
 if options.verbose
     fprintf(1,'Simulating SDE...')
     fprintf(1,'%6.2f %%',0)
 end
+
 for t = 2:dim.n_t
+    
+    % Evaluate evolution function at past hidden state
     if dim.n > 0
-        % Evaluate evolution function at past hidden state
         Cx = getISqrtMat(iQx{t});
         eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);
-        x(:,t) = VBA_evalFun('f',x(:,t-1),theta,u(:,t),options,dim) + eta(:,t);
+        x(:,t) = VBA_evalFun('f',x(:,t-1),theta,u(:,t),options,dim,t) + eta(:,t);
     end
+    
     % Evaluate observation function at current hidden state
-    gt = VBA_evalFun('g',x(:,t),phi,u(:,t),options,dim);
+    gt = VBA_evalFun('g',x(:,t),phi,u(:,t),options,dim,t);
     if ~options.binomial
         Cy = getISqrtMat(iQy{t});
         e(:,t) = (1./sqrt(sigma))*Cy*randn(dim.p,1);
@@ -139,6 +143,7 @@ for t = 2:dim.n_t
         end
         e(:,t) = y(:,t) - gt;
     end
+    
     % Display progress
     if mod(100*t/dim.n_t,10) <1 && options.verbose
         fprintf(1,repmat('\b',1,8))
@@ -147,7 +152,9 @@ for t = 2:dim.n_t
     if isweird({x,y})
         break
     end
+    
 end
+
 % Display progress
 if options.verbose
     fprintf(1,repmat('\b',1,8))

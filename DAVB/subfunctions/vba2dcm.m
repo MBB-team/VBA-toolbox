@@ -8,9 +8,6 @@ function [DCM] = vba2dcm(posterior,out,DCM,TR)
 %   - TR: this is used only if DCM is left empty...
 % OUT:
 %   - DCM: DCM structure filled in with the results of VBA inversion
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 nu = size(out.options.inF.C,2);
 nreg = size(out.options.inF.C,1);

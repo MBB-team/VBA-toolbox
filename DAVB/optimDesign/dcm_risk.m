@@ -23,9 +23,6 @@ function [DJS,b,my,Vy,mu,Q,pm] = dcm_risk(dcm_fnames,pm,split,fam,P)
 %   - Q: cell array of 2nd-order moments of the conditional (upon
 %   models/families) prior predictive densities
 %   - pm: vector of prior probabilities of models/families
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 nm = length(dcm_fnames);
 try; pm=pm./sum(pm); catch; pm=ones(nm,1)./nm; end

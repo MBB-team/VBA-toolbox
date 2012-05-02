@@ -1,7 +1,5 @@
 function [Co] = dcm_plot_reorderedCov(C,nreg,u,ha)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 try; u; catch; u = []; end
 
 try

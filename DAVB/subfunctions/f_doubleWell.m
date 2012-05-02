@@ -11,9 +11,6 @@ function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_doubleWell(Xt,Theta,ut,inF)
 % OUT:
 %   - f: the current value of the evolution function
 %   - J: the jacobbian of the system
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = inF.deltat;
 

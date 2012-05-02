@@ -1,7 +1,4 @@
 % demo for binomial data inversion with adaptation (learning) effect
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

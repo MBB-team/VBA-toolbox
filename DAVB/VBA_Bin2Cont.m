@@ -13,9 +13,6 @@ function [stacky,stdy,gridg,stdg] = VBA_Bin2Cont(gx,y,maxn)
 %   lying within each partition cell
 %   - gridg/stdy: the average (standard deviation, resp.) of conditional
 %   likelihoods within each partition cell
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if isempty(gx)
     stacky = [];

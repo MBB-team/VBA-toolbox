@@ -6,9 +6,6 @@
 % deviations of neural versus hemodynamic (states) noise. This means the
 % emphasis is on recovering neural noise, which partly drives the neural
 % dynamics and is passed through the HRF dynamical model.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 close all
 clear variables

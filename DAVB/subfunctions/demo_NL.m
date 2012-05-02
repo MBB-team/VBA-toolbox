@@ -1,7 +1,4 @@
 % this script reproduces a MATLAB statistical toolbox demo
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear all
 close all

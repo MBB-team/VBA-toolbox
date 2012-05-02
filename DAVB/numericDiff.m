@@ -31,9 +31,7 @@ function [dfdx,f] = numericDiff(fname,nArg2diff,varargin)
 % The second line reshapes the output such that the first dimension is the
 % dimension of argi (mi), the second is of the dimension of argj (mj), and
 % the last dimension is the one of the function output itself (p).
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 Arg = varargin;
 clear varargin

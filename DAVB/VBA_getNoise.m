@@ -10,9 +10,6 @@ function [ehat,v_e,etahat,v_eta] = VBA_getNoise(posterior,out)
 %   measurement (resp. state) noise
 %   - v_e/v_eta: the second-order moment of the posterior density on the
 %   measurement (resp. state) noise
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 dim = out.dim;
 options = out.options;
@@ -26,8 +23,7 @@ v_eta = cell(1,dim.n_t);
 
 % initial condition
 if dim.n > 0
-    [fx,dfdx,dfdp] = VBA_evalFun('f',...
-        posterior.muX0,posterior.muTheta,u(:,1),options,dim);
+    [fx,dfdx,dfdp] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
     etahat(:,1) = posterior.muX(:,1) - fx;
     if isinf(posterior.a_alpha) && isequal(posterior.b_alpha,0)
         v_eta{1} = zeros(dim.n,dim.n);
@@ -39,8 +35,7 @@ if dim.n > 0
         end
     end
 end
-[gx,dgdx,dgdp] = VBA_evalFun('g',...
-    posterior.muX(:,1),posterior.muPhi,u(:,1),options,dim);
+[gx,dgdx,dgdp] = VBA_evalFun('g',posterior.muX(:,1),posterior.muPhi,u(:,1),options,dim,1);
 ehat(:,1) = y(:,1) - gx;
 v_e{1} = zeros(dim.p,dim.p);
 if dim.n > 0
@@ -53,8 +48,7 @@ end
 % loop over time samples
 for t = 2:dim.n_t
     if dim.n > 0
-        [fx,dfdx,dfdp] = VBA_evalFun('f',...
-            posterior.muX(:,t-1),posterior.muTheta,u(:,t),options,dim);
+        [fx,dfdx,dfdp] = VBA_evalFun('f',posterior.muX(:,t-1),posterior.muTheta,u(:,t),options,dim,t);
         etahat(:,t) = posterior.muX(:,t) - fx;
         if isinf(posterior.a_alpha) && isequal(posterior.b_alpha,0)
             v_eta{t} = zeros(dim.n,dim.n);
@@ -69,8 +63,7 @@ for t = 2:dim.n_t
             end
         end
     end
-    [gx,dgdx,dgdp] = VBA_evalFun('g',...
-        posterior.muX(:,t),posterior.muPhi,u(:,t),options,dim);
+    [gx,dgdx,dgdp] = VBA_evalFun('g',posterior.muX(:,t),posterior.muPhi,u(:,t),options,dim,t);
     ehat(:,t) = y(:,t) - gx;
     v_e{t} = zeros(dim.p,dim.p);
     if dim.n > 0

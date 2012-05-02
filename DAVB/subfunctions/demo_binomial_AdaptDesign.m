@@ -1,7 +1,4 @@
 % demo for binomial data inversion with adaptative design
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all
@@ -10,7 +7,7 @@ close all
 p = 2e2; %  number of trials
 phi = [2.5;-0.25]; % simulated parameters: [log sigmoid slope ; inflexion point]
 gridu = -1:2e-2:1; % set of potential design control variables
-optimDesign = 0; % if 1: further optimize design locally
+optimDesign = 1; % if 1: further optimize design locally
 
 % get binomial sampling probabilities
 qx = g_sigm_binomial([],phi,gridu,[]);
@@ -82,7 +79,12 @@ for t=1:p
         OPT.args = {{g_fname,dim,opt}};
         OPT.minimize = 0;
         OPT.GnMaxIter = length(gridu);
-        [ou,curv,out] = optimCost(hil,ustar(1),OPT);
+        if t>1
+            u0 = u(t-1);
+        else
+            u0 = 0;
+        end
+        [ou,curv,out] = optimCost(hil,u0,OPT);
         [oe] = designEfficiency([],g_fname,dim,opt,ou,'parameters');
         u(t) = ou;
     else

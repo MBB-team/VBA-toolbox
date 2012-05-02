@@ -1,8 +1,5 @@
 function test_HMoG
 % test the influence of mean shift on Chernoff bound
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 alpha = 1;
 dx = 0:1:8;

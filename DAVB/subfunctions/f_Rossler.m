@@ -1,8 +1,6 @@
 function [fx] = f_Rossler(x,P,u,in)
+
 % Rossler oscillator evolution function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 a = P(1);
 b = P(2);

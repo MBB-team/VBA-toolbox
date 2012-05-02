@@ -1,9 +1,7 @@
 function [fx,dfdx,dfdp] = f_gen(Xt,Theta,ut,inF)
 
 % Generic evolution function (up to quadratic terms)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 % [fx,dfdx,dfdp] = f_gen(Xt,Theta,ut,inF)
 
 deltat = inF.deltat;

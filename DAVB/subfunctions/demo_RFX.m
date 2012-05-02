@@ -1,7 +1,5 @@
 % demo random effet analysis (2 levels)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 clear variables
 close all

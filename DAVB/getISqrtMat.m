@@ -6,9 +6,6 @@ function S = getISqrtMat(C,inv)
 %   (inv=0) operator
 % OUT:
 %   - S: the (inverse) square root of C.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if nargin < 2
     inv = 1;

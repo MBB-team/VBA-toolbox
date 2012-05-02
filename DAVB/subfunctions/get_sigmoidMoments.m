@@ -8,9 +8,7 @@ function [ms,vs] = get_sigmoidMoments(muX,VX)
 % OUT:
 %   - ms,vs: nxt time series of 1st- and 2nd-order moments of the mapped
 %   process
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 g_fname = @g_sigm;
 opt.inG.x = 0;

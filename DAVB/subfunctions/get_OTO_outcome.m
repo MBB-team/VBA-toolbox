@@ -1,7 +1,4 @@
 % OTO: script for OTO results
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % first get real association over time
 load('D:\MatlabWork\routinetheque\Learning\OTO\u.mat')

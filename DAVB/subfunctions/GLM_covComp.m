@@ -11,9 +11,6 @@ function [theta,e] = GLM_covComp(y,X,Qy,Qp,my,mp)
 % OUT:
 %   - theta: n_phix1 vector of estimated GLM coef
 %   - e: px1 vector of estimated residuals
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 nqy = length(Qy);
 nqp = length(Qp);

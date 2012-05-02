@@ -1,8 +1,5 @@
 function [fx,dF_dX,dF_dTheta] = f_lin1D(Xt,Theta,ut,inF)
 % dummy 2D linear evolution function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = inF.delta_t;
 

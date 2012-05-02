@@ -1,9 +1,6 @@
 function [gx] = g_DWI(x,Phi,u,in)
 
 % observation function for DWI B0 field data
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; in.ana; catch; in.ana = 0; end
 

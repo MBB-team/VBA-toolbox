@@ -1,9 +1,6 @@
 function [ha] = imageMat(A)
 
 % display VB score for the missing region problem
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 hf = figure;
 ha = axes('parent',hf);

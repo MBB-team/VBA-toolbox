@@ -13,9 +13,7 @@ function [posterior,out] = ana_behav_AVL(y,u,flag,iQy)
 %   - posterior: structure containing the conditional sufficient statistics
 %   of the audio-visual asociative learning model parameters
 %   - out: model inversion infos
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 if ~exist('flag','var') || isempty(flag)
     flag = 2;

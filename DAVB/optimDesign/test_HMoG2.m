@@ -1,8 +1,5 @@
 function test_HMoG2
 % test the influence of number of models on Chernoff bound (with shifted mean)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 alpha = 1;
 dx = 0:1:8;

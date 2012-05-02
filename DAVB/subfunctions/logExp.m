@@ -8,9 +8,6 @@ function [fx,dfdx,dfdP] = logExp(x,P)
 %   - fx: the logExp mapping
 %   - dfdx: the gradient wrt to x
 %   - dfdP: the gradient wrt to P
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try;a=P(1);catch;a=0;end % offset at x=-Inf
 try;b=P(2);catch;b=1;end % linear slope at x=Inf

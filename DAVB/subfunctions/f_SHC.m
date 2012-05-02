@@ -1,8 +1,6 @@
 function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_SHC(Xt,Theta,ut,inF)
 % stable heteroclinic channels evolution function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 deltat = inF.deltat;
 x = Xt;
 try

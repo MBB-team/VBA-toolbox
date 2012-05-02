@@ -2,9 +2,6 @@
 % This demo inverst a model of hierarchical SHC partly observable. The
 % model has no observation/evolution parameters (except initial
 % conditions).
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

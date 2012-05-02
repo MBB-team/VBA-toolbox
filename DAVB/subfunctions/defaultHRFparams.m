@@ -2,9 +2,6 @@ function [theta,phi] = defaultHRFparams
 
 % this function outputs efault HRF params, as derived from inverting the
 % Balloon model given the canonical SPM HRF.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 theta = [
     0.1305

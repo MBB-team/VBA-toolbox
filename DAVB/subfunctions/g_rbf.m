@@ -1,7 +1,5 @@
 function [gx] = g_rbf(x,P,u,in)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 centers = in.centers + exp(P(1));
 sig = exp(P(2));
 

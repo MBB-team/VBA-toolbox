@@ -8,9 +8,7 @@ function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
 % is a delta Dirac at infinity (priors.a_alpha = Inf and priors.b_alpha =
 % 0), the priors are modified to invert an ODE-like state-space model, i.e.
 % the equivalent deterministic DCM.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 % Fills in dim structure and default input if required
 try
@@ -144,6 +142,9 @@ end
 if ~isfield(options,'isYout')
     options.isYout = zeros(dim.p,dim.n_t);
 end
+if ~isfield(options,'skipf')
+    options.skipf = zeros(1,dim.n_t);
+end
 % split-Laplace VB?
 if ~isfield(options,'nmog')
     options.nmog            = 1;
@@ -267,6 +268,7 @@ if dim.n > 0 && sum(options.delays(:)) > 0 && (~isequal(f_fname,@f_embed) || ~is
     inG.dim = dim;
     inG.options = options;
     inG.g_fname = g_fname;
+    inG.g_nout = nargout(g_fname);
     options.inF = inF;
     options.inG = inG;
     f_fname = @f_embed;

@@ -12,9 +12,7 @@ function [h] = displayOptimDesign(muy,Vy,u,dim,DJS,b)
 %   classification error
 % OUT:
 %   - h: handles structure
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 pos0 = get(0,'screenSize');
 pos = [0.45*pos0(3),0.05*pos0(4),0.5*pos0(3),0.85*pos0(4)];

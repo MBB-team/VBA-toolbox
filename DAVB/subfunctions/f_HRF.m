@@ -4,9 +4,7 @@ function [fx] = f_HRF(Xt,P,ut,in)
 % This function evaluates the evolution function derived from the balloon
 % model for the hemodynamic response function. Note that the hemodynamic
 % states are in log-space, for positivity constraints.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 % Get parameters
 [E0,V0,tau0,kaf,kas,epsilon,alpha] = BOLD_parameters;

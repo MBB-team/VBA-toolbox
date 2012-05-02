@@ -8,9 +8,6 @@ function [posterior,out] = detectSpikes(Y,flag,nmax)
 %   - nmax: [only for 'bumps'] max nmber of input bump functions
 % OUT:
 %   - posterior,out: the output of the model inversion
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if nargin < 2
     flag = 'bumps';

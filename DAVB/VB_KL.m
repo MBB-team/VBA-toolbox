@@ -8,9 +8,6 @@ function [DKL,DJS] = VB_KL(m1,v1,m2,v2,distrib)
 % OUT:
 %   - DKL: the KL-divergence D(p1||p2)
 %   - DJS: the Jensen-Shannon divergence (symmetrized KL)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if isequal(m1,m2) && isequal(full(v1),full(v2))
     DKL = 0;

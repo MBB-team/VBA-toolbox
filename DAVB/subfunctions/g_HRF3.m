@@ -3,9 +3,6 @@ function [gx,dgdx,dgdp] = g_HRF3(Xt,P,ut,in)
 % function [gx,dgdx,dgdp] = g_HRF3(Xt,P,ut,in)
 % This function evaluates the hemodynamic static observation equation
 % function. HEMODYNAMIC STATES ARE IN LOG SPACE.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 n = size(Xt,1);
 

@@ -1,7 +1,4 @@
 % demo for the Kilner heuristic
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % excitatory maximum post-synaptic depolarization
 P.me = 1e-0*8;

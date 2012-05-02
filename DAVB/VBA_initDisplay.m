@@ -1,8 +1,5 @@
 function [options] = VBA_initDisplay(options,priors)
 % initialize the graphical output
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try
     priors;

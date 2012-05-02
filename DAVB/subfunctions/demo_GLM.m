@@ -7,9 +7,6 @@
 % - reduced model inversion on pre-whitened data
 % - reduced model inversion on pre-whitened data + pre-whitening of reduced
 % design matrix
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

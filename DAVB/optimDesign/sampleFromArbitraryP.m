@@ -9,9 +9,6 @@ function [X] = sampleFromArbitraryP(p,gridX,N)
 %   - N: the number of samples to be sampled
 % OUT:
 %   - X: NX1 vector of samples
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; N; catch, N=1; end 
 pcdf = cumsum(p(:));

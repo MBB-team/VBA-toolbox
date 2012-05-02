@@ -1,7 +1,4 @@
 % demo for split-Laplace (MoG approx to a Gaussian density)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % clear all
 close all

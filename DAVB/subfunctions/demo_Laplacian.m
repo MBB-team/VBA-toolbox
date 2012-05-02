@@ -1,7 +1,4 @@
 % demo Laplacian
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 hf = figure;
 ha = axes('parent',hf,'nextplot','add');

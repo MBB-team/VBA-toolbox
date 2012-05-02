@@ -12,9 +12,6 @@ function [mgp] = constrainedMoG(xt,Phi,ut,in)
 %   density is evaluated.
 % OUT:
 %   - mgp: the MoG evaluated over the 1D grid.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try
     gri = in.gri;

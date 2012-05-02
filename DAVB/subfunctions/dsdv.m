@@ -1,7 +1,4 @@
 function [g] = dsdv(x,P)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 try % parameters of the Gaussian observation filter
     P.sig;
 catch

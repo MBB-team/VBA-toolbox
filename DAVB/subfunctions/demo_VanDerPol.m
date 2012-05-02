@@ -1,9 +1,6 @@
 % Demo for DAVB Van Der Pol oscillator.
 % This demo inverts a model of nonlinear Van Dr Pol oscillator, which is
 % observed through a nonlinear sigmoid function.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

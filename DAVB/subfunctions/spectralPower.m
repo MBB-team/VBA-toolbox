@@ -1,7 +1,5 @@
 function [gy,P,gridw,g,T] = spectralPower(P,gridw,g)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 nw = numel(gridw); % number of frequency bins
 nk = 32; % number of harmonics in the decomposition

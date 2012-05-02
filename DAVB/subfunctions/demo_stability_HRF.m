@@ -1,7 +1,4 @@
 % explore balloon model stability
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 xg1 = [-5:0.2:5];
 xg2 = xg1;

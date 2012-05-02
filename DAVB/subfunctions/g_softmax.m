@@ -1,16 +1,11 @@
 function  [ gx,dgdx,dgdP ] = g_softmax( x_t,P,u_t,in )
-
-%%% Fonction d'apprentissage
 % INPUT
-% - x_t : Les états cachés sont les Qvalues (2*1)
-% - P : beta du softmax (1*1)
-% - u_t : l'action et la récompense ( 2*1 = 1:actions, 2:récompenses)
+% - x_t : Q-values (2*1)
+% - P : inverse temperature (1*1)
+% - u_t : previous action and feedback
 % - in : []
 % OUTPUT
 % - gx : P(a=a1|x_t)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 beta = exp(P);
 a = 1;

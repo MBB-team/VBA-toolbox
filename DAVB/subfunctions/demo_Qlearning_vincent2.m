@@ -100,32 +100,15 @@ Q0 = [0.5;0.5]; % Initialisation des Qvalues
     N,f_fname,g_fname,theta,phi,u,Inf,Inf,options,Q0);
 %%%
 figure
-plot(e,'r')
+plot(pc-e,'r')
 hold on
 plot(y,'kx')
 legend({'p(y=1|theta,phi,m)','binomial data samples'})
 getSubplots
 pause
 
-%
-%       .muPhi: a n_phix1 vector containing the prior mean of Phi, the
-%       observation parameters
-%       .muTheta: a n_thetax1 vector containing the prior mean of Theta,
-%       the evolution parameters
-%       .muX0: a nx1 vector containing the prior mean of the hidden-states
-%       initial condition
-%       .SigmaPhi: n_phixn_phi prior covariance matrix of Phi
-%       .SigmaTheta: n_thetaxn_theta prior covariance matrix of Theta
-%       .SigmaX0: nxn prior covariance matrix of X0
-%       .a_sigma / .b_sigma: the shape and scale parameters of the prior
-%       Gamma pdf upon the measurement noise precision
-%       .a_alpha / .b_alpha: the shape and scale parameters of the prior
-%       Gamma pdf upon the stochastic innovations precision
 
-
-% options.checkGrads = 1;
-
-options.isYout = zeros(1,301);
+options.isYout = zeros(1,size(y,2));
 options.isYout(2) = 1;
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options)

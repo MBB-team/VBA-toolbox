@@ -19,9 +19,7 @@ function [muy,Vy,m,V,w] = splitLaplace(u,f_fname,g_fname,dim,options,nmog,nospli
 %   - muy: the 1st-order moment of the prior predictive density.
 %   - Vy: the second-order moment of the prior predictive density.
 % SEE ALSO: getLaplace
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 % 0- check input and dimensions to split
 try; nmog; catch; nmog = 2; end

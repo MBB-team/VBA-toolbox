@@ -1,8 +1,5 @@
 function DCM = fillinDcm(DCM)
 % fill in missing entries in DCM structure for review
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 DCM.M.m = size(DCM.c,2); % number of inputs
 DCM.M.n = 5*size(DCM.Y.y,2); % number of hidden states

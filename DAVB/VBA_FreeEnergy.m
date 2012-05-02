@@ -15,9 +15,7 @@ function [F] = VBA_FreeEnergy(posterior,suffStat,options)
 %   the priors structure)
 % OUT:
 %   - F: the free energy under the local Laplace approximation
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 
 priors = options.priors;

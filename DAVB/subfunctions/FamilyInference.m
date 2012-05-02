@@ -1,7 +1,5 @@
 function [p1y,p2y] = FamilyInference(F,ac)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 try
     ac;
 catch

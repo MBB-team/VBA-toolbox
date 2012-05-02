@@ -1,9 +1,6 @@
 % demo BMC with GLM
 % function demo_bmc4glm
 % close all
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 N = 1e4; % #simulations
 d = 16; % data dimension

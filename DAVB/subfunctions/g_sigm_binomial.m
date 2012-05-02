@@ -1,8 +1,5 @@
 function [Sx,dsdx,dsdp] = g_sigm_binomial(x,Phi,u,in)
 % evaluates the sigmoid function for binomial data analysis
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 in.G0 = 1;
 in.S0 = 0;

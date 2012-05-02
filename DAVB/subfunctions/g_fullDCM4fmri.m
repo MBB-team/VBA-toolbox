@@ -5,9 +5,7 @@ function [gx,dG_dX,dG_dPhi] = g_fullDCM4fmri(Xt,Phi,ut,inG)
 % This function evaluates the observation function of the neuronal level in
 % DCM for fMRI. Note that this "generalized" observation function includes
 % the HRF convolution model (balloon model).
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 persistent xh dxhdx dxhdp ph ti ko
 % These variables are described bellow:

@@ -10,9 +10,6 @@ function [gx,dgdx,dgdp] = g_rigid2D(x,P,u,in)
 %   - gx: vectorized transformed image
 %   - dgdx: []
 %   - dgdp: gradient of the image wrt to transform parameters
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 gx = applyRT(P,in);
 

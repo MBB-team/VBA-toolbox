@@ -12,9 +12,6 @@ function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_vanDerPol(Xt,Theta,ut,inF)
 %   - dF_dTheta: the derivative of the evolution function w.r.t the
 %   evolution parameters
 %   - d2F_dXdTheta: the double derivative
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = inF.deltat;
 

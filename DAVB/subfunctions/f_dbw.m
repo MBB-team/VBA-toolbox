@@ -1,9 +1,6 @@
 function [fx] = f_dbw(x,theta,u,in)
 
 % dummy double-well evolution function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 dt = in.dt;
 

@@ -2,9 +2,6 @@ function [DCM] = exportDCMfromVBNLSS(posterior,out,DCM,TR)
 
 % This function fills in a DCM structure with the output of VBNLLS
 % (i.e. stochastic DCM) inversion
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 nu = size(out.options.inF.C,2);
 nreg = size(out.options.inF.C,1);

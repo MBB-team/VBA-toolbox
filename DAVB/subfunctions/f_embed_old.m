@@ -1,9 +1,6 @@
 function [fx,J,dfdp] = f_embed(Xt,Theta,ut,in)
 % evolution function for dynamical system's dimension embedding
 % function [fx,J,dfdp] = f_embed(Xt,Theta,ut,in)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % First evaluate standard evolution function
 P = Theta(1:in.dim.n_theta);

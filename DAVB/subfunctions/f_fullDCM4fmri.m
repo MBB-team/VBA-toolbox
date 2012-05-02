@@ -5,9 +5,7 @@ function [fx,J,dfdp,d2fdxdp] = f_fullDCM4fmri(Xt,Theta,ut,inF)
 % DCM for fMRI. For the sake of HRF convolution purposes, it also
 % internally calls g_fullDCM4fmri.m so that the hemodynamic states are
 % updated properly.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 %- Neuronal states evolution
 [fx,J,dfdp] = f_dcm4fmri(Xt,Theta,ut,inF);

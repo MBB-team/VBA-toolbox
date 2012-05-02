@@ -1,7 +1,4 @@
 function [gx] = g_exp2d(x,phi,u,in)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 gkaf = in.gkaf;
 gkas = in.gkas;

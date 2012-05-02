@@ -1,8 +1,5 @@
 function [] = show_potential(posterior)
 % evaluates double well potential
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 theta1 = posterior.muTheta(1);
 theta2 = posterior.muTheta(2);
 

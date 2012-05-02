@@ -1,8 +1,5 @@
 function [hf] = VB_displayGrads(J,J2,flag,fname,flagFun)
 % eyeball the difference between two arbitrary matrices
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; flag; catch; flag = ''; end
 try; fname; catch; fname = []; end

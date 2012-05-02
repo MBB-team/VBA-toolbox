@@ -1,9 +1,6 @@
 function [fx,dF_dX,dF_dTheta] = f_calcium(Xt,Theta,ut,inF)
 
 % (2-photons) calcium imaging evolution function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = inF.delta_t;
 try

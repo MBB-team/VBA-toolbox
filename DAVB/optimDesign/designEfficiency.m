@@ -25,9 +25,6 @@ function [e,out] = designEfficiency(f_fname,g_fname,dim,options,u,flag)
 %   - out: sufficient statistics structure (e.g.: upper bound on selection
 %   error probability, 1st and 2nd order-moment of the Laplace
 %   approximation to the prior predictive density..)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try,flag;catch,flag='parameters';end
 

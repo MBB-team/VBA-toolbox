@@ -1,9 +1,6 @@
 % Demo for 2D neural field model.
 % This demo inverts a linear 2D neural field model.
 % NB: in this instance, the neural field is deterministic.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 clear variables
 close all

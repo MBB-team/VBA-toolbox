@@ -3,9 +3,6 @@ function [gx,dgdx,dgdp] = g_HRF_distributed(Xt,P,ut,in)
 % function [gx,dgdx,dgdp] = g_HRF(Xt,P,ut,in)
 % This function evaluates the hemodynamic static observation equation
 % function.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if isfield(in,'fullDCM') && in.fullDCM
     ind_profile = in.ind3;

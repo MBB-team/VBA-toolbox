@@ -14,9 +14,6 @@ function [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options)
 %   that (time) lagged covariances are neglected. This gives a
 %   block-diagonal structure to the data covariance matrix.
 %   - iVp: the predicted posterior precision matrix of the model parameters
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if nargout>2
     getiVp = 1;
@@ -66,14 +63,14 @@ if dim.n > 0
     x0 = options.priors.muX0;
     Theta = options.priors.muTheta;
     [x(:,1),dF_dX,dF_dP] = ...
-        VBA_evalFun('f',x0,Theta,u(:,1),options,dim);
+        VBA_evalFun('f',x0,Theta,u(:,1),options,dim,1);
     % get gradients wrt states
     dxdx0 = dF_dX;
     dxdTheta = dF_dP;
 end
 Phi = options.priors.muPhi;
 [gx(:,1),dG_dX,dG_dP] = ...
-    VBA_evalFun('g',x(:,1),Phi,u(:,1),options,dim);
+    VBA_evalFun('g',x(:,1),Phi,u(:,1),options,dim,1);
 
 % get gradients wrt to observations
 if dim.n_phi > 0
@@ -105,7 +102,7 @@ end
 for t = 2:dim.n_t
     if dim.n > 0
         [x(:,t),dF_dX,dF_dP] = ...
-            VBA_evalFun('f',x(:,t-1),Theta,u(:,t),options,dim);
+            VBA_evalFun('f',x(:,t-1),Theta,u(:,t),options,dim,t);
         % Obtain derivatives of path wrt parameters...
          if dim.n_theta > 0
              dxdTheta = dF_dP + dxdTheta*dF_dX;
@@ -114,7 +111,7 @@ for t = 2:dim.n_t
         dxdx0 = dxdx0*dF_dX;
     end
     [gx(:,t),dG_dX,dG_dP] = ...
-        VBA_evalFun('g',x(:,t),Phi,u(:,t),options,dim);
+        VBA_evalFun('g',x(:,t),Phi,u(:,t),options,dim,t);
     if dim.n_phi > 0
         dgdp(1:dim.n_phi,:) = dG_dP;
     end

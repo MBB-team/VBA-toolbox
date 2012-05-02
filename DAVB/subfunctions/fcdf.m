@@ -1,8 +1,6 @@
 function CUMF = fcdf(x,nu1,nu2);
 %FCDF CDF of F-distribution.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+%
 
 if ~isequal(size(x),size(nu1)) 
 	if isequal(size(nu1),[1 1])

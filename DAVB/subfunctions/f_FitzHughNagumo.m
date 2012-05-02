@@ -12,9 +12,6 @@ function [fx] = f_FitzHughNagumo(Xt,Theta,ut,inF)
 %   - inF: [optional]
 % OUT:
 %   - fx: the evolution function evaluated at Xt
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = inF.delta_t;
 

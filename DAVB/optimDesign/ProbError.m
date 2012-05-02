@@ -8,9 +8,6 @@ function [pe] = ProbError(mus,Qs,ps,in)
 % OUT:
 %   - pe: the probability of wrongly categorizing a data sample
 % SEE ALSO: ProbErrorND, JensenShannon
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 n = length(mus);
 try

@@ -3,9 +3,6 @@ function [fx,dF_dX,dF_dTheta] = f_dcm4fmri(Xt,Theta,ut,inF)
 % function [fx,dF_dX,dF_dTheta] = f_dcm4fmri(Xt,Theta,ut,inF)
 % This function evaluates the evolution function of the neuronal states of
 % a nonlinear DCM for fMRI model.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 deltat = inF.deltat;
 n = size(Xt,1);

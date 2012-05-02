@@ -1,8 +1,5 @@
 function [gx,dG_dX,dG_dPhi,d2G_dXdPhi] = g_sqrtSig(Xt,Phi,ut,inG)
 % partially observable sigmoid mapping
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 n = size(Xt,1);
 if ~exist('inG','var')

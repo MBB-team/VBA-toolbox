@@ -1,9 +1,6 @@
 function [IX,SigmaX,deltaMuX,suffStat] = VBA_IX_binomial(...
     X,y,posterior,suffStat,dim,u,options)
 % Laplace-Kalman smoother (binomial data)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 %  Look-up which hidden states to update
 indIn = options.params2update.x;
@@ -44,14 +41,14 @@ end
 
 % evaluate evolution function at current mode
 if ~options.priors.AR
-    [fx0,dF_dX0,dF_dTheta0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim);
+    [fx0,dF_dX0,dF_dTheta0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
 else
     clear VBA_smoothNLSS
-    [fx0,dF_dX0,dF_dTheta0] = VBA_evalFun('f',zeros(dim.n,1),posterior.muTheta,u(:,1),options,dim);
+    [fx0,dF_dX0,dF_dTheta0] = VBA_evalFun('f',zeros(dim.n,1),posterior.muTheta,u(:,1),options,dim,1);
 end
 
 % evaluate observation function at current mode
-[gx(:,1),dG_dX{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim);
+[gx(:,1),dG_dX{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim,1);
 
 % fix numerical instabilities
 gx(:,1) = checkGX_binomial(gx(:,1));
@@ -112,10 +109,10 @@ for t = 2:dim.n_t
     IN = diag(~~diag(iQ));
     
     % evaluate evolution function at current mode
-    [fx(:,t-1),dF_dX{t-1}] = VBA_evalFun('f',X(:,t-1),posterior.muTheta,u(:,t),options,dim);
+    [fx(:,t-1),dF_dX{t-1}] = VBA_evalFun('f',X(:,t-1),posterior.muTheta,u(:,t),options,dim,t);
 
     % evaluate observation function at current mode
-    [gx(:,t),dG_dX{t}] = VBA_evalFun('g',X(:,t),posterior.muPhi,u(:,t),options,dim);
+    [gx(:,t),dG_dX{t}] = VBA_evalFun('g',X(:,t),posterior.muPhi,u(:,t),options,dim,t);
     
     % fix numerical instabilities
     gx(:,t) = checkGX_binomial(gx(:,t));

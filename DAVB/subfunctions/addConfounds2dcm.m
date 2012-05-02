@@ -12,9 +12,6 @@ function [u,options,dim] = addConfounds2dcm(X0,u,options,dim)
 % OUT:
 %   - u/options/dim: input to VBA inversion of a DCM (augmented with
 %   confounds).
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 nreg = size(options.inF.A,1);
 nu = size(u,1);

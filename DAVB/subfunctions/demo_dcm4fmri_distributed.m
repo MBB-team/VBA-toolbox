@@ -2,9 +2,6 @@
 % This demo inverts the DCM for fMRI model, which contains the ballon model
 % as a generalized observation function (not affected by stochastic
 % innovations).
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 close all
 clear variables

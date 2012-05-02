@@ -22,9 +22,6 @@ function [DJS,b,muy,Vy] = JensenShannon(mus,Qs,ps,binomial,base)
 %   - muy/Vy: the 1st- and 2d- order moments of the Laplace approx to the
 %   mixture
 % SEE ALSO: ProbError, ProbErrorND
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try,binomial;catch,binomial=0;end
 try,base;catch,base='2';end

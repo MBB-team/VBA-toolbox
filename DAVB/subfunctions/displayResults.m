@@ -1,8 +1,6 @@
 function [] = displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 % compares VB posteriors with simulated parameters and hidden states
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 if isempty(posterior)
     return
 end

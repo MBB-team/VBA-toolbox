@@ -20,9 +20,7 @@ function [priors] = VBA_priors(dim,options)
 %       Gamma pdf upon the measurement noise precision
 %       .a_alpha / .b_alpha: the shape and scale parameters of the prior
 %       Gamma pdf upon the stochastic innovations precision
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 % prior Gamma pdf of the measurement noise (Jeffrey)
 if ~options.binomial

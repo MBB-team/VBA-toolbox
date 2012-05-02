@@ -1,8 +1,5 @@
 function [opt,sigma,out] = GaussNewton(fname,init,options)
 % Gauss-Newton maximization scheme
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % Get default options
 try

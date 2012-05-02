@@ -1,9 +1,5 @@
 function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_binomial(phi,y,posterior,suffStat,dim,u,options)
 % Gauss-Newton update of the observation parameters, for binomial data
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
-
 
 % check if called during initialization
 if isequal(suffStat,VBA_getSuffStat(options))
@@ -60,7 +56,7 @@ div = 0;
 for t=1:dim.n_t
     
     % evaluate observation function at current mode
-    [gx(:,t),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim);
+    [gx(:,t),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
     
     % fix numerical instabilities
     gx(:,t) = checkGX_binomial(gx(:,t));

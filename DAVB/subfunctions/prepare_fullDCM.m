@@ -13,9 +13,6 @@ function [options] = prepare_fullDCM(A,B,C,D,TR,microDT,homogeneous)
 % OUT:
 %   - options: incomplete optinal structure for VB inversion of the
 %   specified model (this does not include priors)...
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if nargin < 7
     homogeneous = 0;

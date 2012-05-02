@@ -24,9 +24,7 @@ function [mu,curv,out] = optimCost(costFcn,init,options)
 %       .I: the series of cost function evaluations along the iterative
 %       optimization process
 %       .elapsedTime = what do you think (in sec)?
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 try
     minimize = options.minimize;

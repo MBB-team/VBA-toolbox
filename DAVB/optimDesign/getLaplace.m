@@ -13,9 +13,6 @@ function [muy,Vy,iVp] = getLaplace(u,f_fname,g_fname,dim,options,checkVar)
 %   - Vy: the second-order moement of the prior predictive density.
 %   - iVp: the predicted posterior precision matrix of the model parameters
 % SEE ALSO: splitLaplace
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; checkVar; catch; checkVar = 0; end
 

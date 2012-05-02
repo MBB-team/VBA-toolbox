@@ -8,9 +8,6 @@ function ldQ = VBA_logDet(Q,indIn,t)
 %   - t: threshold on the eigenvalues of the submatrix {eps}
 % OUT:
 %   - ldQ: log-determinant of the submatrix of Q
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if nargin < 3
     t = eps;

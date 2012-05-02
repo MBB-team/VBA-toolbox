@@ -1,8 +1,6 @@
 function test_HMoG3
 % test the influence of data dimension on Chernoff bound (with mean shift)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 alpha = 1;
 dx = 1;

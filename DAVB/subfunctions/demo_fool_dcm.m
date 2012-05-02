@@ -3,9 +3,6 @@ function [y,post,out,post123,out123] = demo_fool_dcm(lo,i,j)
 % Demo for sDCM for fMRI (with 'missing region')
 % This demo inverts the DCM for fMRI model, without the ballon model, which
 % is replaced by a nonlinear sigmoid observation function.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % warning on
 % warning('This requires a .mat file containing simulations parameters!')

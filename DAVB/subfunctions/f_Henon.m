@@ -1,8 +1,5 @@
 function [fx,dF_dX,dF_dTheta] = f_Henon(Xt,Theta,ut,inF)
 % Henon chaotic map evolution function
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 x       = Xt;
 a       = Theta(1);

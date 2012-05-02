@@ -8,9 +8,7 @@ function [fx,dfdx,dfdp] = f_HRF3(Xt,P,ut,in)
 % generalized observation function, where the real system's states are the
 % neuronal states of a DCM for fMRI model. Note that the hemodynamic states
 % are in log-space, for positivity constrints.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 deltat = in.deltat;
 n = size(Xt,1);

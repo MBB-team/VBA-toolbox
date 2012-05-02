@@ -29,9 +29,7 @@ function [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,flag)
 % NB: if options.gradF = 1, then this routine ensures that the free energy
 % (as opposed to the variational energy) increases between two
 % iterations...
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 switch flag
     case 'X'

@@ -1,9 +1,6 @@
 function [fx] = f_ARn(x,theta,u,in)
 
 % AR(1) evolution function with exponential decay
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 n = size(x,1);
 in.G0 = 1;
 in.S0 = 0;

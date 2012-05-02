@@ -1,9 +1,6 @@
 function [yu,dyudtheta] = u_GaussianBumps(Theta,u,inF)
 
 % input function for free-form deterministic DCM
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 spread = exp(Theta(1));
 scale = exp(Theta(inF.indscale));

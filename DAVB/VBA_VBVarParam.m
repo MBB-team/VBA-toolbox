@@ -7,9 +7,7 @@ function [posterior,suffStat] = ...
 % This function computes the natural parameters of the Gamma variational
 % posterior pdf of the variance parameters (measurement noise and
 % stochastic innovations).
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
+
 
 try
     % remove infinite precision priors (ODE limit)

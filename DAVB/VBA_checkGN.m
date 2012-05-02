@@ -11,9 +11,6 @@ function [dx,flag] = VBA_checkGN(S,dx0)
 % OUT:
 %   - dx: the (Levenberg-Marquardt) regularized update step
 %   - flag=1 if regularization, flag=0 if not.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 n = numel(S);
 % Compute smallest eigenvalue

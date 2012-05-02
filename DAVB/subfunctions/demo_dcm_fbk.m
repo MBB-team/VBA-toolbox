@@ -4,9 +4,6 @@
 % - generates data with and without feedback
 % - inverts model with and without feedback
 % - perform model comparison and inspect data covariance matrix
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 close all
 clear variables

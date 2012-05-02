@@ -33,10 +33,6 @@ function [fx] = f_AVL(x,Theta,u,in)
 % OUT:
 %   - fx: in.n x 1 vector containing the series of VB updates of the
 %   sufficient statistics of the recognised variables.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
-
 
 % initialize current belief with top-down prior predictions from highest
 % hierarchical level

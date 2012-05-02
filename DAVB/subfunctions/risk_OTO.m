@@ -1,9 +1,6 @@
 function [Q,ha] = risk_OTO(posterior,out)
 
 % OTO: inferred speed-accuracy risk from reaction times
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 alpha = exp(posterior.muPhi(1));
 theta = exp(posterior.muPhi(2));

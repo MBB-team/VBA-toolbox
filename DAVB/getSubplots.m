@@ -1,8 +1,5 @@
 function getSubplots
 % adds contextmenu to (subplot) axes for whole window display
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 ha = findobj('Type','axes');
 for i=1:length(ha)

@@ -9,6 +9,7 @@ function [Sx,dsdx,dsdp] = sigm(x,in,Phi)
 %       .S0: is the intercept ({0})
 %       .beta: is the default slope of the sigmoid ({1})
 %       .INV: if 1, the function evaluates the inverse sigmoid function
+%       (this means sigm(sigm(x,struct('INV',1))) = x)
 %       .mat: if 1, do not vectorize x
 %   - Phi: A vector, can be left unspecified, or contain one or two
 %   entries. The first entry rescale the slope in.beta ({0}); the second is
@@ -17,9 +18,6 @@ function [Sx,dsdx,dsdp] = sigm(x,in,Phi)
 %   - Sx: the sigmoid function evaluated at x
 %   - dsdx: the derivative of the sigmoid function wrt x
 %   - dsdp: the derivative of the sigmoid function wrt Phi.
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 % get default parameterization
 if ~exist('in','var') || isempty(in)

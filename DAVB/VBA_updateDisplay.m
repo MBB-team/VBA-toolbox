@@ -3,9 +3,6 @@ function VBA_updateDisplay(F,posterior,suffStat,options,y,it,flag)
 % function VBA_updateDisplay(F,posterior,suffStat,options,y,it,display,flag)
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 if ~options.DisplayWin
     if isequal(flag,'F') && ~options.OnLine

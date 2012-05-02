@@ -1,9 +1,6 @@
 function ha = plot_MoG(m,s,w,in)
 
 % plots 1D mixture of Gaussian densities
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 try; type = get(in.ha,'type'); catch; type = []; end
 if isequal(type,'axes')

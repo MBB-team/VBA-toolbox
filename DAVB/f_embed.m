@@ -1,9 +1,6 @@
 function [fx,J,dfdp] = f_embed(Xt,Theta,ut,in)
 % evolution function for dynamical system's delay embedding
 % function [fx,J,dfdp] = f_embed(Xt,Theta,ut,in)
-%------------------------------------------------------------
-% Copyright (C) 2012 Jean Daunizeau / License GNU GPL v2
-%------------------------------------------------------------
 
 fxd = zeros(in.dim.n,1);
 Jd = zeros(in.dim.n_embed+in.dim.n,in.dim.n);
@@ -15,7 +12,7 @@ if sum(in.options.delays(:)) > 0
         dX = Xt(iX,:);
         % Evaluate evolution function at the delayed state vector:
         [opt,dim] = getOptions4EvalFun(in);
-        [fx0,J0,dfdp0] = VBA_evalFun('f',dX,Theta,ut,opt,dim);
+        [fx0,J0,dfdp0] = VBA_evalFun('f',dX,Theta,ut,opt,dim,0);
         fxd(i) = fx0(i);
         Jd(iX,i) = J0(:,i);
         dfdpd(:,i) = dfdp0(:,i);
@@ -23,7 +20,7 @@ if sum(in.options.delays(:)) > 0
 else
     % Evaluate evolution function at the non-delayed state vector:
     [opt,dim] = getOptions4EvalFun(in);
-    [fxd,J0,dfdpd] = VBA_evalFun('f',Xt(1:in.dim.n,:),Theta,ut,opt,dim);
+    [fxd,J0,dfdpd] = VBA_evalFun('f',Xt(1:in.dim.n,:),Theta,ut,opt,dim,0);
     Jd(1:in.dim.n,:) = J0;
 end
 
