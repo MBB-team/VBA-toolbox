@@ -1,35 +1,36 @@
 % Demo for Savage-Dickey nested model comparison
 
-% close all
+close all
 clear variables
 
 % Choose basic settings for simulations
-sigma = 1e-1;            % precision 
+sigma = 1e-4;            % precision 
 g_fname = @g_GLM;        % observation function
 
 
 % Build priors structure
 priors.muPhi = zeros(3,1);         % prior mean on observation params
-priors.SigmaPhi = 1e4*eye(3); % prior covariance on observation params
-priors.a_sigma = 1e1;             % Jeffrey's prior
-priors.b_sigma = 1e1;             % Jeffrey's prior
+priors.SigmaPhi = 1e0*eye(3); % prior covariance on observation params
+priors.a_sigma = sigma;             % Jeffrey's prior
+priors.b_sigma = 1e0;             % Jeffrey's prior
 options.priors = priors;        % include priors in options structure
 options.DisplayWin = 1;
 options.verbose = 0;
 options.Laplace = 1;
-options.MinIter = 30;
-options.updateHP = 1;
+options.updateHP = 0;
 dim.n_phi = 3;                  % nb of observation parameters
 dim.n_theta = 0;                % nb of evolution parameters
 dim.n=0;                        % nb of hidden states
 
 % fill in priors
 [options,u,dim] = VBA_check(zeros(1e2,1),[],[],g_fname,dim,options);
+options.verbose = 0;
+options.DisplayWin = 0;
 priors = options.priors;
 priors2 = priors;
 priors2.SigmaPhi(2,2) = 0;
 
-N = 1e1;
+N = 2e1;
 
 F1 = zeros(N,2);
 F2 = zeros(N,2);

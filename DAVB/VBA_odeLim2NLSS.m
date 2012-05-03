@@ -109,6 +109,8 @@ if isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNL
             posterior.muX = suffStat.muX;
             posterior.SigmaX.current = suffStat.SigmaX;
             if flag
+                options.priors.muX = options.init.suffStat.muX;
+                options.priors.SigmaX.current = options.init.suffStat.SigmaX;
                 suffStat.SX = 0.5*dim.n*dim.n_t*log(2*pi*exp(1));
                 for t=1:dim.n_t
                     suffStat.SX = suffStat.SX + 0.5*VBA_logDet(posterior.SigmaX.current{t});

@@ -166,7 +166,7 @@ else        % if no hidden states, initialize observation parameters
     
 
     % This fills in the sufficient statistics structure, to evaluate the
-    % free energy at the perior pdf.
+    % free energy at the prior pdf.
     posterior.muX = sparse(0,dim.n_t);
     indIn = options.params2update.phi;
     opt = options;
@@ -199,7 +199,7 @@ else        % if no hidden states, initialize observation parameters
     end
     
     options.init.posterior = posterior;
-    
+    options.init.suffStat = suffStat;
     
 end
 

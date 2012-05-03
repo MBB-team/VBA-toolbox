@@ -16,7 +16,7 @@ y = gx +  (1/sqrt(sigma))*randn(size(gx));
 
 hf = figure;
 subplot(2,2,1),imagesc(inG.Y),colormap(bone),colorbar,axis equal, axis tight,title('original image')
-subplot(2,2,2),imagesc(reshape(y,nx,ny)),colormap(bone),colorbar,axis equal, axis tight,title('disaligned image')
+subplot(2,2,2),imagesc(reshape(y,nx,ny)),colormap(bone),colorbar,axis equal, axis tight,title('disaligned image (to be realigned)')
 
 g_fname = @g_rigid2D;
 dim.n = 0;
@@ -35,3 +35,5 @@ hg = out.suffStat.gx;
 figure(hf)
 subplot(2,2,3),imagesc(reshape(hg,nx,ny)),colormap(bone),colorbar,axis equal, axis tight,title('realigned image')
 subplot(2,2,4),imagesc(reshape(hg-y,nx,ny)),colormap(bone),colorbar,axis equal, axis tight,title('realigned - disaligned')
+
+displayResults(posterior,out,y,[],[],[],phi,[],sigma)

@@ -27,12 +27,10 @@ if dim.n_phi > 0
     Sigma(1:dim.n_phi,1:dim.n_phi) = options.priors.SigmaPhi;
 end
 if dim.n_theta > 0
-    Sigma(dim.n_phi+1:dim.n_phi+dim.n_theta,...
-        dim.n_phi+1:dim.n_phi+dim.n_theta) = options.priors.SigmaTheta;
+    Sigma(dim.n_phi+1:dim.n_phi+dim.n_theta,dim.n_phi+1:dim.n_phi+dim.n_theta) = options.priors.SigmaTheta;
 end
 if dim.n > 0
-    Sigma(dim.n_phi+dim.n_theta+1:end,dim.n_phi+dim.n_theta+1:end) = ...
-        options.priors.SigmaX0;
+    Sigma(dim.n_phi+dim.n_theta+1:end,dim.n_phi+dim.n_theta+1:end) = options.priors.SigmaX0;
 end
 
 % pre-allocate output variables
@@ -55,15 +53,13 @@ gx = zeros(dim.p,dim.n_t);
 if dim.n > 0
     x0 = options.priors.muX0;
     Theta = options.priors.muTheta;
-    [x(:,1),dF_dX,dF_dP] = ...
-        VBA_evalFun('f',x0,Theta,u(:,1),options,dim);
+    [x(:,1),dF_dX,dF_dP] = VBA_evalFun('f',x0,Theta,u(:,1),options,dim,1);
     % get gradients wrt states
     dxdx0 = dF_dX;
     dxdTheta = dF_dP;
 end
 Phi = options.priors.muPhi;
-[gx(:,1),dG_dX,dG_dP] = ...
-    VBA_evalFun('g',x(:,1),Phi,u(:,1),options,dim);
+[gx(:,1),dG_dX,dG_dP] = VBA_evalFun('g',x(:,1),Phi,u(:,1),options,dim,1);
 
 % get gradients wrt to observations
 dgdp(1:dim.n_phi,1:dim.p) = dG_dP;
@@ -86,15 +82,13 @@ else
     Qy = pinv(options.priors.iQy{1});
     Vy(1:dim.p,1:dim.p) = varY.*Qy;
     if get_iVp
-        iVp = iVp + ...
-            dgdp(:,1:dim.p)*options.priors.iQy{1}*dgdp(:,1:dim.p)'./varY;
+        iVp = iVp + dgdp(:,1:dim.p)*options.priors.iQy{1}*dgdp(:,1:dim.p)'./varY;
     end
 end
 
 for t = 2:dim.n_t
     if dim.n > 0
-        [x(:,t),dF_dX,dF_dP] = ...
-            VBA_evalFun('f',x(:,t-1),Theta,u(:,t),options,dim);
+        [x(:,t),dF_dX,dF_dP] = VBA_evalFun('f',x(:,t-1),Theta,u(:,t),options,dim,t);
         if dim.n_theta > 0
             % Obtain derivatives of path wrt parameters...
             dxdTheta = dF_dP + dxdTheta*dF_dX;
@@ -102,35 +96,29 @@ for t = 2:dim.n_t
         % ... and initial conditions
         dxdx0 = dxdx0*dF_dX;
     end
-    [gx(:,t),dG_dX,dG_dP] = ...
-        VBA_evalFun('g',x(:,t),Phi,u(:,t),options,dim);
+    [gx(:,t),dG_dX,dG_dP] = VBA_evalFun('g',x(:,t),Phi,u(:,t),options,dim,t);
     
     dgdp(1:dim.n_phi,1+(t-1)*dim.p:t*dim.p) = dG_dP;
     if dim.n_theta > 0
-        dgdp(dim.n_phi+1:dim.n_phi+dim.n_theta,1+(t-1)*dim.p:t*dim.p) = ...
-            dxdTheta*dG_dX;
+        dgdp(dim.n_phi+1:dim.n_phi+dim.n_theta,1+(t-1)*dim.p:t*dim.p) = dxdTheta*dG_dX;
     end
     if dim.n > 0
-        dgdp(dim.n_phi+dim.n_theta+1:end,1+(t-1)*dim.p:t*dim.p) = ...
-            dxdx0*dG_dX;
+        dgdp(dim.n_phi+dim.n_theta+1:end,1+(t-1)*dim.p:t*dim.p) = dxdx0*dG_dX;
     end
     muy(dim.p*(t-1)+1:dim.p*t) = gx(:,t);
     if options.binomial
         % fix numerical instabilities
         gx(:,t) = checkGX(gx(:,t));
-        Vy(dim.p*(t-1)+1:dim.p*t,dim.p*(t-1)+1:dim.p*t) = ...
-            diag(gx(:,t).*(1-gx(:,t)));
+        Vy(dim.p*(t-1)+1:dim.p*t,dim.p*(t-1)+1:dim.p*t) = diag(gx(:,t).*(1-gx(:,t)));
         tmp = 1./gx(:,t) + 1./(1-gx(:,t));
         if get_iVp
-            iVp = iVp + ...
-                dgdp(:,1+(t-1)*dim.p:t*dim.p)*diag(tmp)*dgdp(:,1+(t-1)*dim.p:t*dim.p)';
+            iVp = iVp + dgdp(:,1+(t-1)*dim.p:t*dim.p)*diag(tmp)*dgdp(:,1+(t-1)*dim.p:t*dim.p)';
         end
     else
         Qy = pinv(options.priors.iQy{t});
         Vy(dim.p*(t-1)+1:dim.p*t,dim.p*(t-1)+1:dim.p*t) = varY.*Qy;
         if get_iVp
-            iVp = iVp + ...
-                dgdp(:,1+(t-1)*dim.p:t*dim.p)*options.priors.iQy{t}*dgdp(:,1+(t-1)*dim.p:t*dim.p)'./varY;
+            iVp = iVp + dgdp(:,1+(t-1)*dim.p:t*dim.p)*options.priors.iQy{t}*dgdp(:,1+(t-1)*dim.p:t*dim.p)'./varY;
         end
     end
 end
@@ -168,9 +156,7 @@ end
 
 function [gx] = getObs(theta,phi,x0,u,in)
 
-in2 = struct('muTheta',theta,...
-    'muPhi',phi,...
-    'muX0',x0);
+in2 = struct('muTheta',theta,'muPhi',phi,'muX0',x0);
 [x,gx,microTime,sampleInd] = VBA_microTime(in2,u,in);
 gx = gx(:,sampleInd);
 gx = gx(:);

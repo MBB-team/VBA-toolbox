@@ -28,104 +28,65 @@ pr2 = checkPriors(pr2,dim1);
 
 F2 = F1;
 if dim1.n_theta > 0
-    if isequal(pr1.muTheta,pr2.muTheta) ...
-            && isequal(full(pr1.SigmaTheta),full(pr2.SigmaTheta))
-        po2.muTheta = po1.muTheta;
-        po2.SigmaTheta = po1.SigmaTheta;
-    else
-        dP = diag(pr2.SigmaTheta);
-        iout = find(dP==0);
-        Pi1 = VB_inv(pr1.SigmaTheta);
-        Pi2 = VB_inv(pr2.SigmaTheta);
-        P1 = VB_inv(po1.SigmaTheta);
-        P2 = P1;
-        P2(iout,:) = 0;
-        P2(:,iout) = 0;
-        po2.SigmaTheta = VB_inv(P2);
-        po2.muTheta = po2.SigmaTheta*(...
-            P1*po1.muTheta + Pi2*pr2.muTheta - Pi1*pr1.muTheta );
-        F2 = F2 ...
-            + 0.5*VBA_logDet(Pi2) ...
-            + 0.5*VBA_logDet(P1) ...
-            - 0.5*VBA_logDet(P2) ...
-            - 0.5*VBA_logDet(Pi1) ...
-            - 0.5*po1.muTheta'*P1*po1.muTheta ...
-            - 0.5*pr2.muTheta'*Pi2*pr2.muTheta ...
-            + 0.5*pr1.muTheta'*Pi1*pr1.muTheta ...
-            + 0.5*po2.muTheta'*P2*po2.muTheta;
-    end
+    mf = po1.muTheta;
+    Sf = po1.SigmaTheta;
+    mf0 = pr1.muTheta;
+    Sf0 = pr1.SigmaTheta;
+    mr0 = pr2.muTheta;
+    Sr0 = pr2.SigmaTheta;
+    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    po2.muTheta = mr;
+    po2.SigmaTheta = Sr;
+    F2 = F2 +dF;
 end
 if dim1.n_phi > 0
-    if isequal(pr1.muPhi,pr2.muPhi) ...
-            && isequal(full(pr1.SigmaPhi),full(pr2.SigmaPhi))
-        po2.muPhi = po1.muPhi;
-        po2.SigmaPhi = po1.SigmaPhi;
-    else
-        iout = find(diag(pr2.SigmaPhi)==0);
-        Pi1 = VB_inv(pr1.SigmaPhi);
-        Pi2 = VB_inv(pr2.SigmaPhi);
-        P1 = VB_inv(po1.SigmaPhi);
-        P2 = P1;
-        P2(iout,:) = 0;
-        P2(:,iout) = 0;
-        po2.SigmaPhi = VB_inv(P2);
-        
-        po2.muPhi = po2.SigmaPhi*(...
-            P1*po1.muPhi + Pi2*pr2.muPhi - Pi1*pr1.muPhi );
-%         F20 = F2 ...
-%             + 0.5*VBA_logDet(Pi2) ...
-%             + 0.5*VBA_logDet(P1) ...
-%             - 0.5*VBA_logDet(P2) ...
-%             - 0.5*VBA_logDet(Pi1) ...
-%             - 0.5*po1.muPhi'*P1*po1.muPhi ...
-%             - 0.5*pr2.muPhi'*Pi2*pr2.muPhi ...
-%             + 0.5*pr1.muPhi'*Pi1*pr1.muPhi ...
-%             + 0.5*po2.muPhi'*P2*po2.muPhi;
-        
-        
-        fixed = setdiff(iout,find(diag(po1.SigmaPhi)==0));
-        dmu = po1.muPhi(fixed) - pr2.muPhi(fixed);
-        dmu0 = pr1.muPhi(fixed) - pr2.muPhi(fixed);
-        F2 = F2 ...
-            - 0.5*VBA_logDet(po1.SigmaPhi(fixed,fixed)) ...
-            - 0.5*dmu'*VB_inv(po1.SigmaPhi(fixed,fixed))*dmu ...
-            + 0.5*VBA_logDet(pr1.SigmaPhi(fixed,fixed)) ...
-            + 0.5*dmu0'*VB_inv(pr1.SigmaPhi(fixed,fixed))*dmu0;
-%         F20-F2
-%         pause
-        
-        
-    end
+    mf = po1.muPhi;
+    Sf = po1.SigmaPhi;
+    mf0 = pr1.muPhi;
+    Sf0 = pr1.SigmaPhi;
+    mr0 = pr2.muPhi;
+    Sr0 = pr2.SigmaPhi;
+    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    po2.muPhi = mr;
+    po2.SigmaPhi = Sr;
+    F2 = F2 +dF;
 end
 if dim1.n > 0
-    if isequal(pr1.muX0,pr2.muX0) ...
-            && isequal(full(pr1.SigmaX0),full(pr2.SigmaX0))
-        po2.muX0 = po1.muX0;
-        po2.SigmaX0 = po1.SigmaX0;
-    else
-        dP = diag(pr2.SigmaX0);
-        iout = find(dP==0);
-        Pi1 = VB_inv(pr1.SigmaX0);
-        Pi2 = VB_inv(pr2.SigmaX0);
-        P1 = VB_inv(po1.SigmaX0);
-        P2 = P1;
-        P2(iout,:) = 0;
-        P2(:,iout) = 0;
-        po2.SigmaX0 = VB_inv(P2);
-        po2.muX0 = po2.SigmaX0*(...
-            P1*po1.muX0 + Pi2*pr2.muX0 - Pi1*pr1.muX0 );
-        F2 = F2 ...
-            + 0.5*VBA_logDet(Pi2) ...
-            + 0.5*VBA_logDet(P1) ...
-            - 0.5*VBA_logDet(P2) ...
-            - 0.5*VBA_logDet(Pi1) ...
-            - 0.5*po1.muX0'*P1*po1.muX0 ...
-            - 0.5*pr2.muX0'*Pi2*pr2.muX0 ...
-            + 0.5*pr1.muX0'*Pi1*pr1.muX0 ...
-            + 0.5*po2.muX0'*P2*po2.muX0;
-    end
+    mf = po1.muX0;
+    Sf = po1.SigmaX0;
+    mf0 = pr1.muX0;
+    Sf0 = pr1.SigmaX0;
+    mr0 = pr2.muX0;
+    Sr0 = pr2.SigmaX0;
+    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    po2.muX0 = mr;
+    po2.SigmaX0 = Sr;
+    F2 = F2 +dF;
 end
-
+if isfield(po1,'a_sigma') && ~isempty(po1.a_sigma)
+    mf = po1.a_sigma./po1.b_sigma;
+    Sf = po1.a_sigma./(po1.b_sigma^2);
+    mf0 = pr1.a_sigma./pr1.b_sigma;
+    Sf0 = pr1.a_sigma./(pr1.b_sigma^2);
+    mr0 = pr2.a_sigma./pr2.b_sigma;
+    Sr0 = pr2.a_sigma./(pr2.b_sigma^2);
+    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    po2.b_sigma = mr./Sr;
+    po2.a_sigma = po2.b_sigma.*mr;
+    F2 = F2 +dF;
+end
+if isfield(po1,'a_alpha') && ~isempty(po1.a_alpha)
+    mf = po1.a_alpha./po1.b_alpha;
+    Sf = po1.a_alpha./(po1.b_alpha^2);
+    mf0 = pr1.a_alpha./pr1.b_alpha;
+    Sf0 = pr1.a_alpha./(pr1.b_alpha^2);
+    mr0 = pr2.a_alpha./pr2.b_alpha;
+    Sr0 = pr2.a_alpha./(pr2.b_alpha^2);
+    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    po2.b_alpha = mr./Sr;
+    po2.a_alpha = po2.b_alpha.*mr;
+    F2 = F2 +dF;
+end   
 
 function priors = checkPriors(priors,dim)
 fn                  = fieldnames(priors);
@@ -138,5 +99,7 @@ if ~isempty(ind)
         eval(['priors.',fn0{ind(i)},'=priors0.',fn0{ind(i)},';',])
     end
 end
+
+
 
 

@@ -22,7 +22,7 @@ grid(ha,'on')
 axis(ha,'tight')
 xlabel(ha,'time')
 ylabel(ha,'x')
-title('simulated hidden-states time series')
+title(ha,'simulated hidden-states time series')
 ha = subplot(3,2,2,'parent',hf,'nextplot','add');
 plot(ha,dTime,y',':')
 plot(ha,dTime,y','.')
@@ -32,7 +32,7 @@ grid(ha,'on')
 axis(ha,'tight')
 xlabel(ha,'time')
 ylabel(ha,'y')
-title('simulated observations')
+title(ha,'simulated observations')
 if size(x,1) > 3
     [u,s,v] = svd(x,0);
     xp = u(1:3,1:3)*s(1:3,:)*v';

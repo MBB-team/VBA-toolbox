@@ -54,8 +54,7 @@ switch flag
             % get prior predictive density
             fprintf(1,repmat('\b',1,6))
             fprintf(1,[num2str(j),'/',num2str(nm),'...'])
-            [muy{j},Vy{j}] = getLaplace(...
-                u,f_fname{j},g_fname{j},dim{j},options{j});
+            [muy{j},Vy{j}] = getLaplace(u,f_fname{j},g_fname{j},dim{j},options{j});
         end
         
         % computes Jensen-Shannon divergence of models

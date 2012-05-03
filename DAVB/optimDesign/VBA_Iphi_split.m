@@ -86,8 +86,7 @@ for t=1:dim.n_t
         Sigma0(indIn,indIn) = sqrtS*diag(split.s(:,i))*sqrtS';
         
         % evaluate observation function at current mode
-        [gxt(:,i),dG_dX,dG_dPhi,d2G_dXdPhi] =...
-            VBA_evalFun('g',posterior.muX(:,t),Mu0,u(:,t),options,dim);
+        [gxt(:,i),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Mu0,u(:,t),options,dim,t);
         
         % mean-field terms
         if dim.n > 0
@@ -145,7 +144,7 @@ for t=1:dim.n_t
             drawnow
         end
         if init && ~options.OnLine && options.verbose
-            fprintf(1,'\b\b\b\b\b\b\b\b')
+            fprintf(1,repmat('\b',1,8))
             fprintf(1,'%6.2f %%',100*t/dim.n_t)
         end
     end
@@ -164,7 +163,7 @@ if ~init && options.DisplayWin
     drawnow
 end
 if init &&  ~options.OnLine  && options.verbose
-    fprintf(1,'\b\b\b\b\b\b\b\b')
+    fprintf(1,repmat('\b',1,8))
     fprintf(' OK.')
     fprintf('\n')
 end

@@ -31,7 +31,7 @@ displayResults(posterior,out,y,[],[],[],phi,[],[])
 
 
 
-nmcmc = 2e4;
+nmcmc = 1e4;
 q = zeros(nmcmc,1);
 mu = options.priors.muPhi;
 sS = getISqrtMat(options.priors.SigmaPhi,0);
