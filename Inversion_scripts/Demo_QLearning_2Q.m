@@ -38,11 +38,6 @@ R(2,1:Ntrials/2) = R(2,1:Ntrials/2)<0.2;R(2,Ntrials/2+1:end) = R(2,Ntrials/2+1:e
 x0 = [0;0];
 n_t = Ntrials;
 
-
-
-f_fname = @f_Qlearn_2Q;
-g_fname = @g_softmax;
-
 % allocate feedback struture for simulations
 
 %{ 
@@ -54,7 +49,6 @@ fb.h_fname = h_fname;
 fb.indy = 1;
 fb.indfb = 2;
 %}
-
 
 % For any predefined rewards for all alternatives
 h_fname = @h_reward_2Q;
@@ -108,8 +102,8 @@ plot(x')
 
 % Defining Priors
 % Priors on parameters (mean and Covariance matrix)
-priors.muPhi = phi;%zeros(dim.n_phi,1); 
-priors.muTheta = theta;%zeros(dim.n_theta,1);
+priors.muPhi = zeros(dim.n_phi,1); 
+priors.muTheta = zeros(dim.n_theta,1);
 priors.SigmaPhi = 1e2*eye(dim.n_phi);
 priors.SigmaTheta = 1e2*eye(dim.n_theta);
 % Priors on initial 

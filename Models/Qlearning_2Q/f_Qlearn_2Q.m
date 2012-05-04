@@ -8,8 +8,8 @@ function  [ fx] = f_Qlearn_2Q( x_t,P,u_t,in )
 
 
 alpha = 1./(1+exp(-P));
-a = u_t(1)+1; % index of Qvalue to update
-r = u_t(2);
+a = u_t(1)+1; % index of Qvalue to update (1 or 2)
+r = u_t(a+1);
 fx = x_t;
 fx(a) = x_t(a) + alpha*(r-x_t(a));
 
