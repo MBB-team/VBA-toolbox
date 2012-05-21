@@ -8,7 +8,7 @@ clc
 
 % simulation parameters
 theta = sigm(0.3,struct('INV',1)); % learning rate = 0.3
-phi = log(4); % inverse temperature = 4
+phi = log(2); % inverse temperature = 2
 
 
 f_fname = @f_Qlearn2;
@@ -16,7 +16,7 @@ g_fname = @g_softmax;
 h_fname = @h_truefalse;
 
 % allocate feedback struture for simulations
-u0 = [ones(1,50)]; % possible feedbacks
+u0 = [ones(1,100)]; % possible feedbacks
 fb.inH.u0 = [u0,~u0,u0,~u0,u0,~u0]; % with reversals
 fb.h_fname = h_fname;
 fb.indy = 1;
@@ -33,9 +33,9 @@ dim = struct('n',2,'n_theta',1,'n_phi',1);
 priors.muPhi = zeros(dim.n_phi,1);
 priors.muTheta = zeros(dim.n_theta,1);
 priors.muX0 = zeros(2,1);
-priors.SigmaPhi = 1e1*eye(dim.n_phi);
-priors.SigmaTheta = 1e1*eye(dim.n_theta);
-priors.SigmaX0 = 1e1*eye(dim.n);
+priors.SigmaPhi = 1e0*eye(dim.n_phi);
+priors.SigmaTheta = 1e0*eye(dim.n_theta);
+priors.SigmaX0 = 0e1*eye(dim.n);
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 
@@ -55,8 +55,8 @@ getSubplots
 pause
 
 
-options.isYout = zeros(1,size(y,2));
-options.isYout(75:125) = 1;
+% options.isYout = zeros(1,size(y,2));
+% options.isYout(75:125) = 1;
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
