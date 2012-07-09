@@ -32,7 +32,7 @@ rf = in.rf;
 fx = zeros(size(x));
 
 % 1st level
-fx(1) = u(1);
+fx(1) = u(1);  
 
 % 2nd level
 s1h = sgm(x(2),1)*(1-sgm(x(2),1));

@@ -31,7 +31,7 @@ phi = [1;0.5]; % inverse temperature = 2, bias towards 'a=1' = 1
 inG.respmod = 'taylor';
 
 % choose initial conditions
-x0 = repmat([0.5;0;0;1;log(4)],2,1);
+x0 = [0.5;0;0;1;log(4)];
 u = zeros(2,size(fb.inH.u0,2)+1);
 
 dim = struct('n',2*5,'n_theta',3,'n_phi',2);

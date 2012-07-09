@@ -4,18 +4,8 @@ function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi(phi,y,posterior,suffStat
 % actually implements a gradient ascent on the variational energy of the
 % equivalent deterministic DCM.
 
-% check if called during initialization
-if isequal(suffStat,VBA_getSuffStat(options))
-    init = 1;
-    if ~options.OnLine && options.verbose
-        fprintf(1,'Deriving prior''s sufficient statistics ...')
-        fprintf(1,'%6.2f %%',0)
-    end
-else
-    init = 0;
-end
 
-if options.DisplayWin && ~init % Display progress
+if options.DisplayWin % Display progress
     if isequal(options.g_fname,@VBA_odeLim)
         STR = 'VB Gauss-Newton on observation/evolution parameters... ';
     else
@@ -100,14 +90,10 @@ for t=1:dim.n_t
     
     % Display progress
     if mod(t,dim.n_t./10) < 1
-        if ~init && options.DisplayWin
+        if  options.DisplayWin
             set(options.display.hm(2),...
                 'string',[num2str(floor(100*t/dim.n_t)),'%']);
             drawnow
-        end
-        if init && ~options.OnLine && options.verbose
-            fprintf(1,repmat('\b',1,8))
-            fprintf(1,'%6.2f %%',100*t/dim.n_t)
         end
     end
     
@@ -120,15 +106,11 @@ for t=1:dim.n_t
 end
 
 % Display progress
-if ~init && options.DisplayWin
+if options.DisplayWin
     set(options.display.hm(2),'string','OK');
     drawnow
 end
-if init &&  ~options.OnLine  && options.verbose
-    fprintf(1,repmat('\b',1,8))
-    fprintf(1,' OK.')
-    fprintf(1,'\n')
-end
+
 
 
 % posterior covariance matrix

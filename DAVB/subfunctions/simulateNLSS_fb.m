@@ -158,7 +158,7 @@ for t = 2:dim.n_t
     % Evaluate evolution function at past hidden state
     if dim.n > 0
         Cx = getISqrtMat(iQx{t});
-        eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);
+        eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);     
         x(:,t) = VBA_evalFun('f',x(:,t-1),theta,u(:,t),options,dim,t) + eta(:,t);
     end
     

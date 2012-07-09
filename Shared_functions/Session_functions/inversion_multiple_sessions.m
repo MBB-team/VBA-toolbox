@@ -3,7 +3,8 @@ function [posterior,out] = inversion_multiple_sessions(in_sessions,...
     u,...
     isYout,...
     priors)
-
+% This function performs the inversion of a model for multiple independant
+% sessions
 % - in_sessions : information about session
 %       - .f_fname : evolution function
 %       - .g_fname : observation function
@@ -29,65 +30,72 @@ function [posterior,out] = inversion_multiple_sessions(in_sessions,...
 %       .a_alpha / .b_alpha: the shape and scale parameters of the prior
 %       Gamma pdf upon the stochastic innovations precision
 
-
-in = struct();
-in.nsess = in_sessions.dim.n_sess;
 dim = in_sessions.dim;
 
+% --- General information for all sessions
+in = struct();
+in.nsess = in_sessions.dim.n_sess;
+in.dim = dim;
 
-
-for i = 1 : in.nsess
+% --- Specific information for each session
+for i = 1 : in_sessions.dim.n_sess
     
-
-    
-    % Information about the evolution function
+    % Information about the evolution/obsevation function for each session
     in.sess(i).f_fname = in_sessions.f_fname; % the function to be used for each session
-        in.sess(i).g_fname = in_sessions.g_fname;
-
- 
- 
-
-    % Information about the observation function
-    in.sess(i).inG = [];
-    in.sess(i).inF = [];
-    
+    in.sess(i).g_fname = in_sessions.g_fname;
     % Information about indices of parameters, hidden states and output used by
     % each session
-    
     in.sess(i).ind.x = dim.n_ps*(i-1)+1:dim.n_ps*i;
     in.sess(i).ind.gx = dim.p_ps*(i-1)+1:dim.p_ps*i;
     in.sess(i).ind.u = dim.n_data_ps*(i-1)+1:dim.n_data_ps*i;
     
     if isempty(in_sessions.ind.theta)
-            in.sess(i).ind.theta = [];
+        in.sess(i).ind.theta = [];
     else
-            in.sess(i).ind.theta = in_sessions.ind.theta(i,:);
+        in.sess(i).ind.theta = in_sessions.ind.theta(i,:);
     end
     
     if isempty(in_sessions.ind.phi)
-            in.sess(i).ind.phi = [];
+        in.sess(i).ind.phi = [];
     else
-            in.sess(i).ind.phi = in_sessions.ind.phi(i,:);
+        in.sess(i).ind.phi = in_sessions.ind.phi(i,:);
     end
+    
+    try
+        in.sess(i).inG = in_sessions.sess(i).inG;
+    catch
+        in.sess(i).inG = in_sessions.inG;
+    end
+    
+    try        
+        in.sess(i).inF = in_sessions.sess(i).inF;
+    catch
+        in.sess(i).inF = in_sessions.inF;
+    end
+    
+    
     
 end
 
 
-in.dim_output = dim.p;
-
 %%%% Options for inversion
+if exist('in_sessions.options','var')
+    options = in_sessions.options;
+end
+
+
 options.inF = in;
 options.inG = in;
+
 options.priors = priors;
 try in_sessions.DisplayWin
-     options.DisplayWin = in_sessions.DisplayWin;
+    options.DisplayWin = in_sessions.DisplayWin;
 catch
-     options.DisplayWin = 1;
+    options.DisplayWin = 1;
 end
 options.GnFigs = 0;
 options.binomial = in_sessions.binomial; % Dealing with binary data
 options.isYout = isYout; % Excluding data points
-
 
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,@f_nsess,@g_nsess,dim,options);

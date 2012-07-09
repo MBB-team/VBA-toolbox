@@ -2,17 +2,17 @@ function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_binomial(phi,y,posterior
 % Gauss-Newton update of the observation parameters, for binomial data
 
 % check if called during initialization
-if isequal(suffStat,VBA_getSuffStat(options))
-    init = 1;
-    if ~options.OnLine && options.verbose
-        fprintf(1,'Deriving prior''s sufficient statistics ...')
-        fprintf(1,'%6.2f %%',0)
-    end
-else
-    init = 0;
-end
+% if isequal(suffStat,VBA_getSuffStat(options))
+%     init = 1;
+%     if ~options.OnLine && options.verbose
+%         fprintf(1,'Deriving prior''s sufficient statistics ...')
+%         fprintf(1,'%6.2f %%',0)
+%     end
+% else
+%     init = 0;
+% end
 
-if options.DisplayWin && ~init % Display progress
+if options.DisplayWin % && ~init % Display progress
     if isequal(options.g_fname,@VBA_odeLim)
         STR = 'VB Gauss-Newton on observation/evolution parameters... ';
     else
@@ -89,11 +89,11 @@ for t=1:dim.n_t
     
     % Display progress
     if mod(t,dim.n_t./10) < 1
-        if ~init && options.DisplayWin
+        if options.DisplayWin % && ~init
             set(options.display.hm(2),'string',[num2str(floor(100*t/dim.n_t)),'%']);
             drawnow
         end
-        if init && ~options.OnLine && options.verbose
+        if ~options.OnLine && options.verbose % && init
             fprintf(1,repmat('\b',1,8))
             fprintf(1,'%6.2f %%',100*t/dim.n_t)
         end
@@ -108,11 +108,11 @@ for t=1:dim.n_t
 end
 
 % Display progress
-if ~init && options.DisplayWin
+if options.DisplayWin % && ~init
     set(options.display.hm(2),'string','OK');
     drawnow
 end
-if init &&  ~options.OnLine  && options.verbose
+if ~options.OnLine  && options.verbose % && init
     fprintf(1,repmat('\b',1,8))
     fprintf(' OK.')
     fprintf('\n')

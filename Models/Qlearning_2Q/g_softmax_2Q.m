@@ -7,7 +7,20 @@ function  [ gx ] = g_softmax_2Q( x_t,P,u_t,in )
 % OUTPUT
 % - gx : Scalar, P(a=a1|x_t), probability of action 1
 
-beta = exp(P);
+
+% Transformation on parameters
+try 
+    if isequal(in.param_transform.type,'exponential')
+        beta = exp(P);
+    elseif isequal(in.param_transform.type,'modified sigmoid')
+        beta = in.param_transform.a + (in.param_transform.b-in.param_transform.a)./(1+exp(-P));                
+    end
+catch
+    beta = P;
+end
+
+
+
 dQ = (x_t(1)-x_t(2));
 gx =sig( -beta*dQ );
 

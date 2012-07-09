@@ -7,7 +7,7 @@ clear variables
 
 % Choose basic settings for simulations
 sigma = 1e1;            % precision 
-phi = [5;-1;1;3];         % observation parameters
+phi = [2;2;1;3];         % observation parameters
 g_fname = @g_Gaussian; % observation function
 inG.grid = -10:0.1:10;  % grid on which the gbf is evaluated
 inG.input = zeros(length(inG.grid),1);

@@ -35,6 +35,8 @@ options.verbose = 0; % to quicken VBA_check.m
 % Get prior covariance matrix
 Sigma = zeros(dim.n_phi+dim.n_theta+dim.n,dim.n_phi+dim.n_theta+dim.n);
 if dim.n_phi > 0
+    options.priors.SigmaPhi
+    Sigma(1:dim.n_phi,1:dim.n_phi)
     Sigma(1:dim.n_phi,1:dim.n_phi) = options.priors.SigmaPhi;
 end
 if dim.n_theta > 0

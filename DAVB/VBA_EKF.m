@@ -93,6 +93,8 @@ catch
         iQy{t} = eye(dim.p);
     end
 end
+
+
 switch flag
     case 0
         suffStat = [];

@@ -231,37 +231,46 @@ if exist('in','var')
     end
     
 else
-
+    
     % Check input arguments consistency
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     VBA_disp(' ',options)
     % NB: priors are built using VBA_priors.m during the compilation
     % of the function VBA_check.m. These are checked and stored in
     % options.priors.
-
+    
+   
     % Initialize posterior pdf
     try
         [posterior,suffStat,options] = VBA_Initialize(y,u,f_fname,g_fname,dim,options);
-    catch
+    catch e
         disp('')
-        disp('Error: could not initialize VB scheme: check priors!')
+        disp('Error: Program stopped during initialisation')
+
         posterior = [];
         out = [];
         return
     end
-        
+    
+    if  isempty(posterior)
+            posterior = [];
+            out = [];
+            return
+    end
+    
+    
     suffStat.u = u;
     % NB: when inverting a full state-space model, the initialization
     % actually inverts its deterministic variant, i.e. an ODE-like
     % state-space model.
-
+    
     % Store free energy after the initialization step
     F = options.init.F;
     
     if ~options.OnLine
         VBA_disp('Main VB inversion...',options)
     end
-
+    
 end
 
 suffStat.F = F;
@@ -298,7 +307,7 @@ while ~stop
     
     
     it = it +1; % Iteration index
-
+    
     %------ Gauss-Newton VB IEKS (+ initial conditions) ------%
     if dim.n > 0
         % Call for variational Kalman-Rauch smoothing algorithm.
@@ -309,21 +318,21 @@ while ~stop
             [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,'X0');
         end
     end
-
+    
     %---------- Observation parameters ---------%
     if dim.n_phi > 0
         % Call for Laplace-VB update rule for the observation
         % parameters. This updates the posterior and suffStat variables
         [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,'Phi');
     end
-
+    
     %----------- Evolution parameters ----------%
     if dim.n_theta > 0
         % Call for Laplace-VB update rule for the observation
         % parameters. This updates the posterior and suffStat variables
         [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,'Theta');
     end
-
+    
     %---------- Precision parameters ---------------%
     % Call update VB rule for precision parameters. This updates posterior
     % and suffStat variables.
@@ -352,7 +361,7 @@ while ~stop
             out.CV = 0;
         end
     end
-
+    
 end
 
 

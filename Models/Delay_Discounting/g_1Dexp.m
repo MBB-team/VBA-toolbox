@@ -1,13 +1,12 @@
 function [gx] = g_1Dexp(x,P,u_t,in)
 
 
-K = P(1);
-r = exp(P(2));
-beta = exp(P(3));
+K = exp(P(1));
+beta = exp(P(2));
 T = in.T;
 V = in.V;
 
-dU = ( (1-exp(-r*V(1,:)))./(1+K*T(1,:)) - (1-exp(-r*V(2,:)))./(1+K*T(2,:)) )./r;
+dU = V(1,:).*exp(-K.*T(1,:)) - V(2,:).*exp(-K.*T(2,:));
 
 gx = sig( beta*dU(:) );
 end

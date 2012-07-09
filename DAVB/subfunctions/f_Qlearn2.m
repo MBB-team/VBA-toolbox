@@ -6,7 +6,7 @@ function  [ fx,dfdx,dfdP ] = f_Qlearn2( x,P,u,in )
 % - in : []
 
 alpha = 1./(1+exp(-P));
-a = u(1)+1;
+a = u(1)+1; % index of Qvalue to update
 r = u(2);
 fx = x;
 fx(a) = x(a) + alpha*(r-x(a));
