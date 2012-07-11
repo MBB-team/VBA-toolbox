@@ -1,4 +1,4 @@
-% Demo: design optimization for DCM of fMRI data.
+% Demo: on-line design optimization for DCM of fMRI data.
 
 
 close all

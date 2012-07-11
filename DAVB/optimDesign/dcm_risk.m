@@ -61,12 +61,10 @@ for i=1:nm
         nosplit.phi = [1:dim.n_phi]';
         nosplit.theta = [options.inF.indself:dim.n_theta]';
         nosplit.x0 = [1:dim.n]';
-        [mu{end+1},Q{end+1}] = ...
-            splitLaplace(u,f_fname,g_fname,dim,options,2,nosplit);
+        [mu{end+1},Q{end+1}] = splitLaplace(u,f_fname,g_fname,dim,options,2,nosplit);
     else
         % get Laplace approx to the prior predictive density
-        [mu{end+1},Q{end+1}] = ...
-            getLaplace(u,f_fname,g_fname,dim,options,0);
+        [mu{end+1},Q{end+1}] = VBA_getLaplace(u,f_fname,g_fname,dim,options,0);
     end
     fprintf(1,[' OK.'])
     fprintf(1,'\n')

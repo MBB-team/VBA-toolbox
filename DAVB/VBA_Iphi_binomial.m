@@ -1,18 +1,8 @@
 function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_binomial(phi,y,posterior,suffStat,dim,u,options)
 % Gauss-Newton update of the observation parameters, for binomial data
+% [same I/O as VBA_IPhi.m]
 
-% check if called during initialization
-% if isequal(suffStat,VBA_getSuffStat(options))
-%     init = 1;
-%     if ~options.OnLine && options.verbose
-%         fprintf(1,'Deriving prior''s sufficient statistics ...')
-%         fprintf(1,'%6.2f %%',0)
-%     end
-% else
-%     init = 0;
-% end
-
-if options.DisplayWin % && ~init % Display progress
+if options.DisplayWin % Display progress
     if isequal(options.g_fname,@VBA_odeLim)
         STR = 'VB Gauss-Newton on observation/evolution parameters... ';
     else
@@ -89,13 +79,9 @@ for t=1:dim.n_t
     
     % Display progress
     if mod(t,dim.n_t./10) < 1
-        if options.DisplayWin % && ~init
+        if options.DisplayWin
             set(options.display.hm(2),'string',[num2str(floor(100*t/dim.n_t)),'%']);
             drawnow
-        end
-        if ~options.OnLine && options.verbose % && init
-            fprintf(1,repmat('\b',1,8))
-            fprintf(1,'%6.2f %%',100*t/dim.n_t)
         end
     end
     
@@ -108,14 +94,9 @@ for t=1:dim.n_t
 end
 
 % Display progress
-if options.DisplayWin % && ~init
+if options.DisplayWin
     set(options.display.hm(2),'string','OK');
     drawnow
-end
-if ~options.OnLine  && options.verbose % && init
-    fprintf(1,repmat('\b',1,8))
-    fprintf(' OK.')
-    fprintf('\n')
 end
 
 % posterior covariance matrix

@@ -144,7 +144,7 @@ slope = exp(posterior.muPhi(1))./4;
 vslope = slope.^2.*posterior.SigmaPhi(1,1);
 options.priors = posterior;
 dim.p = length(gridu);
-[gx,vy] = getLaplace(gridu(:),[],g_fname,dim,options);
+[gx,vy] = VBA_getLaplace(gridu(:),[],g_fname,dim,options);
 gxhat = g_sigm_binomial([],posterior.muPhi,sort(u),[]);
 vy = diag(vy);
 plotUncertainTimeSeries(gx(:)',vy(:)',gridu(:)',ha0);

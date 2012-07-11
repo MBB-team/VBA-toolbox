@@ -1,5 +1,5 @@
 function [iQ] = VB_inv(Q,indIn,flag,v)
-% overloaded sparse matrix inversion routine
+% overloaded sparse matrix pseudo-inverse
 % function [iQ] = VB_inv(Q,indIn,flag,v)
 % IN:
 %   - Q: the nxn matrix to be inverted
@@ -35,10 +35,16 @@ else % (p)invert Q
     if isequal(subQ,eye(length(indIn))) % identity matrix
         subiQ = subQ;
     elseif isequal(subQ,diag(diag(subQ))) % diagonal matrix
-        subiQ = diag(diag(subQ).^-1);
+        tol  = max(eps(norm(diag(subQ),'inf'))*length(indIn),exp(-32)); 
+        subiQ = diag((diag(subQ)+tol).^-1);
     else % full matrix
-        subiQ = pinv(subQ);
+        tol  = max(eps(norm(subQ,'inf'))*length(indIn),exp(-32)); 
+        subiQ = inv(subQ + eye(length(indIn))*tol);
+%         subiQ = pinv(subQ);
     end
     iQ = zeros(size(Q));
     iQ(indIn,indIn) = subiQ;
 end
+
+
+

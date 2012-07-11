@@ -54,7 +54,7 @@ out = [...
 np = dim.n_phi+dim.n_theta+dim.n;
 in = setdiff([1:np]',out);
 if isempty(in)
-    [muy,Vy] = getLaplace(u,f_fname,g_fname,dim,options);
+    [muy,Vy] = VBA_getLaplace(u,f_fname,g_fname,dim,options);
     m = muy;
     V = {Vy};
     w = 1;
@@ -102,7 +102,7 @@ for i=1:nd
     Mu0(in) = sqrtS*mi + Mu(in);
     Sigma0(in,in) = sqrtS*Si*sqrtS';
     [options.priors] = getPriors4split(Mu0,Sigma0,dim,options.priors);
-    [m(:,i),V{i}] = getLaplace(u,f_fname,g_fname,dim,options);
+    [m(:,i),V{i}] = VBA_getLaplace(u,f_fname,g_fname,dim,options);
     fprintf(1,'\b\b\b\b\b\b\b\b')
     fprintf(1,'%6.2f %%',100*i/nd)
 end

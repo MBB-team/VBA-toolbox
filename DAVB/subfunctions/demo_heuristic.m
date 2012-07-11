@@ -1,5 +1,34 @@
 % demo for the Kilner heuristic
 
+% copute dispersive propagator
+gt = 1e-2:1e-4:2e-1;
+gr = -4e-2:1e-4:4e-2;
+n1 = length(gt);
+n2 = length(gr);
+G = zeros(n1,n2);
+P = [3e-1;3e-3;2e3];
+for i=1:n2
+    [G(:,i)] = dispersivePropagator(gr(i),gt(:),P);
+end
+figure,imagesc(G)
+[X,Y] = meshgrid(gt,gr);
+figure,
+h = mesh(X,Y,G');
+i0 = find(gr==0);
+i1 = find(gt==2e-2);
+hold on
+plot3(gt,0.*gt,G(:,i0)','color',[1 1 1])
+plot3(gt(i1)*ones(size(gr)),gr,G(i1,:)','color',[1 1 1])
+plot3(gt,5e-2*ones(size(gt)),G(:,i0)','k--')
+hp = plot3(-2e-2.*ones(size(gr)),gr,G(1,:),'k--')
+set(gca,'ytick',[-4e-2:2e-2:4e-2],'yticklabel',[-4:2:4])
+set(gca,'xtick',[0:5e-2:2e-1],'xticklabel',[0:50:200])
+set(gca,'ylim',[-4e-2,5e-2],'xlim',[-2e-2,2e-1])
+xlabel('time (msec)')
+ylabel('distance (mm)')
+
+return
+
 % excitatory maximum post-synaptic depolarization
 P.me = 1e-0*8;
 % inhibitory maximum post-synaptic depolarization

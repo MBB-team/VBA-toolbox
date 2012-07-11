@@ -23,7 +23,7 @@ fb.indfb = 2;
 
 % simulation parameters
 theta = [1;-4;-1];
-inF.lev2 = 1; % remove 3rd level (volatility learning)
+inF.lev2 = 0; % remove 3rd level (volatility learning)
 inF.kaub = 1.4;
 inF.thub = 1;
 inF.rf = -1;
@@ -31,7 +31,7 @@ phi = [1;0.5]; % inverse temperature = 2, bias towards 'a=1' = 1
 inG.respmod = 'taylor';
 
 % choose initial conditions
-x0 = [0.5;0;0;1;log(4)];
+x0 = repmat([0.5;0;0;1;log(4)],2,1);
 u = zeros(2,size(fb.inH.u0,2)+1);
 
 dim = struct('n',2*5,'n_theta',3,'n_phi',2);

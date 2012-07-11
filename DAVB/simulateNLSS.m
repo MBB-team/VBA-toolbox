@@ -11,9 +11,7 @@ function [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sig
 % IN:
 %   - n_t: the number of time bins for the time series of hidden-states and
 %   observations, i.e. the time indices satisfy: 1<= t < n_t
-%   - f_fname/g_fname: evolution/observation function names. The time entry
-%   of these functions IS NOT the time index, it is defined as :
-%   t0 + t*delta_t.
+%   - f_fname/g_fname: evolution/observation function names.
 %   - theta/phi: evolution/observation parameters values.
 %   - u: the mxt input matrix
 %   - alpha: precision of the stochastic innovations
@@ -95,24 +93,31 @@ end
 % Evaluate evolution function at initial conditions
 if dim.n > 0
     x(:,1) = VBA_evalFun('f',x0,theta,u(:,1),options,dim,1);
-    C = getISqrtMat(iQx{1});
-    eta(:,1) = (1./sqrt(alpha))*C*randn(dim.n,1);
-    x(:,1) = x(:,1) + eta(:,1);
+    if ~isinf(alpha)
+        C = getISqrtMat(iQx{1});
+        eta(:,1) = (1./sqrt(alpha))*C*randn(dim.n,1);
+        x(:,1) = x(:,1) + eta(:,1);
+    end
 end
 
 % Evaluate observation function at x(:,1)
 gt = VBA_evalFun('g',x(:,1),phi,u(:,1),options,dim,1);
 if ~options.binomial
-    C = getISqrtMat(iQy{1});
-    e(:,1) = (1./sqrt(sigma))*C*randn(dim.p,1);
+    if ~isinf(sigma)
+        C = getISqrtMat(iQy{1});
+        e(:,1) = (1./sqrt(sigma))*C*randn(dim.p,1);
+    end
     y(:,1) = gt + e(:,1);
 else
     for i=1:dim.p
-        y(i,1) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0],1);
+        if isbinary(gt(i))
+            y(i,1) = gt(i);
+        else
+            y(i,1) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0],1);
+        end
     end
     e(:,1) = y(:,1) - gt;
 end
-
 
 %-- Loop over time points
 
@@ -123,23 +128,31 @@ if options.verbose
 end
 
 for t = 2:dim.n_t
-    
+        
     % Evaluate evolution function at past hidden state
     if dim.n > 0
-        Cx = getISqrtMat(iQx{t});
-        eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);
+        if ~isinf(alpha)
+            Cx = getISqrtMat(iQx{t});
+            eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);
+        end
         x(:,t) = VBA_evalFun('f',x(:,t-1),theta,u(:,t),options,dim,t) + eta(:,t);
     end
     
     % Evaluate observation function at current hidden state
     gt = VBA_evalFun('g',x(:,t),phi,u(:,t),options,dim,t);
     if ~options.binomial
-        Cy = getISqrtMat(iQy{t});
-        e(:,t) = (1./sqrt(sigma))*Cy*randn(dim.p,1);
+        if ~isinf(sigma)
+            Cy = getISqrtMat(iQy{t});
+            e(:,t) = (1./sqrt(sigma))*Cy*randn(dim.p,1);
+        end
         y(:,t) = gt + e(:,t);
     else
         for i=1:dim.p
-            y(i,t) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0],1);
+            if isbinary(gt(i))
+                y(i,t) = gt(i);
+            else
+                y(i,t) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0],1);
+            end
         end
         e(:,t) = y(:,t) - gt;
     end
@@ -149,7 +162,7 @@ for t = 2:dim.n_t
         fprintf(1,repmat('\b',1,8))
         fprintf(1,'%6.2f %%',floor(100*t/dim.n_t))
     end
-    if isweird({x,y})
+    if isweird({x(:,t),y(:,t)})
         break
     end
     
