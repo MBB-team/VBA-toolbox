@@ -60,7 +60,6 @@ try
         options.priors.b_alpha = 1;
     end
 end
-options.priors.AR = 0;
 [options,u,dim] = VBA_check(zeros(dim.p,dim.n_t),u,f_fname,g_fname,dim,options);
 
 % Get covariance structure

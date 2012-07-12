@@ -77,7 +77,7 @@ switch flag
         % get prediced model parameter precision matrix
         [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options);
         % compute the trace of predicted posterior variance
-        e = -trace(pinv(iVp));
+        e = -trace(VB_inv(iVp));
         out = [];
         
 end

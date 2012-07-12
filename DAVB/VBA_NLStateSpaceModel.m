@@ -29,9 +29,9 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %   evolution (resp. observation) of the hidden states.
 %       ! NB: The generic i/o form of these functions has to conform to the
 %       following:
-%                  [ fx,dfdx,dfdP,d2fxdP ] = fname(x_t,P,u_t,in)
-%                      |________________|
-%                         { varargout }
+%                  [ fx,dfdx,dfdP ] = fname(x_t,P,u_t,in)
+%                      |_________|
+%                     { varargout }
 %       where:
 %       . x_t, u_t and P are respectively the current hidden state value,
 %       the current input value and the evolution/observation parameters
@@ -43,24 +43,11 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       . fx is the current evaluation of the function
 %       . dfdx and dfdP are the matrices containing the gradients of the
 %       function w.r.t. the hidden states and the invariant parameters
-%       . d2fxdP is the nxn_phixp tensor containing the mixed derivatives.
-%       ! NB2: the last dimension always refers to the dimension of the
-%       vector-function, ie for the observation function:
-%           dfdx(:,i) is the vector gradient of g(i) w.r.t. X
-%           d2fdxdP(:,:,i) is the matrix of mixed derivatives of g(i)
-%           w.r.t. X (columns) and Phi (rows):
-%           d2fdxdP(:,:,i) =
-%               [ d2G(i)/dX(1)dPhi(1) d2G(i)/dX(1)dPhi(2) ... d2G(i)/dX(1)dPhi(n_phi)
-%                 d2G(i)/dX(2)dPhi(1) d2G(i)/dX(2)dPhi(2) ... d2G(i)/dX(2)dPhi(n_phi)
-%                 ...
-%                 d2G(i)/dX(n)dPhi(1) d2G(i)/dX(n)dPhi(2) ... d2G(i)/dX(n)dPhi(n_phi) ]
-%       ! NB3: these mixed derivatives are unequal for non-continuous
-%       functions (d2G_dXdPhi ~= d2G_dPhidX) !!!
-%       ! NB4: the output of the evolution/observation functions does not
+%       ! NB: the output of the evolution/observation functions does not
 %       have to provide all above derivatives. For, e.g., the evolution
-%       function, the possible output are: [fx], [fx,dfdx], [fx,dfdx,dfdP]
-%       or [fx,dfdx,dfdP,d2fdxdP]. The missing derivatives are
-%       automatically computed using numerical derivation.
+%       function, the possible output are: [fx], [fx,dfdx] or
+%       [fx,dfdx,dfdP]. The missing derivatives are automatically computed
+%       using numerical derivation.
 %   - dim: a structure variable containing the dimensions of the 3 sets of
 %   the model's unknown variables:
 %       .n: the dimension of the hidden-states
@@ -106,8 +93,6 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       .TolFun: minimum absolute increase of the free energy {2e-2}
 %       .DisplayWin: flag to display (1) or not (0) the main display
 %       window {1}
-%       .ignoreMF: binary variable allowing to account for (1) or discard
-%       (0) mean-field additional terms in the update equations {1}
 %       .gradF: binary variable that flags whether the regularized
 %       Gauss_newton update scheme optimizes the free energy (1) or the
 %       variational energy ({0}) of each mean-field partition.
@@ -181,6 +166,8 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 
 warning off
 options.tStart = tic;
+posterior = [];
+out = [];
 
 %------------------- Dummy call ------------------------%
 if nargin == 0
@@ -199,8 +186,6 @@ if nargin == 0
     return
 elseif isweird(y)
     disp('Error: there is a numerical trouble with provided data!')
-    posterior = [];
-    out = [];
     return
 end
 
@@ -216,72 +201,46 @@ if exist('in','var')
         u = in.out.u;
         F = in.out.F;
         if ~options.OnLine
-            if isequal(options.g_fname,@VBA_odeLim)
-                VBA_disp('Initialization: non-stochastic system (ODE).',options)
-            else
-                VBA_disp('Skipping initialization.',options)
-                VBA_disp('Main VB inversion...',options)
-            end
+            VBA_disp('Skipping initialization.',options)
+            VBA_disp('Main VB inversion...',options)
         end
     catch
         disp('Error: the ''in'' structure was flawed...')
-        posterior = [];
-        out = [];
         return
     end
     
 else
     
-    % Check input arguments consistency
+    % Check input arguments consistency (and fill in priors if necessary)
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     VBA_disp(' ',options)
-    % NB: priors are built using VBA_priors.m during the compilation
-    % of the function VBA_check.m. These are checked and stored in
-    % options.priors.
     
-   
-    % Initialize posterior pdf
-    try
-        [posterior,suffStat,options] = VBA_Initialize(y,u,f_fname,g_fname,dim,options);
+    try % Initialize posterior pdf
+        [posterior,suffStat,options] = VBA_Initialize(y,u,dim,options);
+        % NB: when inverting a full state-space model, the initialization
+        % actually inverts its deterministic variant, i.e. an ODE-like
+        % state-space model.
     catch e
-        disp('')
-        disp('Error: Program stopped during initialisation')
-
-        posterior = [];
-        out = [];
+        VBA_disp(' ',options)
+        VBA_disp('Error: Program stopped during initialisation',options)
         return
     end
-    
-    if  isempty(posterior)
-            posterior = [];
-            out = [];
-            return
-    end
-    
-    
-    suffStat.u = u;
-    % NB: when inverting a full state-space model, the initialization
-    % actually inverts its deterministic variant, i.e. an ODE-like
-    % state-space model.
     
     % Store free energy after the initialization step
     F = options.init.F;
     
     if ~options.OnLine
-        VBA_disp('Main VB inversion...',options)
+        [st,i] = dbstack;
+        try,ifInit=isequal(st(i+1).name,'VBA_Initialize');catch,ifInit=0;end
+        if isequal(options.g_fname,@VBA_odeLim) && ifInit
+            VBA_disp('Initialization: non-stochastic system (ODE).',options)
+        else
+            VBA_disp('Main VB inversion...',options)
+        end
     end
     
 end
 
-suffStat.F = F;
-
-% clear persistent variables
-clear VBA_odeLim
-clear VBA_smoothNLSS
-
-% loop variables
-stop = 0; % flag for exiting VB scheme
-it = 0; % index of VB iterations
 
 % Display initialized posterior
 [options] = VBA_initDisplay(options);
@@ -299,14 +258,18 @@ if dim.n_theta > 0
     VBA_updateDisplay(F,posterior,suffStat,options,y,0,'theta')
 end
 
+
 %------------------------------------------------------------%
 %----------------- Main VB learning scheme ------------------%
 %------------------------------------------------------------%
 
+suffStat.F = F; % store history of free energy across VB iterations
+stop = 0; % flag for exiting VB scheme
+it = 0; % index of VB iterations
+
 while ~stop
     
-    
-    it = it +1; % Iteration index
+    it = it +1; % iteration index
     
     %------ Gauss-Newton VB IEKS (+ initial conditions) ------%
     if dim.n > 0

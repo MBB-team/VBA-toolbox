@@ -1,6 +1,6 @@
 function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_binomial(phi,y,posterior,suffStat,dim,u,options)
 % Gauss-Newton update of the observation parameters, for binomial data
-% [same I/O as VBA_IPhi.m]
+
 
 if options.DisplayWin % Display progress
     if isequal(options.g_fname,@VBA_odeLim)
@@ -11,13 +11,6 @@ if options.DisplayWin % Display progress
     set(options.display.hm(1),'string',STR);
     set(options.display.hm(2),'string','0%');
     drawnow
-end
-
-% Clear persistent variables if ODE mode
-if isequal(options.g_fname,@VBA_odeLim) || ...
-        isequal(options.g_fname,@VBA_smoothNLSS)
-    clear VBA_odeLim
-    clear VBA_smoothNLSS
 end
 
 %  Look-up which evolution parameter to update
@@ -37,6 +30,7 @@ gx = zeros(dim.p,dim.n_t);
 d2gdx2 = zeros(dim.n_phi,dim.n_phi);
 logL = 0;
 if isequal(options.g_fname,@VBA_odeLim)
+    clear VBA_odeLim
     muX = zeros(options.inG.old.dim.n,dim.n_t);
     SigmaX = cell(dim.n_t,1);
 end

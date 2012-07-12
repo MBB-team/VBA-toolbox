@@ -37,27 +37,17 @@ try; lx; catch lx = []; end
 try; ly; catch ly = []; end
 
 
-% fix precision parameters & fill in missing optional fields
-if dim.n>0
-    alpha = options.priors.a_alpha./options.priors.b_alpha;
-    try
+% fix precision parameters
+alpha = options.priors.a_alpha./options.priors.b_alpha;
+sigma = options.priors.a_sigma./options.priors.b_sigma;
+
+% fill in missing optional fields
+try
     if isinf(options.priors.a_alpha)
         options.priors.a_alpha = 1;
         options.priors.b_alpha = 1;
     end
-    catch end
-else
-    alpha = [];
 end
-
-if ~options.binomial
-    sigma = options.priors.a_sigma./options.priors.b_sigma;
-else
-    sigma = [];
-end
-
-
-options.priors.AR = 0;
 options.verbose = 0;
 dim.n_t = n_t;
 [options] = VBA_check([],u,f_fname,g_fname,dim,options);
@@ -85,7 +75,6 @@ X(:,:,out) = [];
 fprintf(1,repmat('\b',1,8))
 fprintf(1,[' OK (took ',num2str(etime(clock,et0)),' seconds).'])
 fprintf(1,'\n')
-
 
 et0 = clock;
 fprintf(1,'Forming histograms along X dimensions...')
@@ -117,18 +106,12 @@ for i=1:dim.p
     m = mean(Yi(:));
     sv = std(Yi(:));
     nx = m-3*sv:6*sv/(np-1):m+3*sv;
-    
-    try    
     [ny,nx] = hist(Yi',nx);
     pY(:,:,i) = ny';
     gY(:,i) = nx;
-    catch
-    end
-    
     fprintf(1,repmat('\b',1,8))
     fprintf(1,'%6.2f %%',i*100/dim.p)
 end
-
 fprintf(1,repmat('\b',1,8))
 fprintf(1,[' OK (took ',num2str(etime(clock,et0)),' seconds).'])
 fprintf(1,'\n')

@@ -48,10 +48,6 @@ switch in.flag
 end
 
 % VB update of the sufficient statistics (in.n iterations)
-in.G0 = 1;
-in.beta = 1;
-in.S0 = 0;
-in.INV = 0;
 [pxi,Ex,Vx] = VB_AVL(prior,Theta,u(in.uu),in);
 
 switch in.flag
@@ -86,14 +82,14 @@ function [pxi,Ex,Vx] = VB_AVL(prior,Theta,u,in)
 % allocate dummy variables
 opt.GnTolFun = 1e-4;
 opt.iffig = 0;
-opt.oneIteration = 0;
+opt.oneIteration = 1;
 opt.GnMaxIter = 8;
-try;mu=in.mu;catch;mu=[1+eps,-1];end
-try;n=in.n;catch;n=32;end
-try;tdf=in.tdf;catch;tdf=1e-2;end
+mu=in.mu;
+n=in.n;
+tdf=in.tdf;
 % initialize VB sufficient statistics
 pxi = zeros(1,n+1);
-pxi(1) = sigm(prior(2),in);
+pxi(1) = checkGX_binomial(1./(1+exp(-prior(2))));
 switch in.flag
     case {1,2}
         Ex = zeros(1,n+1);
@@ -118,13 +114,13 @@ F = zeros(n+1,1);
 F(1) = freeEnergy(pxi(1),Ex(:,1),Vx(:,1),u,prior,Theta,in);
 for i = 1:n
     % update xi
-    [sx] = sigm(Ex(i),in);
+    [sx] = checkGX_binomial(1./(1+exp(-Ex(i))));
     lsx = log(sx);
     Elsx = lsx + 0.5.*Vx(i).^2.*(sx.^2-sx);
     p(1) = -0.5.*(iva.*delta1 + Elsx +l2pi - Theta(1));
     p(2) = -0.5.*(iva.*delta2 + Elsx-Ex(i) +l2pi - Theta(1));
     p = exp(p-max(p));
-    pxi(i+1) = p(1)./sum(p);
+    pxi(i+1) = checkGX_binomial(p(1)./sum(p));
     switch in.flag
         case {1,2}
             % update x1
@@ -211,12 +207,9 @@ try;mu=in.mu;catch;mu=[1+eps,-1];end
 delta1 = sum((u - mu(:,1)).^2);
 delta2 = sum((u - mu(:,2)).^2);
 iva = exp(Theta(1));
-Sqp = zeros(size(pxi));
-ind = find(pxi>=1|pxi<=0);
-n = length(pxi);
-Sqp(setdiff(1:n,ind)) = -pxi.*log(pxi) - (1-pxi).*log(1-pxi);
+Sqp = -pxi.*log(pxi) - (1-pxi).*log(1-pxi);
 l2pi = log(2*pi);
-[sx] = sigm(Ex(1,:),in);
+[sx] = checkGX_binomial(1./(1+exp(-Ex(1,:))));
 sx = sx(:)';
 lsx = log(sx);
 if size(Ex,1) < 2

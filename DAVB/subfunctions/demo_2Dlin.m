@@ -45,8 +45,8 @@ dim.n               = 2;
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
-disp('--paused--')
-pause
+% disp('--paused--')
+% pause
 
 dbstop if error
 

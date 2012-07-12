@@ -50,7 +50,6 @@ for t = 1:n_t
     priors.iQx{t} = diag(dq);
     priors.iQy{t} = eye(nreg);
 end
-priors.AR = 0;
 
 % precision hyperparameters
 priors.a_sigma = 1e0;

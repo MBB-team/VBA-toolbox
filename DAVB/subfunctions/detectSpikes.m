@@ -108,7 +108,6 @@ switch flag
             dq(2)           = 1;
             priors.iQx{t}   = diag(dq);
         end
-        priors.AR           = 0;
         
         % Build options and dim structures for model inversion
         options.inF.a       = 1;
@@ -149,7 +148,6 @@ switch flag
         priors.b_alpha      = 0;
         priors.a_sigma      = 1e0;
         priors.b_sigma      = 1e0;
-        priors.AR           = 1;
         
         % Build options and dim structures for model inversion
         options.decim       = 1;

@@ -137,7 +137,6 @@ for t =2:dim.n_t
     in.out.options.priors = OL_posterior;
     in.out.options.priors.iQy = options.priors.iQy;
     in.out.options.priors.iQx = options.priors.iQx;
-    in.out.options.priors.AR = options.priors.AR;
     % Define initial conditions as past posterior on hidden states
     in.posterior.muX0 = OL_posterior.muX;
     in.posterior.SigmaX0 = OL_posterior.SigmaX.current{1};

@@ -45,13 +45,11 @@ inF.a           = 0.1;
 inF.b           = 0.5e0; % decay rate
 options.decim   = 4;
 options.inF     = inF;
-options.delays = [[1,5];[4,1]];
-options.backwardLag = 4;
-% options.checkGrads = 1;
+options.delays = [[1,8];[12,1]];
 
 % Parameters of the simulation
-alpha   = 1e1;
-sigma   = 1e3;
+alpha   = Inf;
+sigma   = 1e1;
 theta   = 3;
 phi     = [];
 
@@ -60,10 +58,10 @@ priors.muX0 = [-2;-2];
 priors.SigmaX0 = 1e-1*eye(2);
 priors.muTheta = 0*ones(1,1);
 priors.SigmaTheta = 1e2*eye(1);
-priors.a_alpha = 1e0;
-priors.b_alpha = 1e-1;
+priors.a_alpha = Inf;
+priors.b_alpha = 0;
 priors.a_sigma = 1e0;
-priors.b_sigma = 1e-3;
+priors.b_sigma = 1e0;
 
 % Build options and dim structures for model inversion
 options.priors      = priors;
@@ -86,11 +84,11 @@ displaySimulations(y,x,eta,e)
 displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 
 
-% Compare with no delay embedding
-hfp = findobj('tag','VBNLSS');
-set(hfp,'tag','0');
-options.delays= [];
-[posterior2,out2] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+% % Compare with no delay embedding
+% hfp = findobj('tag','VBNLSS');
+% set(hfp,'tag','0');
+% options.delays= [];
+% [posterior2,out2] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 
 

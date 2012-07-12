@@ -23,7 +23,7 @@ try
 catch
     oneIteration = 0;
 end
-    
+
 out.conv = 0;
 out.nReg = 0;
 
@@ -34,10 +34,16 @@ PreviousMu = init;
 out.nReg = out.nReg + flag;
 PreviousI = I;
 out.I = I;
-
-% Main Gauss-Newton scheme
 opt = init;
 sigma = PreviousSigma;
+
+if oneIteration
+    opt = PreviousMu + deltaMu;
+    out.it = 0;
+    return
+end
+
+% Main Gauss-Newton scheme
 stop = 0;
 it = 0;
 while ~stop
@@ -67,14 +73,13 @@ while ~stop
             % 3- build posterior and sufficient statistics structures
             opt = mu;
             sigma = NextSigma;
-            stop = oneIteration;
             out.I = [out.I,I];
         end
     elseif abs(deltaI./PreviousI)<rdI
         % stop Gauss-Newton search
         stop = 1;
         out.conv = 1;
-    elseif it > maxIter
+    elseif it >= maxIter
         stop = 1;
     end
 end

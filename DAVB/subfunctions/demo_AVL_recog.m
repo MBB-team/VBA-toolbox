@@ -59,15 +59,10 @@ switch flag
 end
 
 % Then sample outcome identity from binomial pdf:
-addpath('D:\MatlabWork\Routinetheque\sampling')
 x1 = zeros(1,n_t);
 seed = 1e4*rand;
 for t=1:n_t
-    try
-        [x1(t),seed] = binomial_sample(1,sx2(t),seed);
-    catch
-        [x1(t)] = sampleFromArbitraryP([sx2(t),1-sx2(t)],[1,0],1);
-    end
+    [x1(t)] = sampleFromArbitraryP([sx2(t),1-sx2(t)],[1,0],1);
 end
 
 % Finally, sample visual outcome from GMM ...
@@ -86,7 +81,9 @@ u(2,50:50:end) = 1-u(2,50:50:end); % -> categorization errors
 %-----
 % Now invert perceptual model using optimal VB observer algo:
 inF.flag = flag;    % perceptual model
+inF.mu = mu;
 inF.n = 1;          % max # iterations (per trial) for the VB observer
+inF.tdf = 1e-2;
 inF.uu = 1;         % index of sensory signals in the vector u
 inG.uc = 2;         % index of observer's choices in the vector u
 f_fname = @f_AVL;
@@ -97,7 +94,7 @@ if ismember(options.inF.flag,[1,2])
     X0 = [0.5;0;1e1;0];
 elseif options.inF.flag == 3
     X0 = [0.5;0;1e1;0;1e1;0];
-%     theta = [theta(1),-32];
+    %     theta = [theta(1),-32];
 end
 % options.checkGrads = 1;
 [RT,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,...
@@ -164,7 +161,7 @@ switch options.inF.flag
         priors.SigmaX0(3,3) = 1e1;
         priors.muTheta = [theta(1);0];
         priors.SigmaTheta = 0.*1e1*eye(2);
-%         priors.SigmaTheta(1,1) = 0;
+        %         priors.SigmaTheta(1,1) = 0;
     case 2
         priors.muX0 = [0.5;0;1e1;0];
         priors.SigmaX0 = 1e1*eye(4);

@@ -26,15 +26,6 @@ out.it = it;
 out.suffStat = suffStat;
 out.date = clock;
 out.dt = toc(options.tStart);
-try % recover prior predictive density
-    try
-        out.options.priors.muX;
-        out.options.priors.SigmaX.current;
-    catch
-        [out.options.priors.muX,out.options.priors.SigmaX.current] = VBA_EKF(y,out.u,options.priors,dim,options,2);
-    end
-end
-
 if fromPause
     return
 end

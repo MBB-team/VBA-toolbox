@@ -45,8 +45,7 @@ priors.muTheta(options.inF.ind3) = thetaHRF(3);
 priors.muTheta(options.inF.ind5) = thetaHRF(6);
 % priors.SigmaTheta = 1e-1*eye(dim.n_theta);
 priors.SigmaTheta = 1e-2*eye(dim.n_theta);
-priors.SigmaTheta(1:options.inF.indself,1:options.inF.indself) = ...
-    1e-1*eye(options.inF.indself);
+priors.SigmaTheta(1:options.inF.indself,1:options.inF.indself) = 1e-1*eye(options.inF.indself);
 priors.SigmaTheta(options.inF.indself,options.inF.indself) = 0;
 if reduced_f
     % fix some HRF params to their default values

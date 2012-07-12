@@ -43,12 +43,7 @@ S0 = 1e8*eye(dim.n*lag,dim.n*lag);
 S0(indx0,indx0) = posterior.SigmaX0;
 
 % evaluate evolution function at current mode
-if ~options.priors.AR
-    [fx0,dF_dX0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
-else
-    clear VBA_smoothNLSS
-    [fx0,dF_dX0] = VBA_evalFun('f',zeros(dim.n,1),posterior.muTheta,u(:,1),options,dim,1);
-end
+[fx0,dF_dX0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
 
 % evaluate observation function at current mode
 [gx(:,1),dG_dX{1},dG_dPhi{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim,1);
@@ -72,9 +67,6 @@ dy2 = dy(:,1)'*iQy{1}*dy(:,1);
 GC = dG_dX{1}'*options.lagOp.C;
 FD = dF_dX0'*options.lagOp.D;
 FDC = FD - options.lagOp.C;
-% iSX0 = VB_inv(posterior.SigmaX0,options.params2update.x0);
-% iEuSEu = [  zeros(dim.n*(lag-2))        zeros(dim.n*(lag-2),dim.n)
-%             zeros(dim.n,dim.n*(lag-2))  iSX0                        ];
 EuSEu = options.lagOp.Eu*S0*options.lagOp.Eu';
 iEuSEu = VB_inv(EuSEu);
 EiEuSEuEu =  options.lagOp.E'*iEuSEu*options.lagOp.Eu;
@@ -84,12 +76,6 @@ St = VB_inv(iSt);
 e1 = FD*m0 - fx0;
 e2 = GC*m0 - gx(:,1);
 mt = St*( sigmaHat*GC'*iQy{1}*(y(:,1)+e2) + alphaHat*FDC'*iQ*e1 + EiEuSEuEu*m0 );
-
-% % no lag
-% if lag == 2
-%     SigmaX0 = options.lagOp.M*St*options.lagOp.M';
-%     muX0 = options.lagOp.M*mt;
-% end
 
 % Entropy calculus
 SX = 0.5*length(indIn{1})*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaX.current{1},indIn{1});
@@ -133,14 +119,6 @@ for t = 2:dim.n_t
     e2 = dG_dX{t}'*X(:,t) - gx(:,t);
     mt = St*( sigmaHat*GC'*iQy{t}*(y(:,t)+e2) + alphaHat*FDC'*iQ*e1 + EiEuSEuEu*mt );
     
-    
-    %     if t == lag -1
-    %
-    %         SigmaX0 = options.lagOp.M*St*options.lagOp.M';
-    %         muX0 = options.lagOp.M*mt;
-    %
-    %     elseif t >= lag
-    
     if t >= lag
         
         % update lagged posterior on states
@@ -160,8 +138,8 @@ for t = 2:dim.n_t
     % Entropy calculus
     if t < dim.n_t
         jointCov = ...
-            [ posterior.SigmaX.current{t+1}  posterior.SigmaX.inter{t}'
-            posterior.SigmaX.inter{t}     posterior.SigmaX.current{t} ];
+            [   posterior.SigmaX.current{t+1}   posterior.SigmaX.inter{t}'
+                posterior.SigmaX.inter{t}      	posterior.SigmaX.current{t} ];
         indjc = [indIn{t+1}(:);indIn{t}(:)+dim.n];
         ldj = VBA_logDet(jointCov(indjc,indjc));
         ldm = VBA_logDet(posterior.SigmaX.current{t}(indIn{t},indIn{t}));

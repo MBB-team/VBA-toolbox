@@ -33,11 +33,11 @@ dim = in.old.dim;
 % Check whether the system is at initial state
 if isempty(t)
     t = 1;
-    dxdTheta = zeros(in.old.dim.n_theta,in.old.dim.n);
+    dxdTheta = zeros(dim.n_theta,dim.n);
     if options.updateX0
-        xt = P(in.old.dim.n_phi+in.old.dim.n_theta+1:end);
+        xt = P(dim.n_phi+dim.n_theta+1:end);
     else
-        xt = in.x0;
+        xt = options.priors.muX0;
     end
 else
     t = t+1;
@@ -49,7 +49,9 @@ end
 
 
 % Obtain derivatives of path wrt parameters...
-dxdTheta = dF_dP + dxdTheta*dF_dX;
+if dim.n_theta > 0
+    dxdTheta = dF_dP + dxdTheta*dF_dX;
+end
 % ... and initial conditions
 if options.updateX0
     if ~isempty(dxdx0) 
@@ -62,22 +64,20 @@ end
 % Obtain derivatives of observations wrt...
 dgdp = zeros(in.dim.n_phi,in.dim.p);
 % ... observation parameters,
-if in.old.dim.n_phi > 0
-    dgdp(1:in.old.dim.n_phi,:) = dG_dP;
+if dim.n_phi > 0
+    dgdp(1:dim.n_phi,:) = dG_dP;
 end
 % ... evolution parameters
-if in.old.dim.n_theta > 0
-    dgdp(in.old.dim.n_phi+1:in.old.dim.n_phi+in.old.dim.n_theta,:) = dxdTheta*dG_dX;
+if dim.n_theta > 0
+    dgdp(dim.n_phi+1:dim.n_phi+dim.n_theta,:) = dxdTheta*dG_dX;
 end
 % ... and initial conditions
-if in.old.options.updateX0
-    dgdp(in.old.dim.n_phi+in.old.dim.n_theta+1:end,:) = dxdx0*dG_dX;
+if options.updateX0
+    dgdp(dim.n_phi+dim.n_theta+1:end,:) = dxdx0*dG_dX;
 end
 
 % for hidden states book keeping
 dgdx = xt; 
-d2gdxdp = [ zeros(in.old.dim.n_phi,in.old.dim.n) ; ...
-            dxdTheta ; ...
-            dxdx0                                       ];
+d2gdxdp = [zeros(dim.n_phi,dim.n);dxdTheta;dxdx0];
         
     

@@ -166,7 +166,6 @@ for t = 1:n_t
     priors.iQx{t} = eye(dim.n);
     priors.iQy{t} = eye(dim.p);
 end
-priors.AR = 0;
 
 function options = getOptions(options,priors)
 options.priors = priors;

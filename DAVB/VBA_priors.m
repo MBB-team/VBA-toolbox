@@ -64,15 +64,12 @@ if dim.n > 0
     for t=1:dim.n_t
         priors.iQx{t} = eye(dim.n);
     end
-    % AR(0) state noise
-    priors.AR = 0;
 else
     priors.muX0 = [];
     priors.SigmaX0 = [];
     priors.a_alpha = [];
     priors.b_alpha = [];
     priors.iQx = [];
-    priors.AR = 0;
 end
 
 

@@ -16,12 +16,6 @@ if options.DisplayWin % Display progress
     drawnow
 end
 
-% Clear persistent variables if ODE mode
-if isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNLSS)
-    clear VBA_odeLim
-    clear VBA_smoothNLSS
-end
-
 %  Look-up which evolution parameter to update
 indIn = options.params2update.phi;
 
@@ -45,6 +39,7 @@ Sphid2gdphi2 = 0;
 kernel = zeros(dim.n_phi,dim.n_phi);
 d2gdx2 = 0;
 if isequal(options.g_fname,@VBA_odeLim)
+    clear VBA_odeLim
     muX = zeros(options.inG.old.dim.n,dim.n_t);
     SigmaX = cell(dim.n_t,1);
 end

@@ -31,7 +31,7 @@ n_t = length(u); % number of trials
 dim = struct('n',2,'n_theta',1,'n_phi',1);
 
 priors.muPhi = zeros(dim.n_phi,1);
-priors.muTheta = zeros(dim.n_theta,1);
+priors.muTheta = ones(dim.n_theta,1);
 priors.muX0 = zeros(2,1);
 priors.SigmaPhi = 1e0*eye(dim.n_phi);
 priors.SigmaTheta = 1e0*eye(dim.n_theta);
@@ -52,7 +52,7 @@ hold on
 plot(y,'kx')
 legend({'p(y=1|theta,phi,m)','binomial data samples'})
 getSubplots
-pause
+% pause
 
 
 % options.isYout = zeros(1,size(y,2));

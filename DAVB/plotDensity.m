@@ -27,7 +27,6 @@ try
         options.priors.b_alpha = 1;
     end
 end
-options.priors.AR = 0;
 options.verbose = 0;
 dim.n_t = n_t;
 [options] = VBA_check([],u,f_fname,g_fname,dim,options);
@@ -104,9 +103,6 @@ if dim.n >= 1
         str{2} = 'This was a deterministic dynamical system';
     else
         str{2} = 'This was a stochastic dynamical system';
-        if options.priors.AR
-            str{2} = [str{2},' [AR(1) state noise]'];
-        end
     end
     if isa(options.g_fname,'function_handle')
         gfn = func2str(options.g_fname);

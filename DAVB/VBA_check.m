@@ -68,7 +68,7 @@ end
 if ~isfield(options,'backwardLag')
     options.backwardLag     = 1;
 end
-options.backwardLag = max([floor(options.backwardLag),1]); 
+options.backwardLag = max([floor(options.backwardLag),1]);
 % Maximum number of iterations
 if ~isfield(options,'MaxIter')
     options.MaxIter         = 32;
@@ -116,10 +116,6 @@ end
 % On-line version (true when called from VBA_OnLineWrapper.m)
 if ~isfield(options,'OnLine')
     options.OnLine          = 0;
-end
-% Initialize hidden states posterior with prior predictive density?
-if ~isfield(options,'init0')
-    options.init0           = 0;
 end
 % Free energy calculus at equilibrium?
 if ~isfield(options,'Laplace')
@@ -235,14 +231,16 @@ if ~options.binomial
     end
 end
 
+% store evolution/observation function handles
+options.f_fname = f_fname;
+options.g_fname = g_fname;
+
+
 % split-MoG sufficient statistics
 if options.nmog > 1
     np = length(options.params2update.phi);
     [m0,s0,w0] = getMoG4N01(options.nmog,1,0);
-    [C] = get_nkdraws(...
-        options.nmog,...
-        np,...
-        0);
+    [C] = get_nkdraws(options.nmog,np,0);
     nd = size(C,2);
     split.w = zeros(nd,1);
     split.m = zeros(np,nd);
@@ -257,8 +255,7 @@ if options.nmog > 1
 end
 
 % Delay embedding
-if dim.n > 0 && sum(options.delays(:)) > 0 && (~isequal(f_fname,@f_embed) || ~isequal(g_fname,@g_embed))
-    
+if dim.n > 0 && sum(options.delays(:)) > 0
     % modify options:
     dim.n_embed = dim.n*max(options.delays(:));
     inF.dim = dim;
@@ -271,15 +268,14 @@ if dim.n > 0 && sum(options.delays(:)) > 0 && (~isequal(f_fname,@f_embed) || ~is
     inG.g_nout = nargout(g_fname);
     options.inF = inF;
     options.inG = inG;
-    f_fname = @f_embed;
-    g_fname = @g_embed;
-    %     dim.n = dim.n*(max(options.delays)+1);
-    
+    options.f_fname = @f_embed;
+    options.g_fname = @g_embed;
+    options.delays = [];
     % modify priors:
     Zeros = zeros(inF.dim.n,dim.n_embed);
     for t=1:dim.n_t
-        priors.iQx{t} = [   priors.iQx{t}       Zeros
-                            Zeros'              Inf*eye(dim.n_embed)  ];
+        priors.iQx{t} = [   priors.iQx{t}	Zeros
+                            Zeros'          Inf*eye(dim.n_embed)  ];
         priors.iQx{t}(isnan(priors.iQx{t})) = 0;
         dpc = diag(priors.iQx{t});
         iz = find(isinf(dpc));
@@ -289,8 +285,8 @@ if dim.n > 0 && sum(options.delays(:)) > 0 && (~isequal(f_fname,@f_embed) || ~is
             options.params2update.x{t} = 1:dim.n;
         end
     end
-    priors.muX0 = repmat(priors.muX0,max(options.delays(:))+1,1);
-    priors.SigmaX0 = kron(eye(max(options.delays(:))+1),priors.SigmaX0);
+    priors.muX0 = repmat(priors.muX0,max(inF.options.delays(:))+1,1);
+    priors.SigmaX0 = kron(eye(max(inF.options.delays(:))+1),priors.SigmaX0);
     dpc = diag(priors.SigmaX0);
     iz = find(dpc==0);
     if ~isempty(iz)
@@ -298,25 +294,12 @@ if dim.n > 0 && sum(options.delays(:)) > 0 && (~isequal(f_fname,@f_embed) || ~is
     else
         options.params2update.x0 = 1:length(priors.SigmaX0);
     end
-    dim.n = dim.n*(max(options.delays(:))+1);
-    
+    dim.n = dim.n*(max(inF.options.delays(:))+1);
 end
 
-n = dim.n;
-lag = options.backwardLag + 1;
-options.lagOp.C = [zeros(n,n*(lag-1)),eye(n)];
-options.lagOp.D = [zeros(n,n*(lag-2)),eye(n),zeros(n,n)];
-options.lagOp.E = [eye(n*(lag-1)),zeros(n*(lag-1),n)];
-options.lagOp.Eu = [zeros(n*(lag-1),n),eye(n*(lag-1))];
-options.lagOp.M = [eye(n),zeros(n,n*(lag-1))];
 
 % Add other inputs in the options structure:
-options.f_fname = f_fname;
-options.g_fname = g_fname;
-if dim.n > 0
-    options.f_nout = nargout(f_fname);
-end
-options.g_nout = nargout(g_fname);
+options.g_nout = nargout(options.g_fname);
 options.priors = priors;
 options.dim = dim;
 
@@ -326,92 +309,67 @@ if isequal(options.f_fname,@f_DCMwHRF) && isequal(options.g_fname,@g_HRF3)
     [options] = VBA_check4DCM(options);
 end
 
-% Check whether | SDE --> ODE [ p(alpha) = Dirac at 0 ]
-%               | state noise = AR(1)
-% The former actually will allow the algorithm to shortcut the VB-Laplace
-% extended Kalman smoother, treating the model as non-stochastic DCM. In
-% this version, the hidden states are assumed to obey an ODE, which is the
-% deterministic variant of the more general SDE.
-% Alternatively, this also replaces the usual (stochastic) state-space
-% model with a deterministic one, which is driven by an AR(1) hidden state
-% vector (when priors.AR=1)
-if dim.n > 0 && (  ...
-        ( ~isempty(priors.a_alpha) && ...
-          ~isempty(priors.b_alpha) && ...
-          isinf(priors.a_alpha) && ...
-          isequal(priors.b_alpha,0)     ) || ...
-          ~~priors.AR  )
-    % Store priors, options and dim structures
-    priors0 = priors;
-    dim0 = dim;
-    options0 = options;
-    % Embed evolution parameters and initial conditions in observation
-    % parameters  --> modify prior structure accordingly
-    priors.muTheta = [];
-    priors.SigmaTheta = [];
-    priors.muX0 = [];
-    priors.SigmaX0 = [];
-    if dim0.n_theta > 0
-        priors.muPhi = [priors0.muPhi;priors0.muTheta];
-        Zeros = zeros(dim0.n_phi,dim0.n_theta);
-        priors.SigmaPhi = ...
-            [ priors0.SigmaPhi  Zeros
-            Zeros'            priors0.SigmaTheta ];
-        options.params2update.phi = [options0.params2update.phi, ...
-            options0.params2update.theta + dim0.n_phi];
-    end
-    if options.updateX0
-        priors.muPhi = [priors.muPhi;priors0.muX0];
-        Zeros = zeros(dim0.n_phi+dim0.n_theta,dim0.n);
-        priors.SigmaPhi = ...
-            [ priors.SigmaPhi  Zeros
-            Zeros'            priors0.SigmaX0 ];
-        options.params2update.phi = [options.params2update.phi, ...
-            options0.params2update.x0 + dim0.n_phi + dim0.n_theta];
-    end
-    % Modify dim and options structures
-    dim.n_theta = 0;
-    dim.n_phi = size(priors.muPhi,1);
-    options.params2update.theta = [];
-    if ~priors.AR % ODE limit
+
+if dim.n > 0
+    options.f_nout = nargout(options.f_fname);
+    if isinf(priors.a_alpha) && isequal(priors.b_alpha,0)
+        % Check whether SDE --> ODE [ p(alpha) = Dirac at 0 ]
+        % This will allow the algorithm to shortcut the VB-Laplace extended Kalman
+        % smoother, treating the model as non-stochastic DCM. In this version, the
+        % hidden states are assumed to obey an ODE, which is the deterministic
+        % variant of the more general SDE.
+        priors0 = priors;
+        dim0 = dim;
+        options0 = options;
+        % Embed evolution parameters and initial conditions in observation
+        % parameters  --> modify prior structure accordingly
+        priors.muTheta = [];
+        priors.SigmaTheta = [];
+        priors.muX0 = [];
+        priors.SigmaX0 = [];
+        if dim0.n_theta > 0
+            priors.muPhi = [priors0.muPhi;priors0.muTheta];
+            Zeros = zeros(dim0.n_phi,dim0.n_theta);
+            priors.SigmaPhi = [ priors0.SigmaPhi  Zeros
+                                Zeros'            priors0.SigmaTheta ];
+            options.params2update.phi = [options0.params2update.phi,options0.params2update.theta + dim0.n_phi];
+        end
+        if options.updateX0
+            priors.muPhi = [priors.muPhi;priors0.muX0];
+            Zeros = zeros(dim0.n_phi+dim0.n_theta,dim0.n);
+            priors.SigmaPhi = [ priors.SigmaPhi  Zeros
+                                Zeros'           priors0.SigmaX0 ];
+            options.params2update.phi = [options.params2update.phi,options0.params2update.x0 + dim0.n_phi + dim0.n_theta];
+        end
+        % Modify dim and options structures
+        dim.n_theta = 0;
+        dim.n_phi = size(priors.muPhi,1);
         dim.n = 0;
         options.f_fname = [];
         options.f_nout = 0;
-        options.inF = [];
         options.g_fname = @VBA_odeLim;
         options.g_nout = nargout(@VBA_odeLim);
-        % clear persistent variables
-        clear VBA_odeLim
-    else % AR(1) state noise
-        options.f_fname = @f_AR;
-        options.f_nout = nargout(@f_AR);
         options.inF = [];
-        options.g_fname = @VBA_smoothNLSS;
-        options.g_nout = nargout(@VBA_smoothNLSS);
-        options.updateX0 = 0;
-        priors.muX0 = zeros(dim.n,1);
-        priors.SigmaX0 = zeros(dim.n,dim.n);
-        % clear persistent variables
-        clear VBA_odeLim
-        clear VBA_smoothNLSS
-    end
-    % Build input structure for effective observation function
-    options.inG = [];
-    options.inG.old.dim = dim0;
-    options.inG.old.options = options0;
-    options.inG.old.priors = priors0;
-    options.inG.dim = dim;
-    options.inG.u = u;
-    if ~options.updateX0
-        try
-            options.inG.x0 = options0.priors.muX0;
-        catch
-            options.inG.x0 = zeros(dim0.n,1); % default
+        options.inG = [];
+        options.inG.old.dim = dim0;
+        options.inG.old.options = options0;
+        options.inG.dim = dim;
+        options.priors = priors;
+        options.dim = dim;
+    else
+        if ~options.binomial
+            % Derive marginalization operators for the lagged Kalman filter
+            n = dim.n;
+            lag = options.backwardLag + 1;
+            options.lagOp.C = [zeros(n,n*(lag-1)),eye(n)];
+            options.lagOp.D = [zeros(n,n*(lag-2)),eye(n),zeros(n,n)];
+            options.lagOp.E = [eye(n*(lag-1)),zeros(n*(lag-1),n)];
+            options.lagOp.Eu = [zeros(n*(lag-1),n),eye(n*(lag-1))];
+            options.lagOp.M = [eye(n),zeros(n,n*(lag-1))];
+        else
+            VBA_disp('Error: stochastic system not supported for binomial data!',options)
         end
     end
-    options.priors = priors;
-    options.dim = dim;
-    
 end
 
 

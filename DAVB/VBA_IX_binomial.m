@@ -40,12 +40,7 @@ end
 % !! Attn: MF approx. on initial condition !!
 
 % evaluate evolution function at current mode
-if ~options.priors.AR
-    [fx0,dF_dX0,dF_dTheta0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
-else
-    clear VBA_smoothNLSS
-    [fx0,dF_dX0,dF_dTheta0] = VBA_evalFun('f',zeros(dim.n,1),posterior.muTheta,u(:,1),options,dim,1);
-end
+[fx0,dF_dX0,dF_dTheta0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
 
 % evaluate observation function at current mode
 [gx(:,1),dG_dX{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim,1);

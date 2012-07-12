@@ -1,8 +1,6 @@
 function [I,NextSigma,NextdeltaMu] = expBinom(x,mu,va,p)
 % OTO: varational energy (and curvature) of associative strength
-in.G0 = 1;
-in.beta = 1;
-[sx] = sigm(x,in);
+[sx] = checkGX_binomial(1./(1+exp(-x)));
 lsx = log(sx);
 if ~isinf(va)
     iva = va.^-1;

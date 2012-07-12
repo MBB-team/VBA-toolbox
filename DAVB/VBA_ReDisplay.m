@@ -165,9 +165,6 @@ if out.dim.n >= 1
         str{4} = 'This was a deterministic dynamical system';
     else
         str{4} = 'This was a stochastic dynamical system';
-        if out.options.priors.AR
-            str{4} = [str{4},' [AR(1) state noise]'];
-        end
     end
     if isa(out.options.g_fname,'function_handle')
         gfn = func2str(out.options.g_fname);
@@ -529,6 +526,7 @@ options = rmfield(options,'checkGrads');
 options = rmfield(options,'verbose');
 options = rmfield(options,'delays');
 options = rmfield(options,'isYout');
+options = rmfield(options,'skipf');
 finames = fieldnames(options);
 nopt = length(finames);
 str = {'Optional fields:';' '};
