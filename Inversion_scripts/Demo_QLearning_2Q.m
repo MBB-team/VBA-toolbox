@@ -35,7 +35,7 @@ R(2,1:Ntrials/2) = R(2,1:Ntrials/2)<0.2;R(2,Ntrials/2+1:end) = R(2,Ntrials/2+1:e
 %R(1,:) = 1;
 %R(2,:) = 0;
 
-x0 = [0;0];
+x0 = randn(2,1);%[0;0];
 n_t = Ntrials;
 % allocate feedback struture for simulations
 
@@ -51,18 +51,17 @@ fb.indfb = [2]; % indices where put feedbacks in the experimenter data matrix u
 f_fname = @f_Qlearn_2Q;
 g_fname = @g_softmax_2Q;
 theta = sigm(alpha,struct('INV',1));
-phi = log(beta);
+phi = [log(beta);0.5];
 u = [zeros(2,Ntrials)];
 
 alpha = Inf;
 sigma =  Inf;
 
-dim_output = 1; % the delta reaction-time
-dim_data = 3; % index of sequence(not used for sim)/ rewards for both alternatives
-dim = struct('n',2,...  %( 2 (Qvalues) * Nsessions
+dim_output = 1; % the choice
+dim = struct('n',2,...  %( 2 (Qvalues) 
              'p',dim_output,... % total output dimension
              'n_theta',1,... % evolution parameters
-             'n_phi', 1,... % observation parameters
+             'n_phi', 2,... % observation parameters
              'n_t',Ntrials);
 
 
@@ -92,11 +91,12 @@ plot(x')
 % Priors on parameters (mean and Covariance matrix)
 priors.muPhi = zeros(dim.n_phi,1); 
 priors.muTheta = zeros(dim.n_theta,1);
-priors.SigmaPhi = 1e2*eye(dim.n_phi);
-priors.SigmaTheta = 1e2*eye(dim.n_theta);
+priors.SigmaPhi = 1e0*eye(dim.n_phi);
+priors.SigmaTheta = 1e0*eye(dim.n_theta);
+% priors.SigmaPhi(2,2) = 0;
 % Priors on initial 
 priors.muX0 = ones(dim.n,1)*0;
-priors.SigmaX0 = 0e4*eye(dim.n);
+priors.SigmaX0 =0e0*eye(dim.n);
 % No state noise for deterministic update rules
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
@@ -113,4 +113,4 @@ options.priors = priors;
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
-%displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)
+displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)

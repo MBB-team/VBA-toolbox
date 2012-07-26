@@ -9,26 +9,30 @@ function  [ gx ] = g_softmax_2Q( x_t,P,u_t,in )
 
 
 % Transformation on parameters
-try 
+try
     if isequal(in.param_transform.type,'exponential')
-        beta = exp(P);
+        beta = exp(P(1));
     elseif isequal(in.param_transform.type,'modified sigmoid')
-        beta = in.param_transform.a + (in.param_transform.b-in.param_transform.a)./(1+exp(-P));                
+        beta = in.param_transform.a + (in.param_transform.b-in.param_transform.a)./(1+exp(-P(1)));
     end
 catch
-    beta = P;
+        beta = exp(P(1));
 end
 
-
+if size(P,1)>1
+    bias = P(2);
+else
+    bias = 0;
+end
 
 dQ = (x_t(1)-x_t(2));
-gx =sig( -beta*dQ );
+gx =sig( -beta*dQ + bias);
 
 
 function y=sig(x)
 y = 1/(1+exp(-x));
 y(y<eps) = eps;
-y(y>1-eps) = 1-eps; 
+y(y>1-eps) = 1-eps;
 
 
 
@@ -36,5 +40,5 @@ y(y>1-eps) = 1-eps;
 % dgdx = zeros(2,1);
 % dgdx(a) = beta*gx*(1-gx);
 % dgdx(na) = -beta*gx*(1-gx);
-% 
+%
 % dgdP = [beta*dQ*gx*(1-gx)];ontributions are added
