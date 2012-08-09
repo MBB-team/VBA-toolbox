@@ -42,7 +42,7 @@ function [inversions,inv_order,p_m,LogEv] = VBA_Inversion_modulation(y,u,f_fname
 % parameters are activated (1) or deactivated (0). modulation parameters
 % are ordered as in output p_m
 % - p_m : ordered cell of modulation parameters
-%       .type : ('theta','phi') : class of parameter (evolution or observation)   
+%       .type : ('theta','phi') : class of parameter (evolution or observation)
 %       .indp : index of the modulating parameter (in param vector)
 %       .indu : index of the modulating input (in input vector)
 % - LogEv : vector of the approximated log evidences of the ordered
@@ -88,18 +88,46 @@ for indp = mod.phi.indp
     imp =  indp(1);% index of modulated parameter
     imu = mod.indu(indp(2));% index of modulating input
     modulator_names{i_p} = ['u(',num2str(imu),')->phi(',num2str(imp),')'];
-
+    
 end
 
 % Ordering inversions
-inv_order = binary_cart_prod(N_p);
 
-inversions = cell(1,2^N_p); %all combinations
+% THis is where groups come into action! after poo
+try mod.group_modulators;
+catch;
+    mod.group_modulators = cell(1,N_p);
+    for i = 1:N_p
+        mod.group_modulators{i}.indp = i;
+    end
+end
+N_gm = length(mod.group_modulators); % number of groups of modulators
+
+inv_order_gm = binary_cart_prod(N_gm);
+N_inv = 2^N_gm;
+
+if ~isequal(N_gm,N_p)
+    inv_order = zeros(N_inv,N_p);
+    for i_inv = 1:N_inv
+        for i_gm = 1 : N_gm
+            if inv_order_gm(i_inv,i_gm) == 1 % activate group
+                inv_order(i_inv,mod.group_modulators{i_gm}.indp) = 1;
+            end
+            
+        end
+    end
+else
+    inv_order = inv_order_gm;
+end
+
+
+
+inversions = cell(1,N_inv); %all combinations
 LogEv = zeros(1,N_p);
 
 priors_default = options.priors;
 
-for i_inv = 1:2^N_p
+for i_inv = 1:N_inv
     
     % load default priors
     priors = priors_default;
@@ -128,9 +156,9 @@ end
 
 
 %-- Final display as proposed by Florent
-LogEv = zeros(2^N_p,1);
-for i_inv = 1:2^N_p
-LogEv(i_inv) =  inversions{i_inv}.out.F;
+LogEv = zeros(N_inv,1);
+for i_inv = 1:N_inv
+    LogEv(i_inv) =  inversions{i_inv}.out.F;
 end
 
 
@@ -154,85 +182,85 @@ function [] = plot_mod(LogEv,inv_order,modulator_names)
 Nsubject = size(LogEv,2); % number of subjects considered
 
 if Nsubject == 1 % Case single subject
-N_p = size(inv_order,1);
-
-Nmodels = N_p;
-
-pp = exp(LogEv-max(LogEv));
-pp = pp./sum(pp);
-
-figure
-
-subplot(1,3,1)
-imagesc(-inv_order)
-colormap(gray)
-
-if ~isempty(modulator_names)
-
-N_m = size(modulator_names,1); % number of modulators
-set(gca, 'XTickLabel',modulator_names) % setting label names
-set(gca,'XLim',[0.5 N_m+0.5]) 
-set(gca,'XTick',[1:N_m]) % setting label positions
-
-set(gca,'XTickLabel',[]);%erase current tick labels from figure
-c=get(gca,'YTick')+N_p-1;%make new tick labels
-b=get(gca,'XTick');%get tick label positions
-text(b,repmat(N_p+1,N_m,1),modulator_names,'HorizontalAlignment','right','rotation',45); % rotating labels 
- 
-else
-    xlabel('Modulation parameters', ...
-        'FontSize', 10, ...
-        'FontWeight', 'bold')
-end
-
-
-ylabel('Models')
-
-subplot(1,3,2)
-barh((LogEv-max(LogEv)),0.5)
-axis([min((LogEv-max(LogEv))) max((LogEv-max(LogEv))) 1-0.5 Nmodels+0.5])
-set(gca, 'YDir', 'reverse')
-xlabel('Log Evidence')
-
-subplot(1,3,3)
-barh(pp,0.5)
-axis([0 max(pp) 1-0.5 Nmodels+0.5])
-set(gca, 'YDir', 'reverse')
-xlabel('Posterior probability')
-
-
+    N_p = size(inv_order,1);
+    
+    Nmodels = N_p;
+    
+    pp = exp(LogEv-max(LogEv));
+    pp = pp./sum(pp);
+    
+    figure
+    
+    subplot(1,3,1)
+    imagesc(-inv_order)
+    colormap(gray)
+    
+    if ~isempty(modulator_names)
+        
+        N_m = size(modulator_names,1); % number of modulators
+        set(gca, 'XTickLabel',modulator_names) % setting label names
+        set(gca,'XLim',[0.5 N_m+0.5])
+        set(gca,'XTick',[1:N_m]) % setting label positions
+        
+        set(gca,'XTickLabel',[]);%erase current tick labels from figure
+        c=get(gca,'YTick')+N_p-1;%make new tick labels
+        b=get(gca,'XTick');%get tick label positions
+        text(b,repmat(N_p+1,N_m,1),modulator_names,'HorizontalAlignment','right','rotation',45); % rotating labels
+        
+    else
+        xlabel('Modulation parameters', ...
+            'FontSize', 10, ...
+            'FontWeight', 'bold')
+    end
+    
+    
+    ylabel('Models')
+    
+    subplot(1,3,2)
+    barh((LogEv-max(LogEv)),0.5)
+    axis([min((LogEv-max(LogEv))) max((LogEv-max(LogEv))) 1-0.5 Nmodels+0.5])
+    set(gca, 'YDir', 'reverse')
+    xlabel('Log Evidence')
+    
+    subplot(1,3,3)
+    barh(pp,0.5)
+    axis([0 max(pp) 1-0.5 Nmodels+0.5])
+    set(gca, 'YDir', 'reverse')
+    xlabel('Posterior probability')
+    
+    
 else % Case multiple subject
     
     N_p = size(inv_order,1);
-Nmodels = 2^N_p;
-
-pp = exp(LogEv-max(LogEv));
-pp = pp./sum(pp);
-
-figure
-subplot(1,3,1)
-imagesc(-inv_order)
-colormap(gray)
-xlabel('Modulation parameters')
-ylabel('Models')
-
-
-S_LogEv = sum(LogEv,2); % sum of log-evidence
-subplot(1,3,2)
-barh((S_LogEv-max(S_LogEv)),0.5)
-axis([min((S_LogEv-max(S_LogEv))) max((S_LogEv-max(S_LogEv))) 1-0.5 Nmodels+0.5])
-set(gca, 'YDir', 'reverse')
-xlabel('Log Evidence')
-
-% performing fixed effects analysis
-[exp_r,xp,r_samp,g_post] = spm_BMS_gibbs (LogEv, ones(1,Nmodels))
-
-subplot(1,3,3)
-barh(xp,0.5)
-axis([0 1 1-0.5 Nmodels+0.5])
-set(gca, 'YDir', 'reverse')
-xlabel('Exceedance probability')
-
+    Nmodels = 2^N_p;
+    
+    pp = exp(LogEv-max(LogEv));
+    pp = pp./sum(pp);
+    
+    figure
+    subplot(1,3,1)
+    imagesc(-inv_order)
+    colormap(gray)
+    xlabel('Modulation parameters')
+    ylabel('Models')
+    
+    
+    S_LogEv = sum(LogEv,2); % sum of log-evidence
+    subplot(1,3,2)
+    barh((S_LogEv-max(S_LogEv)),0.5)
+    axis([min((S_LogEv-max(S_LogEv))) max((S_LogEv-max(S_LogEv))) 1-0.5 Nmodels+0.5])
+    set(gca, 'YDir', 'reverse')
+    xlabel('Log Evidence')
+    
+    % performing fixed effects analysis
+    [exp_r,xp,r_samp,g_post] = spm_BMS_gibbs (LogEv, ones(1,Nmodels))
+    
+    subplot(1,3,3)
+    barh(xp,0.5)
+    axis([0 1 1-0.5 Nmodels+0.5])
+    set(gca, 'YDir', 'reverse')
+    xlabel('Exceedance probability')
+    
     
     
 end

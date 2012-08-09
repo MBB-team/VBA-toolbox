@@ -144,12 +144,11 @@ options_e.dim = dim_e;
 
 
 options_e.GnFigs = 0;
-options_e.binomial = in_sessions.binomial; % Dealing with binary data
+try options_e.binomial = in_sessions.binomial;
+catch; options_e.binomial = 0; end % default is continuous data
 try  options_e.DisplayWin = in_sessions.DisplayWin;
 catch ; options_e.DisplayWin = 1; end
-try  options_e.binomial = in_sessions.binomial;
-catch ; disp('You haven''t specified the type of the data in the options : options.binomial')
-end
+
 
 options_e.isYout = zeros(dim_e.p,dim_e.n_t); 
 
