@@ -65,14 +65,14 @@ try
     dim_e.n_theta = in_sessions.dim_e.n_theta;
 catch
     dim_e.n_theta = dim.n_theta*n_sess;
-    in_sessions.ind.theta = reshape(1:dim_e.n_theta,n_sess,dim.n_theta);
+    in_sessions.ind.theta = reshape(1:dim_e.n_theta,dim.n_theta,n_sess)';
 end
 %- phi
 try
     dim_e.n_phi = in_sessions.dim_e.n_phi;
 catch
     dim_e.n_phi = dim.n_phi*n_sess;
-    in_sessions.ind.phi = reshape(1:dim_e.n_phi,n_sess,dim.n_phi);
+    in_sessions.ind.phi = reshape(1:dim_e.n_phi,dim.n_phi,n_sess)';
 end
 
 %------------------------------------------------------
@@ -108,10 +108,6 @@ for i = 1 : n_sess
     
     % Information about indices of parameters, hidden states and output used by
     % each session
-    %     in.sess(i).ind.x = dim_s.n*(i-1)+1:dim_s.n*i;
-    %     in.sess(i).ind.gx = dim_s.p*(i-1)+1:dim_s.p*i;
-    %     in.sess(i).ind.u = dim_s.u*(i-1)+1:dim_s.u*i;
-    %
     in.sess(i).ind.x = i_x+1:i_x+dim_s.n;   i_x = i_x + dim_s.n;
     in.sess(i).ind.gx = i_gx+1:i_gx+dim_s.p;   i_gx = i_gx + dim_s.p;
     in.sess(i).ind.u = i_u+1:i_u+dim_s.u;   i_u = i_u + dim_s.u;
@@ -190,13 +186,6 @@ try
         fb_e.inH.indfb = [fb_e.inH.indfb; in.sess(i).ind.u(fb_s.indfb)];
         i_fb =i_fb+length(fb_s.indfb);
 
-        % fb_e.inH.sess(i).indfb = in.sess(i).ind.u(fb_s.indfb);
-        % fb_e.inH.indy = [fb_e.inH.indy; fb_e.inH.sess(i).indy];
-        % fb_e.inH.sess(i).indy = fb.indy + dim.p*(i-1);
-        % fb_e.inH.sess(i).indgx = dim.p*(i-1)+1:dim.p*i;
-        % fb_e.inH.sess(i).indy = fb.indy + dim.p*(i-1);
-        % fb_e.inH.sess(i).indfb = fb.indfb+  dim.u*(i-1);
-        
     end
     
     fb_e.inH.nsess = n_sess; % number of sessions
@@ -204,13 +193,6 @@ try
     fb_e.indfb =fb_e.inH.indfb;
     
 
-    %  fb_e.inH.dim_fb = length(fb.indfb)*n_sess; % total size of feedback
-    %  fb_e.inH.dim_fb = length(fb.indfb)*n_sess; % total size of feedback
-    %  fb_e.inH.dim_singlefb = length(fb.indfb);
-    %  fb_e.indy = fb.indy + dim.u*([1 : n_sess]-1); % this is where to store y in u
-    %  fb_e.indfb =  repmat(fb.indfb,n_sess,1) +
-    %  dim.u*([0:n_sess-1]')*(ones(size(fb.indfb)))%-1%([1 : n_sess]-1); %
-    %  this is where to store feedback in u
     
     
     

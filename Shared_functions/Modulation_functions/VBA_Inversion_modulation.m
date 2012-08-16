@@ -1,4 +1,4 @@
-function [inversions,inv_order,p_m,LogEv] = VBA_Inversion_modulation(y,u,f_fname,g_fname,dim,options,mod,in)
+function [inversions,mod,LogEv] = VBA_Inversion_modulation(y,u,f_fname,g_fname,dim,options,mod,in)
 % This function performs model comparision over a set of models.
 % Models considered only differ in their priors, they share the same structure.
 % Parameters that can be separeted in two sets
@@ -38,10 +38,11 @@ function [inversions,inv_order,p_m,LogEv] = VBA_Inversion_modulation(y,u,f_fname
 % - inversions : results of all inversions
 %       .posterior
 %       .out (see VBA_NLStateSpaceModel)
-% - inv_order : binary matrix, each line describe wether or not modulation
+% - mod :
+%   - .inv_order : binary matrix, each line describe wether or not modulation
 % parameters are activated (1) or deactivated (0). modulation parameters
 % are ordered as in output p_m
-% - p_m : ordered cell of modulation parameters
+%   - .p_m : ordered cell of modulation parameters
 %       .type : ('theta','phi') : class of parameter (evolution or observation)
 %       .indp : index of the modulating parameter (in param vector)
 %       .indu : index of the modulating input (in input vector)
@@ -52,55 +53,72 @@ posterior = [];
 out = [];
 
 
-% Ordering
-
-try mod.phi.indp;
+N_p = 0;
+try
+for i_p = 1:length(mod.phi); % for each parameter
+    N_p = N_p + length(mod.phi{i_p}.indpm);
+end
+for i_p = 1:length(mod.theta); % for each parameter
+    N_p = N_p + length(mod.theta{i_p}.indpm);
+end
 catch
-    mod.phi.indp = []; end
-
-try  mod.theta.indp;
-catch
-    mod.theta.indp = []; end
-
-
-% Ordering modulation parameters
-N_p = size(mod.phi.indp,2)+size(mod.theta.indp,2);
-p_m = cell(1,N_p);
-modulator_names = cell(N_p,1);
-i_p = 0;
-for indp = mod.theta.indp
-    i_p = i_p+1;
-    p_m{i_p}.type = 'theta';
-    p_m{i_p}.indp = indp(1);
-    p_m{i_p}.indu = indp(2);
-    
-    imp =  indp(1);% index of modulated parameter
-    imu = mod.indu(indp(2));% index of modulating input
-    modulator_names{i_p} = ['u(',num2str(imu),')->theta(',num2str(imp),')'];
 end
 
-for indp = mod.phi.indp
-    i_p = i_p+1;
-    p_m{i_p}.type = 'phi';
-    p_m{i_p}.indp = indp(1);
-    p_m{i_p}.indu = indp(2);
-    
-    imp =  indp(1);% index of modulated parameter
-    imu = mod.indu(indp(2));% index of modulating input
-    modulator_names{i_p} = ['u(',num2str(imu),')->phi(',num2str(imp),')'];
-    
+p_m = cell(1,N_p);
+
+
+i_mod = 1;
+
+try
+for i_p = 1:length(mod.phi); % for each parameter
+    for i_m = 1:length(mod.phi{i_p}.indu) % for each modulating input
+        p_m{i_mod}.type = 'phi';
+        p_m{i_mod}.indp = mod.phi{i_p}.indpm(1,i_m);
+        p_m{i_mod}.indu = mod.phi{i_p}.indu(1,i_m);
+        i_mod = i_mod+1;
+    end
+end
+catch;
+end
+
+try
+for i_p = 1:length(mod.theta); % for each parameter
+    for i_m = 1:length(mod.theta{i_p}.indu) % for each modulating input
+        p_m{i_mod}.type = 'theta';
+        p_m{i_mod}.indp = mod.theta{i_p}.indpm(i_m);
+        p_m{i_mod}.indu = mod.theta{i_p}.indu(i_m);
+        i_mod = i_mod+1;
+    end
+end
+catch;
+end
+
+mod.p_m = p_m;
+
+
+% THis is where groups come into action!
+try 
+    for i_g = 1:length(mod.group_modulators)
+        Ip = find(mod.group_modulators{i_g}.type == 'p');
+        It = find(mod.group_modulators{i_g}.type == 't');
+        mod.group_modulators{i_g}.indp_ordered = [Ip,It+dim.n_phi];
+    end
+catch;
+    mod.group_modulators = cell(1,N_p);
+    for i_mod = 1:N_p
+        if  isequal(p_m{i_mod}.type, 'phi')
+            mod.group_modulators{i_mod}.indp_ordered = i_mod;
+            mod.group_modulators{i_mod}.type = 'p';
+        elseif isequal(p_m{i_mod}.type, 'theta')
+            mod.group_modulators{i_mod}.indp_ordered = i_mod + dim.n_phi;
+            mod.group_modulators{i_mod}.type = 't';
+        end
+    end
 end
 
 % Ordering inversions
+% All parameters are indexed : observation then evolution parameters
 
-% THis is where groups come into action! after poo
-try mod.group_modulators;
-catch;
-    mod.group_modulators = cell(1,N_p);
-    for i = 1:N_p
-        mod.group_modulators{i}.indp = i;
-    end
-end
 N_gm = length(mod.group_modulators); % number of groups of modulators
 
 inv_order_gm = binary_cart_prod(N_gm);
@@ -120,6 +138,8 @@ else
     inv_order = inv_order_gm;
 end
 
+mod.inv_order = inv_order;
+mod.inv_order_gm = inv_order_gm;
 
 
 inversions = cell(1,N_inv); %all combinations
@@ -162,8 +182,15 @@ for i_inv = 1:N_inv
 end
 
 
-%plot_mod(LogEv,inv_order,modulator_names)
-VBA_Redisplay_modulation(LogEv,inv_order,modulator_names)
+try modulator_names;
+catch 
+    modulator_names = cell(1,N_gm); 
+end
+
+mod.modulator_names = modulator_names;
+
+VBA_Redisplay_modulation(LogEv,mod) % plot by groups
+
 
 end
 
@@ -177,93 +204,4 @@ for i = 0:2^N_p-1
 end
 end
 
-function [] = plot_mod(LogEv,inv_order,modulator_names)
-
-Nsubject = size(LogEv,2); % number of subjects considered
-
-if Nsubject == 1 % Case single subject
-    N_p = size(inv_order,1);
-    
-    Nmodels = N_p;
-    
-    pp = exp(LogEv-max(LogEv));
-    pp = pp./sum(pp);
-    
-    figure
-    
-    subplot(1,3,1)
-    imagesc(-inv_order)
-    colormap(gray)
-    
-    if ~isempty(modulator_names)
-        
-        N_m = size(modulator_names,1); % number of modulators
-        set(gca, 'XTickLabel',modulator_names) % setting label names
-        set(gca,'XLim',[0.5 N_m+0.5])
-        set(gca,'XTick',[1:N_m]) % setting label positions
-        
-        set(gca,'XTickLabel',[]);%erase current tick labels from figure
-        c=get(gca,'YTick')+N_p-1;%make new tick labels
-        b=get(gca,'XTick');%get tick label positions
-        text(b,repmat(N_p+1,N_m,1),modulator_names,'HorizontalAlignment','right','rotation',45); % rotating labels
-        
-    else
-        xlabel('Modulation parameters', ...
-            'FontSize', 10, ...
-            'FontWeight', 'bold')
-    end
-    
-    
-    ylabel('Models')
-    
-    subplot(1,3,2)
-    barh((LogEv-max(LogEv)),0.5)
-    axis([min((LogEv-max(LogEv))) max((LogEv-max(LogEv))) 1-0.5 Nmodels+0.5])
-    set(gca, 'YDir', 'reverse')
-    xlabel('Log Evidence')
-    
-    subplot(1,3,3)
-    barh(pp,0.5)
-    axis([0 max(pp) 1-0.5 Nmodels+0.5])
-    set(gca, 'YDir', 'reverse')
-    xlabel('Posterior probability')
-    
-    
-else % Case multiple subject
-    
-    N_p = size(inv_order,1);
-    Nmodels = 2^N_p;
-    
-    pp = exp(LogEv-max(LogEv));
-    pp = pp./sum(pp);
-    
-    figure
-    subplot(1,3,1)
-    imagesc(-inv_order)
-    colormap(gray)
-    xlabel('Modulation parameters')
-    ylabel('Models')
-    
-    
-    S_LogEv = sum(LogEv,2); % sum of log-evidence
-    subplot(1,3,2)
-    barh((S_LogEv-max(S_LogEv)),0.5)
-    axis([min((S_LogEv-max(S_LogEv))) max((S_LogEv-max(S_LogEv))) 1-0.5 Nmodels+0.5])
-    set(gca, 'YDir', 'reverse')
-    xlabel('Log Evidence')
-    
-    % performing fixed effects analysis
-    [exp_r,xp,r_samp,g_post] = spm_BMS_gibbs (LogEv, ones(1,Nmodels))
-    
-    subplot(1,3,3)
-    barh(xp,0.5)
-    axis([0 1 1-0.5 Nmodels+0.5])
-    set(gca, 'YDir', 'reverse')
-    xlabel('Exceedance probability')
-    
-    
-    
-end
-
-end
 

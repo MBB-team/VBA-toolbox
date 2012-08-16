@@ -9,16 +9,16 @@ function [ gx ] = g_mod( x,Pe,u,in )
 %    .dim : dimensions of the initial model
 %    .phi : cell of info about the modulation of each parameter of the
 %    inital model
-%       .indpe : location in Pe of the unmodulated parameter
-%       .ind_mod : indices of parameter and input modulator
+%       .indpi : location in Pe of the unmodulated parameter
+%       .indpm : indices of parameter and input modulator
 %    .inF
 
 P = zeros(in.dim.n_phi,1); % parameters for the initial model
-for i_p = 1:length(in.dim.n_phi) % for each parameter of the initial model
+for i_p = 1:in.dim.n_phi % for each parameter of the initial model
     phi = in.phi{i_p};
-    P(phi.indp) = Pe(phi.indpe);
+    P(phi.indp) = Pe(phi.indpi); % parameter set to unmodulated value
     for i_m = 1:length(phi.indpm)
-        P(i_p) =  P(i_p) + Pe(phi.indpm(i_m))*u(phi.indu(i_m));
+        P(phi.indp) = P(phi.indp) + Pe(phi.indpm(i_m))*u(phi.indu(i_m));
     end
 end
 
