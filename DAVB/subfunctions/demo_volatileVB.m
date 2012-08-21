@@ -23,7 +23,7 @@ fb.indfb = 2;
 
 % simulation parameters
 theta = [1;-4;-1];
-inF.lev2 = 0; % remove 3rd level (volatility learning)
+inF.lev2 = 1; % remove 3rd level (volatility learning)
 inF.kaub = 1.4;
 inF.thub = 1;
 inF.rf = -1;
@@ -60,7 +60,7 @@ hold on
 plot(y,'kx')
 legend({'p(y=1|theta,phi,m)','binomial data samples'})
 getSubplots
-pause
+% pause
 
 
 % options.isYout = zeros(1,size(y,2));

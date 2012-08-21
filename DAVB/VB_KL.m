@@ -39,9 +39,13 @@ switch distrib
         a1 = b1*m1;
         a2 = b2*m2;
         
-        DKL = a1*log(b1) - a2*log(b2) + gammaln(a2) - gammaln(a1) ...
-            +(a1-a2)*(psi(a1)-log(b1)) - a1*(1-b2/b1);
+        try
+            psia1 = psi(a1);
+        catch
+            psia1 = my_psi(a1);
+        end
         
+        DKL = gammaln(a2) - gammaln(a1) - a1*(1-b2/b1) + a2*log(b1/b2) + (a1-a2)*psia1 ;
         
     otherwise
         
@@ -73,7 +77,7 @@ DJS = Hy - sH;
 
 
 
-function [f] = psi(z)
+function [f] = my_psi(z)
 % psi(x) = d[log(gamma(x))]/dx
 siz = size(z);
 z=z(:);

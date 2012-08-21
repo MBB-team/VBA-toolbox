@@ -323,7 +323,6 @@ end
 drawnow
 
 
-
 %--- subfunction ---%
 
 function [] = displayDF(F,display)

@@ -38,99 +38,99 @@ dim.u = size(u,1);
 
 % Micro-time resolution
 if ~isfield(options,'decim')
-    options.decim           = 1;
+    options.decim = 1;
 end
 % Micro-resolution input
 if ~isfield(options,'microU')
-    options.microU          = 0;
+    options.microU = 0;
 end
 % Optional (internal) parameters of the evolution function
 if ~isfield(options,'inF')
-    options.inF             = [];
+    options.inF = [];
 end
 % Optional (internal) parameters of the observation function
 if ~isfield(options,'inG')
-    options.inG             = [];
+    options.inG = [];
 end
 % Check analytical gradients against numerical gradients
 if ~isfield(options,'checkGrads')
-    options.checkGrads      = 0;
+    options.checkGrads = 0;
 end
 % Flag for initial conditions update
 if ~isfield(options,'updateX0')
-    options.updateX0        = 1;
+    options.updateX0 = 1;
 end
 % Flag for hyperparameters update
 if ~isfield(options,'updateHP')
-    options.updateHP        = 1;
+    options.updateHP = 1;
 end
 % time lag of the short-sighted backward-pass
 if ~isfield(options,'backwardLag')
-    options.backwardLag     = 1;
+    options.backwardLag = 1;
 end
 options.backwardLag = max([floor(options.backwardLag),1]);
 % Maximum number of iterations
 if ~isfield(options,'MaxIter')
-    options.MaxIter         = 32;
+    options.MaxIter = 32;
 end
 % Maximum number of iterations for the initialization
 if ~isfield(options,'MaxIterInit')
-    options.MaxIterInit     = 32;
+    options.MaxIterInit = 32;
 end
 % Minimum number of iterations
 if ~isfield(options,'MinIter')
-    options.MinIter         = 1;
+    options.MinIter = 1;
 end
 % Minimum change in the free energy
 if ~isfield(options,'TolFun')
-    options.TolFun          = 2e-2;
+    options.TolFun = 2e-2;
 end
 % VB display window
 if ~isfield(options,'DisplayWin')
-    options.DisplayWin      = 1;
+    options.DisplayWin = 1;
 end
 % Ignore mean-field approximation additional terms (Laplace approx.)?
 if ~isfield(options,'ignoreMF')
-    options.ignoreMF        = 1;
+    options.ignoreMF = 1;
 end
 % Gauss-Newton ascent on free (1) or variational (0) energy
 if ~isfield(options,'gradF')
-    options.gradF           = 0;
+    options.gradF = 0;
 end
 % Gauss-Newton coordinate ascent maximum number of iterations:
 if ~isfield(options,'GnMaxIter')
-    options.GnMaxIter       = 32;
+    options.GnMaxIter = 32;
 end
 % Gauss-Newton coordinate ascent threshold on relative variational energy:
 if ~isfield(options,'GnTolFun')
-    options.GnTolFun        = 1e-5;
+    options.GnTolFun = 1e-5;
 end
 % Gauss-Newton inner-loops figures
 if ~isfield(options,'GnFigs')
-    options.GnFigs          = 0;
+    options.GnFigs = 0;
 end
 % matlab window messages
 if ~isfield(options,'verbose')
-    options.verbose         = 1;
+    options.verbose = 1;
 end
 % On-line version (true when called from VBA_OnLineWrapper.m)
 if ~isfield(options,'OnLine')
-    options.OnLine          = 0;
+    options.OnLine = 0;
 end
 % Free energy calculus at equilibrium?
 if ~isfield(options,'Laplace')
-    options.Laplace         = 1;
+    options.Laplace = 1;
 end
 % delays
 if ~isfield(options,'delays')
-    options.delays          = [];
+    options.delays = [];
 end
 % binomial data
 if ~isfield(options,'binomial')
-    options.binomial        = 0;
+    options.binomial = 0;
 end
 if options.binomial
-    options.ignoreMF        = 1;
+    options.ignoreMF = 1;
     if ~isbinary(y(:))
         error('Data should be binary!')
     end
@@ -143,13 +143,13 @@ if ~isfield(options,'skipf')
 end
 % split-Laplace VB?
 if ~isfield(options,'nmog')
-    options.nmog            = 1;
+    options.nmog = 1;
 end
 % Name of the display figure
 if ~isfield(options,'figName')
     try,aa=options.priors.a_alpha;catch,aa=[];end
     if ~isinf(aa)
-        options.figName     = 'VB-Laplace identification of stochastic systems';
+        options.figName = 'VB-Laplace identification of stochastic systems';
     else
         if isempty(f_fname)
             options.figName = 'VB-Laplace inversion of static model';
@@ -172,12 +172,12 @@ for t=1:dim.n_t
 end
 if isfield(options,'priors')
     % Get user-specified priors
-    priors              = options.priors;
-    fn                  = fieldnames(priors);
-    priors0             = VBA_priors(dim,options);
-    fn0                 = fieldnames(priors0);
-    io                  = ismember(fn0,fn);
-    ind                 = find(io==0);
+    priors = options.priors;
+    fn = fieldnames(priors);
+    priors0 = VBA_priors(dim,options);
+    fn0 = fieldnames(priors0);
+    io = ismember(fn0,fn);
+    ind = find(io==0);
     if ~isempty(ind)
         VBA_disp('Warning: could not find priors:',options)
         for i = 1:length(ind)
@@ -240,7 +240,7 @@ options.g_fname = g_fname;
 if options.nmog > 1
     np = length(options.params2update.phi);
     [m0,s0,w0] = getMoG4N01(options.nmog,1,0);
-    [C] = get_nkdraws(options.nmog,np,0);
+    tic,[C] = get_nkdraws(options.nmog,np,0);toc
     nd = size(C,2);
     split.w = zeros(nd,1);
     split.m = zeros(np,nd);
@@ -274,8 +274,9 @@ if dim.n > 0 && sum(options.delays(:)) > 0
     % modify priors:
     Zeros = zeros(inF.dim.n,dim.n_embed);
     for t=1:dim.n_t
+        tmp = 1e2*kron(eye(max(inG.options.delays(:))),priors.iQx{t});
         priors.iQx{t} = [   priors.iQx{t}	Zeros
-                            Zeros'          Inf*eye(dim.n_embed)  ];
+                            Zeros'          tmp    ];
         priors.iQx{t}(isnan(priors.iQx{t})) = 0;
         dpc = diag(priors.iQx{t});
         iz = find(isinf(dpc));

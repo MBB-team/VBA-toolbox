@@ -29,7 +29,7 @@ end
 
 % 1- Obtain MCMC distribution of fixed points
 Y = zeros(dim.n,N);
-fprintf(1,'Finding EGT equilibria...')
+fprintf(1,'Looking for EGT equilibria...')
 fprintf(1,'%6.2f %%',0)
 et0 = clock;
 options.verbose = 0;
@@ -38,8 +38,11 @@ for i=1:N
     x0 = randn(dim.n,1);
     x0 = x0 - mean(x0);
     [y] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
+%     [xf] = findSS(f_fname,x0,theta,u,options.inF);
+%     yf = feval(g_fname,xf,phi,u,options.inG);
     if verbose
         plot(ha,y','--','linewidth',0.5)
+%         plot(ha,size(y,2),yf,'o')
         drawnow
     end
     dy = repmat(mean(y,2),1,size(y,2))-y;
@@ -79,6 +82,8 @@ else
     end
     str2 = [];
 end
+
+disp(['  --> Found ',num2str(K),' ESS.'])
 
 if verbose
     ha2 = subplot(2,1,2,'parent',hf,'nextplot','add');

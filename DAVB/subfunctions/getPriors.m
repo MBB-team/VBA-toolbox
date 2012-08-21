@@ -58,10 +58,10 @@ if ~stochastic
     priors.a_alpha = Inf;
     priors.b_alpha = 0;
 else
-%     TR = options.decim.*options.inF.deltat;
-%     priors.b_alpha = TR/1e2;
+    TR = options.decim.*options.inF.deltat;
+    priors.b_alpha = TR/1e2;
     priors.a_alpha = 1e0;
-    priors.b_alpha = 5e-2;
+%     priors.b_alpha = 5e-2;
 end
 
 

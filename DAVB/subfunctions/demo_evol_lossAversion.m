@@ -52,7 +52,7 @@ phi     = [];
 u = [];
 
 in.X = [3;1;0]*1e0;
-in.mc = 4;
+in.mc = 2; % mean cost (of effort)
 in.sc = 0;
 in.dt = dt;
 in.lambda = 0:1./(n-1):1;
@@ -100,6 +100,22 @@ ylabel('outcome utility')
 
 figure,imagesc(y)
 [hi,px,gx,x] = plotGraph3D(y',in.lambda');
+
+
+
+gridc = [-4:0.2:4];
+nc = length(gridc);
+Y = zeros(size(y,1),nc);
+for i=1:nc
+    in.mc = gridc(i);
+    options.inF         = in;
+    options.inG         = in;
+    [y] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
+    Y(:,i) = y(:,end);
+end
+figure,imagesc(Y)
+[hi,px,gx,x] = plotGraph3D(Y,gridc');
+Y;
 
 
 

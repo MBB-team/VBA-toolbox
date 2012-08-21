@@ -4,4 +4,5 @@ try % parameters of the Gaussian observation filter
 catch
     P.sig = struct('r',0.54,'eta',0,'g',0.135);
 end
-g = P.sig.r.*exp(P.sig.r.*(P.sig.eta-x))./(1+exp(P.sig.r.*(P.sig.eta-x))).^2;
+sx = 1./(1+exp(P.sig.r.*(P.sig.eta-x)));
+g = P.sig.r.*sx.*(1-sx);

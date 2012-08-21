@@ -23,9 +23,9 @@ function f = fitness_lossAversion(x,P,u,in)
 % A = [ X(1)-c  X(3)-c
 %       X(2)-c  X(2)-c  ]
 % where the first line of A applies when the player cooperates, and the
-% second line applies when she defects, rather than colmuns pertain to the
-% opponent's behaviour. Note that the payoff of defecting is independent of
-% the opponent's behaviour.
+% second line applies when she defects (columns pertain to the opponent's
+% behaviour). Note that the payoff of defecting is independent of the
+% opponent's behaviour.
 % There is an effort cost (c) attached to any action. This cost does not
 % affect the action emission law, since the difference in values is
 % invariant to c. However, it turns out to be critical for deriving the

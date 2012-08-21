@@ -29,8 +29,7 @@ Xe = Xt(1:in.dim.n_embed);
 fx = [fxd;Xe];
 J = zeros(in.dim.n_embed+in.dim.n);
 J(:,1:in.dim.n) = Jd;
-J(1:in.dim.n_embed,in.dim.n+1:in.dim.n+in.dim.n_embed) = ...
-    eye(in.dim.n_embed);
+J(1:in.dim.n_embed,in.dim.n+1:in.dim.n+in.dim.n_embed) = eye(in.dim.n_embed);
 dfdp = [dfdpd,zeros(in.dim.n_theta,in.dim.n_embed)];
 
 

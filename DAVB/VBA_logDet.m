@@ -12,8 +12,9 @@ function ldQ = VBA_logDet(Q,indIn,t)
 if nargin < 3
     t = eps;
 end
-if nargin < 2
-    indIn=1:size(Q,1);
+if nargin < 2 || isempty(indIn)
+    dq = diag(Q);
+    indIn = find(~isinf(dq)&dq~=0);
 end
 subQ = full(Q(indIn,indIn));
 if isequal(subQ,eye(length(indIn))) % identity matrix

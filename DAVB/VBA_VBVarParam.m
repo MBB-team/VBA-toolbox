@@ -1,8 +1,6 @@
-function [posterior,suffStat] = ...
-    VBA_VBVarParam(y,posterior,suffStat,dim,options)
+function [posterior,suffStat] = VBA_VBVarParam(y,posterior,suffStat,dim,options)
 % VB update of the precision hyperparameters
-% function [posterior,suffStat] = ...
-%             VBA_VBVarParam(y,posterior,suffStat,dim,options)
+% function [posterior,suffStat] = VBA_VBVarParam(y,posterior,suffStat,dim,options)
 %
 % This function computes the natural parameters of the Gamma variational
 % posterior pdf of the variance parameters (measurement noise and

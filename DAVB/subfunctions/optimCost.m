@@ -45,6 +45,11 @@ try
 catch
     opt.GnTolFun = 1e-4;
 end
+try
+    opt.verbose = options.verbose;
+catch
+    opt.verbose = 0;
+end
 tic
 [mu,sigma,out] = GaussNewton(@objFun,init,opt);
 curv = -pinv(sigma);
@@ -57,7 +62,7 @@ args = varargin;
 I = myfun(x,myFun,minimize,args);
 dIdx = numericDiff(@myfun,1,x,myFun,minimize,args);
 d2Idx2 = numericDiff(@numericDiff,3,@myfun,1,x,myFun,minimize,args);
-S = -pinv(full(d2Idx2));
+S = -VB_inv(full(d2Idx2));
 dx = S*dIdx;
 function I = myfun(x,myFun,minimize,args)
 Args = cat(1,x,args(:));

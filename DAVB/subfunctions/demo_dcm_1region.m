@@ -13,21 +13,21 @@
 f_fname = @f_DCMwHRF;
 g_fname = @g_HRF3;
 TR = 1e0;                      % sampling period (in sec)
-n_t = round(4e1/TR);            % number of time samples
+n_t = round(6e1/TR);            % number of time samples
 dtU = 1;%round(2/TR)+1;           % input-on time interval
 t0U = 1;%round(10/TR)+1;                  
 microDT = 1e-1;               % micro-time resolution (in sec)
 homogeneous = 1;              % params of g(x) homogeneous accross regions
 lin = 0;
-alpha = Inf;%2e2/TR;              % state noise precision
+alpha = 1e2/TR;              % state noise precision
 sigma = Inf;%1e2;              % measurement noise precision
 
 %--- Input
-u = zeros(2,n_t);
+u = zeros(1,n_t);%zeros(2,n_t);
 times = 2:2+16;
 u(1,times) = 1;
-u(2,floor(n_t/2):n_t) = 1;
-% u(1,4*t0U:4*t0U+dtU) = 1;
+% u(2,floor(n_t/2):n_t) = 1;
+% % u(1,4*t0U:4*t0U+dtU) = 1;
 
 %--- DCM structure
 % invariant effective connectivity
@@ -35,9 +35,9 @@ A = [0];
 nreg = size(A,1);
 % modulatory effects
 B{1} = 0;
-B{2} = 1;
+B{2} = 0;
 % input-state coupling
-C = [1,0];
+C = 1;%[1,0];
 % gating (nonlinear) effects
 D{1} = 0;
 
@@ -50,30 +50,10 @@ dim.n_phi           = 2;
 dim.n               = 5*nreg;
 
 %--- Build priors for model inversion
-priors.muX0 = kron(ones(nreg,1),[0;0;0;0;0]);
-priors.SigmaX0 = 0e-1*eye(5*nreg);
-priors.muTheta = 0*ones(dim.n_theta,1);
-priors.muTheta(options.inF.indself) = -0;
-priors.SigmaTheta = 1e-1*eye(dim.n_theta);
-priors.muPhi = 0*ones(dim.n_phi,1);
-priors.SigmaPhi = 1e-1*eye(dim.n_phi);
-SC = 1e8;
-priors.a_alpha = Inf;%SC*alpha;
-priors.b_alpha = 0;%SC;
-priors.a_sigma = 1e0;
-priors.b_sigma = 1e-4;
-% State noise time-dependent covariance structure.
-% NB: ratio of neural versus hemodynamic precision
-for t = 1:n_t
-    dq = 1e4*ones(dim.n,1);
-    dq(options.inF.n5) = 1;
-    priors.iQx{t} = diag(dq);
-end
-options.priors = priors;
-options.backwardLag = 2;
-options.gradF = 0;
+options.priors = getPriors(nreg,n_t,options,0,1);
+options.microU = 0;
+options.backwardLag = ceil(16/TR);  % 16 secs effective backward lag
 options.GnFigs = 0;
-options.updateHP = 1;
 options.inF.linearized = lin;
 
 %-----------------------------------------------------------
@@ -86,7 +66,7 @@ t_A = [];
 t_Aself = -0;
 % B matrices
 t_B{1} = [];
-t_B{2} = -10;
+t_B{2} = [];%-10;
 % C matrix
 t_C = 1;
 % D matrices
@@ -132,30 +112,29 @@ phi(options.inG.ind2) = p_epsilon;
 
 
 %--- Simulate time series of hidden states and observations
-[y,x,x0,eta,e] = simulateNLSS(...
-    n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
 % disp('--paused--')
 % pause
 
-% 
-% %-----------------------------------------------------------
-% %------------------- model inversion -----------------------
-% %--- Call inversion routine
-% [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-% 
-% %--- Display results
-% displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
-% 
-% %--- Make predictions
-% try
-%     options = out.options;
-%     [xs,ys,xhat,vx,yhat,vy] = comparePredictions(...
-%         n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
-% catch
-%     disp('------!!Unable to form predictions!!------')
-% end
-% 
-% 
+
+%-----------------------------------------------------------
+%------------------- model inversion -----------------------
+%--- Call inversion routine
+[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+
+%--- Display results
+displayResults(posterior,out,y-e,x,x0,theta,phi,alpha,sigma)
+
+%--- Make predictions
+try
+    options = out.options;
+    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(...
+        n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
+catch
+    disp('------!!Unable to form predictions!!------')
+end
+
+

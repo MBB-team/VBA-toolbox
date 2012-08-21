@@ -15,17 +15,17 @@ function [iQ] = VB_inv(Q,indIn,flag,v)
 %   - iQ: the nxn matrix that is either the inverse of Q or v-padded Q (for
 %   flag='replace').
 
-if nargin < 4
-    v = 0;
+if nargin < 2 || isempty(indIn)
+    dq = diag(Q);
+    indIn = find(~isinf(dq)&dq~=0);
 end
 if nargin < 3
     replace = 0;
 else
     replace = isequal(flag,'replace');
 end
-if nargin < 2 || isempty(indIn)
-    dq = diag(Q);
-    indIn = find(~isinf(dq)&dq~=0);%abs(dq)>=1e-8&
+if nargin < 4
+    v = 0;
 end
 subQ = full(Q(indIn,indIn));
 if replace % v-padd

@@ -6,8 +6,8 @@ clear variables
 %---- simulate noisy gbf ----%
 
 % Choose basic settings for simulations
-sigma = 1e1;            % precision 
-phi = [2;2;1;3];         % observation parameters
+sigma = 1e-1;            % precision 
+phi = [5;-1;1;3];         % observation parameters
 g_fname = @g_Gaussian; % observation function
 inG.grid = -10:0.1:10;  % grid on which the gbf is evaluated
 inG.input = zeros(length(inG.grid),1);
@@ -28,7 +28,7 @@ plot(gx')
 
 % Build priors structure
 priors.muPhi = zeros(4,1);         % prior mean on observation params
-priors.SigmaPhi = 1e4*eye(4); % prior covariance on observation params
+priors.SigmaPhi = 1e0*eye(4); % prior covariance on observation params
 priors.a_sigma = 1;             % Jeffrey's prior
 priors.b_sigma = 1;             % Jeffrey's prior
 % priors.iQy{1} = 0*eye(length(gx));

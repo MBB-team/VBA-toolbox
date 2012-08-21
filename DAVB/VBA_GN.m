@@ -108,7 +108,7 @@ while ~stop
         % get next move and energy step
         [I,Sigma,NextdeltaMu,suffStat2] = feval(fname,mu,y,posterior,suffStat,dim,u,options);
         % get increment in variational/free energy
-        [rdf,deltaI,F] = getCostIncrement(I,PreviousI,mu,Sigma,suffStat2,options,posterior,flag,it);
+        [rdf,deltaI,F] = getCostIncrement(I,PreviousI,mu,Sigma,suffStat2,options,posterior,flag);
     catch
         rdf = -1;
         deltaI = -Inf;
@@ -152,6 +152,14 @@ while ~stop
         end
     else % stop Gauss-Newton search
         stop = 1;
+        if abs(rdf)< options.GnTolFun
+            posterior = updatePosterior(posterior,mu,Sigma,indIn,flag);
+            if ~options.gradF
+                [F] = VBA_FreeEnergy(posterior,suffStat2,options);
+            end
+            suffStat2.F = [suffStat2.F,F];
+            suffStat = suffStat2;
+        end
         try close(hf); end
         try close(suffStat.haf); end
     end
@@ -177,7 +185,7 @@ end
 
 
 
-function [rdf,deltaI,F] = getCostIncrement(I,PreviousI,mu,Sigma,suffStat2,options,posterior,flag,it)
+function [rdf,deltaI,F] = getCostIncrement(I,PreviousI,mu,Sigma,suffStat2,options,posterior,flag)
 if options.gradF
     if ~isinf(I)
         switch flag

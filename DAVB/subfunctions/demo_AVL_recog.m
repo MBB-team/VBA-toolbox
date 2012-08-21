@@ -157,33 +157,33 @@ options.inF.flag = flag;
 switch options.inF.flag
     case 1
         priors.muX0 = [0.5;0;1e0;0];
-        priors.SigmaX0 = 1e1*eye(4);
-        priors.SigmaX0(3,3) = 1e1;
+        priors.SigmaX0 = 1e0*eye(4);
+        priors.SigmaX0(3,3) = 1e0;
         priors.muTheta = [theta(1);0];
-        priors.SigmaTheta = 0.*1e1*eye(2);
+        priors.SigmaTheta = 0.*1e0*eye(2);
         %         priors.SigmaTheta(1,1) = 0;
     case 2
         priors.muX0 = [0.5;0;1e1;0];
-        priors.SigmaX0 = 1e1*eye(4);
+        priors.SigmaX0 = 1e0*eye(4);
         priors.muTheta = [theta(1);0];
-        priors.SigmaTheta = 1e1*eye(2);
+        priors.SigmaTheta = 1e0*eye(2);
         priors.SigmaTheta(1,1) = 0;
     case 3
         priors.muX0 = [0.5;0;1e0;-2;1e0;0];
-        priors.SigmaX0 = 1e1*eye(6);
+        priors.SigmaX0 = 1e0*eye(6);
         %         priors.SigmaX0(4,4) = 1;
         theta(2) = -32;
         priors.muTheta = [0;-2];
-        priors.SigmaTheta = 1e1*eye(2);
+        priors.SigmaTheta = 1e0*eye(2);
         priors.SigmaTheta(1,1) = 0;
 end
 priors.muPhi = [0;0;0];
-priors.SigmaPhi = 1e1*eye(length(priors.muPhi));
+priors.SigmaPhi = 1e0*eye(length(priors.muPhi));
 % priors.SigmaPhi(1:2,1:2) = 0;
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
-priors.a_sigma = 1e2;
-priors.b_sigma = 1e-2;
+priors.a_sigma = 1e0;
+priors.b_sigma = 1e0;
 
 % Build options and dim structures for model inversion
 options.priors      = priors;

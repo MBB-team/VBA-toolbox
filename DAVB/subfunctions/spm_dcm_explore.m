@@ -99,6 +99,15 @@ catch % old DCM structure
         DCM.M.IS = '?';
     end
 end
+
+% test DCM parameters
+try
+    DCM = spm_dcm_test(DCM);
+catch
+    DCM = myspm_dcm_test(DCM);
+end
+ud.Pp = DCM.sdr;
+
 ud.Pcorr = spm_cov2corr(DCM.Cp);
 pos0 = get(0,'screenSize');
 pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
@@ -386,12 +395,18 @@ if isfield(DCM,'xY')
     ha(1) = subplot(2,1,1,...
         'parent',ud.tabs.handles2.hp,...
         'visible','off');
-    set(ha,'position',get(ha,'position')+[0 -0.1 0 0.2])
-    h = spm_dcm_graph(DCM.xY,ud.Ep.A,ha);
+    set(ha,'position',get(ha,'position')+[0 -0.1 0 0.1])
+    try
+        h = spm_dcm_graph(DCM.xY,ud.Ep.A,ha);
+    catch
+        h = myspm_dcm_graph(DCM.xY,ud.Ep.A,ha);
+    end
     try; set(hf,'renderer','opengl'); end
-    set(h.handles.BUTTONS.transp,...
-        'parent',ud.tabs.handles2.hp,...
-        'position',get(h.handles.BUTTONS.transp,'position')-0.04*[1 1 0 0])
+    try
+        set(h.handles.BUTTONS.transp,...
+            'parent',ud.tabs.handles2.hp,...
+            'position',get(h.handles.BUTTONS.transp,'position')-0.04*[1 1 0 0])
+    end
     colormap(ha(1),'gray')
     hc = get(ha(1),'children');
     if isempty(hc)
@@ -577,7 +592,7 @@ ud = get(hf,'userdata');
 delete(get(ud.tabs.handles2.hp,'children'))
 DCM = ud.DCM;
 Ep = ud.Ep;
-a(:,:,1) = DCM.Pp.A;
+a(:,:,1) = ud.Pp.A;%DCM.Pp.A;
 a(:,:,2) = Ep.A;
 ha = displayMat(a,ud.tabs.handles2.hp,DCM,'A',ud.dim);
 
@@ -640,7 +655,7 @@ if isequal(unique(DCM.b(:,:,ind)),0)
         'string',...
         ['no modulatory effect for input ''',DCM.U.name{ind},'''']);
 else
-    a(:,:,1) = DCM.Pp.B(:,:,ind);
+    a(:,:,1) = ud.Pp.B(:,:,ind);%DCM.Pp.B(:,:,ind);
     a(:,:,2) = Ep.B(:,:,ind);
     ha = displayMat(a,ud.tabs.handles2.hp,DCM,'B',ud.dim);
 end
@@ -667,7 +682,7 @@ if isempty(DCM.c) || isequal(unique(DCM.c(:)),0)
         'fontsize',12,...
         'string','no gain on driving inputs.');
 else
-    a(:,:,1) = DCM.Pp.C;
+    a(:,:,1) = ud.Pp.C;%DCM.Pp.C;
     a(:,:,2) = Ep.C;
     ha = displayMat(a,ud.tabs.handles2.hp,DCM,'C',ud.dim);
 end
@@ -718,7 +733,7 @@ if isempty(DCM.d) || isequal(unique(DCM.d(:,:,ind)),0)
         'string',...
         ['no nonlinear gating effect for region ''',DCM.Y.name{ind},'''']);
 else
-    a(:,:,1) = DCM.Pp.D(:,:,ind);
+    a(:,:,1) = ud.Pp.D(:,:,in);%DCM.Pp.D(:,:,ind);
     a(:,:,2) = Ep.D(:,:,ind);
     ha = displayMat(a,ud.tabs.handles2.hp,DCM,'D',ud.dim);
 end
@@ -826,12 +841,13 @@ xlabel(ha,'lag tau (secs)','fontsize',8)
 ylabel(ha,'Corr[ e(t), e(t+tau) ]','fontsize',8)
 legend(ha,str)
 set(ha,'ygrid','on','xgrid','off','box','on');
+try;getSubplots;end
 
 
 function ha = displayMat(a,hParent,DCM,matType,dim)
 ha = subplot(2,1,1,'parent',hParent);
 imagesc(a(:,:,2),'parent',ha)
-title(ha,'fixed effects','FontSize',12)
+title(ha,'posterior mean: E[theta|y,m]','FontSize',12)
 if isequal(matType,'C')
     set(ha,...
         'XTick',[1:dim.m],'XTickLabel',DCM.U.name,...
@@ -863,12 +879,9 @@ try
 catch
     colorbar
 end
-
-
-ha(2) = subplot(2,1,2,...
-    'parent',hParent);
+ha(2) = subplot(2,1,2,'parent',hParent);
 imagesc(a(:,:,1),'parent',ha(2))
-title(ha(2),['posterior probabilities: P(|effect|>0)'],'FontSize',12)
+title(ha(2),['Savage-Dickey ratios: 1-P(theta=0|y,m)'],'FontSize',12)
 if isequal(matType,'C')
     set(ha(2),...
         'XTick',[1:dim.m],'XTickLabel',DCM.U.name,...
@@ -893,8 +906,6 @@ try
 catch
     colorbar
 end
-
-
 for i = 1:size(a,1)
     for j = 1:size(a,2)
         text(j,i,num2str(a(i,j,2),'%5.2f'),...
@@ -907,11 +918,11 @@ for i = 1:size(a,1)
             'HorizontalAlignment','Center')
     end
 end
-
 try;getSubplots; end
 
+
 function R = spm_autocorr(y)
-% computes simple autocorrelation function of signal y
+% computes sample autocorrelation function of signal y
 [n,t] = size(y);
 R = zeros(n,t*2);
 % standardize y
@@ -925,4 +936,173 @@ for i=1:n
     tfr = fr';
     S = fr(:).*tfr(:);
     R(i,:) = ifft(S)'/t;
+end
+
+
+
+function DCM = myspm_dcm_test(DCM)
+% tests whether DCM params are zero using Savage-Dickey ratios
+n = size(DCM.Ep.A,1);
+nu = size(DCM.Ep.C,2);
+E = spm_vec(DCM.Ep);
+V = DCM.Cp;
+E0 = spm_vec(DCM.M.pE);
+V0 = DCM.M.pC;
+sdr.A = zeros(n,n);
+for i=1:n
+    for j=1:n
+        tmp = DCM.Vp;
+        tmp.A(i,j) = 0;
+        ind = find(full(spm_vec(tmp))~=full(spm_vec(DCM.Vp)));
+        E0r = E0;
+        E0r(ind) = 0;
+        V0r = V0;
+        V0r(ind,:) = 0;
+        V0r(:,ind) = 0;
+        if isempty(ind) % this param was fixed
+            if isequal(E0,E0r)
+                dF = Inf;
+            else
+                dF = -Inf;
+            end
+        else
+            dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
+        end
+        sdr.A(i,j) = 1./(1+exp(dF));
+    end
+end
+sdr.B = zeros(n,n,nu);
+for i=1:n
+    for j=1:n
+        for k=1:nu
+            tmp = DCM.Vp;
+            tmp.B(i,j,k) = 0;
+            ind = find(full(spm_vec(tmp))~=full(spm_vec(DCM.Vp)));
+            E0r = E0;
+            E0r(ind) = 0;
+            V0r = V0;
+            V0r(ind,:) = 0;
+            V0r(:,ind) = 0;
+            if isempty(ind) % this param was fixed
+                if isequal(E0,E0r)
+                    dF = Inf;
+                else
+                    dF = -Inf;
+                end
+            else
+                dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
+            end
+            sdr.B(i,j,k) = 1./(1+exp(dF));
+        end
+    end
+end
+sdr.C = zeros(n,nu);
+for i=1:n
+    for j=1:nu
+        tmp = DCM.Vp;
+        tmp.C(i,j) = 0;
+        ind = find(full(spm_vec(tmp))~=full(spm_vec(DCM.Vp)));
+        E0r = E0;
+        E0r(ind) = 0;
+        V0r = V0;
+        V0r(ind,:) = 0;
+        V0r(:,ind) = 0;
+        if isempty(ind) % this param was fixed
+            if isequal(E0,E0r)
+                dF = Inf;
+            else
+                dF = -Inf;
+            end
+        else
+            dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
+        end
+        sdr.C(i,j) = 1./(1+exp(dF));
+    end
+end
+nD = size(DCM.Ep.D,3);
+if nD > 0
+    for i=1:n
+        for j=1:n
+            for k=1:n
+                tmp = DCM.Vp;
+                tmp.D(i,j,k) = 0;
+                ind = find(full(spm_vec(tmp))~=full(spm_vec(DCM.Vp)));
+                E0r = E0;
+                E0r(ind) = 0;
+                V0r = V0;
+                V0r(ind,:) = 0;
+                V0r(:,ind) = 0;
+                if isempty(ind) % this param was fixed
+                    if isequal(E0,E0r)
+                        dF = Inf;
+                    else
+                        dF = -Inf;
+                    end
+                else
+                    dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
+                end
+                sdr.D(i,j,k) = 1./(1+exp(dF));
+            end
+        end
+    end
+end
+DCM.sdr = sdr;
+
+
+
+
+function [h,g] = myspm_dcm_graph(xY,A,ha)
+% Region and anatomical graph display
+% see spm_dcm_graph.m
+try; ha; catch; ha = []; end
+col   = {'b','g','r','c','m','y','k','w'};
+m     = size(xY,2);
+L     = [];
+S     = [];
+for i = 1:m
+    L       = [L xY(i).xyz];
+    name{i} = xY(i).name(1:min(end,3));
+    S       = [S xY(i).spec];
+end
+if isempty(ha)
+    ha(1) = subplot(2,1,1);
+    set(ha(1),'position',[0 .5 1 .5])
+    ha(2) = 0;
+end
+cla(ha(1));
+meshsurf = fullfile(spm('Dir'),'canonical','cortex_20484.surf.gii');
+% meshsurf = fullfile(spm('Dir'),'canonical','cortex_8196.surf.gii');
+H = spm_mesh_render('Disp',meshsurf,struct('parent',ha(1)));
+options.query = 'dummy';
+options.hfig  = H.figure;
+options.ParentAxes = H.axis;
+options.handles.ParentAxes = H.axis;
+options.markersize = 32;
+h  = spm_eeg_displayECD(L,[],8,name,options);
+grid(H.axis,'on')
+h.handles.hfig = H.figure;
+h.handles.ParentAxes  = H.axis;
+h.handles.mesh = H.patch;
+for i = 1:m
+    set(h.handles.ht(i),'FontWeight','bold')
+end
+set(h.handles.mesh,'FaceAlpha',0.20);
+hh = get(intersect(get(get(H.patch,'uiContextMenu'),'children'),findobj('Label','Transparency')),'children');
+set(hh(5),'Checked','Off')
+set(hh(1),'Checked','On')
+W     = max(abs(A),abs(A'));
+W     = W - diag(diag(W));
+W     = 3*W/max(W(:));
+W     = W.*(W > 1/128);
+for i = 1:length(A)
+    for j = (i + 1):length(A)
+        if W(i,j)
+            if abs(A(i,j)) > abs(A(j,i)), c = j; else, c = i; end
+            line(L(1,[i j]),L(2,[i j]),L(3,[i j]),...
+                'Color',col{c},...
+                'LineStyle','-',...
+                'LineWidth',W(i,j),...
+                'Parent',ha(1));
+        end
+    end
 end

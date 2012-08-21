@@ -35,12 +35,14 @@ end
 
 % form dummy posterior p(X_:0|y_:0) with augmented (lagged) states:
 lag = options.backwardLag + 1;
-indx0 = dim.n*(lag-1)+1:dim.n*lag;
+% indx0 = dim.n*(lag-1)+1:dim.n*lag;
 % m0 = zeros(dim.n*lag,1);
 % m0(indx0) = posterior.muX0;
+% S0 = 1e8*eye(dim.n*lag,dim.n*lag);
+% S0(indx0,indx0) = posterior.SigmaX0;
 m0 = repmat(posterior.muX0,lag,1);
-S0 = 1e8*eye(dim.n*lag,dim.n*lag);
-S0(indx0,indx0) = posterior.SigmaX0;
+S0 = kron(eye(lag),posterior.SigmaX0);
+
 
 % evaluate evolution function at current mode
 [fx0,dF_dX0] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
@@ -194,12 +196,12 @@ deltaMuX = muX - X;
 
 % variational energy
 IX = -0.5.*sigmaHat.*dy2 -0.5*alphaHat.*dx2;
-
 if isweird({IX,SigmaX.current,SigmaX.inter}) || div
     IX = -Inf;
 end
 
 % sufficient statistics
+suffStat.IX = IX;
 suffStat.SX = SX;
 suffStat.SXd2gdx2 = SXd2gdx2;
 suffStat.SXd2fdx2 = SXd2fdx2;

@@ -6,15 +6,6 @@ function [hfp] = VBA_ReDisplay(posterior,out,newFig,fromPause)
 % review a model inversion, and clears it if it finds it.
 
 
-% out.u = VBA_getU(out.u,out.options,out.dim,'2macro');
-% out.options = VBA_check(...
-%     out.y,...
-%     out.u,...
-%     out.options.f_fname,...
-%     out.options.g_fname,...
-%     out.dim,...
-%     out.options);
-
 try; newFig; catch; newFig = 0; end
 try; fromPause; catch; fromPause = 0; end
 
@@ -1037,13 +1028,11 @@ else
 end
 
 % get prior predictive density
-[muy,Vy] = VBA_getLaplace(...
-    u,out.options.f_fname,out.options.g_fname,out.dim,out.options);
+[muy,Vy] = VBA_getLaplace(u,out.options.f_fname,out.options.g_fname,out.dim,out.options);
 
 % get micro-time posterior hidden-states estimates
 try
-    [MT_x,MT_gx,microTime,sampleInd] = ...
-        VBA_microTime(posterior,u,out);
+    [MT_x,MT_gx,microTime,sampleInd] = VBA_microTime(posterior,u,out);
 catch
     MT_x = [];
     MT_gx = [];
@@ -1072,7 +1061,7 @@ if  ~out.options.binomial
     dy.pg2 = dy.pg2./spgy;
 end
 
-% get residuals: data noise
+% get residuals: state noise
 dx.dx = out.suffStat.dx(:);
 if ~isempty(dx.dx)
     dx.m = mean(dx.dx);

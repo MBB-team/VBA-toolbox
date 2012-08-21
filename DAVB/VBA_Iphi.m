@@ -126,6 +126,7 @@ if isweird({Iphi,SigmaPhi}) || div
 end
 
 % update sufficient statistics
+suffStat.Iphi = Iphi;
 suffStat.Sphi = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaPhi,indIn);
 suffStat.Sphid2gdphi2 = Sphid2gdphi2;
 suffStat.Sphid2gdphidx = trace(kernel*posterior.SigmaPhi);

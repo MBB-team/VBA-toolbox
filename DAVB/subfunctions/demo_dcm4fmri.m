@@ -17,7 +17,7 @@ clear variables
 f_fname = @f_DCMwHRF;
 g_fname = @g_HRF3;
 TR = 2e0;                     % sampling period (in sec)
-n_t = round(1e2/TR);          % number of time samples
+n_t = round(2e2/TR);          % number of time samples
 dtU = round(2/TR)+1;          % input-on time interval
 t0U = round(10/TR)+1;                  
 microDT = 2e-1;               % micro-time resolution (in sec)
@@ -87,7 +87,7 @@ t_Aself = -0;
 t_B{1} = [];
 t_B{2} = exp([ -0.5 ]);
 t_C = exp([ +0.1 ]);
-t_D{1} = -exp([ -1 ]);
+t_D{1} = 0;%-exp([ -1 ]);
 t_D{2} = [];
 t_D{3} = [];
 theta = zeros(dim.n_theta,1);
@@ -140,12 +140,12 @@ displaySimulations(y,x,eta,e)
 %------------------- model inversion -----------------------
 %--- Call inversion routine
 % options.checkGrads = 1;
-
+% options.gradF = 1;
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 %--- Display results
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
+displayResults(posterior,out,y-e,x,x0,theta,phi,alpha,sigma)
 
 %--- Make predictions
 try

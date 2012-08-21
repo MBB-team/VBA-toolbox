@@ -58,8 +58,7 @@ options.DisplayWin = 1;
 options.GnFigs = 0;
 
 
-[posterior,out] = VBA_NLStateSpaceModel(...
-    y(:)',u(:)',f_fname,g_fname,dim,options);
+[posterior,out] = VBA_NLStateSpaceModel(y(:)',u(:)',f_fname,g_fname,dim,options);
 
 
 % mu = zeros(dim.n_phi,p);

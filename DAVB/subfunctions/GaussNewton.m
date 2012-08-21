@@ -23,6 +23,17 @@ try
 catch
     oneIteration = 0;
 end
+try
+    verbose = options.verbose;
+    if verbose
+        hf = figure('color',[1 1 1]);
+        ha = axes('parent',hf,'nextplot','add');
+    end
+catch
+    verbose = 0;
+end
+    
+
 
 out.conv = 0;
 out.nReg = 0;
@@ -30,6 +41,10 @@ out.nReg = 0;
 % Initialization
 PreviousMu = init;
 [I,PreviousSigma,deltaMu] = feval(fname,PreviousMu,args{:});
+if verbose
+    plot(0,I,'ko')
+    drawnow
+end
 [deltaMu,flag] = VBA_checkGN(PreviousSigma,deltaMu);
 out.nReg = out.nReg + flag;
 PreviousI = I;
@@ -55,9 +70,14 @@ while ~stop
         [I,NextSigma,NextdeltaMu] = feval(fname,mu,args{:});
         [NextdeltaMu,flag] = VBA_checkGN(NextSigma,NextdeltaMu);
         out.nReg = out.nReg + flag;
+        if verbose
+            plot(it,I,'ko')
+            drawnow
+        end
     catch
         I = -Inf;
     end
+    
     % calculate relative energy function improvement
     deltaI = I-PreviousI;
     % check whether to stop, to accept move or to halve step

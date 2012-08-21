@@ -1,4 +1,4 @@
-% Demo for Lotak-Volterra competitive system
+% Demo for Lotka-Volterra competitive system
 
 clear variables
 close all
@@ -7,7 +7,7 @@ close all
 f_fname = @f_LV2D;
 g_fname = @g_Id;
 u       = [];
-n_t = 1e2;
+n_t = 2e2;
 deltat = 1e-1;
 alpha   = 5e2;
 sigma   = 1e1;

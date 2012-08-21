@@ -41,7 +41,8 @@ end
 
 
 if options.Laplace
-    [F] = VBA_FreeEnergy2(posterior,suffStat,options);
+    [F] = VBA_FreeEnergy3(posterior,suffStat,options);
+%     [dF] = F-VBA_FreeEnergy2(posterior,suffStat,options)
     return
 end
 

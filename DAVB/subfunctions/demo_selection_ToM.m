@@ -128,7 +128,7 @@ legstr = {'k=0','k=1','k=2','k=3','k=4','RL','Nash'};
 m = 5;
 
 % Parameters of the simulation
-n_t = 32e2;
+n_t = 2^10;%32e2;
 dt = 2e-0;
 f_fname = @log_replicator;
 g_fname = @g_odds;
@@ -152,6 +152,8 @@ options.verbose     = 0;
 dim.n_theta         = 2;
 dim.n_phi           = 0;
 dim.n               = m;
+dim.n_t             = n_t;
+dim.p             = dim.n;
 % fill in options structure (including default priors)
 [options,u,dim] = VBA_check(sparse(dim.n,n_t),[],f_fname,g_fname,dim,options);
 
@@ -163,8 +165,9 @@ if regularize
 else
     gtau = 2.^[0:1:9];
 end
+gtau = 16;%2^9;
 ngt = length(gtau);
-glambda = 0:0.1:1;
+glambda = 0.5;%0:0.1:1;
 ngl = length(glambda);
 
 XX = zeros(m,ngt*ngl,ngc);
@@ -183,7 +186,7 @@ disp(' ')
 
 dbstop if error
 
-for k=1:2
+for k=1%:2
     
     k
     tmp = gcoop(k)
@@ -272,12 +275,12 @@ for k=1:2
     
     
     
-    
+%     save results_selection_ToM4.mat
     
     
     
 end
 
-save results_selection_ToM3.mat
+
 
 

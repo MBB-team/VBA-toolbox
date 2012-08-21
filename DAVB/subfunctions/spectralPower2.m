@@ -1,4 +1,4 @@
-function [gy,P,gridw,g,R] = spectralPower2(P,gridw,g,c)
+function [gy,P,gridw,g,R] = spectralPower2(P,gridw,g,C)
 
 
 nw = numel(gridw); % number of frequency bins
@@ -11,25 +11,30 @@ try % synaptic gain at steady-state membrane depolarization
 catch
     [g] = dsdv(P);
 end
-g = g.*P.sig.r.*P.v(3,1).*2*P.c(3,1).*P.a(3,1)/2;
+
+v = P.v(P.i1,P.i2);
+c = P.c(P.i1,P.i2);
+a = P.a(P.i1,P.i2);
+
+g = g.*v*c.*a/2;
 
 try
-    c;
+    C;
 catch
-    c = [1 0 0];
+    C = [1 0 0];
 end
 
 J0 = zeros(nk,1);
 
 for w=1:nw
     
-    W = pi*gridw(w);
+    W = gridw(w);
     
     for k=1:nk
         
         K = k.*pi./P.l;
 
-        J0(k) = -P.v(3,1).*2*P.c(3,1).*(1-K./P.c(3,1).^2);
+        J0(k) = -v.*2*c.*(1-K./c.^2);
          
 %         J = [   0               1           0
 %                 -P.Ke.^2        -2*P.Ke     P.me.*P.Ke
@@ -51,9 +56,9 @@ for w=1:nw
         R(3,k,w) = ( a11.*a22 - P.Ke.^2 + (a22+1).*g )./detF;
         
         
-        [L] = 1;%leadField(K,P);
+        [L] = leadField(K,P);
         
-        gy(w) = gy(w) + abs(c*R(:,k,w)).^2.*L.^2;
+        gy(w) = gy(w) + C*R(:,k,w)*L;
 %         L.*T(k,w).*conj(T(k,w)).*conj(L);
         
     end
@@ -70,5 +75,6 @@ function [L] = leadField(K,P)
 L = P.phi(1).*exp(-P.phi(2).*pi.^2.*K.^2);
 
 function [g] = dsdv(P)
-g = P.sig.r.*exp(P.sig.r.*P.sig.eta)./(1+exp(P.sig.r.*P.sig.eta)).^2;
+s0 = 1./(1+exp(P.sig.r.*P.sig.eta));
+g = P.sig.r.*s0.*(1-s0);
 
