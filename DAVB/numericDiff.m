@@ -2,7 +2,7 @@ function [dfdx,f] = numericDiff(fname,nArg2diff,varargin)
 % numerical evaluation of derivatives
 % [dfdx] = numericDiff(fname,nArg2diff,arg1,arg2,...,argn)
 % This function evaluates numerically the derivatives of the function
-% called fname.
+% called fname. 
 % IN:
 %   - fname: a variable which refers to the function to be differentiated,
 %   ie either its name or a function handle. !The latter can be very useful
