@@ -17,6 +17,11 @@ group_level_analysis(Lf,'RFX')
 % group_level_analysis(lme,'FFX',model_names)  
   
 
+%%
+
+Lm = rand(10,8);
+partition = {[1,3],[5,7]};
+[Lf] = models2families(Lm,partition);
   
 
 

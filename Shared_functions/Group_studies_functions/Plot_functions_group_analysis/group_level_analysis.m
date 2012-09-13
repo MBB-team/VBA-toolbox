@@ -105,10 +105,11 @@ if isequal(type,'RFX') % Random effect analysis
         try
             set(gca, 'XTickLabel',model_names)
             th = rotateticklabel(gca,45);
-        catch; end;
+        catch; 
         xlabel('Models', ...
             'FontSize', 10, ...
             'FontWeight', 'bold')
+        end
     end
     
     
@@ -116,7 +117,7 @@ if isequal(type,'RFX') % Random effect analysis
     subplot(1,3,3)
     h2=bar(exp_r);
     set(h2,'facecolor','black')
-    title('Expectation of the posterior p(r|y)', ...
+    title('Expected model frequencies', ...
         'FontSize', 10, ...
         'FontWeight', 'bold')
     
