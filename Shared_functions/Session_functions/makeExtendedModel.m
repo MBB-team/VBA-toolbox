@@ -105,6 +105,13 @@ dim_e.n_t = dim.n_t; % number of trials (unchanged)
  dim_e.n = 0; % hidden states
  dim_e.n_theta = max(max(in_sessions.ind.theta));
  dim_e.n_phi = max(max(in_sessions.ind.phi));
+ 
+ if isempty(dim_e.n_theta)
+     dim_e.n_theta = 0;
+ end
+  if isempty(dim_e.n_phi)
+     dim_e.n_phi = 0;
+ end
 
 for i = 1 : n_sess
 dim_e.p = max([dim_e.p; in.sess(i).ind.gx(:)]);
