@@ -14,7 +14,6 @@ function [ f_fname_e,g_fname_e,dim_e,options_e,fb_e ] = makeExtendedModel(dim,op
 % - dim : dimensions of the IM
 %    - .u : dimension of the data vector used
 % - options : options of the IM
-%    - .dim_e : if exist, specifies dimension of the parameter space of the EM
 % - in_sessions : information about sessions
 %       - .f_fname : evolution function of the IM
 %       - .g_fname : observation function of the IM model
@@ -22,58 +21,26 @@ function [ f_fname_e,g_fname_e,dim_e,options_e,fb_e ] = makeExtendedModel(dim,op
 %       session (base model)
 %       - .ind.theta : indices of the variable theta used for each session
 %       - .ind.phi : indices of the variable phi used for each session
-% - y : ((dim_output*Nsession)*Ntrials) Output of all sessions concatenated
-% - u : ((dim_data*Nsession)*Ntrials) Experimenter data of all sessions
-%       concatenated
-% - isYout : ((dim_output*Nsession)*Ntrials) behavioral data not to be
-%           considered for inversion (1=out,0=in), concatenated for all
-%           sessions
-% - priors: a structure containing the parameters of the prior pdf of the
-% extended model :
-%       .muPhi: a n_phix1 vector containing the prior mean of Phi, the
-%       observation parameters
-%       .muTheta: a n_thetax1 vector containing the prior mean of Theta,
-%       the evolution parameters
-%       .muX0: a nx1 vector containing the prior mean of the hidden-states
-%       initial condition
-%       .SigmaPhi: n_phixn_phi prior covariance matrix of Phi
-%       .SigmaTheta: n_thetaxn_theta prior covariance matrix of Theta
-%       .SigmaX0: nxn prior covariance matrix of X0
-%       .a_sigma / .b_sigma: the shape and scale parameters of the prior
-%       Gamma pdf upon the measurement noise precision
-%       .a_alpha / .b_alpha: the shape and scale parameters of the prior
-%       Gamma pdf upon the stochastic innovations precision
 
-%}
 
 
 n_sess = in_sessions.n_sess;
 %---------------------------------------------------
 %-- Dimensions of the extended model
 
+%-- Check existence of indices
 
-dim_e = struct();
-dim_e.p = dim.p*n_sess; % output
-dim_e.n_t = dim.n_t; % number of trials (unchanged)
-dim_e.u = dim.u*n_sess; % number of trials (unchanged)
-dim_e.n = dim.n*n_sess; % hidden states
-dim_e.n_sess = n_sess;
+try in_sessions.ind.theta;
+catch err
+      msg = sprintf('You need to provide input in_sessions.ind.theta so we know which evolution parameters are used for which session');
+      error(msg);
+end  
+try in_sessions.ind.phi;
+catch err
+      msg = sprintf('You need to provide input in_sessions.ind.phi so we know which observation parameters are used for which session');
+      error(msg);
+end  
 
-%-- Parameters
-%- theta
-try
-    dim_e.n_theta = in_sessions.dim_e.n_theta;
-catch
-    dim_e.n_theta = dim.n_theta*n_sess;
-    in_sessions.ind.theta = reshape(1:dim_e.n_theta,dim.n_theta,n_sess)';
-end
-%- phi
-try
-    dim_e.n_phi = in_sessions.dim_e.n_phi;
-catch
-    dim_e.n_phi = dim.n_phi*n_sess;
-    in_sessions.ind.phi = reshape(1:dim_e.n_phi,dim.n_phi,n_sess)';
-end
 
 %------------------------------------------------------
 %-- Filling session structure
@@ -82,7 +49,6 @@ end
 in = struct();
 in.nsess = in_sessions.n_sess;
 
-
 % --- Specific information for each session
 i_gx = 0; % cumulated index of output
 i_x = 0; % cumulated index of hidden states
@@ -90,10 +56,9 @@ i_u = 0; % cumulated index of inputs
 
 for i = 1 : n_sess
     
-    
     try dim_s = dim{i};
     catch; dim_s = dim;end
-    
+     in.sess(i).dim = dim_s;
     
     % Information about the evolution/obsevation function for each session
     try in.sess(i).f_fname = in_sessions.f_fname{i};
@@ -102,10 +67,10 @@ for i = 1 : n_sess
     catch ;in.sess(i).g_fname = in_sessions.g_fname;end
     
     
-    % Information about the evolution/obsevation function for each session
-    in.sess(i).f_fname = in_sessions.f_fname; % the function to be used for each session
-    in.sess(i).g_fname = in_sessions.g_fname;
-    
+%     % Information about the evolution/obsevation function for each session
+%     in.sess(i).f_fname = in_sessions.f_fname; % the function to be used for each session
+%     in.sess(i).g_fname = in_sessions.g_fname;
+%     
     % Information about indices of parameters, hidden states and output used by
     % each session
     in.sess(i).ind.x = i_x+1:i_x+dim_s.n;   i_x = i_x + dim_s.n;
@@ -129,6 +94,24 @@ for i = 1 : n_sess
 end
 
 %------------------------------------------------------
+%--- compute dimensions of the extended model
+
+dim_e = struct();
+dim_e.n_sess = n_sess;
+dim_e.n_t = dim.n_t; % number of trials (unchanged)
+
+ dim_e.p = 0; % output
+ dim_e.u = 0; % number of trials (unchanged)
+ dim_e.n = 0; % hidden states
+ dim_e.n_theta = max(max(in_sessions.ind.theta));
+ dim_e.n_phi = max(max(in_sessions.ind.phi));
+
+for i = 1 : n_sess
+dim_e.p = max([dim_e.p; in.sess(i).ind.gx(:)]);
+dim_e.u = max([dim_e.u; in.sess(i).ind.u(:)]);
+dim_e.n = max([dim_e.n; in.sess(i).ind.x(:)]);
+end
+
 %---- Options
 options_e = options; % copy all options then modify
 
@@ -139,12 +122,11 @@ options_e.inG.dim = dim_e; % requested to know size of output when generating it
 options_e.dim = dim_e;
 
 
-options_e.GnFigs = 0;
-try options_e.binomial = in_sessions.binomial;
-catch; options_e.binomial = 0; end % default is continuous data
-try  options_e.DisplayWin = in_sessions.DisplayWin;
-catch ; options_e.DisplayWin = 1; end
-
+% options_e.GnFigs = 0;
+% try options_e.binomial = in_sessions.binomial;
+% catch; options_e.binomial = 0; end % default is continuous data
+% try  options_e.DisplayWin = in_sessions.DisplayWin;
+% catch ; options_e.DisplayWin = 0; end
 
 options_e.isYout = zeros(dim_e.p,dim_e.n_t); 
 
@@ -153,7 +135,6 @@ options_e.isYout = zeros(dim_e.p,dim_e.n_t);
 
 f_fname_e = @f_nsess;
 g_fname_e = @g_nsess;
-
 
 %
 %---- Handle for simulation
@@ -184,7 +165,7 @@ try
         
         fb_e.inH.indy = [fb_e.inH.indy; in.sess(i).ind.u(fb_s.indy)];
         fb_e.inH.indfb = [fb_e.inH.indfb; in.sess(i).ind.u(fb_s.indfb)];
-        i_fb =i_fb+length(fb_s.indfb);
+        i_fb = i_fb+length(fb_s.indfb);
 
     end
     
@@ -192,14 +173,10 @@ try
     fb_e.indy =fb_e.inH.indy;
     fb_e.indfb =fb_e.inH.indfb;
     
-
-    
-    
     
 catch;
 end
     options_e.fb = fb_e;
-
 
 end
 
