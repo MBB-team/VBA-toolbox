@@ -12,4 +12,4 @@ catch
     end
 end
 
-gx = X*(phi(1)+phi(2));
+gx = X*(sum(phi));

@@ -5,7 +5,7 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-ns = 12; % number of subjects
+ns = 32; % number of subjects
 n = 256; % number of observations per subject 
 f_fname = @g_RFX;
 g_fname = @g_RFX;
