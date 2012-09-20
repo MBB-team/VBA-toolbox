@@ -8,7 +8,7 @@
 % At each trial t, this bayesian observer can predict the next outcome
 % y(t+1) according to:
 %       p(y(t+1)|y(1,...,t)) = E[r|y(1,...,t)]
-% Let R(t) be the riggh-hand side of the above equation:
+% Let R(t) be the right-hand side of the above equation:
 %       R(t) = sum(y(1,...,t))./t
 % We then look at the following Monte-Carlo expectations:
 %  - E[R(t+1),R(t)]
