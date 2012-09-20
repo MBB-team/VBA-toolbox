@@ -7,7 +7,7 @@ function [exp_r,xp,r_samp,g_post] = spm_BMS_gibbs (lme, alpha0, Nsamp)
 %              rows: subjects
 %              columns: models (1..Nk)
 % alpha0   - [1 x Nk] vector of prior model counts
-% Nsamp    - number of samples (default: 1e6)
+% Nsamp    - number of samples (default: 1e4)
 % 
 % OUTPUT:
 % exp_r   - [1 x  Nk] expectation of the posterior p(r|y)
@@ -30,7 +30,7 @@ Nk      = size(lme,2);  % number of models
 
 % prior observations
 %--------------------------------------------------------------------------
-if nargin < 3 || isempty(alpha0)
+if nargin < 2 || isempty(alpha0)
     alpha0  = ones(1,Nk);    
 end
 alpha0   = alpha0(:)';
