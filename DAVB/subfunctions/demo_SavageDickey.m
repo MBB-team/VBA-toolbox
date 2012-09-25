@@ -4,14 +4,14 @@ close all
 clear variables
 
 % Choose basic settings for simulations
-sigma = 1e0;            % precision 
+sigma = 1e-1;            % precision 
 g_fname = @g_GLM;        % observation function
 
 
 % Build priors structure
 priors.muPhi = zeros(3,1);         % prior mean on observation params
-priors.SigmaPhi = 1e-1*eye(3); % prior covariance on observation params
-priors.a_sigma = sigma;             % Jeffrey's prior
+priors.SigmaPhi = 1e2*eye(3); % prior covariance on observation params
+priors.a_sigma = 1e0;             % Jeffrey's prior
 priors.b_sigma = 1e0;             % Jeffrey's prior
 options.priors = priors;        % include priors in options structure
 options.DisplayWin = 0;
@@ -26,7 +26,7 @@ dim.n=0;                        % nb of hidden states
 [options,u,dim] = VBA_check(zeros(1e2,1),[],[],g_fname,dim,options);
 priors = options.priors;
 priors2 = priors;
-priors2.SigmaPhi(2,2) = 0;
+priors2.SigmaPhi(3,3) = 0;
 
 N = 2e1;
 
@@ -43,13 +43,15 @@ for i=1:N
     i
     
     % simulate data under full and reduced models
-    phi = 4+ randn(3,1);
+    phi = 1+ randn(3,1);
     inG.X = [randn(1e2,2),ones(1e2,1)];
     [gx] = feval(g_fname,[],phi,[],inG);
-    y1 = gx + sqrt(sigma.^-1)*randn(size(gx));
-    phi(2) = 0;
+    e = sqrt(sigma.^-1)*randn(size(gx));
+    e = e-mean(e);
+    y1 = gx + e;
+    phi(3) = 0;
     [gx] = feval(g_fname,[],phi,[],inG);
-    y2 = gx + sqrt(sigma.^-1)*randn(size(gx));
+    y2 = gx + e;
     options.inG = inG; 
 
     % Invert full model on 'full' data
@@ -132,4 +134,4 @@ legend({'Y~p(y|m_f)','Y~p(y|m_r)'})
 title('frequentist limit')
 grid on
 
-
+getSubplots

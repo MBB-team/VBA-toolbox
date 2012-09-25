@@ -1,4 +1,4 @@
-% Demo for the effectof prior variance when testing for the mean
+% Demo for the multiple comparison problem
 
 close all
 clear variables
@@ -9,8 +9,8 @@ g_fname = @g_GLM;        % observation function
 ny = 1e2;
 
 % Build priors structure
-priors.muPhi = zeros(1,1);         % prior mean on observation params
-priors.SigmaPhi = 1e0*eye(1); % prior covariance on observation params
+priors.muPhi = zeros(2,1);        % prior mean on observation params
+priors.SigmaPhi = 1e0*eye(2);     % prior covariance on observation params
 priors.a_sigma = 1e0;             % Jeffrey's prior
 priors.b_sigma = 1e0;             % Jeffrey's prior
 options.priors = priors;        % include priors in options structure
@@ -39,13 +39,11 @@ for i=1:N
     % simulate data under full model...
     phi = 1e0;
     [gx] = feval(g_fname,[],phi,[],inG);
-    e = sqrt(sigma.^-1)*randn(size(gx));
-    e = e - mean(e);
-    y1 = gx + e;
+    y1 = gx + sqrt(sigma.^-1)*randn(size(gx));
     % ... and under the null
     phi = 0e0;
     [gx] = feval(g_fname,[],phi,[],inG);
-    y0 = gx + e;
+    y0 = gx + sqrt(sigma.^-1)*randn(size(gx));
     
     % Use Savage-Dickey ratio to obtain Bayes' factor given both types of
     % data
