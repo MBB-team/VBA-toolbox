@@ -40,8 +40,6 @@ if dim.n > 0
     if ~options.binomial
         posterior.a_sigma = options.priors.a_sigma;
         posterior.b_sigma = options.priors.b_sigma;
-    end
-    if ~options.binomial
         suffStat.Ssigma = gammaln(posterior.a_sigma) ...
             - log(posterior.b_sigma) ...
             + (1-posterior.a_sigma).*psi(posterior.a_sigma) ...
@@ -54,9 +52,6 @@ if dim.n > 0
     
 else
     
-    % This fills in the sufficient statistics structure, to evaluate the
-    % free energy at the prior pdf while testing if their is any errors in
-    % model structure, inputs, or outputs
     [ suffStat, posterior ] = VBA_check_errors(y,u,options);
     options.init.posterior = posterior;
     options.init.suffStat = suffStat;

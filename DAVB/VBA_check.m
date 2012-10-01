@@ -358,7 +358,7 @@ if dim.n > 0
         options.priors = priors;
         options.dim = dim;
     else
-        if ~options.binomial
+%         if ~options.binomial
             % Derive marginalization operators for the lagged Kalman filter
             n = dim.n;
             lag = options.backwardLag + 1;
@@ -367,9 +367,9 @@ if dim.n > 0
             options.lagOp.E = [eye(n*(lag-1)),zeros(n*(lag-1),n)];
             options.lagOp.Eu = [zeros(n*(lag-1),n),eye(n*(lag-1))];
             options.lagOp.M = [eye(n),zeros(n,n*(lag-1))];
-        else
-            VBA_disp('Error: stochastic system not supported for binomial data!',options)
-        end
+%         else
+%             VBA_disp('Error: stochastic system not supported for binomial data!',options)
+%         end
     end
 end
 

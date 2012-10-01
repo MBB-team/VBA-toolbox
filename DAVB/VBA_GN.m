@@ -35,12 +35,12 @@ switch flag
     case 'X'
         indIn = options.params2update.x;
         PreviousMu = posterior.muX;
-        fname = @VBA_IX_lagged;
-%         if ~options.binomial
-%             fname = @VBA_IX_lagged;
-%         else
-%             fname = @VBA_IX_binomial;
-%         end
+%         fname = @VBA_IX_lagged;
+        if ~options.binomial
+            fname = @VBA_IX_lagged;
+        else
+            fname = @VBA_IX_lagged_binomial;
+        end
         s1 = 'I(<X>) =';
         s2 = '<dX>';
     case 'X0'
@@ -152,14 +152,6 @@ while ~stop
         end
     else % stop Gauss-Newton search
         stop = 1;
-        if abs(rdf)< options.GnTolFun
-            posterior = updatePosterior(posterior,mu,Sigma,indIn,flag);
-            if ~options.gradF
-                [F] = VBA_FreeEnergy(posterior,suffStat2,options);
-            end
-            suffStat2.F = [suffStat2.F,F];
-            suffStat = suffStat2;
-        end
         try close(hf); end
         try close(suffStat.haf); end
     end

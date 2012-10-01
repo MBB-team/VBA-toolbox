@@ -66,9 +66,6 @@ end
 iQy = options.priors.iQy;
 iQx = options.priors.iQx;
 
-% Get deterministic states
-indIn = options.params2update.x;
-
 % Get time
 et0 = clock;
 
