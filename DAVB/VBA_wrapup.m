@@ -49,11 +49,10 @@ if ~options.OnLine
         status = 'initialization';
     end
     % display overall inversion time
-    dt = toc(options.tStart);
-    if floor(dt./60) == 0
-        timeString = [num2str(floor(dt)),' sec'];
+    if floor(out.dt./60) == 0
+        timeString = [num2str(floor(out.dt)),' sec'];
     else
-        timeString = [num2str(floor(dt./60)),' min'];
+        timeString = [num2str(floor(out.dt./60)),' min'];
     end
     str = ['VB ',status,' complete (took ~',timeString,').'];
     VBA_disp(str,options)

@@ -67,8 +67,9 @@ end
 % time lag of the short-sighted backward-pass
 if ~isfield(options,'backwardLag')
     options.backwardLag = 1;
+else
+    options.backwardLag = max([floor(options.backwardLag),1]);
 end
-options.backwardLag = max([floor(options.backwardLag),1]);
 % Maximum number of iterations
 if ~isfield(options,'MaxIter')
     options.MaxIter = 32;
@@ -358,18 +359,14 @@ if dim.n > 0
         options.priors = priors;
         options.dim = dim;
     else
-%         if ~options.binomial
-            % Derive marginalization operators for the lagged Kalman filter
-            n = dim.n;
-            lag = options.backwardLag + 1;
-            options.lagOp.C = [zeros(n,n*(lag-1)),eye(n)];
-            options.lagOp.D = [zeros(n,n*(lag-2)),eye(n),zeros(n,n)];
-            options.lagOp.E = [eye(n*(lag-1)),zeros(n*(lag-1),n)];
-            options.lagOp.Eu = [zeros(n*(lag-1),n),eye(n*(lag-1))];
-            options.lagOp.M = [eye(n),zeros(n,n*(lag-1))];
-%         else
-%             VBA_disp('Error: stochastic system not supported for binomial data!',options)
-%         end
+        % Derive marginalization operators for the lagged Kalman filter
+        n = dim.n;
+        lag = options.backwardLag + 1;
+        options.lagOp.C = [zeros(n,n*(lag-1)),eye(n)];
+        options.lagOp.D = [zeros(n,n*(lag-2)),eye(n),zeros(n,n)];
+        options.lagOp.E = [eye(n*(lag-1)),zeros(n*(lag-1),n)];
+        options.lagOp.Eu = [zeros(n*(lag-1),n),eye(n*(lag-1))];
+        options.lagOp.M = [eye(n),zeros(n,n*(lag-1))];
     end
 end
 

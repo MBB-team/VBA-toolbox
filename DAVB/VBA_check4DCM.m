@@ -20,7 +20,7 @@ inG0 = odcm.inG;
 
 
 function [in] = fillin(in,in0)
-
+% fill in default DCM options if missing
 if iscell(in0)
     for i=1:numel(in0)
         if numel(in) < i

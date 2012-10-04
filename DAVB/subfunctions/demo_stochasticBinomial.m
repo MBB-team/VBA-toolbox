@@ -21,10 +21,10 @@ phi     = 0;
 x0 = zeros(n,1);
 
 % Build priors for model inversion
-priors.muX0 = x0;%zeros(n,1);
-priors.SigmaX0 = 1e-0*eye(n);
+priors.muX0 = zeros(n,1);
+priors.SigmaX0 = 1e-1*eye(n);
 priors.muPhi = 0*ones(1,1);
-priors.SigmaPhi = 0e-1*eye(1);
+priors.SigmaPhi = 1e-1*eye(1);
 priors.a_alpha = 1e1;
 priors.b_alpha = 1e0;
 

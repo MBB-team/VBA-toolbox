@@ -5,7 +5,8 @@ function [posterior,out] = VBA_groupBMC(L,options)
 %   - L: Kxn matrix of log-model evidences (K models; n subjects)
 %   - options: a structure containing the following fields:
 %       .priors: this variable can contain a field .a, which is the Kx1
-%       vector of dummy 'prior counts' of each model
+%       vector of dummy 'prior counts' of each model (default is one per
+%       class)
 %       .MaxIter: max number of iterations
 %       .MinIter: min number of iterations
 %       .TolFun: max change in Free Energy
@@ -13,9 +14,7 @@ function [posterior,out] = VBA_groupBMC(L,options)
 [K,n] = size(L);
 
 %-- fill in options with defaults if needed
-if ~exist('options','var')
-    options = [];
-end
+options.tStart = tic;
 if ~isfield(options,'priors')
     priors = [];
 else
@@ -78,12 +77,15 @@ end
 
 %-- wrap up VBA output
 out = wrapUp(L,posterior,priors,F,options);
-
+out.date = clock;
+if options.DisplayWin
+   VBA_displayGroupBMC(posterior,out);
+end
 
 
 function out = wrapUp(L,posterior,priors,F,options)
 % wraps up the ou structure for display purposes
-[K,n] = size(L);
+out.dt = toc(options.tStart);
 out.options = options;
 out.L = L;
 out.F = F;
@@ -97,25 +99,8 @@ out.Vf = out.Vf./((a0+1)*a0^2);
 [F,out.ELJ,out.Sqf,out.Sqm] = FE(L,posterior,priors);
 % derive Free Energy under the null:
 [out.F0] = FE_null(L);
-% Let df(k) = f(k)-max(f(\k)). 
-% Then: P(f(k)>f(\k)) = P(df(k)>0)
-% Thus, the exceedance probability can be approximated as follows:
-% 1-Approximate the random variables f with a Gaussian moment-matching
-%   procedure.
-% 2-For each k, derive the first- and second- order moments of df(k)
-% 3-Calculate P(df(k)>0)
-out.ep = zeros(K,1);
-c = [1;-1];
-for k=1:K
-    m = [out.Ef(k);0];
-    tmp = out.Ef;
-    tmp(k) = -Inf;
-    [m(2),im] = max(tmp);
-    v = c'*out.Vf([k;im],[k;im])*c;
-    mdf = c'*m;
-    [out.ep(k)] = VB_PPM(mdf,v,0,0);
-end
-out.ep = out.ep./sum(out.ep);
+% derive exceedance probabilities (using Gaussian moment matching)
+out.ep = VBA_ExceedanceProb(out.Ef,out.Vf);
 
 
 function stop = checkStop(it,F,options)
@@ -130,7 +115,7 @@ if abs(dF)<=options.TolFun || it>=options.MaxIter
 end
 
 
-function [F,ELJ,Sqf,Sqm,F0] = FE(L,posterior,priors)
+function [F,ELJ,Sqf,Sqm] = FE(L,posterior,priors)
 % derives the free energy for the current approximate posterior
 [K,n] = size(L);
 a0 = sum(posterior.a);
