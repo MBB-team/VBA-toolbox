@@ -34,7 +34,7 @@ switch flag
         g_fname = @g_Id;
         
         % Build priors for model inversion
-        priors.muX0 = [0;0;0.0529;0.3177;0.5951];
+        priors.muX0 = [0;0;-3;-3/4;1/3];%[0;0;0.0529;0.3177;0.5951];
         priors.SigmaX0 = 0e-1*eye(5);
         priors.muTheta = [1;0*ones(4,1)];
         priors.SigmaTheta = 0e1*eye(5);
@@ -44,14 +44,15 @@ switch flag
         priors.a_sigma      = 1e3;
         priors.b_sigma      = 1e0;
         for t = 1:n_t
-            dq              = 1e4*ones(5,1);
-            dq(2)           = 1e-2;
+            dq              = 1e2*ones(5,1);
+            dq(2)           = 1e0;
             priors.iQx{t}   = diag(dq);
         end
         options.priors = priors;
         options.updateHP    = 0;
-        options.backwardLag = 2;
+        options.backwardLag = 8;
         options.GnFigs = 0;
+        options.decim = 1;
         
         dim.n_theta         = 5;
         dim.n_phi           = 0;
@@ -81,7 +82,7 @@ switch flag
         end
         
         options.updateHP    = 0;
-        options.backwardLag = 2;
+        options.backwardLag = 8;
         options.priors = priors;
         dim.n_theta         = 5;
         dim.n_phi           = 0;
@@ -116,7 +117,7 @@ switch flag
         options.DisplayWin  = 1;
         options.MinIter     = 1;
         options.updateHP    = 0;
-        options.backwardLag = 2;
+        options.backwardLag = 8;
 %         options.MaxIter     = 1;
         options.GnMaxIter   = 16;
         dim.n_theta         = 2;
@@ -170,7 +171,7 @@ switch flag
 end
 
 
-
+options.GnFigs = 1;
 options.priors              = priors;
 [posterior,out]             = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 VBA_ReDisplay(posterior,out);
