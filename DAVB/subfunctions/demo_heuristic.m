@@ -63,7 +63,7 @@ P.i2 = 1;
 % frequency grid
 gridw = 2.^[-2:0.1:10];%.1:1e-1:120;
 
-gridx = 0:1e0:50;
+gridx = 30;%0:1e0:50;
 nt = numel(gridx);
 gy = zeros(numel(gridw),nt);
 ds = zeros(nt,1);

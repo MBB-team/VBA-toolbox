@@ -37,8 +37,7 @@ end
 
 % first deal with potential associated colorbars
 ud.hclb = [];
-hclb = intersect(findobj('tag','Colorbar'),...
-    get(get(ha,'parent'),'children'));
+hclb = intersect(findobj('tag','Colorbar'),get(get(ha,'parent'),'children'));
 for i=1:length(hclb)
     [haa] = findAxes4Colorbar(hclb(i),hclb);
     if isequal(haa,ha)
@@ -50,8 +49,7 @@ end
 
 % then get potential legends
 ud.leg = [];
-hleg = intersect(findobj('tag','legend'),...
-    get(get(ha,'parent'),'children'));
+hleg = intersect(findobj('tag','legend'),get(get(ha,'parent'),'children'));
 for i=1:length(hleg)
     try % matlab 7.1?
         tmp = get(hleg(i),'userdata');
