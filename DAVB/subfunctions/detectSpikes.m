@@ -29,19 +29,22 @@ options.inG.ind             = 1; % index of observable state
 switch flag
 
     case 'HH'
+        
+        % this model uses Hodgkin-Huxley AP propagation model, convolved
+        % with a 1st-order convolution kernel (calcium response).
 
-        f_fname = @f_HH;
+        f_fname = @f_HH_calcium;
         g_fname = @g_Id;
         
         % Build priors for model inversion
-        priors.muX0 = [0;0;-3;-3/4;1/3];%[0;0;0.0529;0.3177;0.5951];
+        priors.muX0 = [0;-3;-3/4;1/3];
         priors.SigmaX0 = 0e-1*eye(5);
         priors.muTheta = [1;0*ones(4,1)];
         priors.SigmaTheta = 0e1*eye(5);
         priors.SigmaTheta(1,1) = 1e-2;
         priors.a_alpha      = 1e0;
         priors.b_alpha      = 1e0;
-        priors.a_sigma      = 1e3;
+        priors.a_sigma      = 1e0;
         priors.b_sigma      = 1e0;
         for t = 1:n_t
             dq              = 1e2*ones(5,1);
@@ -63,6 +66,9 @@ switch flag
     
     case 'fitzhugh'
         
+        % this model uses Fitz-Hugh-Nagumo AP propagation model, convolved
+        % with a 1st-order convolution kernel (calcium response).
+        
         f_fname = @f_FitzHughNagumo;
         g_fname = @g_Id;
     
@@ -76,7 +82,7 @@ switch flag
         priors.a_sigma      = 1e3;
         priors.b_sigma      = 1e0;
         for t = 1:n_t
-            dq              = 1e4*ones(3,1);
+            dq              = 1e2*ones(3,1);
             dq(2)           = 1;
             priors.iQx{t}   = diag(dq);
         end
@@ -93,7 +99,11 @@ switch flag
     
     case 'lognormal'
         
-        f_fname             = @f_calcium; % evolution function
+        % this model uses an exponentiated AR(1) model for AP-induced
+        % membrane depolarization, convolved with a 1st-order convolution
+        % kernel (calcium response).
+        
+        f_fname             = @f_calcium;
         
         % Build priors for model inversion
         priors.muX0         = [0;-.2];
@@ -102,23 +112,23 @@ switch flag
         priors.SigmaTheta   = 1e0*eye(2);
         priors.a_alpha      = 1e0;
         priors.b_alpha      = 1e0;
-        priors.a_sigma      = 1e3;
+        priors.a_sigma      = 1e0;
         priors.b_sigma      = 1e0;
         for t = 1:n_t
-            dq              = 1e4*ones(2,1);
+            dq              = 1e2*ones(2,1);
             dq(2)           = 1;
             priors.iQx{t}   = diag(dq);
         end
         
         % Build options and dim structures for model inversion
-        options.inF.a       = 1;
+%         options.inF.a       = 1;
         options.decim       = 1;
         options.GnFigs      = 0;
         options.DisplayWin  = 1;
         options.MinIter     = 1;
-        options.updateHP    = 0;
+        options.updateHP    = 1;
         options.backwardLag = 8;
-%         options.MaxIter     = 1;
+        options.MaxIterInit = 0;
         options.GnMaxIter   = 16;
         dim.n_theta         = 2;
         dim.n_phi           = 0;
@@ -131,7 +141,7 @@ switch flag
         
         f_fname             = @f_lin1D;
         
-        options.inF.a       = 1;
+%         options.inF.a       = 1;
         options.inF.u_fname = @u_GaussianBumps;
         options.inF.indscale = 2:nmax+1;
         options.inF.indcentres = nmax+2:2*nmax+1;
@@ -171,7 +181,7 @@ switch flag
 end
 
 
-options.GnFigs = 1;
+options.GnFigs = 0;
 options.priors              = priors;
 [posterior,out]             = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 VBA_ReDisplay(posterior,out);

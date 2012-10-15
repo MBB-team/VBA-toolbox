@@ -6,10 +6,10 @@ close all
 % Choose basic settings for simulations
 n_t = 8e2;
 delta_t = 1e0;         % 10Hz sampling rate
-f_fname = @f_HH;%@f_lin1D;
+f_fname = @f_lin1D;
 g_fname = @g_Id;
 
-u       = 1e1*randn(1,n_t)>2;
+u       = 1e0*randn(1,n_t)>2;
 % figure,plot(u)
 
 % Build options structure for temporal integration of SDE
@@ -23,11 +23,11 @@ options.decim = 1;
 
 % Parameters of the simulation
 alpha   = Inf;
-sigma   = 1e4;
+sigma   = Inf;
 theta   = [0.5];
 phi     = [];
 
-x0 = [0;0;-3;-3/4;1/3];%[0;0;0.0529;0.3177;0.5951];
+x0 = [0];
 theta = [1;0*ones(4,1)];
 
 % Build time series of hidden states and observations
@@ -36,14 +36,14 @@ theta = [1;0*ones(4,1)];
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
 
-return
+% return
 % 
 % disp('--paused--')
 % pause
 
 Y.calcium = y;
 Y.calcium_time = [0;delta_t];
-[posterior,out] = detectSpikes(Y,'HH',12);
+[posterior,out] = detectSpikes(Y,'lognormal',12);
 
 
 

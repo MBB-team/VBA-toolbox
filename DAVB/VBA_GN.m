@@ -30,12 +30,10 @@ function [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,flag)
 % (as opposed to the variational energy) increases between two
 % iterations...
 
-
 switch flag
     case 'X'
         indIn = options.params2update.x;
         PreviousMu = posterior.muX;
-%         fname = @VBA_IX_lagged;
         if ~options.binomial
             fname = @VBA_IX_lagged;
         else
@@ -75,12 +73,12 @@ if isempty(indIn)
     return
 end
 
-% Get variational energy (I) and proposed move (deltaMu) from current
-% posterior:
+% Get variational energy (I) and propose move (deltaMu)
 try
     [I,Sigma,deltaMu,suffStat2] = feval(fname,PreviousMu,y,posterior,suffStat,dim,u,options);
     PreviousI = I;
-catch % could not evaluate variational energy!
+catch
+    VBA_disp(['Warning: could not evaluate variational energy on ',flag,'!'],options)
     return
 end
 
@@ -98,8 +96,8 @@ if options.GnFigs
 end
 
 % Regularized Gauss-Newton VB-Laplace update
-stop = 0;
 it = 0;
+stop = it>=options.GnMaxIter;
 while ~stop
     it = it+1;
     % make a move
@@ -118,39 +116,39 @@ while ~stop
         try, clf(hf); catch, hf = figure; end
         ha = axes('parent',hf);
         plot(ha,deltaMu')
+        str = [s1,num2str(I,'%4.3e'),' ,dI/I =',num2str(rdf,'%4.3e'),' ,it #',num2str(it)];
     end
     VBA_pause(options)  % check 'pause' button
-    % check whether to stop, to accept move or to halve step
-    if it <= options.GnMaxIter && abs(rdf)> options.GnTolFun
-        str = [s1,num2str(I,'%4.3e'),' ,dI/I =',num2str(rdf,'%4.3e'),' ,it #',num2str(it)];
-        if deltaI<0     % halve step size
-            deltaMu = 0.5*deltaMu;
-            try,title(ha,[s2,': halve step ; ',str]);end
-        else            % accept move
-            % 1- propose a new move according to new local quadratic approx
-            deltaMu = NextdeltaMu;
-            % 2- update sufficient stats
-            PreviousMu = mu;
-            PreviousI = I;
-            % 3- update posterior, model evidence and sufficient statistics
-            posterior = updatePosterior(posterior,mu,Sigma,indIn,flag);
-            if ~options.gradF
-                [F] = VBA_FreeEnergy(posterior,suffStat2,options);
-            end
-            suffStat2.F = [suffStat2.F,F];
-            suffStat = suffStat2;
-            % 4- update display
-            switch flag
-                case {'X','X0'}
-                    VBA_updateDisplay(suffStat.F,posterior,suffStat,options,y,[],'X')
-                case 'Phi'
-                    VBA_updateDisplay(suffStat.F,posterior,suffStat,options,y,[],'phi')
-                case 'Theta'
-                    VBA_updateDisplay(suffStat.F,posterior,suffStat,options,y,[],'theta')
-            end
-            try,title(ha,[s2,': accept move ; ',str]);end
+    % accept move or halve step?
+    if deltaI<0     % halve step size
+        deltaMu = 0.5*deltaMu;
+        try,title(ha,[s2,': halve step ; ',str]);end
+    else            % accept move
+        % 1- propose a new move according to new local quadratic approx
+        deltaMu = NextdeltaMu;
+        % 2- update sufficient stats
+        PreviousMu = mu;
+        PreviousI = I;
+        % 3- update posterior, model evidence and sufficient statistics
+        posterior = updatePosterior(posterior,mu,Sigma,indIn,flag);
+        if ~options.gradF
+            [F] = VBA_FreeEnergy(posterior,suffStat2,options);
         end
-    else % stop Gauss-Newton search
+        suffStat2.F = [suffStat2.F,F];
+        suffStat = suffStat2;
+        % 4- update display
+        switch flag
+            case {'X','X0'}
+                VBA_updateDisplay(posterior,suffStat,options,y,[],'X')
+            case 'Phi'
+                VBA_updateDisplay(posterior,suffStat,options,y,[],'phi')
+            case 'Theta'
+                VBA_updateDisplay(posterior,suffStat,options,y,[],'theta')
+        end
+        try,title(ha,[s2,': accept move ; ',str]);end
+    end
+    % check convergence criterion
+    if abs(rdf)<=options.GnTolFun || it==options.GnMaxIter
         stop = 1;
         try close(hf); end
         try close(suffStat.haf); end

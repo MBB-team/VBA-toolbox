@@ -1,22 +1,12 @@
-function VBA_updateDisplay(F,posterior,suffStat,options,y,it,flag)
+function VBA_updateDisplay(posterior,suffStat,options,y,it,flag)
 % updates display of sufficient statistics
 % function VBA_updateDisplay(F,posterior,suffStat,options,y,it,display,flag)
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
 
+F = real(suffStat.F);
+
 if ~options.DisplayWin
-    if isequal(flag,'F') && ~options.OnLine
-        % display free energy iterative scanning
-        F = real(F);
-        dF = diff(F);
-        if it > 0 && options.verbose
-            fprintf(['VB iteration #',...
-                num2str(it),...
-                '         F=','%e',...
-                '         ... dF=','%4.3e'],F(end),dF(end))
-            fprintf('\n')
-        end
-    end
     return
 end
 
@@ -26,7 +16,7 @@ display = options.display;
 VBA_pause(options)
 
 % First check whether this is standard DCM or ODE limit
-if ( isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNLSS) ) && ~isequal(flag,'F')
+if isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNLSS)
     
     % Rebuild posterior from dummy 'ODE' posterior
     options0 = options;
@@ -35,16 +25,16 @@ if ( isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smooth
     
     % Then call VBA_updateDisplay again
     if ~isempty(it)
-        VBA_updateDisplay(F,posterior,suffStat,options,y,it,'precisions')
+        VBA_updateDisplay(posterior,suffStat,options,y,it,'precisions')
     end
     if dim.n_phi > 0
-        VBA_updateDisplay(F,posterior,suffStat,options,y,it,'phi')
+        VBA_updateDisplay(posterior,suffStat,options,y,it,'phi')
     end
     if dim.n > 0
-        VBA_updateDisplay(F,posterior,suffStat,options,y,it,'X')
+        VBA_updateDisplay(posterior,suffStat,options,y,it,'X')
     end
     if dim.n_theta > 0
-        VBA_updateDisplay(F,posterior,suffStat,options,y,it,'theta')
+        VBA_updateDisplay(posterior,suffStat,options,y,it,'theta')
     end
     
     return
@@ -327,7 +317,6 @@ drawnow
 
 function [] = displayDF(F,display)
 if ~display.OnLine
-    F = real(F);
     try
         dF = diff(F);
         set(display.ho,'string',...

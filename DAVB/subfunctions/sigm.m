@@ -73,8 +73,8 @@ else
     Sx = Sx + in.S0;
 end
 
-Sx(Sx<1e-3)=1e-3;
-Sx(Sx>1-1e-3)=1-1e-3;
+% Sx(Sx<1e-3)=1e-3;
+% Sx(Sx>1-1e-3)=1-1e-3;
 
 if nargout < 2 ; return; end
 

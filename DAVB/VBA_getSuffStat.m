@@ -12,7 +12,11 @@ try
 catch
     flag = 0;
 end
-
+try
+    suffStat.F;
+catch
+    suffStat.F = [];
+end
 try
     suffStat.gx;
 catch

@@ -93,22 +93,18 @@ suffStat.dx0 = OL_out.suffStat.dx0;
 suffStat.SX0 = OL_out.suffStat.SX0;
 
 % Display first data sample inference results
-VBA_updateDisplay(...
-    OL_out.F,posterior,suffStat,options,y(:,1),1,'precisions')
+VBA_updateDisplay(posterior,suffStat,options,y(:,1),1,'precisions')
 if dim.n_phi > 0
-    VBA_updateDisplay(...
-        OL_out.F,posterior,suffStat,options,y(:,1),1,'phi')
+    VBA_updateDisplay(posterior,suffStat,options,y(:,1),1,'phi')
     if options.DisplayWin
         xlabel(options.display.ha(5),'time','fontsize',8)
     end
 end
 if dim.n > 0
-    VBA_updateDisplay(...
-        OL_out.F,posterior,suffStat,options,y(:,1),1,'X')
+    VBA_updateDisplay(posterior,suffStat,options,y(:,1),1,'X')
 end
 if dim.n_theta > 0
-    VBA_updateDisplay(...
-        OL_out.F,posterior,suffStat,options,y(:,1),1,'theta')
+    VBA_updateDisplay(posterior,suffStat,options,y(:,1),1,'theta')
     if options.DisplayWin
         xlabel(options.display.ha(7),'time','fontsize',8)
     end
@@ -154,19 +150,15 @@ for t =2:dim.n_t
         OL_posterior,OL_out,posterior,suffStat,t,options);
     
     % update display
-    VBA_updateDisplay(...
-        OL_out.F,posterior,suffStat,options,y(:,1:t),t,'precisions')
+    VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'precisions')
     if dim.n_phi > 0
-        VBA_updateDisplay(...
-            OL_out.F,posterior,suffStat,options,y(:,1:t),t,'phi')
+        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'phi')
     end
     if dim.n > 0
-        VBA_updateDisplay(...
-            OL_out.F,posterior,suffStat,options,y(:,1:t),t,'X')
+        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'X')
     end
     if dim.n_theta > 0
-        VBA_updateDisplay(...
-            OL_out.F,posterior,suffStat,options,y(:,1:t),t,'theta')
+        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'theta')
     end
 end
 

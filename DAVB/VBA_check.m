@@ -80,7 +80,7 @@ if ~isfield(options,'MaxIterInit')
 end
 % Minimum number of iterations
 if ~isfield(options,'MinIter')
-    options.MinIter = 1;
+    options.MinIter = 0;
 end
 % Minimum change in the free energy
 if ~isfield(options,'TolFun')

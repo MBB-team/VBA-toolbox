@@ -34,9 +34,7 @@ ud.diagnostics = getDiagnostics(posterior,out);
 
 set(hfp,'userdata',ud);
 if ~isempty(ud.diagnostics.kernels)
-    if ~isinf(out.options.priors.a_alpha) ...
-            && ~isequal(out.options.priors.b_alpha,0) ...
-            && ~out.options.OnLine
+    if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
         labels = {'summary','VB inversion','diagnostics','kernels','conv','priors','deterministic'};
         callbacks = {@mySummary,@myVB,@myDiagnostics,@myKernels,@myConv,@myPriors,@myDeterministic};
     else
@@ -57,47 +55,23 @@ set(handles.htab,'backgroundcolor',[1 1 1])
 set(handles.hh,'backgroundcolor',[1 1 1])
 set(handles.hp,'HighlightColor',0.8*[1 1 1])
 set(handles.hp,'backgroundcolor',[1 1 1])
-set(handles.htab(1),...
-    'tooltipstring','summary description of the VB inversion')
-set(handles.htab(2),...
-    'tooltipstring','results of the VB inversion (posterior pdfs)')
-set(handles.htab(3),...
-    'tooltipstring',...
-    'VB inversion diagnostics (residuals and parameters covariance matrices)')
+set(handles.htab(1),'tooltipstring','summary description of the VB inversion')
+set(handles.htab(2),'tooltipstring','results of the VB inversion (posterior pdfs)')
+set(handles.htab(3),'tooltipstring','VB inversion diagnostics (residuals and parameters covariance matrices)')
 if ~isempty(ud.diagnostics.kernels)
-    if ~isinf(out.options.priors.a_alpha) ...
-            && ~isequal(out.options.priors.b_alpha,0) ...
-            && ~out.options.OnLine
-        set(handles.htab(4),...
-            'tooltipstring',...
-            'impulse response of the system to deterministic inputs')
-        set(handles.htab(5),...
-            'tooltipstring',...
-            'history of free energy values along VB optimization')
-        set(handles.htab(6),...
-            'tooltipstring',...
-            'priors and associated predictive densities (under the Laplace assumption)')
-        set(handles.htab(7),...
-            'tooltipstring',...
-            'results of the VB inversion of the deterministic system')
+    if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
+        set(handles.htab(4),'tooltipstring','impulse response of the system to deterministic inputs')
+        set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
+        set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
+        set(handles.htab(7),'tooltipstring','results of the VB inversion of the deterministic system')
     else
-        set(handles.htab(4),...
-            'tooltipstring',...
-            'impulse response of the system to deterministic inputs')
-        set(handles.htab(5),...
-            'tooltipstring',...
-            'history of free energy values along VB optimization')
-        set(handles.htab(6),...
-            'tooltipstring',...
-            'priors and associated predictive densities (under the Laplace assumption)')
+        set(handles.htab(4),'tooltipstring','impulse response of the system to deterministic inputs')
+        set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
+        set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
     end
 else
-    set(handles.htab(4),...
-        'tooltipstring',...
-        'history of free energy values along VB optimization')
-    set(handles.htab(5),...
-        'tooltipstring',...
-        'priors and associated predictive densities (under the Laplace assumption)')
+    set(handles.htab(4),'tooltipstring','history of free energy values along VB optimization')
+    set(handles.htab(5),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
 end
 if fromPause
     feval(@myVB,hfp)
@@ -151,8 +125,7 @@ else
     tmp = [];
 end
 if out.dim.n >= 1
-    if isinf(out.options.priors.a_alpha) ...
-            && isequal(out.options.priors.b_alpha,0)
+    if isinf(out.options.priors.a_alpha) && isequal(out.options.priors.b_alpha,0)
         str{4} = 'This was a deterministic dynamical system';
     else
         str{4} = 'This was a stochastic dynamical system';
@@ -182,8 +155,7 @@ if out.dim.n >= 1
         end
         ffn = [ffn,' (',ffn0,')'];
     end
-    str{5} = sprintf(['    - observation function: ',gfn,tmp,'\n',...
-        '    - evolution function: ',ffn,'\n ']);
+    str{5} = sprintf(['    - observation function: ',gfn,tmp,'\n','    - evolution function: ',ffn,'\n ']);
 else
     str{4} = 'The model was static (no hidden states)';
     if isa(out.options.g_fname,'function_handle')
@@ -197,65 +169,37 @@ str{6} = ['Log model evidences:'];
 str{7} = ['    - full model: log p(y|m) > ',num2str(F,'%4.3e')];
 str{8} = ['    - null hypothesis: log p(y|H0) = ',...
     num2str(diagnostics.LLH0,'%4.3e')];
-if ~out.options.OnLine ...
-        && out.dim.n >= 1 ...
-        && ~isinf(out.options.priors.a_alpha) ...
-        && ~isequal(out.options.priors.b_alpha,0)
+if ~out.options.OnLine && out.dim.n >= 1 && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0)
     Fd = out.options.init.out.F;
-    str{9} = sprintf(['    - deterministic variant: log p(y|m,eta=0) > ',...
-        num2str(Fd,'%4.3e'),'\n ']);
+    str{9} = sprintf(['    - deterministic variant: log p(y|m,eta=0) > ',num2str(Fd,'%4.3e'),'\n ']);
 else
     str{9} = [' '];
 end
 str{10} = sprintf(['Estimation efficiency (minus posterior entropies):','\n ']);
 str{11} = sprintf(['Information gain (Kullback-Leibler divergences DKL{prior||posterior}):','\n ']);
 if ~isnan(diagnostics.efficiency.X)
-    str{10} = sprintf([str{10},...
-        '    - hidden states: ',...
-        num2str(diagnostics.efficiency.X,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},...
-        '    - hidden states: ',...
-        num2str(diagnostics.DKL.X,'%4.3e'),'\n ']);
+    str{10} = sprintf([str{10},'    - hidden states: ',num2str(diagnostics.efficiency.X,'%4.3e'),'\n ']);
+    str{11} = sprintf([str{11},'    - hidden states: ',num2str(diagnostics.DKL.X,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.X0)
-    str{10} = sprintf([str{10},...
-        '    - initial conditions: ',...
-        num2str(diagnostics.efficiency.X0,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},...
-        '    - initial conditions: ',...
-        num2str(diagnostics.DKL.X0,'%4.3e'),'\n ']);
+    str{10} = sprintf([str{10},'    - initial conditions: ',num2str(diagnostics.efficiency.X0,'%4.3e'),'\n ']);
+    str{11} = sprintf([str{11},'    - initial conditions: ',num2str(diagnostics.DKL.X0,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.Theta)
-    str{10} = sprintf([str{10},...
-        '    - evolution parameters: ',...
-        num2str(diagnostics.efficiency.Theta,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},...
-        '    - evolution parameters: ',...
-        num2str(diagnostics.DKL.Theta,'%4.3e'),'\n ']);
+    str{10} = sprintf([str{10},'    - evolution parameters: ',num2str(diagnostics.efficiency.Theta,'%4.3e'),'\n ']);
+    str{11} = sprintf([str{11},'    - evolution parameters: ',num2str(diagnostics.DKL.Theta,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.Phi)
-    str{10} = sprintf([str{10},...
-        '    - observation parameters: ',...
-        num2str(diagnostics.efficiency.Phi,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},...
-        '    - observation parameters: ',...
-        num2str(diagnostics.DKL.Phi,'%4.3e'),'\n ']);
+    str{10} = sprintf([str{10},'    - observation parameters: ',num2str(diagnostics.efficiency.Phi,'%4.3e'),'\n ']);
+    str{11} = sprintf([str{11},'    - observation parameters: ', num2str(diagnostics.DKL.Phi,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.alpha)
-    str{10} = sprintf([str{10},...
-        '    - state noise precision hyperparameter: ',...
-        num2str(diagnostics.efficiency.alpha,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},...
-        '    - state noise precision hyperparameter: ',...
-        num2str(diagnostics.DKL.alpha,'%4.3e'),'\n ']);
+    str{10} = sprintf([str{10},'    - state noise precision hyperparameter: ',num2str(diagnostics.efficiency.alpha,'%4.3e'),'\n ']);
+    str{11} = sprintf([str{11},'    - state noise precision hyperparameter: ',num2str(diagnostics.DKL.alpha,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.sigma)
-    str{10} = sprintf([str{10},...
-        '    - data noise precision hyperparameter: ',...
-        num2str(diagnostics.efficiency.sigma,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},...
-        '    - data noise precision hyperparameter: ',...
-        num2str(diagnostics.DKL.sigma,'%4.3e'),'\n ']);
+    str{10} = sprintf([str{10},'    - data noise precision hyperparameter: ',num2str(diagnostics.efficiency.sigma,'%4.3e'),'\n ']);
+    str{11} = sprintf([str{11},'    - data noise precision hyperparameter: ',num2str(diagnostics.DKL.sigma,'%4.3e'),'\n ']);
 end
 uicontrol(...
     'parent',hf,...
@@ -295,7 +239,7 @@ suffStat.dphi = out.options.priors.muPhi - posterior.muPhi;
 posterior.a_alpha = Inf;
 posterior.b_alpha = 0;
 
-try F = out.F; catch, F = '?'; end
+
 
 % Initialize display figure
 options.display.hfp = hfig;
@@ -313,10 +257,10 @@ drawnow
 
 % Display data and hidden states (if any)
 if options.dim.n > 0
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'X')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
 end
 % Display precision hyperparameters
-VBA_updateDisplay(F,posterior,suffStat,options,y,0,'precisions')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
     xlabel(options.display.ha(6),' ')
     try
@@ -324,13 +268,13 @@ if ~options.OnLine && ~options.binomial
     end
 end
 % Display model evidence
-VBA_updateDisplay(F,posterior,suffStat,options,y,0,'F')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
 % Display parameters
 if dim.n_theta >= 1
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'theta')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
 end
 if dim.n_phi >= 1
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'phi')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
 end
 try
     getSubplots
@@ -383,7 +327,7 @@ suffStat.dx0 = -posterior.muX0;
 suffStat.dtheta = -posterior.muTheta;
 suffStat.dphi = -posterior.muPhi;
 suffStat.vy = ud.diagnostics.pvy;
-try F = out.F; catch, F = '?'; end
+
 
 % Initialize display figure
 options.display.hfp = hfig;
@@ -400,11 +344,11 @@ end
 % Display data and hidden states (if any)
 if options.dim.n > 0
     options.OnLine = 0;
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'X')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
 end
 
 % Display precision hyperparameters
-VBA_updateDisplay(F,posterior,suffStat,options,y,0,'precisions')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
     xlabel(options.display.ha(6),' ')
     try
@@ -413,14 +357,14 @@ if ~options.OnLine && ~options.binomial
 end
 
 % Display model evidence
-VBA_updateDisplay(F,posterior,suffStat,options,y,0,'F')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
 
 % Display parameters
 if dim.n_theta >= 1
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'theta')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
 end
 if dim.n_phi >= 1
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'phi')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
 end
 
 try
@@ -436,8 +380,7 @@ try
 catch
     hf = get(gco,'parent');
 end
-hc = ...
-    intersect(findobj('tag','VBLaplace'),get(hf,'children'));
+hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
 if ~isempty(hc)
     delete(hc)
 end
@@ -461,11 +404,7 @@ if length(out.suffStat.F)>2
         'ygrid','on');
     plot(ha,[0:nit],out.suffStat.F)
     plot(ha,[0:nit],out.suffStat.F,'.')
-    [haf,hp1,hp2] = plotUncertainTimeSeries(...
-        diagnostics.LLH0*ones(1,2),...
-        3^2*ones(1,2),...
-        [0,nit],...
-        ha);
+    [haf,hp1,hp2] = plotUncertainTimeSeries(diagnostics.LLH0*ones(1,2),3^2*ones(1,2),[0,nit],ha);
     set(hp1,'facecolor',[1 0 0])
     set(hp2,'color',[1 0 0])
     text(nit/2,diagnostics.LLH0-3/2,'log p(y|H0)','color',[1 0 0],'parent',ha);
@@ -543,8 +482,7 @@ uicontrol(...
 function myKernels()
 % first: clear VB-Laplace inversion output display
 hf = get(gco,'parent');
-hc = ...
-    intersect(findobj('tag','VBLaplace'),get(hf,'children'));
+hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
 if ~isempty(hc)
     delete(hc)
 end
@@ -595,9 +533,7 @@ plot(handles.hkernels(1),kernels.tgrid,kx)
 set(handles.hkernels(1),'XLim',[min(kernels.tgrid) max(kernels.tgrid)])
 pos = get(handles.hkernels(1),'position');
 set(handles.hkernels(1),'position',[0.2 pos(2) 0.6 pos(4)])
-title(handles.hkernels(1),...
-    ['states impulse responses to input #''' num2str(ind) ''''],...
-    'fontsize',12)
+title(handles.hkernels(1),['states impulse responses to input #''' num2str(ind) ''''],'fontsize',12)
 xlabel(handles.hkernels(1),'time')
 
 % input effects - observables
@@ -611,9 +547,7 @@ pos = get(handles.hkernels(2),'position');
 set(handles.hkernels(2),'position',[0.2 pos(2) 0.6 pos(4)])
 plot(handles.hkernels(2),kernels.tgrid,ky)
 set(handles.hkernels(2),'XLim',[min(kernels.tgrid) max(kernels.tgrid)])
-title(handles.hkernels(2),...
-    ['observables impulse responses to input #''' num2str(ind) ''''],...
-    'fontsize',12)
+title(handles.hkernels(2),['observables impulse responses to input #''' num2str(ind) ''''],'fontsize',12)
 xlabel(handles.hkernels(2),'time')
 
 ud.handles = handles;
@@ -626,8 +560,7 @@ function myDiagnostics()
 
 % first: clear VB-Laplace inversion output display
 hf = get(gco,'parent');
-hc = ...
-    intersect(findobj('tag','VBLaplace'),get(hf,'children'));
+hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
 if ~isempty(hc)
     delete(hc)
 end
@@ -637,7 +570,6 @@ ud = get(hf,'userdata');
 out = ud.out;
 y = out.y;
 diagnostics = ud.diagnostics;
-try F = out.F(end); catch, F = '?'; end
 
 % display micro-time hidden-states
 if ~isempty(diagnostics.MT_x)
@@ -647,18 +579,12 @@ if ~isempty(diagnostics.MT_x)
         'tag','VBLaplace',...
         'ygrid','on',...
         'box','off');
-    title(display.ha(1),'micro-time resolution predicted data',...
-        'fontsize',11)
-    xlabel(display.ha(1),'time',...
-        'fontsize',8)
-    ylabel(display.ha(1),'g(x) & y',...
-        'fontsize',8)
+    title(display.ha(1),'micro-time resolution predicted data','fontsize',11)
+    xlabel(display.ha(1),'time','fontsize',8)
+    ylabel(display.ha(1),'g(x) & y','fontsize',8)
     plot(display.ha(1),diagnostics.microTime,diagnostics.MT_gx')
-    plot(display.ha(1),...
-        diagnostics.microTime(diagnostics.sampleInd),...
-        diagnostics.MT_gx(:,diagnostics.sampleInd)','.')
-    plot(display.ha(1),...
-        diagnostics.microTime(diagnostics.sampleInd),y,':')
+    plot(display.ha(1),diagnostics.microTime(diagnostics.sampleInd),diagnostics.MT_gx(:,diagnostics.sampleInd)','.')
+    plot(display.ha(1),diagnostics.microTime(diagnostics.sampleInd),y,':')
     axis(display.ha(1),'tight')
     display.ha(2) = subplot(4,2,2,...
         'parent',hf,...
@@ -666,22 +592,16 @@ if ~isempty(diagnostics.MT_x)
         'tag','VBLaplace',...
         'ygrid','on',...
         'box','off');
-    title(display.ha(2),'micro-time resolution hidden states',...
-        'fontsize',11)
-    xlabel(display.ha(2),'time',...
-        'fontsize',8)
-    ylabel(display.ha(2),'x',...
-        'fontsize',8)
+    title(display.ha(2),'micro-time resolution hidden states','fontsize',11)
+    xlabel(display.ha(2),'time','fontsize',8)
+    ylabel(display.ha(2),'x','fontsize',8)
     plot(display.ha(2),diagnostics.microTime,diagnostics.MT_x')
-    plot(display.ha(2),...
-        diagnostics.microTime(diagnostics.sampleInd),...
-        diagnostics.MT_x(:,diagnostics.sampleInd)','.')
+    plot(display.ha(2),diagnostics.microTime(diagnostics.sampleInd),diagnostics.MT_x(:,diagnostics.sampleInd)','.')
     axis(display.ha(2),'tight')
 end
 
 % display data noise
-xlim = [diagnostics.dy.nx(1)-diagnostics.dy.d,...
-    diagnostics.dy.nx(end)+diagnostics.dy.d];
+xlim = [diagnostics.dy.nx(1)-diagnostics.dy.d,diagnostics.dy.nx(end)+diagnostics.dy.d];
 display.ha(3) = subplot(4,2,5,...
     'parent',hf,...
     'nextplot','add',...
@@ -689,22 +609,16 @@ display.ha(3) = subplot(4,2,5,...
     'ygrid','on',...
     'tag','VBLaplace',...
     'box','off');
-title(display.ha(3),'residuals empirical distribution',...
-    'fontsize',11)
-xlabel(display.ha(3),'e(t) = y(t)-g(x(t))',...
-    'fontsize',8)
-ylabel(display.ha(3),'p(e|y)',...
-    'fontsize',8)
-bar(diagnostics.dy.nx,diagnostics.dy.ny,...
-    'facecolor',[.8 .8 .8],...
-    'parent',display.ha(3))
+title(display.ha(3),'residuals empirical distribution','fontsize',11)
+xlabel(display.ha(3),'e(t) = y(t)-g(x(t))','fontsize',8)
+ylabel(display.ha(3),'p(e|y)','fontsize',8)
+bar(diagnostics.dy.nx,diagnostics.dy.ny,'facecolor',[.8 .8 .8],'parent',display.ha(3))
 plot(display.ha(3),diagnostics.dy.grid,diagnostics.dy.pg,'r')
 if ~out.options.binomial
     plot(display.ha(3),diagnostics.dy.grid,diagnostics.dy.pg2,'g')
 end
 if ~out.options.binomial
-    legend(display.ha(3),...
-        {'empirical histogram','Gaussian approx','posterior approx'})
+    legend(display.ha(3),{'empirical histogram','Gaussian approx','posterior approx'})
 else
     legend(display.ha(3),{'empirical histogram','Gaussian approx'})
 end
@@ -729,26 +643,18 @@ display.ha(7) = subplot(4,2,3,...
     'box','off');
 plot(display.ha(7),gri,out.suffStat.dy')
 axis(display.ha(7),'tight')
-title(display.ha(7),'residuals time series',...
-    'fontsize',11)
-xlabel(display.ha(7),ti,...
-    'fontsize',8)
-ylabel(display.ha(7),'e(t) = y(t)-g(x(t))',...
-    'fontsize',8)
+title(display.ha(7),'residuals time series','fontsize',11)
+xlabel(display.ha(7),ti,'fontsize',8)
+ylabel(display.ha(7),'e(t) = y(t)-g(x(t))','fontsize',8)
 
 % display autocorrelation of residuals
 if ~isweird(diagnostics.dy.R) && out.dim.n_t > 1
     display.ha(5) = subplot(4,2,7,'parent',hf);
-    plot(display.ha(5),...
-        [-out.options.dim.n_t:out.options.dim.n_t-1],...
-        fftshift(diagnostics.dy.R)')
+    plot(display.ha(5),[-out.options.dim.n_t:out.options.dim.n_t-1],fftshift(diagnostics.dy.R)')
     axis(display.ha(5),'tight')
-    title(display.ha(5),'residuals empirical autocorrelation',...
-        'fontsize',11)
-    xlabel(display.ha(5),'lag tau',...
-        'fontsize',8)
-    ylabel(display.ha(5),'Corr[e(t),e(t+tau)]',...
-        'fontsize',8)
+    title(display.ha(5),'residuals empirical autocorrelation','fontsize',11)
+    xlabel(display.ha(5),'lag tau','fontsize',8)
+    ylabel(display.ha(5),'Corr[e(t),e(t+tau)]','fontsize',8)
     set(display.ha(5),...
         'tag','VBLaplace',...
         'ygrid','on',...
@@ -758,8 +664,7 @@ end
 
 % display state noise
 if ~isempty(diagnostics.dx.dx)
-    xlim = [diagnostics.dx.nx(1)-diagnostics.dx.d,...
-        diagnostics.dx.nx(end)+diagnostics.dx.d];
+    xlim = [diagnostics.dx.nx(1)-diagnostics.dx.d,diagnostics.dx.nx(end)+diagnostics.dx.d];
     display.ha(4) = subplot(4,2,6,...
         'parent',hf,...
         'nextplot','add',...
@@ -767,19 +672,13 @@ if ~isempty(diagnostics.dx.dx)
         'ygrid','on',...
         'tag','VBLaplace',...
         'box','off');
-    title(display.ha(4),'state noise empirical distribution',...
-        'fontsize',11)
-    xlabel(display.ha(4),'eta(t) = x(t+1)-f(x(t))',...
-        'fontsize',8)
-    ylabel(display.ha(4),'p(eta|y)',...
-        'fontsize',8)
-    bar(diagnostics.dx.nx,diagnostics.dx.ny,...
-        'facecolor',[.8 .8 .8],...
-        'parent',display.ha(4))
+    title(display.ha(4),'state noise empirical distribution','fontsize',11)
+    xlabel(display.ha(4),'eta(t) = x(t+1)-f(x(t))','fontsize',8)
+    ylabel(display.ha(4),'p(eta|y)','fontsize',8)
+    bar(diagnostics.dx.nx,diagnostics.dx.ny,'facecolor',[.8 .8 .8],'parent',display.ha(4))
     plot(display.ha(4),diagnostics.dx.grid,diagnostics.dx.pg,'r')
     plot(display.ha(4),diagnostics.dx.grid,diagnostics.dx.pg2,'g')
-    legend(display.ha(4),...
-        {'empirical histogram','Gaussian approx','posterior approx'})
+    legend(display.ha(4),{'empirical histogram','Gaussian approx','posterior approx'})
     
     display.ha(8) = subplot(4,2,4,...
         'parent',hf,...
@@ -788,31 +687,23 @@ if ~isempty(diagnostics.dx.dx)
         'ygrid','on',...
         'box','off');
     try
-        plotUncertainTimeSeries(...
-            out.suffStat.dx,out.suffStat.vdx,...
-            diagnostics.microTime(diagnostics.sampleInd),display.ha(8));
+        plotUncertainTimeSeries(out.suffStat.dx,out.suffStat.vdx,diagnostics.microTime(diagnostics.sampleInd),display.ha(8));
         
     catch
-        plot(display.ha(8),...
-            diagnostics.microTime(diagnostics.sampleInd),out.suffStat.dx')
+        plot(display.ha(8),diagnostics.microTime(diagnostics.sampleInd),out.suffStat.dx')
     end
     axis(display.ha(8),'tight')
-    title(display.ha(8),'state noise time series',...
-        'fontsize',11)
-    xlabel(display.ha(8),'time',...
-        'fontsize',8)
-    ylabel(display.ha(8),'eta(t) = x(t+1)-f(x(t))',...
-        'fontsize',8)
+    title(display.ha(8),'state noise time series','fontsize',11)
+    xlabel(display.ha(8),'time','fontsize',8)
+    ylabel(display.ha(8),'eta(t) = x(t+1)-f(x(t))','fontsize',8)
     
 end
 
 
 % display parameters posterior correlation matrix
-display.ha(6) = subplot(4,2,8,...
-    'parent',hf);
+display.ha(6) = subplot(4,2,8,'parent',hf);
 imagesc(diagnostics.C,'parent',display.ha(6))
-title(display.ha(6),'parameters posterior correlation matrix',...
-    'fontsize',11)
+title(display.ha(6),'parameters posterior correlation matrix','fontsize',11)
 set(display.ha(6),...
     'tag','VBLaplace',...
     'xtick',diagnostics.ltick,...
@@ -822,14 +713,8 @@ set(display.ha(6),...
     'box','off',...
     'nextplot','add');
 for i=1:length(diagnostics.tick)
-    plot(display.ha(6),...
-        [0.5 size(diagnostics.C,1)+0.5],...
-        [diagnostics.tick(i) diagnostics.tick(i)],...
-        'color',[1 1 1])
-    plot(display.ha(6),...
-        [diagnostics.tick(i) diagnostics.tick(i)],...
-        [0.5 size(diagnostics.C,1)+0.5],...
-        'color',[1 1 1])
+    plot(display.ha(6),[0.5 size(diagnostics.C,1)+0.5],[diagnostics.tick(i) diagnostics.tick(i)],'color',[1 1 1])
+    plot(display.ha(6),[diagnostics.tick(i) diagnostics.tick(i)],[0.5 size(diagnostics.C,1)+0.5],'color',[1 1 1])
 end
 grid(display.ha(6),'off')
 axis(display.ha(6),'square')
@@ -852,8 +737,7 @@ catch
     hfig = get(gco,'parent');
 end
 % first: clear diagnostics display
-hc = ...
-    intersect(findobj('tag','VBLaplace'),get(hfig,'children'));
+hc = intersect(findobj('tag','VBLaplace'),get(hfig,'children'));
 if ~isempty(hc)
     delete(hc)
 end
@@ -868,7 +752,7 @@ options = out.options;
 options.noPause = 1;
 options.DisplayWin =1;
 suffStat = out.suffStat;
-try F = out.F; catch, F = '?'; end
+
 dim = out.dim;
 
 % Initialize display figure
@@ -887,11 +771,11 @@ drawnow
 
 % Display data and hidden states (if any)
 if options.dim.n > 0
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'X')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
 end
 
 % Display precision hyperparameters
-VBA_updateDisplay(F,posterior,suffStat,options,y,0,'precisions')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
     xlabel(options.display.ha(6),' ')
     try
@@ -900,14 +784,14 @@ if ~options.OnLine && ~options.binomial
 end
 
 % Display model evidence
-VBA_updateDisplay(F,posterior,suffStat,options,y,0,'F')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
 
 % Display parameters
 if dim.n_theta >= 1
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'theta')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
 end
 if dim.n_phi >= 1
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'phi')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
 end
 
 try
@@ -1083,9 +967,7 @@ end
 
 
 % get parameters posterior correlation matrix
-if out.dim.n > 0 ...
-        && isinf(out.options.priors.a_alpha) ...
-        && isequal(out.options.priors.b_alpha,0)
+if out.dim.n > 0 && isinf(out.options.priors.a_alpha) && isequal(out.options.priors.b_alpha,0)
     S = out.suffStat.ODE_posterior.SigmaPhi;
 else
     S = NaN*zeros(out.dim.n+out.dim.n_theta+out.dim.n_phi);

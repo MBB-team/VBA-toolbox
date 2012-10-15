@@ -19,7 +19,7 @@ y = gx +  (1/sqrt(sigma))*randn(size(gx));
 % 3: display original and disaligned images
 hf = figure;
 subplot(2,2,1),imagesc(inG.Y),colormap(bone),colorbar,axis equal, axis tight,title('original image')
-subplot(2,2,2),imagesc(reshape(y,nx,ny)),colormap(bone),colorbar,axis equal, axis tight,title('disaligned image (to be realigned)')
+subplot(2,2,2),imagesc(reshape(y,nx,ny)),colormap(bone),colorbar,axis equal, axis tight,title('disaligned image (target)')
 
 % 4: undo dis-alignement:
 %   - data consist of original image

@@ -1,6 +1,4 @@
-% Demo for Double Well system.
-% This demo inverts a model of chaotic double-Well system, which is
-% observed through a nonlinear sigmoid observation function.
+% Builds MCMC density of double-well system
 
 clear variables
 close all

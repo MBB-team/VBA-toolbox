@@ -3,13 +3,12 @@ function [fx] = f_HH(Xt,Theta,ut,inF)
 % function [fx] = f_HH(Xt,Theta,ut,inF)
 % IN:
 %   - Xt: system's states, ie:
-%       Xt(1): calcium imaging prediction
-%       Xt(2): membrane depolarization (mV)
-%       Xt(3:5): type I-II-III ion channel opening probabilities, in
+%       Xt(1): membrane depolarization (mV)
+%       Xt(2:4): type I-II-III ion channel opening probabilities, in
 %       inverse-sigmoid space (Gaussian transformation)
 %   - Theta: evolution parameters (see bellow)
 %   - ut: input current
-%   - inF: [optional]
+%   - inF: mandatory for field .delta_t for time discretization
 % OUT:
 %   - fx: the evolution function evaluated at Xt
 

@@ -48,11 +48,13 @@ dim.n_phi           = 0;
 dim.n               = 3;
 
 
+options.checkGrads = 0;
+
 % Build time series of hidden states and observations
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 
 % display time series of hidden states and observations
-displaySimulations(y,x,eta,e)
+displaySimulations(y-e,x,eta,e)
 % disp('--paused--')
 % pause
 

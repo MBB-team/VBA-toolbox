@@ -197,7 +197,6 @@ if exist('in','var')
         suffStat = in.out.suffStat;
         options = in.out.options;
         u = in.out.u;
-        F = in.out.F;
         if ~options.OnLine
             VBA_disp('Skipping initialization.',options)
             VBA_disp('Main VB inversion...',options)
@@ -225,7 +224,7 @@ else
     end
     
     % Store free energy after the initialization step
-    F = options.init.F;
+    suffStat.F = [suffStat.F,options.init.F];
     
     if ~options.OnLine
         [st,i] = dbstack;
@@ -245,15 +244,15 @@ end
 try
     delete(intersect(findobj('tag','diagnostics_tabs'),get(options.display.hfp,'children')));
 end
-VBA_updateDisplay(F,posterior,suffStat,options,y,0,'precisions')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if dim.n_phi > 0
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'phi')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
 end
 if dim.n > 0
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'X')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
 end
 if dim.n_theta > 0
-    VBA_updateDisplay(F,posterior,suffStat,options,y,0,'theta')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
 end
 
 
@@ -261,13 +260,13 @@ end
 %----------------- Main VB learning scheme ------------------%
 %------------------------------------------------------------%
 
-suffStat.F = F; % store history of free energy across VB iterations
-stop = 0; % flag for exiting VB scheme
 it = 0; % index of VB iterations
+stop = it>=options.MaxIter; % flag for exiting VB scheme
 
 while ~stop
     
     it = it +1; % iteration index
+    F0 = suffStat.F(end);
     
     %------ Gauss-Newton VB IEKS (+ initial conditions) ------%
     if dim.n > 0
@@ -299,23 +298,23 @@ while ~stop
     % and suffStat variables.
     if options.updateHP
         [posterior,suffStat] = VBA_VBVarParam(y,posterior,suffStat,dim,options);
-        [Fi] = VBA_FreeEnergy(posterior,suffStat,options);
-        suffStat.F = [suffStat.F,Fi];
-    else
-        Fi = suffStat.F(end);
+        suffStat.F = [suffStat.F,VBA_FreeEnergy(posterior,suffStat,options)];
+        VBA_updateDisplay(posterior,suffStat,options,y,it,'precisions')
     end
     
     % Display progress
-    VBA_updateDisplay(suffStat.F,posterior,suffStat,options,y,it,'precisions')
-    VBA_updateDisplay([F Fi],posterior,suffStat,options,y,it,'F')
+    if ~options.OnLine && options.verbose
+        % display free energy iterative scanning
+        dF = suffStat.F(end)-F0;
+        fprintf(['VB iteration #',num2str(it),'         F=','%4.3e','         ... dF=','%4.3e'],suffStat.F(end),dF(end))
+        fprintf('\n')
+    end
     
     %--------------- Termination condition ---------------%
-    dF = Fi - F;
-    F = Fi;
+    dF = diff(suffStat.F);
+    dF = dF(end);
     if (  ( (abs(dF)<=options.TolFun)||it==options.MaxIter ) &&  it >=options.MinIter  ) || isweird(dF)
         stop  = 1;
-        [Fi] = VBA_FreeEnergy(posterior,suffStat,options);
-        suffStat.F = [suffStat.F,Fi];
         if abs(dF) <= options.TolFun
             out.CV = 1;
         else % did not converge
