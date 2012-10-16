@@ -36,34 +36,36 @@ P = [3e-1;3e-3;2e3];
 % ylabel('distance (cm)')
 % zlabel('density of connections')
 
+unit = 1; % if 1: mV, if 1e-3: V
+
 % excitatory maximum post-synaptic depolarization
-P.me = 1e-0*8;
+P.me = unit*8;
 % inhibitory maximum post-synaptic depolarization
-P.mi = 1e-0*32;
+P.mi = unit*32;
 % excitatory post-synaptic time constant
 P.Ke = 1e3/4;
 % inhibitory post-synaptic time constant
-P.Ki = 1e3/28;
-% amplitude of intrinsic connectivity kernels
+P.Ki = 1e3/32;
+% amplitude of intrinsic connectivity kernels (#synapses)
 P.a = 1e3.* [ 0 0 2
               0 0 8
               2 1 0 ];
-% intrinsic connectivity decay constant
-P.c = 1e1*0.32.*ones(3,3); 
-% conduction velocity
-P.v = 3.*ones(3,3);
+% intrinsic connectivity decay constant (spatial scale of lateral connectivity)
+P.c = 1e-2*ones(3,3);%3e-3.*ones(3,3); 
+% conduction velocity (along connections)
+P.v = 1.*ones(3,3);%3.*ones(3,3);
 % radius of cortical source
-P.l = 50.*1e-3;
+P.l = 1e-2;%5.*1e-3;
 % parameters of the Gaussian observation filter
 P.phi = [1;1*P.l];
 % parameters of the Gaussian observation filter
-P.sig = struct('r',0.54,'eta',30*1e-0,'g',0.135);
+P.sig = struct('r',0.54,'eta',30*unit,'g',0.135);
 P.i1 = 3;
 P.i2 = 1;
 % frequency grid
-gridw = 2.^[-2:0.1:10];%.1:1e-1:120;
+gridw = [0e0:2e-0:129];%2.^[-2:0.1:10];%.1:1e-1:120;%
 
-gridx = 30;%0:1e0:50;
+gridx = [0:1e0:50]*unit;
 nt = numel(gridx);
 gy = zeros(numel(gridw),nt);
 ds = zeros(nt,1);
@@ -87,11 +89,11 @@ sp = zeros(1,nt);
 pfb = zeros(5,nt);
 for t=1:nt
     sp(t) = sum(ngy(:,t));
-    ngy(:,t) = ngy(:,t)./sum(ngy(:,t));
+    ngy(:,t) = ngy(:,t)./sp(t);
     for i=1:5
         pfb(i,t) = sum(ngy(ifb{i},t));
     end
-    mf(t) = sum(sqrt(ngy(:,t)).*gridw')/(2*pi);
+    mf(t) = sum(ngy(:,t).*gridw');
 end
 for i=1:5
     pfb(i,:) = pfb(i,:)./sum(pfb(i,:));
@@ -103,31 +105,33 @@ ha = subplot(3,2,1,'parent',hf);
 plot(ha,gridx,ds)
 title(ha,'ds(z)/dz')
 xlabel(ha,'fundamental mode dV (mV)')
+set(ha,'xlim',[gridx(1),gridx(end)],'ygrid','on')
+box(ha,'off')
 
 ha = subplot(3,2,2,'parent',hf);
 plot(ha,gridx,mf);
 xlabel(ha,'fundamental mode dV (mV)')
 title(ha,'centre frequency (Hz)')
-
+set(ha,'xlim',[gridx(1),gridx(end)],'ygrid','on')
+box(ha,'off')
 
 ha = subplot(3,2,3,'parent',hf);
-hm = mesh(ha,log(abs(gy).^2));
+hm = mesh(ha,abs(gy).^2);
 set(hm,'facecolor','flat','edgecolor',0.8*[1 1 1],'edgealpha',0.5)
 axis(ha,'tight')
 inf = find(gridw==round(gridw));
-% set(ha,'xticklabel',gridx(get(ha,'xtick')))
-set(ha,'ytick',inf,'yticklabel',gridw(inf))
+inf = inf(1:8:end);
+set(ha,'ytick',inf,'yticklabel',gridw(inf),'xdir','reverse')
 xlabel(ha,'fundamental mode dV (mV)')
 ylabel(ha,'frequency (rad/s)')
-title('log frequency power')
+title('frequency power')
 
 ha = subplot(3,2,4,'parent',hf);
 hm = mesh(ha,ngy);
 set(hm,'facecolor','flat','edgecolor',0.8*[1 1 1],'edgealpha',0.5)
 axis(ha,'tight')
-inf = find(gridw==round(gridw));
 % set(ha,'xticklabel',gridx(get(ha,'xtick')))
-set(ha,'ytick',inf,'yticklabel',gridw(inf))
+set(ha,'ytick',inf,'yticklabel',gridw(inf),'xdir','reverse')
 xlabel(ha,'fundamental mode dV (mV)')
 ylabel(ha,'frequency (rad/s)')
 title('normalized frequency power')
@@ -137,28 +141,33 @@ ha = subplot(3,2,5,'parent',hf);
 plot(ha,gridx,sp);
 xlabel(ha,'fundamental mode dV (mV)')
 title(ha,'mean frequency power (A.U.)')
+set(ha,'xlim',[gridx(1),gridx(end)],'ygrid','on')
+box(ha,'off')
 
 ha = subplot(3,2,6,'parent',hf);
 plot(ha,gridx,pfb');
 xlabel(ha,'fundamental mode dV (mV)')
 title(ha,'band frequency power (A.U.)')
 legend({'delta','theta','alpha','beta','gamma'})
+set(ha,'xlim',[gridx(1),gridx(end)],'ygrid','on')
+box(ha,'off')
 
 getSubplots
 
 
 f_fname = @f_modek;
 g_fname = @g_Id;
-n_t = 1e2;
+n_t = 4e2;
 u = zeros(1,n_t);
 u(2) = 1;
-x0 = zeros(3,1);
 options.inF = P;
 options.inF.dt = 1e-3;
-options.inF.C = [0;0;1];
-options.inF.k = 1;
+options.inF.k = [1:16];
+options.inF.C = repmat([0;0;1],length(options.inF.k),1);
 options.inF.z_10 = 0;
-options.dim = struct('n',3,'n_phi',0,'n_theta',0,'n_t',n_t,'p',3,'n_u',1);
+options.inG.ind = find(repmat([1;0;0],length(options.inF.k),1)==1);
+options.dim = struct('n',3*length(options.inF.k),'n_phi',0,'n_theta',0,'n_t',n_t,'p',length(options.inF.k),'n_u',1);
+x0 = repmat([0;0;0],length(options.inF.k),1);
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,[],[],u,Inf,Inf,options,x0);
 
 displaySimulations(y,x,eta,e)

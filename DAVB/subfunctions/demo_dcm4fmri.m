@@ -141,7 +141,7 @@ displaySimulations(y,x,eta,e)
 %--- Call inversion routine
 % options.checkGrads = 1;
 % options.gradF = 1;
-
+% options.MaxIterInit = 0;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 %--- Display results
@@ -150,8 +150,7 @@ displayResults(posterior,out,y-e,x,x0,theta,phi,alpha,sigma)
 %--- Make predictions
 try
     options = out.options;
-    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(...
-        n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
+    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
 catch
     disp('------!!Unable to form predictions!!------')
 end

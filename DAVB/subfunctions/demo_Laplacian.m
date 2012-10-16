@@ -1,19 +1,23 @@
-% demo Laplacian
+function demo_Laplacian
 
-hf = figure;
+hf = figure('name','Laplacian eigenvalues');
 ha = axes('parent',hf,'nextplot','add');
-N = 128;
+N = 16;
 dx = 1;
-for n=2:N
+col = getColors(N);
+str = cell(0);
+for n=1:N
     G = diag(ones(N,1),0)-diag(ones(N-1,1),1);
     L = -G'*G;
     L(N,N) = -1;
-    L = L./(dx/n);
-    ev = eig(L);
-    plot(ha,ev)
-    plot(ha,ev,'.')
-    pause
+    L = L./(dx/n)^2;
+    ev = flipud(eig(L));
+    hp = plot(ha,ev,'color',col(n,:),'marker','.');
+%     plot(ha,ev,'.','color',col(n,:))
+    str{end+1} = ['dx=',num2str(dx/n)];
 end
+
+legend(str)
 
 % hf = figure;
 % ha = axes('parent',hf,'nextplot','add');

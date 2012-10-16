@@ -15,8 +15,7 @@ end
 
 % First check whether this is standard DCM
 options0 = options;
-if isequal(options.g_fname,@VBA_odeLim) || ...
-        isequal(options.g_fname,@VBA_smoothNLSS)
+if isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNLSS)
     options = options.inG.old.options;
 end
 
@@ -43,9 +42,7 @@ else
     if ~isempty(hc)
         delete(hc)
     end
-    set(display.hfp,...
-        'name',options.figName,...
-        'visible',visible);
+    set(display.hfp,'name',options.figName,'visible',visible);
 end
 
 

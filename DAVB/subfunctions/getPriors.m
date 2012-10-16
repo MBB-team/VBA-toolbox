@@ -29,8 +29,7 @@ priors.SigmaX0 = 1e-4*eye(5*nreg);
 % evolution parameters
 priors.muTheta = zeros(dim.n_theta,1);
 priors.SigmaTheta = 1e-3*eye(dim.n_theta);
-priors.SigmaTheta(1:options.inF.indself,1:options.inF.indself) = ...
-    1e-1*eye(options.inF.indself);
+priors.SigmaTheta(1:options.inF.indself,1:options.inF.indself) = 1e-1*eye(options.inF.indself);
 % priors.SigmaTheta(options.inF.indself,options.inF.indself) = 0;
 if reduced_f
     % fix some HRF params to their default values
@@ -59,9 +58,8 @@ if ~stochastic
     priors.b_alpha = 0;
 else
     TR = options.decim.*options.inF.deltat;
-    priors.b_alpha = TR/1e2;
+    priors.b_alpha = TR*1e-2;
     priors.a_alpha = 1e0;
-%     priors.b_alpha = 5e-2;
 end
 
 

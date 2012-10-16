@@ -1,4 +1,4 @@
-function [theta,e] = GLM_covComp(y,X,Qy,Qp,my,mp)
+function [theta,e,hy,hp] = GLM_covComp(y,X,Qy,Qp,my,mp)
 % wraps GLM with multiple covariance components estimation into VBA
 % function [theta,e] = GLM_covComp(y,X,Qy,Qp,my,mp)
 % IN:
@@ -57,14 +57,14 @@ options = struct(...
     'priors',priors,...
     'inG',inG,...
     'updateHP',0,...
-    'MaxIter',64,...
+    'MaxIter',128,...
     'GnMaxIter',64);
 g_fname = @g_wrapGLM;
 
 [posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
 
 
-[theta,e] = collapseGLM(posterior.muPhi,inG);
+[theta,e,hy,hp] = collapseGLM(posterior.muPhi,inG);
 
 
 
@@ -74,12 +74,13 @@ function [gx] = g_wrapGLM(x,P,u,in)
 [theta,e] = collapseGLM(P,in);
 gx = in.X*theta + e;
 
-
-function [theta,e] = collapseGLM(P,in)
+function [theta,e,hy,hp] = collapseGLM(P,in)
 P1 = P(in.ind{1});
 P2 = reshape(P(in.ind{2}),in.dim.ny,in.dim.nqy);
 P3 = P(in.ind{3});
 P4 = reshape(P(in.ind{4}),in.dim.np,in.dim.nqp);
-theta = P4*exp(P3);
-e = P2*exp(P1);
+hp = exp(P3);
+theta = P4*hp;
+hy = exp(P1);
+e = P2*hy;
 

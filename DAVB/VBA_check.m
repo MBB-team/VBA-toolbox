@@ -146,19 +146,7 @@ end
 if ~isfield(options,'nmog')
     options.nmog = 1;
 end
-% Name of the display figure
-if ~isfield(options,'figName')
-    try,aa=options.priors.a_alpha;catch,aa=[];end
-    if ~isinf(aa)
-        options.figName = 'VB-Laplace identification of stochastic systems';
-    else
-        if isempty(f_fname)
-            options.figName = 'VB-Laplace inversion of static model';
-        else
-            options.figName = 'VB-Laplace identification of non stochastic systems';
-        end
-    end
-end
+
 
 % Deal with micro-resolution input
 u = VBA_getU(u,options,dim,'2macro');
@@ -222,6 +210,21 @@ if isfield(options,'priors')
 else % Build default (non-informative) priors
     priors = VBA_priors(dim,options);
 end
+
+% Name of the display figure
+if ~isfield(options,'figName')
+    if dim.n > 0
+        if isinf(priors.a_alpha) && isequal(priors.b_alpha,0)
+            options.figName = 'VB-Laplace identification of deterministic system';
+        else
+            options.figName = 'VB-Laplace identification of stochastic system';
+        end
+    else
+        options.figName = 'VB-Laplace inversion of static model';
+    end
+end
+
+
 
 % ensure excluded data consistency
 if ~options.binomial

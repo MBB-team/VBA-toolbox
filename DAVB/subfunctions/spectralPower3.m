@@ -35,14 +35,14 @@ for w=1:nw
     
     for k=1:nk
         
-        K = k*pi/P.l;
-        fk = -0.5*v*(1-K*c^2)/c;
+        K = -(k*pi/P.l)^2;
+        fk = 0.5*v*(K*c^2-1)/c;
 
         J = [   0           0           1
                 cz          fk          0
                 -P.Ke^2     P.me*P.Ke   -2*P.Ke  ];
             
-        R = VB_inv(1i.*W*eye(3) - J)*Cin;
+        R = VB_inv(1i.*W*eye(3) - J)*Cin;%/sqrt(W);
 
         L=1;%[L] = leadField(K,P);
         

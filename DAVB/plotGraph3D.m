@@ -43,7 +43,8 @@ mag = max(gx);
 gx = [mig-flipud(offset(:));gx;mag+offset(:)];
 gt = [-nv:size(px,1)-nv-1]';
 hi = surf(gt,gx,px','parent',ha);
-set(hi,'edgealpha',0.1)
+set(hi,'edgecolor',0.8*[1 1 1]);%'edgealpha',0.1,
+
 
 if isempty(x)
    % compute first-order moment from time-dependent density

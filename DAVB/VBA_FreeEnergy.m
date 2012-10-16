@@ -23,8 +23,7 @@ end
 
 if options.DisplayWin % Display progress
     try
-        set(options.display.hm(1),'string',...
-            'Calculating Free Energy... ');
+        set(options.display.hm(1),'string','Calculating Free Energy... ');
         set(options.display.hm(2),'string','0%');
         drawnow
     end

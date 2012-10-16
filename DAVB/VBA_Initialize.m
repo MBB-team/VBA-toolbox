@@ -20,7 +20,7 @@ if dim.n > 0
     % ODE limit to the state-space model.
     
     options0 = options;
-    options0.figName = 'VB-Laplace initialization: non stochastic system';
+    options0.figName = 'VB-Laplace initialization: deterministic system';
     options0.priors.a_alpha = Inf;
     options0.priors.b_alpha = 0;
     options0.MaxIter = options.MaxIterInit;

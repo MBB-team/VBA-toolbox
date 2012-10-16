@@ -44,6 +44,7 @@ priors.b_sigma = 1e0;
 % Build options and dim stuctures for model inversion
 options.priors      = priors;
 options.backwardLag = 5;
+options.MaxIterInit = 0; % no deterministic update
 dim.n_theta         = 0;
 dim.n_phi           = 0;
 dim.n               = 7;

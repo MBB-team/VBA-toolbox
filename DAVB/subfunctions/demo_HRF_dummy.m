@@ -6,7 +6,7 @@
 
 
 close all
-clear all
+clear variables
 
 
 %---- HRF estimation  ----%
@@ -58,17 +58,10 @@ plot(gx')
 % pause
 
 % Build priors for model inversion
-priors.muTheta = [];
-priors.SigmaTheta = 0;
 
 % priors.muPhi =0*ones(size(phi)-[5,0]);
 priors.muPhi = [log(5);log(1);log(7);log(1);1;-0.2;0];
 priors.SigmaPhi = 1e-1*eye(size(priors.muPhi,1));
-
-
-
-priors.a_alpha = 0;
-priors.b_alpha = 1;
 
 y0 = (1./sqrt(sigma))*randn(size(y));
 priors.a_sigma = numel(y0);
@@ -76,7 +69,6 @@ priors.b_sigma = trace(y0'*y0);
 
 
 options.priors = priors;
-options.annealing = 0;
 g_fname = @g_DoubleGamma;
 
 dim.n_theta = 0;
