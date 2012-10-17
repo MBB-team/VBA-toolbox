@@ -1,23 +1,28 @@
-% Demo for Hodgkin-Huxley PA propagation
+% Demo for Fitz-Hugh-Nagumo PA propagation
 % Short bursts of depolarizing input current (u) are sent to a neuron that
-% responds according to Hodgkin-Huxley model. In brief, an AP is generated
-% if the membrane depolarization reaches a critical threshold. NB: an AP
-% approximately corresponds to a 80mV depolarization.
+% responds according to Fitz-Hugh-Nagumo model. Note that this does not
+% generates 'all-or-none' spikes (as in the Hodgkin-Huxley model), but
+% supra-threshold input create large deviations from equilibrium membrane
+% depolarization. NB: an AP approximately corresponds to a deviation of
+% about 1 A.U. w.r.t. equilibrium.
 
 clear variables
 close all
 
+
+
 % Choose basic settings for simulations
 n_t = 1e3;
-delta_t = 1e-1;         % 10Hz sampling rate
-f_fname = @f_HH;
+dt = 1e-1;         % 10Hz sampling rate
+f_fname = @f_FitzHughNagumo;
 g_fname = @g_Id;
 
-u       = 4e1*(randn(1,n_t)>1.2);
+u       = 1e1*(randn(1,n_t)>2);
+
 % figure,plot(u)
 
 % Build options structure for temporal integration of SDE
-inF.delta_t = delta_t;
+inF.dt = dt;
 inG.ind         = 1;
 options.inF     = inF;
 options.inG     = inG;
@@ -28,8 +33,8 @@ options.decim = 1;
 alpha   = Inf;
 sigma   = 1e2;
 phi     = [];
-x0 = [0;-3;-3/4;1/3];
-theta = [1;0*ones(3,1)];
+x0 = [1.2;0.62];
+theta = [0.4;0.1*ones(3,1)];
 
 % Build time series of hidden states and observations
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
@@ -37,38 +42,31 @@ theta = [1;0*ones(3,1)];
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
 
+
 hf = figure('color',[1 1 1]);
 ha = subplot(3,1,1,'parent',hf,'nextplot','add');
 plot(ha,u')
 title(ha,'input current')
 xlabel('time')
 ha = subplot(3,1,2,'parent',hf,'nextplot','add');
-col = getColors(2);
-m = sigm(x(2,:));
-n = sigm(x(3,:));
-h = sigm(x(4,:));
-p(1,:) = m.^3.*h;
-p(2,:) = n.^4;
-for i=1:2
-    plot(ha,p(i,:),'color',col(i,:));
-end
-title(ha,'ion channels opening probabilities')
+title(ha,'recovery variable')
+plot(ha,x(2,:))
 xlabel('time')
-legend({'Na','K'})
 ha = subplot(3,1,3,'parent',hf,'nextplot','add');
 plot(ha,x(1,:))
-title(ha,'output membrane depolarization (mV)')
+title(ha,'output membrane depolarization (A.U.)')
 xlabel('time')
+
 
 % return
 
-dim.n = 4;
+dim.n = 2;
 dim.n_phi = 0;
 dim.n_theta = 4;
 
 priors.iQx = cell(n_t,1);
 for t=1:n_t
-    priors.iQx{t} = 1e2*eye(4);
+    priors.iQx{t} = 1e2*eye(2);
     priors.iQx{t}(1,1) = 1e0;
 end
 priors.a_alpha = Inf;

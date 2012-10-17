@@ -69,7 +69,7 @@ switch flag
         % this model uses Fitz-Hugh-Nagumo AP propagation model, convolved
         % with a 1st-order convolution kernel (calcium response).
         
-        f_fname = @f_FitzHughNagumo;
+        f_fname = @f_FitzHughNagumo_calcium;
         g_fname = @g_Id;
     
         priors.muX0 = [0;-.2;0];
