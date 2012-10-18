@@ -83,103 +83,103 @@ for i=1:p
     end
 end
 
-
-col = getColors(p);
-
-% data fit
 yhat = P*y;
-hf = figure('color',[1 1 1]);
-ha = subplot(2,2,1,'parent',hf,'nextplot','add');
-for i=1:p
-    hp = plot(ha,y(:,i),yhat(:,i),'.','color',col(i,:));
-end
-mi = min([y(:);yhat(:)]);
-ma = max([y(:);yhat(:)]);
-plot([mi,ma],[mi,ma],'r')
-axis(ha,'tight')
-xlabel(ha,'observed data')
-ylabel(ha,'predicted data')
-grid(ha,'on')
-title(ha,'data fit')
 
-% parameter estimates
-ha = subplot(2,2,2,'parent',hf,'nextplot','add');
-offset = [1:p]/(2*p);
-offset = offset - mean(offset);
-width = diff(offset);
-if isempty(width)
-    width = 0.5;
-else
-    width = width(1);
-end
-for i=1:p
-    Vb = diag(vhat(i)*iC);
-    for j=1:k
-        hp = bar(ha,j+offset(i),b(j,i),'facecolor',col(i,:),'BarWidth',width);
-        hcmenu = uicontextmenu;
-        uimenu(hcmenu, 'Label',['data #',num2str(i),', variable #',num2str(j),' (',names{j},')']);
-        uimenu(hcmenu, 'Label',['p=',num2str(all.pv(j,i),'%3.3f')]);
-        uimenu(hcmenu, 'Label',['F=',num2str(all.stat(j,i),'%3.3f')]);
-        uimenu(hcmenu, 'Label',['dof=[',num2str(all.df(j,1,i)),',',num2str(all.df(j,2,i)),']']);
-        set(get(hp,'children'),'uicontextmenu',hcmenu);
-        set(hp,'uicontextmenu',hcmenu);
-        hp = errorbar(ha,j+offset(i),b(j,i),1.96*sqrt(Vb(j)),'.','color',col(i,:));
-        set(hp,'uicontextmenu',hcmenu);
-    end
-end
-set(ha,'xtick',[1:1:k],'xlim',[0.5+min(offset),k+0.5+max(offset)],'ygrid','on')
-xlabel('independent variables')
-title('parameter estimates')
+% axes for predicted vs observed data
+handles.hf = figure('color',[1 1 1]);
+handles.ha = subplot(2,2,1,...
+    'parent',handles.hf,...
+    'nextplot','add',...
+    'visible','on');
+
+% axes for parameter estimates
+handles.ha(2) = subplot(2,2,2,...
+    'parent',handles.hf,...
+    'nextplot','add',...
+    'visible','on');
+
 
 % parameters' correlation matrix
-ha = subplot(2,2,3,'parent',hf,'nextplot','add');
-imagesc(cov2corr(iC),'parent',ha)
-axis(ha,'square')
-axis(ha,'equal')
-axis(ha,'tight')
-colorbar('peer',ha)
+handles.ha(3) = subplot(2,2,3,...
+    'parent',handles.hf,...
+    'nextplot','add');
+imagesc(cov2corr(iC),'parent',handles.ha(3))
+axis(handles.ha(3),'square')
+axis(handles.ha(3),'equal')
+axis(handles.ha(3),'tight')
+colorbar('peer',handles.ha(3))
 colormap(cool)
-title(ha,'parameters'' correlation matrix')
-set(ha,...
+title(handles.ha(3),'parameters'' correlation matrix')
+set(handles.ha(3),...
     'clim',[-1,1],...
     'xdir','normal',...
     'ydir','reverse',...
     'xtick',[1:k],...
     'ytick',[1:k])
 
-% display test results
-ha = subplot(2,2,4,'parent',hf,'visible','off');
+% display test results (p-value and F-test)
+ha = subplot(2,2,4,'parent',handles.hf,'visible','off');
 pos = get(ha,'position');
 un = get(ha,'units');
 delete(ha)
-for i=1:p
-    dy = i*pos(4)/8;
-    pos1 = pos + [0,-dy+pos(4),0,dy/i-pos(4)];
-    strp = ['data #',num2str(i),': p=',num2str(pv(i),'%3.3f'),' (',type,'=',num2str(stat(i),'%3.3f'),')'];
-    hj = uicontrol(...
-        'style','text',...
-        'units',un,...
-        'position',pos1,...
-        'string',strp,...
-        'fontsize',10,...
-        'backgroundcolor',[1 1 1],...
-        'ForegroundColor',col(i,:),...
-        'HorizontalAlignment','left');
-end
+dy = pos(4)/4;
+pos1 = pos + [0,-3*dy+pos(4),0,dy-pos(4)];
+handles.ht(1) = uicontrol(...
+    'parent',handles.hf,...
+    'style','text',...
+    'units',un,...
+    'position',pos1,...
+    'string',[],...
+    'fontsize',10,...
+    'backgroundcolor',[1 1 1],...
+    'HorizontalAlignment','left');
+
+pos1 = pos + [0,-4*dy+pos(4),0,dy-pos(4)];
 if length(df)==1
     str = ['dof=',num2str(df)];
 else
     str = ['dof=[',num2str(df(1)),',',num2str(df(2)),']'];
 end
-pos2 = pos1 + [0,-dy/i,0,0];
-hu = uicontrol(...
+handles.ht(2) = uicontrol(...
+    'parent',handles.hf,...
     'style','text',...
     'units',un,...
-    'position',pos2,...
+    'position',pos1,...
     'string',str,...
     'fontsize',10,...
     'backgroundcolor',[1 1 1],...
     'HorizontalAlignment','left');
+
+% data selector
+str = cell(p,1);
+for i=1:p
+    str{i} = ['data #',num2str(i),];
+end
+ud.all = all;
+ud.y = y;
+ud.yhat = yhat;
+ud.pv = pv;
+ud.stat = stat;
+ud.vhat = vhat;
+ud.iC = iC;
+ud.b = b;
+ud.names = names;
+ud.type = type;
+ud.handles = handles;
+pos1 = pos + [0,-2*dy+pos(4),0,dy-pos(4)];
+handles.ht(2) = uicontrol(...
+    'parent',handles.hf,...
+    'style','popupmenu',...
+    'units',un,...
+    'position',pos1,...
+    'string',str,...
+    'fontsize',10,...
+    'backgroundcolor',0.8*[1 1 1],...
+    'HorizontalAlignment','left',...
+    'userdata',ud,...
+    'callback',@myData);
+
+feval(@myData,handles.ht(2),[])
 
 
 
@@ -194,6 +194,52 @@ colors = get(ha,'colororder');
 colors = repmat(colors,ceil(n/size(colors,1)),1);
 colors = colors(1:n,:);
 delete(hf)
+
+
+function myData(e1,e2)
+ud = get(e1,'userdata');
+ind = get(e1,'value');
+
+% plot data
+cla(ud.handles.ha(1))
+hp = plot(ud.handles.ha(1),ud.y(:,ind),ud.yhat(:,ind),'k.');
+mi = min([ud.y(:,ind);ud.yhat(:,ind)]);
+ma = max([ud.y(:,ind);ud.yhat(:,ind)]);
+plot(ud.handles.ha(1),[mi,ma],[mi,ma],'r')
+axis(ud.handles.ha(1),'tight')
+xlabel(ud.handles.ha(1),'observed data')
+ylabel(ud.handles.ha(1),'predicted data')
+grid(ud.handles.ha(1),'on')
+title(ud.handles.ha(1),'data fit')
+
+% parameter estimates
+cla(ud.handles.ha(2))
+Vb = diag(ud.vhat(ind)*ud.iC);
+k = size(ud.b,1);
+for j=1:k
+    hp = bar(ud.handles.ha(2),j,ud.b(j,ind),'facecolor',0.8*[1 1 1],'BarWidth',0.5);
+    hcmenu = uicontextmenu;
+    if ~isempty(ud.names{j})
+        uimenu(hcmenu, 'Label',['data #',num2str(ind),', variable #',num2str(j),' (',ud.names{j},')']);
+    else
+        uimenu(hcmenu, 'Label',['data #',num2str(ind),', variable #',num2str(j)]);
+    end
+    uimenu(hcmenu, 'Label',['p=',num2str(ud.all.pv(j,ind),'%3.3f')]);
+    uimenu(hcmenu, 'Label',['F=',num2str(ud.all.stat(j,ind),'%3.3f')]);
+    uimenu(hcmenu, 'Label',['dof=[',num2str(ud.all.df(j,1,ind)),',',num2str(ud.all.df(j,2,ind)),']']);
+    set(get(hp,'children'),'uicontextmenu',hcmenu);
+    set(hp,'uicontextmenu',hcmenu);
+    hp = errorbar(ud.handles.ha(2),j,ud.b(j,ind),1.96*sqrt(Vb(j)),'r.');
+    set(hp,'uicontextmenu',hcmenu);
+end
+set(ud.handles.ha(2),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'ygrid','on')
+xlabel(ud.handles.ha(2),'independent variables')
+title(ud.handles.ha(2),'parameter estimates')
+
+
+% display test results
+strp = ['p=',num2str(ud.pv(ind),'%3.3f'),' (',ud.type,'=',num2str(ud.stat(ind),'%3.3f'),')'];
+set(ud.handles.ht(1),'string',strp);
 
 
 

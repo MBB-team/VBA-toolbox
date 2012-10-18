@@ -304,8 +304,7 @@ while ~stop
     
     % Display progress
     if ~options.OnLine && options.verbose
-        % display free energy iterative scanning
-        dF = suffStat.F(end)-F0;
+        dF = suffStat.F(end)-F0; % FE increase during the last VB iteration
         fprintf(['VB iteration #',num2str(it),'         F=','%4.3e','         ... dF=','%4.3e'],suffStat.F(end),dF(end))
         fprintf('\n')
     end

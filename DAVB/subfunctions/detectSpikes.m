@@ -37,14 +37,14 @@ switch flag
         g_fname = @g_Id;
         
         % Build priors for model inversion
-        priors.muX0 = [0;-3;-3/4;1/3];
+        priors.muX0 = [0;0;-3;-3/4;1/3];
         priors.SigmaX0 = 0e-1*eye(5);
-        priors.muTheta = [1;0*ones(4,1)];
+        priors.muTheta = [0;1;0*ones(3,1)];
         priors.SigmaTheta = 0e1*eye(5);
         priors.SigmaTheta(1,1) = 1e-2;
         priors.a_alpha      = 1e0;
         priors.b_alpha      = 1e0;
-        priors.a_sigma      = 1e0;
+        priors.a_sigma      = 1e3;
         priors.b_sigma      = 1e0;
         for t = 1:n_t
             dq              = 1e2*ones(5,1);
@@ -52,10 +52,11 @@ switch flag
             priors.iQx{t}   = diag(dq);
         end
         options.priors = priors;
-        options.updateHP    = 0;
+        options.updateHP    = 1;
         options.backwardLag = 8;
         options.GnFigs = 0;
         options.decim = 1;
+        options.MaxIterInit = 0;
         
         dim.n_theta         = 5;
         dim.n_phi           = 0;

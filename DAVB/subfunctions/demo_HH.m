@@ -13,7 +13,7 @@ delta_t = 1e-1;         % 10Hz sampling rate
 f_fname = @f_HH;
 g_fname = @g_Id;
 
-u       = 4e1*(randn(1,n_t)>1.2);
+u       = 4e1*(randn(1,n_t)>1.1);
 % figure,plot(u)
 
 % Build options structure for temporal integration of SDE
