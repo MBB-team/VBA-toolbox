@@ -1,4 +1,4 @@
-function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,names)
+function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 % computes classical p-values for any contrast applied onto GLM effects
 % function [pv,stat,df] = GLM_contrast(X,y,c,type)
 % IN:
@@ -21,7 +21,8 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,names)
 k = size(X,2);
 try;type;catch;type='t';end
 try;verbose;catch;verbose=0;end
-try; names{k};catch;names = cell(k,1);end
+try;Xnames{k};catch;Xnames=[];end
+try;Ynames{p};catch;Ynames=[];end
 C = X'*X;
 iC = pinv(C);
 b = iC*X'*y;
@@ -153,7 +154,10 @@ handles.ht(2) = uicontrol(...
 % data selector
 str = cell(p,1);
 for i=1:p
-    str{i} = ['data #',num2str(i),];
+    str{i} = ['data #',num2str(i)];
+    if ~isempty(Ynames)
+        str{i} = [str{i},' (',Ynames{i},')'];
+    end
 end
 ud.all = all;
 ud.y = y;
@@ -163,7 +167,8 @@ ud.stat = stat;
 ud.vhat = vhat;
 ud.iC = iC;
 ud.b = b;
-ud.names = names;
+ud.Xnames = Xnames;
+ud.Ynames = Ynames;
 ud.type = type;
 ud.handles = handles;
 pos1 = pos + [0,-2*dy+pos(4),0,dy-pos(4)];
@@ -219,11 +224,15 @@ k = size(ud.b,1);
 for j=1:k
     hp = bar(ud.handles.ha(2),j,ud.b(j,ind),'facecolor',0.8*[1 1 1],'BarWidth',0.5);
     hcmenu = uicontextmenu;
-    if ~isempty(ud.names{j})
-        uimenu(hcmenu, 'Label',['data #',num2str(ind),', variable #',num2str(j),' (',ud.names{j},')']);
-    else
-        uimenu(hcmenu, 'Label',['data #',num2str(ind),', variable #',num2str(j)]);
+    str = ['data #',num2str(ind)];
+    if ~isempty(ud.Ynames)
+        str = [str,' (',ud.Ynames{ind},')'];
     end
+    str = [str,', variable #',num2str(j)];
+    if ~isempty(ud.Xnames)
+        str = [str,' (',ud.Xnames{j},')'];
+    end
+    uimenu(hcmenu, 'Label',str);
     uimenu(hcmenu, 'Label',['p=',num2str(ud.all.pv(j,ind),'%3.3f')]);
     uimenu(hcmenu, 'Label',['F=',num2str(ud.all.stat(j,ind),'%3.3f')]);
     uimenu(hcmenu, 'Label',['dof=[',num2str(ud.all.df(j,1,ind)),',',num2str(ud.all.df(j,2,ind)),']']);

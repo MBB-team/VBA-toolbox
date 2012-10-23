@@ -1,6 +1,6 @@
-function [p] = VB_PPM(m,v,t,disp)
+function [p] = VB_PPM(m,v,t,disp,form)
 % computes the exceedance probability of a random effect (+ plots)
-% FORMAT [p] = VB_PPM(m,v,t,disp)
+% FORMAT [p] = VB_PPM(m,v,t,disp,form)
 % IN:
 %   - m: the posterior mean of the effect
 %   - v: the posterior variance of the effect
@@ -9,17 +9,24 @@ function [p] = VB_PPM(m,v,t,disp)
 %   P(x<t(1) or x>t(2)).
 %   - disp: a binary switch that flags whether or not to display the
 %   exceedance probability onto the posterior pdf.
+%   - form: 'gaussian' or 'beta'
 % OUT:
 %   - p: the exceedance probability
 
 try, disp; catch disp=0; end
+try, form; catch form='gaussian'; end
 
-
-s = sqrt(v);
-dx = s*1e-4;
-gridx = -8*s:dx:8*s;
-gridx = gridx + m;
-f = exp(-0.5*(gridx-m).^2./v);
+switch form
+    case 'gaussian'
+        s = sqrt(v);
+        dx = s*1e-4;
+        gridx = -8*s:dx:8*s;
+        gridx = gridx + m;
+        f = exp(-0.5*(gridx-m).^2./v);
+    case 'beta'
+        gridx = 0:1e-2:1;
+        f = (gridx.^(m-1)).*((1-gridx).^(v-1));
+end
 f = f./sum(f);
 if length(t) == 1
     [mp,indt] = min(abs(gridx-t));

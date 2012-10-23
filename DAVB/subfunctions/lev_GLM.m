@@ -9,14 +9,12 @@ function [lev] = lev_GLM(y,X)
 
 [d,r] = size(X);
 XtX = X'*X;
-yhat = X*pinv(XtX)*X'*y;
+ldx = VBA_logDet(XtX);
+yhat = X*VB_inv(XtX)*X'*y;
 e = y - yhat;
 n = size(y,2);
 lev = zeros(n,1);
 for i=1:n
-    lev(i) = 0.5*(r-d)*log(2*pi) ...
-        - 0.5*VBA_logDet(XtX) ...
-        + gammaln(0.5*(d-r)) ...
-        + 0.5*(r-d)*log(0.5*e(:,i)'*e(:,i));
+    lev(i) = 0.5*(r-d)*log(2*pi) - 0.5*ldx + gammaln(0.5*(d-r)) + 0.5*(r-d)*log(0.5*e(:,i)'*e(:,i));
 end
 
