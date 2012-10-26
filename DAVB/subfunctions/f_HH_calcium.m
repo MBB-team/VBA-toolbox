@@ -16,12 +16,7 @@ function [fx] = f_HH_calcium(Xt,Theta,ut,inF)
 
 deltat = inF.delta_t;
 
-try
-    a = inF.a.^-1;
-catch
-    a = 1;
-end
-a = a.*exp(Theta(1));
+a = exp(Theta(1));
 C = exp(Theta(2));
 gK = 36*exp(Theta(3));
 gNa = 120*exp(Theta(4));
@@ -43,11 +38,11 @@ bn = 0.125*exp(-V/80);
 bm = 4*exp(-V/18);
 bh = 1./(exp(3-0.1*V)+1);
 
-tmp = [ -a*Xt(1)+ V*1e-0
-        (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + 1e0*ut)/C
+xdot = [ (-a*Xt(1)+ V*1e-0)/inF.sc
+        (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + ut)/C
         (am*(1-m) - bm*m)/(m-m.^2+1e-2)
         (an*(1-n) - bn*n)/(n-n.^2+1e-2)
         (ah*(1-h) - bh*h)/(h-h.^2+1e-2)   ];
 
-fx = Xt + deltat.*tmp;
+fx = Xt + deltat.*inF.sc*xdot;
 

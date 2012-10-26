@@ -28,9 +28,9 @@ if doFig
         'color',[1 1 1],...
         'name','group-level Bayesian model comparison',...
         'tag','groupBMC');
-    colormap(handles.hf,flipud(bone))
     handles.ha(1) = subplot(3,2,1,'parent',handles.hf,'nextplot','add');
     handles.ha(2) = subplot(3,2,2,'parent',handles.hf,'nextplot','add','clim',[0,1]);
+    colormap(handles.ha(2),flipud(bone))
     handles.hc = colorbar('peer',handles.ha(2),'location','NorthOutside');
     set(handles.hc,'visible','off')
     handles.ha(3) = subplot(3,2,4,'parent',handles.hf,'nextplot','add');
