@@ -76,9 +76,10 @@ if disp
     plot(ha,gridx,f,'k')
     grid(ha,'on')
     axis(ha,'tight')
-    box(ha,'on')
+    box(ha,'off')
     xlabel(ha,'effect of interest: x')
     ylabel(ha,'probability density function: p(x)')
+    try;getSubplots;end
 end
 
 

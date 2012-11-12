@@ -10,7 +10,8 @@ function [posterior,out] = VBA_groupBMC(L,options)
 %       .MaxIter: max number of iterations
 %       .MinIter: min number of iterations
 %       .TolFun: max change in Free Energy
-%       .DisplayWin: flg for display window
+%       .DisplayWin: flag for display window
+%       .verbose: flag for summary statistics display
 %       .families: a cell array of size nf, which contains the indices of
 %       the models that belong to each of the nf families. NB: using
 %       families change the default prior (uniform prior on families), and
@@ -42,11 +43,6 @@ function [posterior,out] = VBA_groupBMC(L,options)
 
 %-- fill in options with defaults if needed
 options.tStart = tic;
-if ~isfield(options,'priors')
-    priors = [];
-else
-    priors = options.priors;
-end
 if ~isfield(options,'MaxIter')
     options.MaxIter = 32;
 end
@@ -59,21 +55,35 @@ end
 if ~isfield(options,'DisplayWin')
     options.DisplayWin = 1;
 end
+if ~isfield(options,'verbose')
+    options.verbose = 1;
+end
 if ~isfield(options,'families')
     options.families = [];
+end
+if ~isfield(options,'priors')
+    priors = [];
+else
+    priors = options.priors;
 end
 if isempty(priors) || ~isfield(priors,'a') || isempty(priors.a)
     priors.a = 1e0*ones(K,1);
     if ~isempty(options.families)
         nf = length(options.families);
-        options.C = zeros(K,nf);
         for i=1:nf
             indf = options.families{i};
             priors.a(indf) = 1./length(indf);
-            options.C(indf,i) = 1;
         end
     end
     options.priors = priors;
+end
+if ~isempty(options.families)
+    nf = length(options.families);
+    options.C = zeros(K,nf);
+    for i=1:nf
+        indf = options.families{i};
+        options.C(indf,i) = 1;
+    end
 end
 
 %-- initialize posterior and free energy
@@ -109,15 +119,39 @@ end
 
 %-- wrap up VBA output
 out = wrapUp(L,posterior,priors,F,options);
-out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet',options.DisplayWin);
+out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet',0);
 if ~isempty(out.options.families)
-    out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',options.DisplayWin);
+    out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',0);
 end
 out.date = clock;
 if options.DisplayWin
    VBA_displayGroupBMC(posterior,out);
 end
 
+%-- display summary statistics
+if options.verbose
+    fprintf('\n')
+    fprintf('---')
+    fprintf('\n')
+    fprintf(['Date: ',datestr(out.date),'\n'])
+    if floor(out.dt./60) == 0
+        timeString = [num2str(floor(out.dt)),' sec'];
+    else
+        timeString = [num2str(floor(out.dt./60)),' min'];
+    end
+    fprintf(['VB converged in ',num2str(it),' iterations (took ~',timeString,').','\n'])
+    fprintf(['Dimensions:','\n'])
+    fprintf(['     - subjects: n=',num2str(n),'\n'])
+    fprintf(['     - models: K=',num2str(K),'\n'])
+    if ~isempty(out.options.families)
+        fprintf(['     - families: m=',num2str(nf),'\n'])
+    end
+    prfx = 1/(1+exp(out.F0-out.F(end)));
+    fprintf(['Posterior probabilities:','\n'])
+    fprintf(['     - RFX: p(H1|y)= ','%4.3f','\n'],prfx)
+    fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],1-prfx)
+    fprintf('\n')
+end
 
 
 %-- subfunctions

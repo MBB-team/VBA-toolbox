@@ -155,7 +155,7 @@ end
 if ~isfield(out,'date')
     dF = diff(out.F);
     set(handles.ho,'string',...
-        ['Model evidence: log p(y|m) >= ',num2str(out.F(end),'%1.3e'),...
+        ['RFX evidence: log p(y|H1) >= ',num2str(out.F(end),'%1.3e'),...
         ' , dF= ',num2str(dF(end),'%4.3e')])
 else
     if floor(out.dt./60) == 0
@@ -164,7 +164,7 @@ else
         timeString = [num2str(floor(out.dt./60)),' min'];
     end
     str = ['VB inversion complete (took ~',timeString,').'];
-    set(handles.ho,'string',[str,' Model evidence: log p(y|m) >= ',num2str(out.F(end),'%1.3e'),'.'])
+    set(handles.ho,'string',[str,' RFX evidence: log p(y|H1) >= ',num2str(out.F(end),'%1.3e'),'.'])
 end
 
 try;getSubplots;end

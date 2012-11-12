@@ -2,7 +2,7 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 % computes classical p-values for any contrast applied onto GLM effects
 % function [pv,stat,df] = GLM_contrast(X,y,c,type)
 % IN:
-%   - X: nXk designa matrix
+%   - X: nXk design matrix
 %   - y: nXp data matrix
 %   - c: kXm contrast matrix
 %   - type: flag for t- or F- test. Can be set to 't' (default) or 'F'
@@ -12,9 +12,20 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 %   - pv: pX1 vector of p-values
 %   - stat: pX1 vector of t- or F- statistics
 %   - df: effective degees of freedom of the t- or F- test
-%   - all: structure array with fields .p, .stat and .df, which are summary
-%   statistics of F-tests for each and every independent variable included
-%   in the analysis.
+%   - all: structure array with fields:
+%       .R2: pX1 vector of coefficients of determination
+%       .R2_a: pX1 vector of adjusted coefficients of determination (only
+%       for F-test).
+%       .b: kXp matrix of parameter OLS-estimates
+%       .iC: kXk unscaled parameter covariance matrix
+%       .vhat: kX1 vector of residal variances
+%   NB: the covariance matrix Q of the i^th set of parameter is defined by:
+%   Q = all.vhat(i).*all.iC.
+%   If verbose=1, then 'all' also contains summary statistics of F-tests
+%   wrt each parameter, through the following fields:
+%       .pv: kXp matrix of p-values
+%       .stat: kXp matrix of F- statistics
+%   	.df: kX2Xp matrix of degees of freedom
 
 
 [n,p] = size(y);
@@ -27,12 +38,13 @@ C = X'*X;
 iC = pinv(C);
 b = iC*X'*y;
 P = X*iC*X';
+yhat = P*y;
 R = eye(n) - P;
 trR = trace(R);
 stat = zeros(p,1);
 pv = zeros(p,1);
 vhat = zeros(p,1);
-
+R2 = zeros(p,1);
 switch type
     
     case 't'
@@ -43,6 +55,9 @@ switch type
             V = vhat(i).*c'*iC*c;
             stat(i) = c'*b(:,i)./sqrt(V);
             pv(i) = 1 - spm_Tcdf(stat(i),df);
+            SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
+            SS_err = sum((y(:,i)-yhat(:,i)).^2);
+            R2(i) = 1-(SS_err/SS_tot);
         end
         
     case 'F'
@@ -51,24 +66,43 @@ switch type
         c0 = eye(size(c,1)) - c*ic;
         X0 = X*c0;
         R0 = eye(n) - X0*pinv(X0'*X0)*X0';
+        y_a = R0*y;
+        yhat_a = R0*yhat;
+        R2_a = zeros(p,1);
         M = R0 - R;
         df = [trace(M).^2./trace(M*M),trR.^2./trace(R*R)];
         for i=1:p
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
             stat(i) = ((b(:,i)'*X'*M*X*b(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trace(R0-R));
             pv(i) = 1 - spm_Fcdf(stat(i),df(1),df(2));
+            SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
+            SS_err = sum((y(:,i)-yhat(:,i)).^2);
+            R2(i) = 1-(SS_err/SS_tot);
+            SS_tot_a = sum((y_a(:,i)-mean(y_a(:,i))).^2);
+            SS_err_a = sum((y_a(:,i)-yhat_a(:,i)).^2);
+            R2_a(i) = 1-(SS_err_a/SS_tot_a);
         end
         
     otherwise
         
         disp('Error: this function only supports t- and F- tests!')
-        out = [];
+        pv = [];
+        stat = [];
+        df = [];
+        all = [];
+        return;
         
 end
 
+all.R2 = R2;
+if isequal(type,'F')
+    all.R2_a = R2_a;
+end
+all.b = b;
+all.iC = iC;
+all.vhat = vhat;
 
 if ~verbose
-    all = [];
     return;
 end
 
@@ -83,8 +117,6 @@ for i=1:p
         [all.pv(j,i),all.stat(j,i),all.df(j,:,i)] = GLM_contrast(X,y(:,i),c,'F',0);
     end
 end
-
-yhat = P*y;
 
 % axes for predicted vs observed data
 handles.hf = figure('color',[1 1 1]);
@@ -159,14 +191,12 @@ for i=1:p
         str{i} = [str{i},' (',Ynames{i},')'];
     end
 end
+ud.type = type;
 ud.all = all;
 ud.y = y;
 ud.yhat = yhat;
 ud.pv = pv;
 ud.stat = stat;
-ud.vhat = vhat;
-ud.iC = iC;
-ud.b = b;
 ud.Xnames = Xnames;
 ud.Ynames = Ynames;
 ud.type = type;
@@ -183,7 +213,6 @@ handles.ht(2) = uicontrol(...
     'HorizontalAlignment','left',...
     'userdata',ud,...
     'callback',@myData);
-
 feval(@myData,handles.ht(2),[])
 
 
@@ -211,6 +240,12 @@ hp = plot(ud.handles.ha(1),ud.y(:,ind),ud.yhat(:,ind),'k.');
 mi = min([ud.y(:,ind);ud.yhat(:,ind)]);
 ma = max([ud.y(:,ind);ud.yhat(:,ind)]);
 plot(ud.handles.ha(1),[mi,ma],[mi,ma],'r')
+xx = 0.1*(ma-mi)+mi;
+str = ['R^2=',sprintf('%2.3f',ud.all.R2(ind))];
+if isequal(ud.type,'F')
+    str = [str, ' [adj.R^2=',sprintf('%2.3f',ud.all.R2_a(ind)),']'];
+end
+text(xx,xx,str,'parent',ud.handles.ha(1),'color','r')
 axis(ud.handles.ha(1),'tight')
 xlabel(ud.handles.ha(1),'observed data')
 ylabel(ud.handles.ha(1),'predicted data')
@@ -219,10 +254,10 @@ title(ud.handles.ha(1),'data fit')
 
 % parameter estimates
 cla(ud.handles.ha(2))
-Vb = diag(ud.vhat(ind)*ud.iC);
-k = size(ud.b,1);
+Vb = diag(ud.all.vhat(ind)*ud.all.iC);
+k = size(ud.all.b,1);
 for j=1:k
-    hp = bar(ud.handles.ha(2),j,ud.b(j,ind),'facecolor',0.8*[1 1 1],'BarWidth',0.5);
+    hp = bar(ud.handles.ha(2),j,ud.all.b(j,ind),'facecolor',0.8*[1 1 1],'BarWidth',0.5);
     hcmenu = uicontextmenu;
     str = ['data #',num2str(ind)];
     if ~isempty(ud.Ynames)
@@ -238,7 +273,7 @@ for j=1:k
     uimenu(hcmenu, 'Label',['dof=[',num2str(ud.all.df(j,1,ind)),',',num2str(ud.all.df(j,2,ind)),']']);
     set(get(hp,'children'),'uicontextmenu',hcmenu);
     set(hp,'uicontextmenu',hcmenu);
-    hp = errorbar(ud.handles.ha(2),j,ud.b(j,ind),1.96*sqrt(Vb(j)),'r.');
+    hp = errorbar(ud.handles.ha(2),j,ud.all.b(j,ind),1.96*sqrt(Vb(j)),'r.');
     set(hp,'uicontextmenu',hcmenu);
 end
 set(ud.handles.ha(2),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'ygrid','on')
