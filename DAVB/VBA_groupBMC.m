@@ -119,13 +119,17 @@ end
 
 %-- wrap up VBA output
 out = wrapUp(L,posterior,priors,F,options);
-out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet',0);
-if ~isempty(out.options.families)
-    out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',0);
+try
+    out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet',0);
+    if ~isempty(out.options.families)
+        out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',0);
+    end
+catch
+    disp('Warning: exceedance probabilities are approximated!')
 end
 out.date = clock;
 if options.DisplayWin
-   VBA_displayGroupBMC(posterior,out);
+    VBA_displayGroupBMC(posterior,out);
 end
 
 %-- display summary statistics
@@ -172,10 +176,10 @@ out.ep = VBA_ExceedanceProb(out.Ef,out.Vf,'gaussian');
 [out.F0] = FE_null(L);
 % pool evidence over families
 if ~isempty(options.families)
-   out.families.r = options.C'*posterior.r;
-   out.families.a = options.C'*posterior.a;
-   [out.families.Ef,out.families.Vf] = Dirichlet_moments(out.families.a);
-   out.families.ep = VBA_ExceedanceProb(out.families.Ef,out.families.Vf,'gaussian');
+    out.families.r = options.C'*posterior.r;
+    out.families.a = options.C'*posterior.a;
+    [out.families.Ef,out.families.Vf] = Dirichlet_moments(out.families.a);
+    out.families.ep = VBA_ExceedanceProb(out.families.Ef,out.families.Vf,'gaussian');
 end
 
 

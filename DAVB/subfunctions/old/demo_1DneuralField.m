@@ -63,7 +63,6 @@ priors.b_sigma = 1e1;
 
 % Build options and dim structures for model inversion
 options.priors      = priors;
-options.annealing   = 0;
 options.ignoreMF    = 1;
 dim.n_theta         = size(theta,1);
 dim.n_phi           = size(phi,1);

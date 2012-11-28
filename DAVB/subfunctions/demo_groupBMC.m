@@ -4,8 +4,8 @@ clear variables
 close all
 
 
-K = 16; % # models
-n = 32; % # subjects
+K = 2; % # models
+n = 200; % # subjects
 
 N = 16;
 ep1 = zeros(K,N);
@@ -16,10 +16,10 @@ options.DisplayWin = 1;
 % for i=1:K
 %     options.families{i} = i;
 % end
-options.families{1} = 1:floor(K/4);
-options.families{2} = floor(K/4)+1:floor(K/2);
-options.families{3} = floor(K/2)+1:floor(3*K/4);
-options.families{4} = floor(3*K/4)+1:K;
+% options.families{1} = 1:floor(K/4);
+% options.families{2} = floor(K/4)+1:floor(K/2);
+% options.families{3} = floor(K/2)+1:floor(3*K/4);
+% options.families{4} = floor(3*K/4)+1:K;
 
 % hf = figure;
 % ha(1) = subplot(2,2,1,'parent',hf,'nextplot','add');
@@ -37,12 +37,14 @@ for ii=1:N
     
     ii
     
-    bias = [2*rand*randn(floor(K/2),1);zeros(ceil(K/2),1)];
+    bias = [0 *rand*randn(floor(K/2),1);zeros(ceil(K/2),1)];
     for i=1:n
         L(:,i) = 1*randn(K,1) + bias;
     end
 
     [posterior,out] = VBA_groupBMC(L,options);
+    
+    pause
     % VBA_displayGroupBMC(posterior,out)
     
 %     alpha0 = out.options.priors.a';

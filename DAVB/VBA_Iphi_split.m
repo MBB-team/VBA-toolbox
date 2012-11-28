@@ -71,7 +71,6 @@ Sigma0 = options.priors.SigmaPhi;
 %--- Loop over time series ---%
 for t=1:dim.n_t
     
-    % loop over n_phi-draws
     if isequal(options.g_fname,@VBA_odeLim)
         SigmaX{t} = 0;
         muXt = zeros(options.inG.old.dim.n,nd);
@@ -80,6 +79,7 @@ for t=1:dim.n_t
     Vx = cell(nd,1);
     gxt = zeros(dim.p,nd);
     
+    % loop over n_phi-draws
     for i=1:nd
         
         Mu0(indIn) = sqrtS*split.m(:,i) + Phi;
@@ -90,17 +90,14 @@ for t=1:dim.n_t
         
         % mean-field terms
         if dim.n > 0
-            SXd2gdx2 = SXd2gdx2 ...
-                + split.w(i)...
-                .*trace(dG_dX*iQy{t}*dG_dX'*posterior.SigmaX.current{t});
+            SXd2gdx2 = SXd2gdx2 + split.w(i).*trace(dG_dX*iQy{t}*dG_dX'*posterior.SigmaX.current{t});
         elseif isequal(options.g_fname,@VBA_odeLim)
             % get sufficient statistics of the hidden states from unused i/o in
             % VBA_evalFun.
             muXt(:,i) = dG_dX;
             Vx{i} = d2G_dXdPhi'*Sigma0*d2G_dXdPhi;
         end
-        Sphid2gdphi2 = Sphid2gdphi2 ...
-            + split.w(i).*trace(dG_dPhi*iQy{t}*dG_dPhi'*posterior.SigmaPhi);
+        Sphid2gdphi2 = Sphid2gdphi2 + split.w(i).*trace(dG_dPhi*iQy{t}*dG_dPhi'*posterior.SigmaPhi);
         
         % posterior covariance matrix terms
         d2gdx2 = d2gdx2 + split.w(i).*dG_dPhi*iQy{t}*dG_dPhi';
@@ -109,11 +106,11 @@ for t=1:dim.n_t
         dyti = y(:,t) - gxt(:,i);
         dy(:,t) = dy(:,t)+ split.w(i).*dyti;
         dy2 = dy2 + split.w(i).*dyti'*iQy{t}*dyti;
-        ddydphi = ddydphi + split.w(i).*dG_dPhi*iQy{t}*dyti;
+        ddydphi = ddydphi + split.w(i).*dG_dPhi*iQy{t}*dyti
+        pause
         
         % Predictive density (data space)
-        Vy{i} = dG_dPhi'*Sigma0*dG_dPhi + ...
-            (1./sigmaHat).*VB_inv(iQy{t},[]);
+        Vy{i} = dG_dPhi'*Sigma0*dG_dPhi + (1./sigmaHat).*VB_inv(iQy{t},[]);
         if dim.n > 0
             Vy{i} = Vy{i} + dG_dX'*posterior.SigmaX.current{t}*dG_dX;
         end

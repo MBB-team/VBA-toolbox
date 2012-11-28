@@ -319,13 +319,10 @@ function [] = displayDF(F,display)
 if ~display.OnLine
     try
         dF = diff(F);
-        set(display.ho,'string',...
-            ['Model evidence: log p(y|m) >= ',num2str(F(end),'%1.3e'),...
-            ' , dF= ',num2str(dF(end),'%4.3e')])
+        set(display.ho,'string',['Model evidence: log p(y|m) >= ',num2str(F(end),'%1.3e'),' , dF= ',num2str(dF(end),'%4.3e')])
     catch
         try
-            set(display.ho,'string',...
-                ['Model evidence: log p(y|m) >= ',num2str(F(end),'%4.3e')])
+            set(display.ho,'string',['Model evidence: log p(y|m) >= ',num2str(F(end),'%4.3e')])
         end
     end
 end

@@ -68,7 +68,7 @@ end
 if ~isfield(options,'backwardLag')
     options.backwardLag = 1;
 else
-    options.backwardLag = max([floor(options.backwardLag),1]);
+    options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
 end
 % Maximum number of iterations
 if ~isfield(options,'MaxIter')

@@ -7,8 +7,8 @@ clear variables
 
 % Choose basic settings for simulations
 nmax = 10;
-p = 200;
-sigma = 1;            % precision
+p = 16;
+sigma = 1e1;            % precision
 phi = [1];         % observation parameters
 
 P0 = -0e-1;
@@ -91,11 +91,11 @@ F = zeros(nmax,1);
 for nmog = 1:nmax
     nmog
     options.nmog = nmog;
-    [post{nmog},out{nmog}] = ...
-        VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
+    [post{nmog},out{nmog}] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
     ep(nmog) = post{nmog}.muPhi;
     vp(nmog) = post{nmog}.SigmaPhi;
     F(nmog) = out{nmog}.F;
+    pause
 end
 
 plap = -0.5.*(gridP(:)-post{1}.muPhi).^2./post{1}.SigmaPhi;
