@@ -30,7 +30,7 @@ dim.n_phi = size(phi,1);
 dim.n = size(x,1);
 
 options.isYout = zeros(1,3*nt);
-options.isYout(nt+1:2*nt) = 1;
+options.isYout(nt:2*nt+1) = 1;
 options.MaxIterInit = 0;
 
 % VB-Kalman-filter

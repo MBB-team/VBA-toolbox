@@ -4,8 +4,8 @@ clear variables
 close all
 
 
-K = 2; % # models
-n = 200; % # subjects
+K = 8; % # models
+n = 32; % # subjects
 
 N = 16;
 ep1 = zeros(K,N);
@@ -13,11 +13,12 @@ ep2 = zeros(K,N);
 
 options.TolFun = 1e-4;
 options.DisplayWin = 1;
+options2 = options;
 % for i=1:K
 %     options.families{i} = i;
 % end
-% options.families{1} = 1:floor(K/4);
-% options.families{2} = floor(K/4)+1:floor(K/2);
+options.families{1} = 1:floor(K/4);
+options.families{2} = floor(K/4)+1:K;%floor(K/2);
 % options.families{3} = floor(K/2)+1:floor(3*K/4);
 % options.families{4} = floor(3*K/4)+1:K;
 
@@ -33,6 +34,14 @@ options.DisplayWin = 1;
 % plot(ha(3),[0 1],[0 1],'r')
 % title(ha(3),'model attributions')
 
+nf = length(options.families);
+C = zeros(K,nf);
+for i=1:nf
+    indf = options.families{i};
+    C(indf,i) = 1;
+end
+
+
 for ii=1:N
     
     ii
@@ -43,6 +52,11 @@ for ii=1:N
     end
 
     [posterior,out] = VBA_groupBMC(L,options);
+    
+    
+    Lf = log(getFamily(L,options.families));
+    
+    [p2,o2] = VBA_groupBMC(Lf,options2);
     
     pause
     % VBA_displayGroupBMC(posterior,out)
