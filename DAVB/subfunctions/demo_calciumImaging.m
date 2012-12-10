@@ -22,8 +22,13 @@ u       = 5e1*(randn(1,n_t)>1.5);
 figure,plot(u)
 
 % Build options structure for temporal integration of SDE
+<<<<<<< .mine
+inF.delta_t = delta_t;
+inF.a           = 0.5;
+=======
 inF.delta_t = delta_t;
 inF.sc = 5e1; % time scale change for HH model
+>>>>>>> .r636
 inG.ind         = 1;
 options.inF     = inF;
 options.inG     = inG;
@@ -59,7 +64,7 @@ displaySimulations(y,x,eta,e)
 % options.priors.muX0 = x0;
 % [posterior,out] = VBA_NLStateSpaceModel(y(:,1:500),u(:,1:500),f_fname,g_fname,dim,options);
 % 
-% return
+return
 % 
 % disp('--paused--')
 % pause

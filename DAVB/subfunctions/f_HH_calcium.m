@@ -38,11 +38,22 @@ bn = 0.125*exp(-V/80);
 bm = 4*exp(-V/18);
 bh = 1./(exp(3-0.1*V)+1);
 
+<<<<<<< .mine
+sc = 5e1;
+
+xdot = [ (-a*Xt(1)+ V*1e-0)/sc
+        (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + 1e0*ut)/C
+=======
 xdot = [ (-a*Xt(1)+ V*1e-0)/inF.sc
         (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + ut)/C
+>>>>>>> .r636
         (am*(1-m) - bm*m)/(m-m.^2+1e-2)
         (an*(1-n) - bn*n)/(n-n.^2+1e-2)
         (ah*(1-h) - bh*h)/(h-h.^2+1e-2)   ];
 
+<<<<<<< .mine
+fx = Xt + deltat.*sc*xdot;
+=======
 fx = Xt + deltat.*inF.sc*xdot;
+>>>>>>> .r636
 
