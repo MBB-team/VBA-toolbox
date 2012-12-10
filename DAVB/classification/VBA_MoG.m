@@ -1,5 +1,4 @@
 function [posterior,out] = VBA_MoG(y,K,options)
-
 % function [posterior,out] = VBA_MoG(y,K,options)
 % This function is a VB scheme for the MoG classifier.
 % IN:
@@ -13,19 +12,24 @@ function [posterior,out] = VBA_MoG(y,K,options)
 %           .muEta: pxK prior mean of the components 1st-order moment
 %           .SigmaEta: Kx1 cell array of prior pxp covariance matrices of
 %           the components 1st-order moment
-%           .a_gamma: Kx1 shape parameter of the prior on the components'
-%           2nd-order moment
-%           .b_gamma: Kx1 scale parameter of the prior on the components'
-%           2nd-order moment
+%           .a_gamma: Kx1 vector of shape parameters for the prior on the
+%           components' 2nd-order moment
+%           .b_gamma: Kx1 vector of scale parameters for the prior on the
+%           components' 2nd-order moment
 %           .d: Kx1 vector of prior counts for each component
-%       .TolFun = min increment of the free energy {1e-3}
-%       .MaxIter = maximum number of iterations {200}
-%       .MinIter = minimum number of iterations {50}
-%       .verbose: flag for plotting the clustering results onto the
+%       .TolFun: min increment of the free energy {1e-2}
+%       .MaxIter: maximum number of iterations {256}
+%       .MinIter: minimum number of iterations {0}
+%       .verbose: flag for verbose mode
+%       .DisplayWin: flag for plotting the clustering results onto the
 %       eigenspace of the data
-%       .ARD : binary entry that enforces or not the component's death
-%       process ({1})
-%
+%       .init: {'hierarchical'}, 'prior' or 'rand'. This is a flag for how
+%       to initialize the posterior mean over MoG modes. The dafult options
+%       uses a (dummy) hierarchical clustering technique, 'prior' is just
+%       the prior mean and 'rand' is a sample under the prior density
+%       (useful for multistart variants)
+%       .minSumZ: the threshold on the sum of class counts, below which
+%       components are removed from the model (ARD).
 % OUT:
 %   - posterior: structure containing the following fields:
 %       .muEta: pxK prior mean of the components 1st-order moment
@@ -39,7 +43,13 @@ function [posterior,out] = VBA_MoG(y,K,options)
 %       .Z: nxK matrix containing the estimated probability, for each
 %       voxel, to belong to each of the clusters
 %   - out:
-
+%       .dt: elapsed time (in sec)
+%       .dim: final dimension of the model
+%       .options: (filled in) options for MoG VB model inversion
+%       .suffStat: internal sufficient statistics
+%       .date: date (vector format)
+%       .F: history of Free Energy across VB iterations
+%       .it: # VB iterations until convergence
 
 
 
@@ -52,16 +62,22 @@ if ~isfield(options,'TolFun')
     options.TolFun = 1e-2;
 end
 if ~isfield(options,'MaxIter')
-    options.MaxIter = 200;
+    options.MaxIter = 256;
 end
 if ~isfield(options,'MinIter')
-    options.MinIter = 50;
+    options.MinIter = 0;
 end
 if ~isfield(options,'verbose')
     options.verbose = 0;
 end
-if ~isfield(options,'minSZ')
-    options.minSZ = 0e-2/K;
+if ~isfield(options,'DisplayWin')
+    options.DisplayWin = 1;
+end
+if ~isfield(options,'minSumZ')
+    options.minSumZ = 0;
+end
+if ~isfield(options,'init')
+    options.init = 'hierarchical';
 end
 
 % Fill default priors
@@ -93,12 +109,20 @@ options.priors = priors;
 my = mean(y,2);
 y = y - repmat(my,1,dim.n);
 posterior = priors;
-% perturb MoG modes
-[eta,Z] = dummyHierarchical(y,K,options);
-posterior.muEta = eta;
 suffStat.iS0 = cell(dim.K,1);
 for k=1:K
     suffStat.iS0{k} = pinv(priors.SigmaEta{k});
+end
+switch options.init
+    case 'hierarchical'
+        posterior.muEta = dummyHierarchical(y,K,options);
+    case 'prior'
+        posterior.muEta = priors.muEta + eps*randn(dim.p,dim.K);
+    case 'rand'
+        for k=1:K
+            S = getISqrtMat(priors.SigmaEta{k},0);
+            posterior.muEta(:,k) = priors.muEta(:,k) + S*randn(dim.p,1);
+        end
 end
 suffStat.Ed2 = Ed2(y,posterior);
 
@@ -112,52 +136,91 @@ suffStat.t = -dim.p*log(2*pi)/2 + repmat(dim.p*Elgam/2+Elr,1,dim.n) - diag(Egam)
 tmp = exp(suffStat.t - repmat(max(suffStat.t,[],1),dim.K,1));
 posterior.z = tmp./repmat(sum(tmp,1),dim.K,1);
 
-% for i=1:dim.n
-%     suffStat.t(:,i) = -dim.p*log(2*pi)/2 + dim.p*Elgam/2 - Egam.*suffStat.Ed2(:,i)/2 + Elr;
-%     tmp = suffStat.t(:,i) - max(suffStat.t(:,i));
-%     posterior.z(:,i) = exp(tmp)./sum(exp(tmp));
-% end
 % derive Free Energy at priors
-F = [];%FE(posterior,priors,suffStat,y);
+F = FE(posterior,priors,suffStat,y);
 
-handles.hf = figure('name','Convergence monitoring');
-for i=1:9
-    handles.ha(i) = subplot(3,3,i,'parent',handles.hf);
+if options.DisplayWin
+    handles.hf = figure('name','Convergence monitoring','color',[1 1 1]);
+    for i=1:8
+        handles.ha(i) = subplot(3,3,i,'parent',handles.hf,'box','off');
+    end
+    plot(handles.ha(1),F,'ro')
+    set(handles.ha(1),'nextplot','add','ygrid','on')
+    imagesc(dist(y),'parent',handles.ha(6))
+    title(handles.ha(6),'data distance')
+    set(handles.ha(7),'nextplot','add','ygrid','on')
+    title(handles.ha(7),'data distribution')
+    if dim.p >= 2
+        [u,s,v,] = svd(y);
+        yp = s(1:2,:)*v';
+        plot(yp(1,:),yp(2,:),'.','color',0.8*[1 1 1],'parent',handles.ha(7))
+        mup = u(:,1:2)'*posterior.muEta;
+        handles.hp = plot(mup(1,:),mup(2,:),'k+','parent',handles.ha(7));
+    else
+        [ny,nx] = hist(y);
+        bar(nx,ny./sum(ny),'parent',handles.ha(7),'facecolor',0.8*[1 1 1]);
+        bounds = [min(y),max(y)];
+        dy = diff(bounds)*1e-3;
+        gridy = bounds(1):dy:bounds(2);
+        pk = zeros(dim.K,length(gridy));
+        Egam = EV(posterior);
+        Er = posterior.d./sum(posterior.d);
+        col = getColors(dim.K);
+        for k=1:dim.K
+            tmp = Egam(k)*(gridy-posterior.muEta(:,k)).^2;
+            pk(k,:) = Er(k)*sqrt(2*pi*Egam(k)).*exp(-tmp/2);
+            handles.hp(k) = plot(gridy,pk(k,:),'color',col(k,:),'parent',handles.ha(7));
+        end
+        set(handles.ha(7),'xlim',bounds)
+    end
+    getSubplots
 end
-imagesc(dist(y),'parent',handles.ha(6))
-title(handles.ha(6),'data distance')
-[u,s,v,] = svd(y,0);
-yp = s(1:2,:)*v';
-getSubplots
 
 % Main VB scheme
 stop = 0;
 it = 1;
 while ~stop
     
-    % display results
-    plot(handles.ha(1),F,'ro')
-    title(handles.ha(1),'convergence monitoring')
-    imagesc(posterior.z,'parent',handles.ha(2))
-    title(handles.ha(2),'class labels')
-    imagesc(suffStat.Ed2,'parent',handles.ha(3))
-    title(handles.ha(3),'distance data - components'' modes')
-    imagesc(posterior.muEta,'parent',handles.ha(4))
-    title(handles.ha(4),'components'' modes')
-    bar(posterior.a_gamma./posterior.b_gamma,'parent',handles.ha(5))
-    title(handles.ha(5),'components'' precisions')
-    set(handles.ha(7),'nextplot','replace')
-    plot(yp(1,:),yp(2,:),'.','parent',handles.ha(7))
-    set(handles.ha(7),'nextplot','add')
-    mup = u(:,1:2)'*posterior.muEta;
-    plot(mup(1,:),mup(2,:),'k+','parent',handles.ha(7))
-    drawnow
-    pause(0.2)
-    % counts for each class
-    sumZ = posterior.z*ones(dim.n,1);
+    
+    if options.DisplayWin % display results
+        plot(handles.ha(1),it,F(it),'ro')
+        title(handles.ha(1),'convergence monitoring')
+        imagesc(posterior.z,'parent',handles.ha(2))
+        title(handles.ha(2),'class labels')
+        imagesc(suffStat.Ed2,'parent',handles.ha(3))
+        title(handles.ha(3),'distance data - components')
+        imagesc(posterior.muEta,'parent',handles.ha(4))
+        title(handles.ha(4),'components'' modes')
+        bar(posterior.a_gamma./posterior.b_gamma,'parent',handles.ha(5),'facecolor',0.8*[1 1 1])
+        title(handles.ha(5),'components'' precisions')
+        set(handles.ha(5),'ygrid','on','box','off','xlim',[0,dim.K+1])
+        if dim.p >= 2
+            mup = u(:,1:2)'*posterior.muEta;
+            set(handles.hp,'xdata',mup(1,:),'ydata',mup(2,:))
+        else
+            bounds = [min(y),max(y)];
+            dy = diff(bounds)*1e-3;
+            gridy = bounds(1):dy:bounds(2);
+            pk = zeros(dim.K,length(gridy));
+            Egam = EV(posterior);
+            Er = posterior.d./sum(posterior.d);
+            col = getColors(dim.K);
+            for k=1:dim.K
+                tmp = Egam(k)*(gridy-posterior.muEta(:,k)).^2;
+                pk(k,:) = Er(k)*sqrt(2*pi*Egam(k)).*exp(-tmp/2);
+                set(handles.hp(k),'ydata',pk(k,:));
+            end
+            pause(0.2)
+        end
+        bar(posterior.d./sum(posterior.d),'parent',handles.ha(8),'facecolor',0.8*[1 1 1])
+        title(handles.ha(8),'components'' frequencies')
+        set(handles.ha(8),'ygrid','on','box','off','xlim',[0,dim.K+1])
+        drawnow
+    end
     
     % ARD: components' death
-    k0 = find(sumZ < options.minSZ);
+    sumZ = posterior.z*ones(dim.n,1);
+    k0 = find(sumZ < options.minSumZ);
     if ~isempty(k0) && it > 1
         posterior.a_gamma(k0) = [];
         posterior.b_gamma(k0) = [];
@@ -208,21 +271,23 @@ while ~stop
     % Free Energy
     F = [F,FE(posterior,priors,suffStat,y)];
     
-    %- Convergence monitoring
-    stop = checkStop(it,F,options);
+    % Convergence monitoring
     it = it +1;
+    stop = checkStop(it,F,options);
     
 end
 
+% wrap up
 posterior.muEta = posterior.muEta + repmat(my,1,dim.K);
-
-% wraps up the ou structure for display purposes
 out.dt = toc(options.tStart);
+out.dim = dim;
 out.options = options;
 out.suffStat = suffStat;
 out.date = clock;
 out.F = F;
 out.it = it;
+
+
 
 % SUBFUNCTIONS
 
@@ -237,8 +302,8 @@ if isweird(F) || abs(dF)<=options.TolFun || it>=options.MaxIter
     stop = 1;
 end
 
-
 function F = FE(posterior,priors,suffStat,y)
+% calculates Free Energy from sufficient statistics
 [p,n] = size(y);
 K = size(priors.muEta,2);
 Elgam = ElogV(posterior);
@@ -258,18 +323,20 @@ for k=1:K
 end
 F = F + sum(sum(posterior.z.*suffStat.t)) + sum(sum(posterior.z.*log(posterior.z+eps)));
 
-
 function Elv = ElogV(p)
+% calculates <log gamma>
 Elv = psi(p.a_gamma) - log(p.b_gamma);
 
 function Ev = EV(p)
+% calculates <gamma>
 Ev = p.a_gamma./p.b_gamma;
 
 function Elr = ElogR(p)
+% calculates <log r>
 Elr = psi(p.d) - psi(sum(p.d));
 
-
 function d2 = Ed2(y,p)
+% calculates <(y_i-eta_k)'*(y_i-eta_k)>
 n = size(y,2);
 K = size(p.muEta,2);
 d2 = zeros(K,n);
@@ -284,13 +351,8 @@ for i=1:n
     end
 end
 
-function [flag] = isweird(X)
-flag = 0;
-if any(isinf(X(:))) || any(isnan(X(:))) || any(~isreal(X(:)))
-    flag = 1;
-end
-
 function [iy,ix,Max] = maxMat(A)
+% finds the x/y indices of the max value of a matrix
 [my,iyx] = max(A,[],1);
 [Max,ix] = max(my);
 iy = iyx(ix);

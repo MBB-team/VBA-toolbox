@@ -1,40 +1,44 @@
 % demo for the Kilner heuristic
 
 % close all
-clear all
+% clear all
 
 % compute dispersive propagator
 gt = 1e-2:1e-3:2e-1;
-gr = -4e-2:1e-3:4e-2;
+gr = -0e-2:1e-3:4e-2;
 n1 = length(gt);
 n2 = length(gr);
 G = zeros(n1,n2);
 P = [3e-1;3e-3;2e3];
-% for i=1:n2
-%     [G(:,i)] = dispersivePropagator(gr(i),gt(:),P);
-% end
-% hf = figure('color',[1 1 1 ],'name','dispersive propagator');
-% ha = subplot(2,1,1,'parent',hf);
-% imagesc(G,'parent',ha)
-% colormap(flipud(autumn))
-% ha = subplot(2,1,2,'parent',hf);
-% [X,Y] = meshgrid(gt,gr);
-% h = mesh(X,Y,G','parent',ha);
-% set(h,'facecolor','flat','edgecolor',0.8*[1 1 1],'edgealpha',0.5)
-% colormap(flipud(autumn))
-% i0 = find(gr==0);
-% i1 = find(gt==2e-2);
-% hold on
-% plot3(gt,0.*gt,G(:,i0)','color',[1 1 1])
-% plot3(gt(i1)*ones(size(gr)),gr,G(i1,:)','color',[1 1 1])
-% plot3(gt,5e-2*ones(size(gt)),G(:,i0)','k--')
-% hp = plot3(-2e-2.*ones(size(gr)),gr,G(1,:),'k--');
-% set(ha,'ytick',[-4e-2:2e-2:4e-2],'yticklabel',[-4:2:4])
-% set(ha,'xtick',[0:5e-2:2e-1],'xticklabel',[0:50:200])
-% set(ha,'ylim',[-4e-2,5e-2],'xlim',[-2e-2,2e-1])
-% xlabel('time (msec)')
-% ylabel('distance (cm)')
-% zlabel('density of connections')
+for i=1:n2
+    [G(:,i)] = dispersivePropagator(gr(i),gt(:),P);
+end
+% G = cumsum(G,1);
+G = cumsum(G,1);
+hf = figure('color',[1 1 1 ],'name','dispersive propagator');
+ha = subplot(2,1,1,'parent',hf);
+imagesc(G,'parent',ha)
+colormap(flipud(autumn))
+ha = subplot(2,1,2,'parent',hf);
+[X,Y] = meshgrid(gt,gr);
+h = mesh(X,Y,G','parent',ha);
+set(h,'facecolor','flat','edgecolor',0.8*[1 1 1],'edgealpha',0.5)
+colormap(flipud(autumn))
+i0 = find(gr==0);
+i1 = find(gt==2e-2);
+hold on
+plot3(gt,0.*gt,G(:,i0)','color',[1 1 1])
+plot3(gt(i1)*ones(size(gr)),gr,G(i1,:)','color',[1 1 1])
+plot3(gt,5e-2*ones(size(gt)),G(:,i0)','k--')
+hp = plot3(-2e-2.*ones(size(gr)),gr,G(1,:),'k--');
+set(ha,'ytick',[-4e-2:2e-2:4e-2],'yticklabel',[-4:2:4])
+set(ha,'xtick',[0:5e-2:2e-1],'xticklabel',[0:50:200])
+set(ha,'ylim',[-4e-2,5e-2],'xlim',[-2e-2,2e-1])
+xlabel('time (msec)')
+ylabel('distance (cm)')
+zlabel('density of connections')
+
+return
 
 unit = 1; % if 1: mV, if 1e-3: V
 

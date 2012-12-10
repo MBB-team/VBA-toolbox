@@ -1,33 +1,46 @@
 
 % clear all
 close all
+clear variables
 
-
-path_sampling = 'C:\Users\JeanD\Documents\MATLAB\classification\sampling';%[fileparts(mfilename('fullpath')),filesep,'..',filesep,'sampling']; %'C:\Users\jdaunizeau\Documents\MatlabWork\Routinetheque\sampling';
-addpath(path_sampling)
+% 
+% path_sampling = 'C:\Users\JeanD\Documents\MATLAB\classification\sampling';%[fileparts(mfilename('fullpath')),filesep,'..',filesep,'sampling']; %'C:\Users\jdaunizeau\Documents\MatlabWork\Routinetheque\sampling';
+% addpath(path_sampling)
 
 % class frequencies:
-nk = 4; % number of classes
-p = 4; % dimension of the feature space
-n = 1e2; % sample size
+nk = 12; % number of classes
+p = 8; % dimension of the feature space
+n = 5e2; % sample size
 lambda = ones(nk,1);
 lambda = lambda./sum(lambda);
 
 % class patterns:
-mu = 2*randn(p,nk);
+mu = 1e0*randn(p,nk);
 % mu(:,end) = 1e1*randn(p,1);
-gamma= 1e-2*ones(nk,1);
+gamma= 1e-1*ones(nk,1);
 
 % Generate n data samples from a binomial mixture model (BMM):
 [y,labels] = generateGMM(n,lambda,mu,gamma,0);
 
+
+
+
 % classify data samples using VB inversion of BMM
-K = 16; % max number of classes
-for k=1:8
-    [posterior,out] = VBA_MoG(y,k,struct('verbose',1));
-    F(k) = out.F(end);
-end
-figure,plot(F,'o')
+K = 32; % max number of classes
+
+
+[xi,eta,F,theta,K_opt] = VBEM_GM(y,K)
+
+
+[out.handles] = plotResults(y,xi,eta,F,theta,K_opt,struct('verbose',1));
+
+
+options.verbose = 1;
+% options.priors.muEta = mu;
+% options.init = 'prior';
+options.minSumZ = 1e-2;
+% options.priors.d = ones(K,1)./K;
+[posterior,out] = VBA_MoG(y,K,options);
 
 
 xi = posterior.z';

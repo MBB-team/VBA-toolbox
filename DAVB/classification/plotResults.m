@@ -10,13 +10,9 @@ if p < 2 || ~options.verbose
     return
 end
 
-handles.hf = figure(...
-    'name','Classification result: 2D eigen-projection',...
-    'color',[1 1 1]);
+handles.hf = figure('name','Classification result: 2D eigen-projection','color',[1 1 1]);
 handles.ha = gca(handles.hf);
-title(handles.ha,...
-    ['Final number of components: K=',num2str(K_opt),...
-    ' , log p(y|K=',num2str(K_opt),')>',num2str(F(end),'%4.3e')])
+title(handles.ha,['Final number of components: K=',num2str(K_opt),' , log p(y|K=',num2str(K_opt),')>',num2str(F(end),'%4.3e')])
 xlabel(handles.ha,'first data eigen-mode (%)')
 ylabel(handles.ha,'second data eigen-mode (%)')
 set(handles.ha,'nextplot','add')
