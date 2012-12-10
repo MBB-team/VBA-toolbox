@@ -25,7 +25,9 @@ switch form
         f = exp(-0.5*(gridx-m).^2./v);
     case 'beta'
         gridx = 0:1e-2:1;
-        f = (gridx.^(m-1)).*((1-gridx).^(v-1));
+        logf = (m-1).*log(gridx) + (v-1).*log(1-gridx);
+        f = exp(logf-max(logf));
+%         f = (gridx.^(m-1)).*((1-gridx).^(v-1));
 end
 f = f./sum(f);
 if length(t) == 1

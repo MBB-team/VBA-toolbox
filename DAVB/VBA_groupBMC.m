@@ -173,7 +173,11 @@ out.ep = VBA_ExceedanceProb(out.Ef,out.Vf,'gaussian');
 % store accuracy and entropy terms of the Free Energy
 [F,out.ELJ,out.Sqf,out.Sqm] = FE(L,posterior,priors);
 % derive Free Energy under the null:
-[out.F0] = FE_null(L);
+if ~isempty(options.families)
+    [out.F0,out.families.F0] = FE_null(L,options);
+else
+    [out.F0] = FE_null(L,options);
+end
 % pool evidence over families
 if ~isempty(options.families)
     out.families.r = options.C'*posterior.r;
@@ -218,10 +222,16 @@ F = ELJ + Sqf + Sqm;
 
 
 
-function [F0] = FE_null(L)
+function [F0m,F0f] = FE_null(L,options)
 % derives the free energy of the 'null' (H0: equal model frequencies)
 [K,n] = size(L);
-F0 = 0;
+F0m = 0;
+if ~isempty(options.families)
+    f0 = options.C*sum(options.C,1)'.^-1/size(options.C,2);
+    F0f = 0;
+else
+    F0f = [];
+end
 for i=1:n
     tmp = L(:,i) - max(L(:,i));
     g = exp(tmp)./sum(exp(tmp));
@@ -229,7 +239,10 @@ for i=1:n
         tmp = L(:,i);
         cst = max(tmp);
         tmp = tmp -cst;
-        F0 = F0 + g(k).*(log(sum(exp(tmp)))+cst-log(K));
+        F0m = F0m + g(k).*(log(sum(exp(tmp)))+cst-log(K));
+        if ~isempty(options.families)
+            F0f = F0f + g(k).*(log(sum(exp(tmp)))+cst+log(f0(k)));
+        end
     end
 end
 

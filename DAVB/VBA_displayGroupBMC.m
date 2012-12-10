@@ -127,7 +127,16 @@ plot(handles.ha(5),out.F,'k.')
 [haf,hf,hp] = plotUncertainTimeSeries(out.F0.*[1,1],[3,3].^2,[0.5,length(out.F)+0.5],handles.ha(5));
 set(hp,'color',[1 0 0])
 set(hf,'facecolor',[1 0 0])
-text(length(out.F)/2,out.F0-3/2,'log p(y|H0)','color',[1 0 0],'parent',handles.ha(5));
+if isempty(out.options.families)
+    text(length(out.F)/2,out.F0-3/2,'log p(y|H0)','color',[1 0 0],'parent',handles.ha(5));
+else
+    text(length(out.F)/4,out.F0-3/2,'log p(y|H0{models})','color',[1 0 0],'parent',handles.ha(5));
+    [haf,hf,hp] = plotUncertainTimeSeries(out.families.F0.*[1,1],[3,3].^2,[0.5,length(out.F)+0.5],handles.ha(5));
+    set(hp,'color',[0 1 0])
+    set(hf,'facecolor',[0 1 0])
+    text(3*length(out.F)/4,out.families.F0-3/2,'log p(y|H0{families})','color',[0 1 0],'parent',handles.ha(5));
+end
+    
 xlabel(handles.ha(5),'VB iterations')
 ylabel(handles.ha(5),'VB free energy')
 set(handles.ha(5),...
@@ -154,9 +163,7 @@ end
 % display free energy update
 if ~isfield(out,'date')
     dF = diff(out.F);
-    set(handles.ho,'string',...
-        ['RFX evidence: log p(y|H1) >= ',num2str(out.F(end),'%1.3e'),...
-        ' , dF= ',num2str(dF(end),'%4.3e')])
+    set(handles.ho,'string',['RFX evidence: log p(y|H1) >= ',num2str(out.F(end),'%1.3e'),' , dF= ',num2str(dF(end),'%4.3e')])
 else
     if floor(out.dt./60) == 0
         timeString = [num2str(floor(out.dt)),' sec'];
