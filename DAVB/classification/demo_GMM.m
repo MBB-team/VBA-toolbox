@@ -9,7 +9,7 @@ clear variables
 
 % class frequencies:
 nk = 12; % number of classes
-p = 8; % dimension of the feature space
+p = 11; % dimension of the feature space
 n = 5e2; % sample size
 lambda = ones(nk,1);
 lambda = lambda./sum(lambda);
@@ -23,13 +23,13 @@ gamma= 1e-1*ones(nk,1);
 [y,labels] = generateGMM(n,lambda,mu,gamma,0);
 
 
-
+[handles] = plotResults(y,labels,mu,NaN,struct('gamma',gamma),nk,struct('verbose',1));
 
 % classify data samples using VB inversion of BMM
 K = 32; % max number of classes
 
 
-[xi,eta,F,theta,K_opt] = VBEM_GM(y,K)
+[xi,eta,F,theta,K_opt] = VBEM_GM(y,K);
 
 
 [out.handles] = plotResults(y,xi,eta,F,theta,K_opt,struct('verbose',1));

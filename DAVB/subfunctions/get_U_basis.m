@@ -25,6 +25,12 @@ else
             in.W = 0:(n-1);
             in.T = T;
             in.deltat = dt;
+        case 'Fourier_complete'
+            u_fname = @u_FourierComplete;
+            in.W = 0:(n-1);
+            in.T = T;
+            in.deltat = dt;
+            n = 2*(n-1)+1;
         case 'RBF'
             u_fname = @u_RBF;
             in.centres = [(T/n)/2:(T/n):T];

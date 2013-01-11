@@ -3,7 +3,6 @@ function [handles] = plotResults(y,xi,eta,F,theta,K_opt,options)
 if ~exist('options','var') || isempty(options) || ~isfield(options,'verbose')
     options.verbose = 1;
 end
-
 [p,n] = size(y);
 if p < 2 || ~options.verbose
     handles = [];
@@ -77,5 +76,3 @@ for i=1:ng
         lp(i,j) = -0.5.*tmp'*ivark*tmp -0.5*lds - log(2*pi);
     end
 end
-% mlp = max(lp(:));
-% p = exp(lp-mlp).*exp(mlp); % deals with numerical round-off error

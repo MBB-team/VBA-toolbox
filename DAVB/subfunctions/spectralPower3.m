@@ -33,24 +33,32 @@ for w=1:nw
     
     W = gridw(w)*2*pi;
     
-    for k=1:nk
-        
-        K = -(k*pi/P.l)^2;
-        fk = 0.5*v*(K*c^2-1)/c;
-
-        J = [   0           0           1
-                cz          fk          0
-                -P.Ke^2     P.me*P.Ke   -2*P.Ke  ];
+    for k=0:nk
+        for l=0:nk
             
-        R = VB_inv(1i.*W*eye(3) - J)*Cin;%/sqrt(W);
-
-        L=1;%[L] = leadField(K,P);
-        
-        gy(w) = gy(w) + Cout*R*L;
-%         L.*T(k,w).*conj(T(k,w)).*conj(L);
+            kl2 = k^2+l^2;
+            
+            if kl2>0 && kl2<4^2
+                
+                K = -kl2*(pi/P.l)^2;
+                fk = 0.5*v*(K*c^2-1)/c;
+                
+                J = [   0           0           1
+                    cz          fk          0
+                    -P.Ke^2     P.me*P.Ke   -2*P.Ke  ];
+                
+                R = VB_inv(1i.*W*eye(3) - J)*Cin;%/sqrt(W);
+                
+                L=1;%[L] = leadField(K,P);
+                
+                gy(w) = gy(w) + Cout*R*L;
+                %         L.*T(k,w).*conj(T(k,w)).*conj(L);
+                
+            end
+        end
         
     end
-
+    
     
 end
 

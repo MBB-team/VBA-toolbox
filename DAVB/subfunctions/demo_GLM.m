@@ -7,6 +7,9 @@
 % - reduced model inversion on pre-whitened data
 % - reduced model inversion on pre-whitened data + pre-whitening of reduced
 % design matrix
+% Basically, one finds that the full model inversion (which is correct) is
+% equivalent to the reduced model inversion on pre-whitened data +
+% pre-whitening of reduced design matrix.
 
 clear variables
 close all
@@ -48,14 +51,14 @@ dim.n               = 0;
 displayResults(p,o,y,x,x0,theta,phi,alpha,sigma)
 
 
-% remove counfounds
+% remove counfounds from the model
 n0 = floor(ns/2)+1:ns;
 options.priors.SigmaPhi(n0,n0) = zeros(length(n0));
 [p0,o0] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 displayResults(p0,o0,y,x,x0,theta,phi,alpha,sigma)
 
 
-% pre-whiten data + remove confounds
+% pre-whiten data + remove confounds from the model
 X0 = inG.X(:,n0);
 % X0 = spm_orth(X0);
 P0 = X0*inv(X0'*X0)*X0';
@@ -65,7 +68,7 @@ options.priors.SigmaPhi(n0,n0) = zeros(length(n0));
 [p0,o0] = VBA_NLStateSpaceModel(y0,u,f_fname,g_fname,dim,options);
 displayResults(p0,o0,y0,x,x0,theta,phi,alpha,sigma)
 
-% pre-whiten data and observation function + remove confounds
+% pre-whiten data and observation function + remove confounds from the model
 options.inG.X = IP0*inG.X;
 [p1,o1] = VBA_NLStateSpaceModel(y0,u,f_fname,g_fname,dim,options);
 displayResults(p1,o1,y0,x,x0,theta,phi,alpha,sigma)

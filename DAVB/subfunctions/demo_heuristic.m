@@ -1,44 +1,80 @@
 % demo for the Kilner heuristic
 
-% close all
-% clear all
+close all
+clear all
 
 % compute dispersive propagator
-gt = 1e-2:1e-3:2e-1;
-gr = -0e-2:1e-3:4e-2;
+dt = 1e-3;
+dr = 2e-4;
+gt = 1e-3:dt:8e-2;
+gr = 1e-3:dr:1.6e-2;
 n1 = length(gt);
 n2 = length(gr);
-G = zeros(n1,n2);
+G0 = zeros(n1,n2);
+Er = zeros(n1,1);
+Ger = zeros(n1,1);
+pG = G0;
 P = [3e-1;3e-3;2e3];
-for i=1:n2
-    [G(:,i)] = dispersivePropagator(gr(i),gt(:),P);
+for i=1:n1
+    [G0(i,:)] = 2*pi*gr.*dispersivePropagator(gr(:),gt(i),P)';
+    pG(i,:) = G0(i,:)./sum(G0(i,:));
+    Er(i) = sum(gr.*pG(i,:));
+    Ger(i) = dispersivePropagator(Er(i),gt(i),P);
 end
-% G = cumsum(G,1);
-G = cumsum(G,1);
+[X,Y] = meshgrid(gt,gr);
+dummy=10*log10((G0+eps)/max(G0(:)));
+dbG=nan(size(dummy));
+dbG(dummy>-30)=G0(dummy>-30);
+G = dbG/max(G0(:));
+
+
+
 hf = figure('color',[1 1 1 ],'name','dispersive propagator');
 ha = subplot(2,1,1,'parent',hf);
-imagesc(G,'parent',ha)
-colormap(flipud(autumn))
+% imagesc(flipud(log(G)'),'parent',ha)
+imagesc(log(G)','parent',ha)
+it = find(gr*5e2==floor(gr*5e2));
+
+colorbar
+hold on
+v = 2.^(-[1:9]);
+% [C,hc] = contour(flipud(log(G)'),log(v(:)));
+[C,hc] = contour(log(G)',log(v(:)));
+set(hc,'color','k')
+
+Ier = ((Er-min(Er))./max(Er))*length(gr)+1;
+hp=plot(1:length(gt),Ier,'color',[1 1 1],'parent',ha)
+
+xlabel('time (msec)')
+ylabel('distance (mm)')
+title('log-density of connections')
+% set(ha,'xticklabel',1e3*gt(get(ha,'xtick')),'ytick',it,'yticklabel',1e3*fliplr(gr(it)))
+set(ha,'xticklabel',1e3*gt(get(ha,'xtick')),'ytick',it,'yticklabel',1e3*gr(it),'ydir','reverse')
+set(ha,'ydir','normal')
+
 ha = subplot(2,1,2,'parent',hf);
-[X,Y] = meshgrid(gt,gr);
 h = mesh(X,Y,G','parent',ha);
 set(h,'facecolor','flat','edgecolor',0.8*[1 1 1],'edgealpha',0.5)
 colormap(flipud(autumn))
-i0 = find(gr==0);
+i0 = find(gr==min(abs(gr)));
 i1 = find(gt==2e-2);
 hold on
-plot3(gt,0.*gt,G(:,i0)','color',[1 1 1])
-plot3(gt(i1)*ones(size(gr)),gr,G(i1,:)','color',[1 1 1])
-plot3(gt,5e-2*ones(size(gt)),G(:,i0)','k--')
-hp = plot3(-2e-2.*ones(size(gr)),gr,G(1,:),'k--');
-set(ha,'ytick',[-4e-2:2e-2:4e-2],'yticklabel',[-4:2:4])
-set(ha,'xtick',[0:5e-2:2e-1],'xticklabel',[0:50:200])
-set(ha,'ylim',[-4e-2,5e-2],'xlim',[-2e-2,2e-1])
+[C,hc] = contour3(X,Y,G'+1e-4,v(:),'parent',ha);
+set(hc,'EdgeColor','k')
+plot3(gt,Er,1e-6+Ger/max(G0(:))','color',[1 1 1])
+
+set(ha,'ytick',[0:2e-3:max(gr)],'yticklabel',[0:2e-3:max(gr)]*1e3)
+set(ha,'xtick',[0:1e-2:max(gt)],'xticklabel',[0:1e-2:max(gt)]*1e3)
+set(ha,'ylim',[0,max(gr)],'xlim',[0,max(gt)],'zlim',[min(G(:)),max(G(:))])
+set(ha,'zscale','log','CameraPosition',[0.251629 0.105342 6.06163])
 xlabel('time (msec)')
-ylabel('distance (cm)')
+ylabel('distance (mm)')
 zlabel('density of connections')
 
-return
+getSubplots
+
+
+% return
 
 unit = 1; % if 1: mV, if 1e-3: V
 
@@ -67,7 +103,7 @@ P.sig = struct('r',0.54,'eta',30*unit,'g',0.135);
 P.i1 = 3;
 P.i2 = 1;
 % frequency grid
-gridw = [0e0:2e-0:129];%2.^[-2:0.1:10];%.1:1e-1:120;%
+gridw = [0e0:2e-0:128];%129];%2.^[-2:0.1:10];%.1:1e-1:120;%
 
 gridx = [0:1e0:50]*unit;
 nt = numel(gridx);
@@ -125,7 +161,7 @@ set(hm,'facecolor','flat','edgecolor',0.8*[1 1 1],'edgealpha',0.5)
 axis(ha,'tight')
 inf = find(gridw==round(gridw));
 inf = inf(1:8:end);
-set(ha,'ytick',inf,'yticklabel',gridw(inf),'xdir','reverse')
+set(ha,'ytick',inf,'yticklabel',gridw(inf),'xdir','reverse','zscale','log','cameraposition',[-88,472,0])
 xlabel(ha,'fundamental mode dV (mV)')
 ylabel(ha,'frequency (rad/s)')
 title('frequency power')
@@ -135,7 +171,7 @@ hm = mesh(ha,ngy);
 set(hm,'facecolor','flat','edgecolor',0.8*[1 1 1],'edgealpha',0.5)
 axis(ha,'tight')
 % set(ha,'xticklabel',gridx(get(ha,'xtick')))
-set(ha,'ytick',inf,'yticklabel',gridw(inf),'xdir','reverse')
+set(ha,'ytick',inf,'yticklabel',gridw(inf),'xdir','reverse','zscale','log','cameraposition',[-88,472,0])
 xlabel(ha,'fundamental mode dV (mV)')
 ylabel(ha,'frequency (rad/s)')
 title('normalized frequency power')

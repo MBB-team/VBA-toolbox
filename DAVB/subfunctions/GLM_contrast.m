@@ -30,10 +30,13 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 
 [n,p] = size(y);
 k = size(X,2);
+
+try;c;catch;c=eye(k);type='F';end
 try;type;catch;type='t';end
 try;verbose;catch;verbose=0;end
 try;Xnames{k};catch;Xnames=[];end
 try;Ynames{p};catch;Ynames=[];end
+
 C = X'*X;
 iC = pinv(C);
 b = iC*X'*y;
@@ -45,6 +48,7 @@ stat = zeros(p,1);
 pv = zeros(p,1);
 vhat = zeros(p,1);
 R2 = zeros(p,1);
+
 switch type
     
     case 't'
@@ -54,7 +58,7 @@ switch type
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
             V = vhat(i).*c'*iC*c;
             stat(i) = c'*b(:,i)./sqrt(V);
-            pv(i) = 1 - spm_Tcdf(stat(i),df);
+            pv(i) = 1 - myTcdf(stat(i),df);
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum((y(:,i)-yhat(:,i)).^2);
             R2(i) = 1-(SS_err/SS_tot);
@@ -74,7 +78,7 @@ switch type
         for i=1:p
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
             stat(i) = ((b(:,i)'*X'*M*X*b(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trace(R0-R));
-            pv(i) = 1 - spm_Fcdf(stat(i),df(1),df(2));
+            pv(i) = 1 - myFcdf(stat(i),df(1),df(2));
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum((y(:,i)-yhat(:,i)).^2);
             R2(i) = 1-(SS_err/SS_tot);
@@ -130,7 +134,6 @@ handles.ha(2) = subplot(2,2,2,...
     'parent',handles.hf,...
     'nextplot','add',...
     'visible','on');
-
 
 % parameters' correlation matrix
 handles.ha(3) = subplot(2,2,3,...
@@ -215,8 +218,6 @@ handles.ht(2) = uicontrol(...
     'callback',@myData);
 feval(@myData,handles.ht(2),[])
 
-
-
 try,getSubplots;end
 
 
@@ -279,15 +280,12 @@ end
 set(ud.handles.ha(2),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'ygrid','on')
 xlabel(ud.handles.ha(2),'independent variables')
 title(ud.handles.ha(2),'parameter estimates')
-
-
-% display test results
 strp = ['p=',num2str(ud.pv(ind),'%3.3f'),' (',ud.type,'=',num2str(ud.stat(ind),'%3.3f'),')'];
 set(ud.handles.ht(1),'string',strp);
 
 
 
-function F = spm_Tcdf(x,v)
+function F = myTcdf(x,v)
 % Cumulative Distribution Function (CDF) of Students t distribution
 % Copyright (C) 1992-2011 Wellcome Trust Centre for Neuroimaging
 if nargin<2, error('Insufficient arguments'), end
@@ -323,7 +321,7 @@ xQxPos = x(Qx)>0;
 F(Q) = xQxPos -(xQxPos*2-1).*0.5.*betainc(v(Qv)./(v(Qv)+x(Qx).^2),v(Qv)/2,1/2);
 
 
-function F = spm_Fcdf(x,v,w)
+function F = myFcdf(x,v,w)
 % Cumulative Distribution Function (CDF) of F (Fisher-Snedecor) distribution
 % Copyright (C) 1992-2011 Wellcome Trust Centre for Neuroimaging
 if nargin<2, error('Insufficient arguments'), end
