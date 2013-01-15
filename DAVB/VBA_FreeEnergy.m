@@ -32,6 +32,9 @@ end
 priors = options.priors;
 dim = options.dim;
 
+% Entropy calculus
+suffStat = VBA_Hpost(posterior,suffStat,options);
+
 % Get common free energy terms
 if ~options.binomial
     E = posterior.a_sigma./posterior.b_sigma;
