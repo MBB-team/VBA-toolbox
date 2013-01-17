@@ -25,7 +25,7 @@ homogeneous = 0;              % params of g(x) homogeneous accross regions
 reduced_f = 0;                % fix some HRF params
 lin = 1;                      % linearized variant of HRF Balloon model
 stochastic = 1;               % flag for stochastic DCM inversion
-alpha = 1e2/TR;               % state noise precision
+alpha = 2e1/TR;               % state noise precision
 sigma = 1e0;                  % measurement noise precision
 nconfounds = 0;               % # of basis sets in the confounds matrix
 

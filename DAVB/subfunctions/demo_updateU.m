@@ -135,7 +135,7 @@ close all
 % 'closed' scenario
 
 % 1- assign flat utility U0 to the items
-n = 8; % # items
+n = 9; % # items
 U0 = 0.*randn(n,1);
 U0 = U0 - mean(U0); % for comparison with estimated utility
 
@@ -149,12 +149,6 @@ n_t = 2^11; % # forced choice trials
 fb.indfb = 4:5;
 fb.indy = 3;
 fb.h_fname = @h_whichItem;
-fb.inH.ind = zeros(2,n_t);
-% pick pairs of items to compare
-for t=1:n_t
-    ind = randperm(n);
-    fb.inH.ind(:,t) = vec(ind(1:2));
-end
 f_fname = @f_updateU;
 g_fname = @g_u2p;
 dim.n = n+n^2;
@@ -177,39 +171,82 @@ options.inF = inF;
 options.binomial = 1;
 options.skipf = zeros(1,n_t);
 options.skipf(1) = 1;
-u = zeros(5,n_t);
-u(inG.iu,:) = fb.inH.ind;
 x0(1:n,1) = U0; % initial utility
-S0 = eye(n); % initial variance on utility
+S0 = 1*eye(n); % initial variance on utility
 x0(n+1:n+n^2) = vec(S0); % initial variance
-phi = -2; % log temp
-theta = [-2;-16]; % believed log temp
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,u,Inf,[],options,x0,fb);
+phi = -1; % log temperature
+theta = [0;-8]; % E[log-temperature] & E[log-transition variance]
 
-mu = x(1:n,:);
-figure,plot(mu')
-vu = zeros(n,n_t);
-Pairs = zeros(n,n);
-for t=1:n_t
-    St = reshape(x(n+1:n+n^2,t),n,n);
-    vu(:,t) = diag(St);
-    weight = 1/t;%log(1./det(St));
-    Pairs(fb.inH.ind(1,t),fb.inH.ind(2,t)) = Pairs(fb.inH.ind(1,t),fb.inH.ind(2,t)) +weight;
-    Pairs(fb.inH.ind(2,t),fb.inH.ind(1,t)) = Pairs(fb.inH.ind(2,t),fb.inH.ind(1,t)) +weight;
+N = 32;
+pa = zeros(n*(n-1)/2,N);
+dv = zeros(n*(n-1)/2,N);
+for ii=1:N
+    
+    % pick pairs of items to compare
+    fb.inH.ind = zeros(2,n_t);
+    for t=1:n_t
+        if isequal(t/3,floor(t/3))
+            if isequal(2*t/3,floor(t/3))
+                ind = randperm(floor(n/3));
+            else
+                ind = randperm(floor(2*n/3));
+            end
+        else
+            ind = randperm(n);
+        end
+        fb.inH.ind(:,t) = vec(ind(1:2));
+    end
+    
+    u = zeros(5,n_t);
+    u(inG.iu,:) = fb.inH.ind;
+    
+    [y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,u,Inf,[],options,x0,fb);
+    
+    mu = x(1:n,:);
+    vu = zeros(n,n_t);
+    Pairs = zeros(n,n);
+    weight = det(S0(fb.inH.ind(:,1),fb.inH.ind(:,1))); %1/t;%log(1./det(St));
+    Pairs(fb.inH.ind(1,1),fb.inH.ind(2,1)) = Pairs(fb.inH.ind(1,1),fb.inH.ind(2,1)) +weight;
+    Pairs(fb.inH.ind(2,1),fb.inH.ind(1,1)) = Pairs(fb.inH.ind(2,1),fb.inH.ind(1,1)) +weight;
+    for t=2:n_t
+        St = reshape(x(n+1:n+n^2,t-1),n,n);
+        vu(:,t-1) = diag(St);
+        weight = det(St(fb.inH.ind(:,t),fb.inH.ind(:,t))); %1/t;%log(1./det(St));
+        Pairs(fb.inH.ind(1,t),fb.inH.ind(2,t)) = Pairs(fb.inH.ind(1,t),fb.inH.ind(2,t)) +weight;
+        Pairs(fb.inH.ind(2,t),fb.inH.ind(1,t)) = Pairs(fb.inH.ind(2,t),fb.inH.ind(1,t)) +weight;
+    end
+    St = reshape(x(n+1:n+n^2,n_t),n,n);
+    vu(:,n_t) = diag(St);
+    
+    DV = zeros(n,n);
+    for i=1:n
+        DV(:,i) = mu(:,n_t) - mu(i,n_t);
+    end
+    
+    tmp=triu(Pairs,1);
+    pa(:,ii) = vec(tmp(tmp~=0));
+    tmp=triu(DV,1);
+    dv(:,ii) = vec(tmp(tmp~=0));
+ 
 end
-plotUncertainTimeSeries(mu,vu)
-figure,plot(vu')
 
-DV = zeros(n,n);
-for i=1:n
-    DV(:,i) = mu(:,n_t) - mu(i,n_t);
-end
 
-pa=triu(Pairs,1);
-pa = vec(pa(pa~=0));
+hf = figure('color',[1 1 1 ]);
+ha = subplot(2,2,1,'parent',hf);
+plotUncertainTimeSeries(mu(:,end),vu(:,end),[],ha)
+set(ha,'xlim',[0,n+1],'xtick',1:n)
+xlabel(ha,'items')
+title(ha,'final utility')
+ha = subplot(2,2,2,'parent',hf);
+plotUncertainTimeSeries(mu,vu,[],ha)
+title(ha,'E[U] +/- sqrt(V[U])')
+ha = subplot(2,2,3,'parent',hf);
+plot(ha,mu'),title(ha,'E[U]')
+set(ha,'xlim',[0,n_t])
+ha = subplot(2,2,4,'parent',hf);
+plot(ha,vu'),title(ha,'V[U]')
+set(ha,'xlim',[0,n_t])
 
-dv=triu(DV,1);
-dv = vec(dv(dv~=0));
 
 hf = figure('color',[1 1 1]);
 ha = subplot(2,2,1,'parent',hf);
@@ -219,23 +256,16 @@ ha = subplot(2,2,2,'parent',hf);
 imagesc(Pairs,'parent',ha);
 title(ha,'Pairs')
 ha = subplot(2,2,3,'parent',hf);
-plot(pa,dv,'r+','parent',ha);
+plot(pa(:),dv(:),'r+','parent',ha);
 xlabel('pairs')
 ylabel('DV')
 ha = subplot(2,2,4,'parent',hf);
-plot(pa,dv.^2,'r+','parent',ha);
-xlabel('pairs')
-ylabel('DV^2')
+plot(log(pa(:)),log(dv(:).^2),'r+','parent',ha);
+xlabel('log(# pairs)')
+ylabel('log(DV^2)')
 
 
+getSubplots
 
-
-
-
-
-%
-%
-% % Display results
-% displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 
 

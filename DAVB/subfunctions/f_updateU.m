@@ -14,11 +14,11 @@ S0 = reshape(x(in.n+1:in.n+in.n^2),in.n,in.n); % variance (V[x] = mu)
 dV = x(ac) - x(au); % value of chosen item (relative to unchosen item)
 W = eye(in.n); % utility basis function set
 b = exp(P(in.temp)); % behavioural temperature
-v = exp(P(in.v));
+v = exp(P(in.v)); % transition variance
 g = sig(dV/b); % probability of picking the chosen item
 ddVdx = (W(:,ac)-W(:,au))./b; % gradient of dV
 % VB update rule
-S = pinv(pinv(S0 + v*eye(in.n)) + (1-g)*g*(ddVdx*ddVdx'));
+S = inv(inv(S0 + v*eye(in.n)) + (1-g)*g*(ddVdx*ddVdx'));
 mu = mu0 + S*ddVdx*(1-g);
 % wrap up
 fx = zeros(size(x));

@@ -1,12 +1,12 @@
 function [fx] = f_FitzHughNagumo(Xt,Theta,ut,inF)
 
-% FitzHugh-Nagumo membrane potential evolution function (+convolution)
+% FitzHugh-Nagumo membrane potential evolution function
 % function [fx] = FitzHughNagumo(Xt,Theta,ut,inF)
 % IN:
 %   - Xt: system's states, ie:
 %       Xt(1): membrane depolarization (mV)
 %       Xt(2): proxy for ion channel opening probabilities
-%   - Theta: evolution parameters (see bellow)
+%   - Theta: evolution parameters (see below)
 %   - ut: input current
 %   - inF: [optional]
 % OUT:

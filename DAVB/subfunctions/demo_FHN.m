@@ -63,16 +63,9 @@ xlabel('time')
 dim.n = 2;
 dim.n_phi = 0;
 dim.n_theta = 4;
-
-priors.iQx = cell(n_t,1);
-for t=1:n_t
-    priors.iQx{t} = 1e2*eye(2);
-    priors.iQx{t}(1,1) = 1e0;
-end
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 options.priors = priors;
-
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 

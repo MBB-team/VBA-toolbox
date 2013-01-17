@@ -70,9 +70,9 @@ priors.SigmaX0 = 0e-1*eye(nreg);
 priors.muTheta = 0*ones(size(theta));
 priors.muTheta(inF.indself) = -0;
 priors.SigmaTheta = 1e-1*eye(length(theta));
-priors.a_alpha = 1e4;
-priors.b_alpha = 1e2;
-priors.a_sigma = 1e3;
+priors.a_alpha = 1e0;
+priors.b_alpha = 1e0;
+priors.a_sigma = 1e0;
 priors.b_sigma = 1e0;
 
 % Build options and dim structures for model inversion

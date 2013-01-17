@@ -141,14 +141,22 @@ end
 
 % get feedback on system's output
 if ~isempty(fb.h_fname)
-    fbt = feval(fb.h_fname,y(:,1),1,fb.inH);
-else
-    fbt = [];
+    u(fb.indfb,2) = feval(fb.h_fname,y(:,1),1,fb.inH);
 end
 % fill in next input with output and feedback
 u(fb.indy,2) = y(:,1);
-u(fb.indfb,2) = fbt;
 
+% t = 1
+% disp('g')
+% if y(:,t) == 1
+%     ac = u(1,t)
+%     au = u(2,t)
+% else
+%     ac = u(2,t)
+%     au = u(1,t)
+% end
+% pause
+    
 
 %-- Loop over time points
 
@@ -192,20 +200,28 @@ for t = 2:dim.n_t
     if t < dim.n_t
         % get feedback on system's output
         if ~isempty(fb.h_fname)
-            fbt = feval(fb.h_fname,y(:,t),t,fb.inH);
-        else
-            fbt = [];
+            u(fb.indfb,t+1) = feval(fb.h_fname,y(:,t),t,fb.inH);
         end
         u(fb.indy,t+1) = y(:,t);
-        u(fb.indfb,t+1) = fbt;
     end
+    
+%     disp('g')
+%     if y(:,t) == 1
+%         ac = u(1,t)
+%         au = u(2,t)
+%     else
+%         ac = u(2,t)
+%         au = u(1,t)
+%     end
+%     pause
+    
     
     % Display progress
     if mod(100*t/dim.n_t,10) <1 && options.verbose
         fprintf(1,repmat('\b',1,8))
         fprintf(1,'%6.2f %%',floor(100*t/dim.n_t))
     end
-    if isweird({x(:,t),y(:,t),fbt})
+    if isweird({x(:,t),y(:,t)})
         break
     end
     
