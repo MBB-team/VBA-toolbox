@@ -36,8 +36,8 @@ hf = figure('color',[1 1 1]);
 ha = axes('parent',hf,'nextplot','add');
 bar(ha,x1,n1,'facecolor','r');
 bar(ha,x2,n2,'facecolor','b');
-legend(ha,{'true = full model','true = reduced model'})
-xlabel(ha,'log p(y|full) - log(y|reduced)')
+legend(ha,{'true = model 1','true = model 2'})
+xlabel(ha,'log p(y|m1) - log(y|m2)')
 ylabel(ha,'# simulations')
 
 

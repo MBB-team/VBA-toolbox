@@ -135,7 +135,7 @@ close all
 % 'closed' scenario
 
 % 1- assign flat utility U0 to the items
-n = 2; % # items
+n = 8; % # items
 U0 = 0.*randn(n,1);
 U0 = U0 - mean(U0); % for comparison with estimated utility
 
@@ -145,7 +145,7 @@ r1 = U0 + sr*randn(n,1);
 
 % 3- choice task
 % NB: here the choices influence the underlying utility function
-n_t = 1024; % # forced choice trials
+n_t = 2^11; % # forced choice trials
 fb.indfb = 4:5;
 fb.indy = 3;
 fb.h_fname = @h_whichItem;
@@ -159,14 +159,16 @@ f_fname = @f_updateU;
 g_fname = @g_u2p;
 dim.n = n+n^2;
 dim.n_phi = 1;
-dim.n_theta = 1;
+dim.n_theta = 2;
 inG.n = n;
 inG.temp = 1;
+inG.v = 2;
 inG.iu = 1:2;
 inG.ic = fb.indy;
 inG.effort = [];
 inF.n = n;
 inF.temp = 1;
+inF.v = 2;
 inF.iu = fb.indfb;
 inF.ic = fb.indy;
 inF.effort = [];
@@ -180,12 +182,55 @@ u(inG.iu,:) = fb.inH.ind;
 x0(1:n,1) = U0; % initial utility
 S0 = eye(n); % initial variance on utility
 x0(n+1:n+n^2) = vec(S0); % initial variance
-phi = -4; % log temp
-theta = 0; % believed log temp
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,0,0,u,Inf,[],options,x0,fb);
+phi = -2; % log temp
+theta = [-2;-16]; % believed log temp
+[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,u,Inf,[],options,x0,fb);
 
 mu = x(1:n,:);
 figure,plot(mu')
+vu = zeros(n,n_t);
+Pairs = zeros(n,n);
+for t=1:n_t
+    St = reshape(x(n+1:n+n^2,t),n,n);
+    vu(:,t) = diag(St);
+    weight = 1/t;%log(1./det(St));
+    Pairs(fb.inH.ind(1,t),fb.inH.ind(2,t)) = Pairs(fb.inH.ind(1,t),fb.inH.ind(2,t)) +weight;
+    Pairs(fb.inH.ind(2,t),fb.inH.ind(1,t)) = Pairs(fb.inH.ind(2,t),fb.inH.ind(1,t)) +weight;
+end
+plotUncertainTimeSeries(mu,vu)
+figure,plot(vu')
+
+DV = zeros(n,n);
+for i=1:n
+    DV(:,i) = mu(:,n_t) - mu(i,n_t);
+end
+
+pa=triu(Pairs,1);
+pa = vec(pa(pa~=0));
+
+dv=triu(DV,1);
+dv = vec(dv(dv~=0));
+
+hf = figure('color',[1 1 1]);
+ha = subplot(2,2,1,'parent',hf);
+imagesc(DV,'parent',ha);
+title(ha,'DV')
+ha = subplot(2,2,2,'parent',hf);
+imagesc(Pairs,'parent',ha);
+title(ha,'Pairs')
+ha = subplot(2,2,3,'parent',hf);
+plot(pa,dv,'r+','parent',ha);
+xlabel('pairs')
+ylabel('DV')
+ha = subplot(2,2,4,'parent',hf);
+plot(pa,dv.^2,'r+','parent',ha);
+xlabel('pairs')
+ylabel('DV^2')
+
+
+
+
+
 
 
 %

@@ -50,7 +50,6 @@ dim.n               = 0;
 [p,o] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 displayResults(p,o,y,x,x0,theta,phi,alpha,sigma)
 
-
 % remove counfounds from the model
 n0 = floor(ns/2)+1:ns;
 options.priors.SigmaPhi(n0,n0) = zeros(length(n0));

@@ -10,7 +10,7 @@
 % which is action-dependent. With 2 available actions, this means there are
 % 2x2x2=8 hidden states in this model (to be compared with 2 Q-values for
 % RL).
-% NB2: the action emission law doe snot use any utility mapping yet!
+% NB2: the action emission law does not use any utility mapping yet!
 
 
 close all

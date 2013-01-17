@@ -16,7 +16,7 @@ u       = [];
 
 % Parameters of the simulation
 alpha   = 1e1;
-sigma   = 1e0;
+sigma   = 1e1;
 theta   = 1;
 phi     = [];
 
