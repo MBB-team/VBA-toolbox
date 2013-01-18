@@ -17,16 +17,22 @@
 % uncertainty Sigma over x, such that E[U(x)] is a convex function of mu.
 
 a = 1;
+b = 2;
 dx = 1e-1;
 x = -10:dx:10;
-xp = x(x>=0);
-xn = x(x<0);
-Uxp = log(xp+1);
-Uxn = -log(1-xn);
-Ux = [Uxn,Uxp];
-d2Up = -1./(xp+1).^2;
-d2Un = 1./(1-xn).^2;
-d2Udx2 = [d2Un,d2Up];
+
+sx = sigm(x);
+Ux = 2*sx-1;
+d2Udx2 = 2*sx.*(1-sx).*(1-2.*sx);
+
+% xp = x(x>=0);
+% xn = x(x<0);
+% Uxp = log(xp+1);
+% Uxn = -log(1-xn);
+% Ux = [Uxn,Uxp];
+% d2Up = -1./(xp+1).^2;
+% d2Un = 1./(1-xn).^2;
+% d2Udx2 = [d2Un,d2Up];
 % Ux = log(x+1);%1-exp(-a.*x);
 % d2Udx2 = -1./(x+1).^2;%-a.^2*exp(-a.*x);
 
@@ -37,7 +43,7 @@ ha = subplot(3,2,2,'parent',hf);
 plot(ha,x,d2Udx2), title(ha,'d2U(x)/dx2')
 
 mu = x;
-v = 100;%x.*(1-x);
+v = 8;%x.*(1-x);
 EU = Ux + 0.5*v.*d2Udx2;
 ha = subplot(3,2,3,'parent',hf);
 plot(ha,mu,EU), title(ha,'E[U(x)]')
@@ -45,12 +51,12 @@ plot(ha,mu,EU), title(ha,'E[U(x)]')
 ha = subplot(3,2,4,'parent',hf);
 plot(ha,Ux,EU), title(ha,'E[U(x)] vs U(E[x])')
 
-N = 1e3;
+N = 1e2;
 EU2 = zeros(N,length(mu));
 for i=1:length(mu)
     for ii=1:N
         X = mu(i) + sqrt(v).*randn;
-        EU2(ii,i) = util(X);
+        EU2(ii,i) = 2*sigm(X)-1;
     end
 end
 EU2 = mean(EU2,1);
