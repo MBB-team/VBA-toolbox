@@ -112,7 +112,6 @@ switch flag
         SigmaX = cell(dim.n_t,1);
         %--- Initialize sufficient statistics time-series ---%
         suffStat = VBA_getSuffStat(options);
-        suffStat.SX = 0.5*dim.n*dim.n_t*log(2*pi*exp(1));
         if isequal(flag,1)
             str = 'standard EKF';
         else
@@ -155,8 +154,6 @@ if flag>=1
     end
     suffStat.dx(:,1) = muX(:,1) - fx0;
     suffStat.dx2 = suffStat.dx2 + suffStat.dx(:,1)'*iQx{1}*suffStat.dx(:,1);
-    suffStat.SX = suffStat.SX + 0.5*sum(log(eig(full(SigmaX{1}))));
-    suffStat.trSx = suffStat.trSx + trace(SigmaX{1});
 else
     muX(:,1) = VBA_evalFun('f',X0,theta,u(:,1),options,dim);
 end
@@ -195,8 +192,6 @@ for t = 1:dim.n_t-1
         end
         suffStat.dx(:,t+1) = muX(:,t+1) - fx;
         suffStat.dx2 = suffStat.dx2 + suffStat.dx(:,t+1)'*iQx{t+1}*suffStat.dx(:,t+1);
-        suffStat.SX = suffStat.SX + 0.5*sum(log(eig(full(SigmaX{t+1}))));
-        suffStat.trSx = suffStat.trSx + trace(SigmaX{t+1});
     else
         muX(:,t+1) = VBA_evalFun('f',muX(:,t),theta,u(:,t+1),options,dim);
     end

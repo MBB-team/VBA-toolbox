@@ -16,10 +16,13 @@
 % behavioural economics. This induces a non-trivial susceptibility to the
 % uncertainty Sigma over x, such that E[U(x)] is a convex function of mu.
 
+clear all
+close all
+
 a = 1;
 b = 2;
-dx = 1e-1;
-x = -10:dx:10;
+dx = 2e-2;
+x = -0.5:dx:2;
 
 sx = sigm(x);
 Ux = 2*sx-1;
@@ -38,18 +41,47 @@ d2Udx2 = 2*sx.*(1-sx).*(1-2.*sx);
 
 hf = figure('color',[1 1 1]);
 ha = subplot(3,2,1,'parent',hf);
-plot(ha,x,Ux), title(ha,'utility U(x)')
+plot(ha,x,Ux), title(ha,'utility function')
+hold(ha,'on')
+plot([min(x),max(x)],[0,0],'r--')
+box(ha,'off')
+set(ha,'ygrid','on','xlim',[min(x),max(x)],'ylim',[min(Ux),max(Ux)])
+xlabel(ha,'x')
+ylabel(ha,'U(x)')
+
+
 ha = subplot(3,2,2,'parent',hf);
-plot(ha,x,d2Udx2), title(ha,'d2U(x)/dx2')
+plot(ha,x,d2Udx2), title(ha,'utility curvature')
+hold(ha,'on')
+plot([min(x),max(x)],[0,0],'r--')
+box(ha,'off')
+set(ha,'ygrid','on','xlim',[min(x),max(x)],'ylim',[min(Ux),max(Ux)])
+xlabel(ha,'x')
+ylabel(ha,'U''''(x)')
+
 
 mu = x;
-v = 8;%x.*(1-x);
+v = 5;%x.*(1-x);
 EU = Ux + 0.5*v.*d2Udx2;
 ha = subplot(3,2,3,'parent',hf);
-plot(ha,mu,EU), title(ha,'E[U(x)]')
+plot(ha,mu,EU), title(ha,'expected utility')
+hold(ha,'on')
+plot([min(x),max(x)],[0,0],'r--')
+box(ha,'off')
+set(ha,'ygrid','on','xlim',[min(x),max(x)],'ylim',[min(Ux),max(Ux)])
+xlabel(ha,'E[x]')
+ylabel(ha,'E[U(x)]')
 
 ha = subplot(3,2,4,'parent',hf);
-plot(ha,Ux,EU), title(ha,'E[U(x)] vs U(E[x])')
+plot(ha,Ux,EU), title(ha,'expected utility')
+hold(ha,'on')
+plot([min(x),max(x)],[0,0],'r--')
+box(ha,'off')
+set(ha,'ygrid','on','xlim',[min(Ux),max(Ux)],'ylim',[min(Ux),max(Ux)])
+xlabel(ha,'U(E[x])')
+ylabel(ha,'E[U(x)]')
+
+
 
 N = 1e2;
 EU2 = zeros(N,length(mu));
@@ -67,4 +99,5 @@ ha = subplot(3,2,6,'parent',hf);
 plot(ha,Ux,EU2), title(ha,'E[U(x)] vs U(E[x])')
 
 
+getSubplots
 

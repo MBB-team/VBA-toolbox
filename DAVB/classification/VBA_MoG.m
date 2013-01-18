@@ -80,7 +80,7 @@ if ~isfield(options,'init')
     options.init = 'hierarchical';
 end
 
-% Fill default priors
+% Fill in default priors
 if ~isfield(options,'priors')
     options.priors = [];
 end
@@ -147,7 +147,7 @@ if options.DisplayWin
     plot(handles.ha(1),F,'ro')
     set(handles.ha(1),'nextplot','add','ygrid','on')
     imagesc(dist(y),'parent',handles.ha(6))
-    title(handles.ha(6),'data distance')
+    title(handles.ha(6),'distance data - data')
     set(handles.ha(7),'nextplot','add','ygrid','on')
     title(handles.ha(7),'data distribution')
     if dim.p >= 2

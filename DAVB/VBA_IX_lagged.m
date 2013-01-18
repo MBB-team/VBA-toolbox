@@ -53,12 +53,6 @@ S0 = kron(eye(lag),posterior.SigmaX0);
 % check infinite precision transition pdf
 iQ = VB_inv(iQx{1},indIn{1},'replace');
 
-% mean-field terms
-SXd2gdx2 = trace(dG_dX{1}*iQy{1}*dG_dX{1}'*posterior.SigmaX.current{1});
-SXd2fdx2 = trace(dF_dX0*iQ*dF_dX0'*posterior.SigmaX0);
-trSx = trace(iQ*posterior.SigmaX.current{1});
-SXtdfdx = 0;
-
 % error terms
 dx(:,1) = X(:,1) - fx0;
 dx2 = dx(:,1)'*iQ*dx(:,1);
@@ -79,10 +73,6 @@ e1 = FD*m0 - fx0;
 e2 = GC*m0 - gx(:,1);
 mt = St*( sigmaHat*GC'*iQy{1}*(y(:,1)+e2) + alphaHat*FDC'*iQ*e1 + EiEuSEuEu*m0 );
 
-% Entropy calculus
-SX = 0.5*length(indIn{1})*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaX.current{1},indIn{1});
-
-
 %---- Sequential message-passing algorithm: lagged forward pass ----%
 for t = 2:dim.n_t
     
@@ -94,12 +84,6 @@ for t = 2:dim.n_t
     
     % evaluate observation function at current mode
     [gx(:,t),dG_dX{t},dG_dPhi{t}] = VBA_evalFun('g',X(:,t),posterior.muPhi,u(:,t),options,dim,t);
-    
-    % mean-field terms
-    SXd2gdx2 = SXd2gdx2 + trace(dG_dX{t}*iQy{t}*dG_dX{t}'*posterior.SigmaX.current{t});
-    SXd2fdx2 = SXd2fdx2 + trace(dF_dX{t-1}*iQ*dF_dX{t-1}'*posterior.SigmaX.current{t-1});
-    SXtdfdx = SXtdfdx - 2*trace( iQ*dF_dX{t-1}'*posterior.SigmaX.inter{t-1} );
-    trSx = trSx + trace(iQ*posterior.SigmaX.current{t});
     
     % error terms
     dx(:,t) = (X(:,t) - fx(:,t-1));
@@ -135,17 +119,6 @@ for t = 2:dim.n_t
         end
         vy(:,t-lag+1) = diag(V);
         
-    end
-    
-    % Entropy calculus
-    if t < dim.n_t
-        jointCov = ...
-            [   posterior.SigmaX.current{t+1}   posterior.SigmaX.inter{t}'
-                posterior.SigmaX.inter{t}      	posterior.SigmaX.current{t} ];
-        indjc = [indIn{t+1}(:);indIn{t}(:)+dim.n];
-        ldj = VBA_logDet(jointCov(indjc,indjc));
-        ldm = VBA_logDet(posterior.SigmaX.current{t}(indIn{t},indIn{t}));
-        SX = SX + 0.5*( ldj - ldm ) + 0.5*length(indIn{t})*log(2*pi*exp(1));
     end
     
     % Display progress
@@ -196,17 +169,12 @@ deltaMuX = muX - X;
 
 % variational energy
 IX = -0.5.*sigmaHat.*dy2 -0.5*alphaHat.*dx2;
-if isweird({IX,SigmaX.current,SigmaX.inter}) || div
+if isweird(IX) || div
     IX = -Inf;
 end
 
 % sufficient statistics
 suffStat.IX = IX;
-suffStat.SX = SX;
-suffStat.SXd2gdx2 = SXd2gdx2;
-suffStat.SXd2fdx2 = SXd2fdx2;
-suffStat.SXtdfdx = SXtdfdx;
-suffStat.trSx = trSx;
 suffStat.gx = gx;
 suffStat.vy = vy;
 suffStat.dx = dx;

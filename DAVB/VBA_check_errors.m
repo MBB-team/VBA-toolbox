@@ -6,7 +6,6 @@ function [suffStat,posterior] = VBA_check_errors(y,u,options)
 dim = options.dim;
 posterior = options.priors;
 posterior.muX = sparse(0,dim.n_t);
-indIn = options.params2update.phi;
 
 % watch out about display setting
 options.DisplayWin = 0;
@@ -24,8 +23,6 @@ gx = zeros(dim.p,dim.n_t);
 if ~options.binomial
     iQy = options.priors.iQy;
     dy2 = 0;
-    Sphid2gdphi2 = 0;
-    kernel = zeros(dim.n_phi,dim.n_phi);
     % Get precision parameters
     sigmaHat = posterior.a_sigma./posterior.b_sigma;
 else
@@ -43,7 +40,7 @@ for t=1:dim.n_t
     
     % evaluate observation function at current mode
     try
-        [gx(:,t),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
+        [gx(:,t),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
         if isweird(gx(:,t))
             VBA_disp('',options)
             VBA_disp('Error: could not initialize VB scheme: model generates NaN or Inf!',options)
@@ -78,8 +75,6 @@ for t=1:dim.n_t
     % remove irregular trials
     yin = find(~options.isYout(:,t));
     if ~options.binomial
-        % mean-field terms
-        Sphid2gdphi2 = Sphid2gdphi2 + trace(dG_dPhi*iQy{t}*dG_dPhi'*posterior.SigmaPhi);
         % error terms
         dy(:,t) = y(:,t) - gx(:,t);
         dy2 = dy2 + dy(:,t)'*iQy{t}*dy(:,t);
@@ -101,8 +96,8 @@ for t=1:dim.n_t
     if isequal(options.g_fname,@VBA_odeLim)
         % get sufficient statistics of the hidden states from unused i/o in
         % VBA_evalFun.
-        muX(:,t) = dG_dX;
-        SigmaX{t} = d2G_dXdPhi'*posterior.SigmaPhi*d2G_dXdPhi;
+        muX(:,t) = dG_dX.xt;
+        SigmaX{t} = dG_dX.dx'*posterior.SigmaPhi*dG_dX.dx;
     end
     
     % Display progress
@@ -134,7 +129,6 @@ end
 
 % update sufficient statistics
 suffStat.div = div;
-suffStat.Sphi = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaPhi,indIn);
 suffStat.gx = gx;
 suffStat.dy = dy;
 suffStat.vy = vy;
@@ -143,14 +137,7 @@ if isequal(options.g_fname,@VBA_odeLim)
     suffStat.SigmaX = SigmaX;
 end
 if ~options.binomial
-    suffStat.Sphid2gdphi2 = Sphid2gdphi2;
-    suffStat.Sphid2gdphidx = trace(kernel*posterior.SigmaPhi);
     suffStat.dy2 = dy2;
-    % Add hyperparameter entropy
-    suffStat.Ssigma = gammaln(posterior.a_sigma) ...
-        - log(posterior.b_sigma) ...
-        + (1-posterior.a_sigma).*psi(posterior.a_sigma) ...
-        + posterior.a_sigma;
 else
     suffStat.logL = logL;
 end

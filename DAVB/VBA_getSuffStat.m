@@ -86,24 +86,9 @@ catch
     suffStat.Ssigma = 0;
 end
 try
-    suffStat.Sphid2gdphi2;
-catch
-    suffStat.Sphid2gdphi2 = 0;
-end
-try
     suffStat.Sphi;
 catch
     suffStat.Sphi = 0;
-end
-try
-    suffStat.Sphid2gdphidx;
-catch
-    suffStat.Sphid2gdphidx = 0;
-end
-try
-    suffStat.Sthetad2fdtheta2;
-catch
-    suffStat.Sthetad2fdtheta2 = 0;
 end
 try
     suffStat.Stheta;
@@ -111,34 +96,9 @@ catch
     suffStat.Stheta = 0;
 end
 try
-    suffStat.Sthetad2fdthetadx;
-catch
-    suffStat.Sthetad2fdthetadx = 0;
-end
-try
     suffStat.Salpha;
 catch
     suffStat.Salpha = 0;
-end
-try
-    suffStat.SXd2fdx2;
-catch
-    suffStat.SXd2fdx2 = 0;
-end
-try
-    suffStat.SXtdfdx;
-catch
-    suffStat.SXtdfdx = 0;
-end
-try
-    suffStat.SXd2gdx2;
-catch
-    suffStat.SXd2gdx2 = 0;
-end
-try
-    suffStat.trSx;
-catch
-    suffStat.trSx = 0;
 end
 try
     suffStat.SX;

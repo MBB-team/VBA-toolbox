@@ -90,10 +90,6 @@ end
 if ~isfield(options,'DisplayWin')
     options.DisplayWin = 1;
 end
-% Ignore mean-field approximation additional terms (Laplace approx.)?
-if ~isfield(options,'ignoreMF')
-    options.ignoreMF = 1;
-end
 % Gauss-Newton ascent on free (1) or variational (0) energy
 if ~isfield(options,'gradF')
     options.gradF = 0;
@@ -117,10 +113,6 @@ end
 % On-line version (true when called from VBA_OnLineWrapper.m)
 if ~isfield(options,'OnLine')
     options.OnLine = 0;
-end
-% Free energy calculus at equilibrium?
-if ~isfield(options,'Laplace')
-    options.Laplace = 1;
 end
 % delays
 if ~isfield(options,'delays')

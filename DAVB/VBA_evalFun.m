@@ -1,7 +1,6 @@
-function [fx,J,dfdP,d2fdxdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim,t)
+function [fx,J,dfdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim,t)
 % smart wrapper for evolution and observation functions
-% function [fx,J,dfdP,d2fdxdP] =
-% VBA_evalFun(flagFun,posterior,u,options,dim)
+% function [fx,J,dfdP] = VBA_evalFun(flagFun,posterior,u,options,dim)
 %
 % This function evaluates the evolution or observation function (eof) at
 % the mode of the posterior densities of hidden states and parameters. It
@@ -26,8 +25,6 @@ function [fx,J,dfdP,d2fdxdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim,t)
 %   posterior.muTheta/posterior.muPhi
 %   - J: Jacobian (derivatives of the eof wrt to hidden states)
 %   - dfdP: the derivatives of the eof wrt the parameters
-%   - d2fdxdP: the double derivatives of the eof wrt the hidden states and
-%   the parameters.
 
 
 % Number of output arguments?
@@ -63,7 +60,7 @@ end
 
 
 % Evaluate function, Jacobian and gradients
-[fx,J,dfdP,d2fdxdP] = EvalFunN(fname,Xt,P,ut,in,dim,nout,nout0,options,d,N);
+[fx,J,dfdP] = EvalFunN(fname,Xt,P,ut,in,dim,nout,nout0,options,d,N);
 
 % Check Jacobian and gradients?
 if options.checkGrads && ~isequal(fname,@VBA_odeLim) && ~isequal(fname,@VBA_smoothNLSS)
@@ -85,46 +82,42 @@ if options.checkGrads && ~isequal(fname,@VBA_odeLim) && ~isequal(fname,@VBA_smoo
 end
 
 
-function [fx,J,dfdP,d2fdxdP] = EvalFunN(fname,Xt,P,ut,in,dim,nout,nout0,options,d,N)
+function [fx,J,dfdP] = EvalFunN(fname,Xt,P,ut,in,dim,nout,nout0,options,d,N)
 % loops over micro-time and evaluates function, Jacobian and gradients
 if options.microU && N > 1
     ut = reshape(ut,dim.u,N);
 else
     ut = repmat(ut,1,N);
 end
-[fx,J,dfdP,d2fdxdP] = EvalFun(fname,Xt,P,ut(:,1),in,dim,nout,nout0,options,d);
+[fx,J,dfdP] = EvalFun(fname,Xt,P,ut(:,1),in,dim,nout,nout0,options,d);
 for i=2:N
-    [fx,dfdx,dfdp,d2fdxdp] = EvalFun(fname,fx,P,ut(:,i),in,dim,nout,nout0,options,d);
+    [fx,dfdx,dfdp] = EvalFun(fname,fx,P,ut(:,i),in,dim,nout,nout0,options,d);
     if ~isempty(dfdx)
         J = J*dfdx;
     end
     if ~isempty(dfdp)
         dfdP = dfdp + dfdP*dfdx;
     end
-    if ~isempty(d2fdxdp)
-        d2fdxdP = reshape(dfdx*reshape(d2fdxdp,d(1),d(2)*d(3))+J*reshape(d2fdxdP,d(1),d(2)*d(3)),d(1),d(2),d(3));
-    end
 end
 
 
-function [fx,dfdx,dfdp,d2fdxdp] = EvalFun(fname,Xt,P,ut,in,dim,nout,nout0,options,d)
+function [fx,dfdx,dfdp] = EvalFun(fname,Xt,P,ut,in,dim,nout,nout0,options,d)
 % evaluates function, Jacobian and gradients (numerically if necessary)
 dfdx = [];
 dfdp = [];
-d2fdxdp = [];
 deriv = [1 1 1];
 switch nout
-    case 4
-        [fx,dfdx,dfdp,d2fdxdp] = feval(fname,Xt,P,ut,in);
-        if isempty(dfdx)
-            deriv(1) = 0;
-        end
-        if isempty(dfdp)
-            deriv(2) = 0;
-        end
-        if isempty(d2fdxdp)
-            deriv(3) = 0;
-        end
+%     case 4
+%         [fx,dfdx,dfdp,d2fdxdp] = feval(fname,Xt,P,ut,in);
+%         if isempty(dfdx)
+%             deriv(1) = 0;
+%         end
+%         if isempty(dfdp)
+%             deriv(2) = 0;
+%         end
+%         if isempty(d2fdxdp)
+%             deriv(3) = 0;
+%         end
     case 3
         [fx,dfdx,dfdp] = feval(fname,Xt,P,ut,in);
         deriv(3) = 0;
@@ -147,14 +140,17 @@ end
 if ~deriv(1) && dim.n>0 && nout0>=2
     dfdx = numericDiff(fname,1,Xt,P,ut,in);
 end
-if d(2) > 0
-    if ~deriv(2) && nout0>=3
-        dfdp = numericDiff(fname,2,Xt,P,ut,in);
-    end
-    if ~deriv(3) && nout0==4 && ~options.ignoreMF && dim.n > 0
-        d2fdxdp = numericDiff(@numericDiff,3,fname,2,Xt,P,ut,in);
-        d2fdxdp = reshape(d2fdxdp,d(1),d(2),d(3));
-    end
+if d(2) > 0 && ~deriv(2) && nout0>=3
+    dfdp = numericDiff(fname,2,Xt,P,ut,in);
 end
+% if d(2) > 0
+%     if ~deriv(2) && nout0>=3
+%         dfdp = numericDiff(fname,2,Xt,P,ut,in);
+%     end
+%     if ~deriv(3) && nout0==4 && ~options.ignoreMF && dim.n > 0
+%         d2fdxdp = numericDiff(@numericDiff,3,fname,2,Xt,P,ut,in);
+%         d2fdxdp = reshape(d2fdxdp,d(1),d(2),d(3));
+%     end
+% end
 
 

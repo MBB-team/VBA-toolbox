@@ -1,4 +1,4 @@
-function [gx,dgdx,dgdp,d2gdxdp] = VBA_odeLim(Xt,P,ut,in)
+function [gx,out,dgdp] = VBA_odeLim(Xt,P,ut,in)
 % collapses evolution and observation functions for ODE limit inversion
 % function [gx,dgdx,dgdp,d2gdxdp] = VBA_odeLim(Xt,P,ut,in)
 % This function evaluates the evolution/observation functions that are
@@ -77,7 +77,7 @@ if options.updateX0
 end
 
 % for hidden states book keeping
-dgdx = xt; 
-d2gdxdp = [zeros(dim.n_phi,dim.n);dxdTheta;dxdx0];
+out.xt = xt;
+out.dx = [zeros(dim.n_phi,dim.n);dxdTheta;dxdx0];
         
     

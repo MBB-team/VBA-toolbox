@@ -63,10 +63,6 @@ yin = find(~options.isYout(:,1));
 % accumulate log-likelihood
 logL = y(yin,1)'*log(gx(yin,1)) + (1-y(yin,1))'*log(1-gx(yin,1));
 
-% mean-field terms
-SXd2fdx2 = trace(dF_dX0*iQ*dF_dX0'*posterior.SigmaX0);
-trSx = trace(iQ*posterior.SigmaX.current{1});
-SXtdfdx = 0;
 
 % error terms
 dx(:,1) = X(:,1) - fx0;
@@ -88,10 +84,6 @@ e1 = FD*m0 - fx0;
 xi1 = dy(yin,1)./vy(yin,1);
 mt = St*( GC'*(diag(xi2)*dG_dX{1}(:,yin)'*posterior.muX0-xi1) + alphaHat*FDC'*iQ*e1 + EiEuSEuEu*m0 );
 
-% Entropy calculus
-SX = 0.5*length(indIn{1})*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaX.current{1},indIn{1});
-
-
 %---- Sequential message-passing algorithm: lagged forward pass ----%
 for t = 2:dim.n_t
     
@@ -106,11 +98,6 @@ for t = 2:dim.n_t
     
     % fix numerical instabilities
     gx(:,t) = checkGX_binomial(gx(:,t));
-    
-    % mean-field terms
-    SXd2fdx2 = SXd2fdx2 + trace(dF_dX{t-1}*iQ*dF_dX{t-1}'*posterior.SigmaX.current{t-1});
-    SXtdfdx = SXtdfdx - 2*trace( iQ*dF_dX{t-1}'*posterior.SigmaX.inter{t-1} );
-    trSx = trSx + trace(iQ*posterior.SigmaX.current{t});
     
     % remove irregular trials
     yin = find(~options.isYout(:,t));
@@ -155,17 +142,6 @@ for t = 2:dim.n_t
 %         end
 %         vy(:,t-lag+1) = diag(V);
         
-    end
-    
-    % Entropy calculus
-    if t < dim.n_t
-        jointCov = ...
-            [   posterior.SigmaX.current{t+1}   posterior.SigmaX.inter{t}'
-                posterior.SigmaX.inter{t}      	posterior.SigmaX.current{t} ];
-        indjc = [indIn{t+1}(:);indIn{t}(:)+dim.n];
-        ldj = VBA_logDet(jointCov(indjc,indjc));
-        ldm = VBA_logDet(posterior.SigmaX.current{t}(indIn{t},indIn{t}));
-        SX = SX + 0.5*( ldj - ldm ) + 0.5*length(indIn{t})*log(2*pi*exp(1));
     end
     
     % Display progress
@@ -222,10 +198,6 @@ end
 
 % sufficient statistics
 suffStat.IX = IX;
-suffStat.SX = SX;
-suffStat.SXd2fdx2 = SXd2fdx2;
-suffStat.SXtdfdx = SXtdfdx;
-suffStat.trSx = trSx;
 suffStat.gx = gx;
 suffStat.vy = vy;
 suffStat.dx = dx;

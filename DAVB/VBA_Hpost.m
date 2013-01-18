@@ -1,5 +1,18 @@
 function suffStat = VBA_Hpost(posterior,suffStat,options)
-% Entropy calculus
+% Posterior entropy calculus
+% function suffStat = VBA_Hpost(posterior,suffStat,options)
+% This function evaluates the entropy of each marginal posterior density.
+% IN:
+%   - posterior: a structure containing the natural parameters of the
+%   marginal posterior pdf of the unknown variables of the model
+%   - suffStat: a structure containing pre-calculated (sufficient
+%   statistics) quantities associated required for the computation of the
+%   free energy (such as derivatives of the evolution/observation functions
+%   evaluated at the current mode)
+%   - options: a structure variable containing optional parameters (such as
+%   the priors structure)
+% OUT:
+%   - suffStat: the free energy under the local Laplace approximation
 
 if options.dim.n > 0
     % initial conditions
@@ -16,6 +29,13 @@ if options.dim.n > 0
         ldj = VBA_logDet(jointCov(indjc,indjc));
         ldm = VBA_logDet(posterior.SigmaX.current{t}(indIn{t},indIn{t}));
         SX = SX + 0.5*( ldj - ldm ) + 0.5*length(indIn{t})*log(2*pi*exp(1));
+        % Display progress
+        if options.DisplayWin && mod(t,options.dim.n_t./10) < 1
+            try
+                set(options.display.hm(2),'string',[num2str(floor(100*t/options.dim.n_t)),'%']);
+                drawnow
+            end
+        end
     end
     % precision hyperparameter
     if ~isinf(options.priors.a_alpha) && ~isequal(options.priors.b_alpha,0)

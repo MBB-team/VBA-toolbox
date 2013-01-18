@@ -14,8 +14,7 @@ f_fname = options.f_fname;
 g_fname = options.g_fname;
 opt = options;
 opt.priors.muX0 = posterior.muX(:,end);
-[y,x] = simulateNLSS(...
-    n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,opt,opt.priors.muX0);
+[y,x] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,opt,opt.priors.muX0);
 
 % then get prediction from posterior onwards
 post = posterior;

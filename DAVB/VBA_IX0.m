@@ -52,12 +52,11 @@ else
 end
 
 % update sufficient statistics
-suffStat.SX0 = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaX0,indIn);
 dx20 = suffStat.dx(:,1)'*iQx0*suffStat.dx(:,1);
 suffStat.dx2 = suffStat.dx2 - dx20 + dx2; % correct states squared error
 suffStat.dx(:,1) = dx;
 suffStat.dx0 = dx0;
 suffStat.div = div;
-
+suffStat.IX0 = IX0;
 
 

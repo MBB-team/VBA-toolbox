@@ -29,16 +29,12 @@ if ~options.binomial
         ny = ny + length(find(diag(options.priors.iQy{t})~=0));
     end
     posterior.a_sigma = options.priors.a_sigma + 0.5*ny;
-    posterior.b_sigma = options.priors.b_sigma ...
-        + 0.5*suffStat.dy2 ...
-        + 0.5*suffStat.SXd2gdx2;
+    posterior.b_sigma = options.priors.b_sigma + 0.5*suffStat.dy2;
+    if dim.n > 0
+        posterior.b_sigma = posterior.b_sigma + 0.5*suffStat.SXd2gdx2;
+    end
     if dim.n_phi > 0
-        posterior.b_sigma = posterior.b_sigma ...
-            + 0.5*suffStat.Sphid2gdphi2;
-        if dim.n > 0
-            posterior.b_sigma = posterior.b_sigma ...
-                + 0.5*suffStat.Sphid2gdphidx;
-        end
+        posterior.b_sigma = posterior.b_sigma + 0.5*suffStat.Sphid2gdphi2;
     end
     
     % update variance over predicted data (approx. fix)

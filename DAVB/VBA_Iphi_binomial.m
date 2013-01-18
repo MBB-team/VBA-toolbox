@@ -40,7 +40,7 @@ div = 0;
 for t=1:dim.n_t
     
     % evaluate observation function at current mode
-    [gx(:,t),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
+    [gx(:,t),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
     
     % fix numerical instabilities
     gx(:,t) = checkGX_binomial(gx(:,t));
@@ -49,8 +49,8 @@ for t=1:dim.n_t
     if isequal(options.g_fname,@VBA_odeLim)
         % get sufficient statistics of the hidden states from unused i/o in
         % VBA_evalFun.
-        muX(:,t) = dG_dX;
-        SigmaX{t} = d2G_dXdPhi'*posterior.SigmaPhi*d2G_dXdPhi;
+        muX(:,t) = dG_dX.xt;
+        SigmaX{t} = dG_dX.dx'*posterior.SigmaPhi*dG_dX.dx;
     end
     
     % predicted variance over binomial data
@@ -108,7 +108,6 @@ if isweird({Iphi,SigmaPhi}) || div
 end
 
 % update sufficient statistics
-suffStat.Sphi = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaPhi,indIn);
 suffStat.gx = gx;
 suffStat.dy = dy;
 suffStat.logL = logL;

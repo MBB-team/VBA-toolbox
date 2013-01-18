@@ -297,7 +297,7 @@ while ~stop
     % Call update VB rule for precision parameters. This updates posterior
     % and suffStat variables.
     if options.updateHP
-        [posterior,suffStat] = VBA_VBVarParam(y,posterior,suffStat,dim,options);
+        [posterior,suffStat] = VBA_VarParam(y,posterior,suffStat,dim,u,options);
         suffStat.F = [suffStat.F,VBA_FreeEnergy(posterior,suffStat,options)];
         VBA_updateDisplay(posterior,suffStat,options,y,it,'precisions')
     end
@@ -329,6 +329,7 @@ end
 %---------------- wrap up inversion results -----------------%
 %------------------------------------------------------------%
 
+suffStat = VBA_Hpost(posterior,suffStat,options);
 [posterior,out] = VBA_wrapup(posterior,options,dim,suffStat,u,y,it);
 
 
