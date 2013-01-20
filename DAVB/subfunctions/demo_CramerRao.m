@@ -1,4 +1,6 @@
-% Demo for Cramer-Rao bound with non-identifiable parameters
+% This demo evaluates the accuracy of predictions (and their expected
+% squared error) using a train & test procedure, in the context of a VB
+% analyis of a simple GLM.
 
 % close all
 clear variables
@@ -27,13 +29,6 @@ for i=1:N
         % Build simulated observations
         [gx] = feval(g_fname,[],phi,[],inG);
         y = gx + sqrt(sigma.^-1)*randn(size(gx));
-        % display time series of hidden states and observations
-%         figure,
-%         plot(y','ro')
-%         hold on;
-%         plot(gx')
-        % disp('--paused--')
-        % pause
         
         
         %---- Invert model on train data ----%
@@ -71,17 +66,6 @@ for i=1:N
         [muy,Vy] = VBA_getLaplace([],[],g_fname,dim,opt);
         m = reshape(muy,dim.p,[]);
         v = reshape(diag(Vy),dim.p,[]);
-        
-        
-%         hf = figure(...
-%             'name','Predictive density: hidden states',...
-%             'color',[1 1 1],...
-%             'menubar','none');
-%         hs = axes('parent',hf,'nextplot','add');
-%         [haf,hf] = plotUncertainTimeSeries(m,v,[],hs);
-%         plot(hs,ytest,'go')
-%         pause
-%         close(gcf)
         
         % store prediction error and expected prediction error
         

@@ -6,7 +6,7 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 5e2;
+n_t = 1e2;
 delta_t = 1e-1;
 f_fname = @f_lin2D;
 g_fname = @g_Id;

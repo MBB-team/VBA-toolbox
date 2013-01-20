@@ -1,10 +1,10 @@
-% Hodgkin-Huxley demo for calcium imaging of spike trains
+% Hodgkin-Huxley demo
 
 clear variables
 close all
 
 % Choose basic settings for simulations
-n_t             = 1e3;
+n_t             = 5e2;
 decim           = 2;
 deltat          = 7e-2/decim;         % 10Hz sampling rate
 f_fname         = @f_HH;
@@ -17,18 +17,18 @@ figure,plot(u)
 
 
 % Build priors for model inversion
-priors.muX0 = [0;0;-2.8843;-0.7645;0.3882];
-priors.SigmaX0 = 0e-1*eye(5);
+priors.muX0 = [0;0;-2.8843;-0.7645];
+priors.SigmaX0 = 1e0*eye(4);
 priors.muTheta = [1;0*ones(4,1)];
 priors.SigmaTheta = 0e1*eye(5);
 priors.SigmaTheta(2,2) = 0;
 priors.a_alpha      = 1e0;
 priors.b_alpha      = 1e0;
-priors.a_sigma      = 1e3;
+priors.a_sigma      = 1e0;
 priors.b_sigma      = 1e0;
 for t = 1:n_t
-    dq              = 1e4*ones(5,1);
-    dq(2)           = 1e-2;
+    dq              = 1e4*ones(4,1);
+    dq(1)           = 1e-2;
     priors.iQx{t}   = diag(dq);
 end
 
@@ -37,8 +37,6 @@ inF.delta_t     = deltat;
 inF.a           = 0.5;
 inG.ind         = 1;
 options.priors = priors;
-options.updateHP    = 0;
-options.GnFigs = 1;
 options.backwardLag = 2;
 options.inF     = inF;
 options.inG     = inG;
@@ -46,21 +44,19 @@ options.inG     = inG;
 options.decim   = decim;
 dim.n_theta         = 5;
 dim.n_phi           = 0;
-dim.n               = 5;
+dim.n               = 4;
 
 % Build time series of hidden states and observations
 alpha   = Inf;
 sigma   = 1e1;
 theta   = [1;0;0*randn(3,1)];
 phi     = [];
-x0 = [0;0;-2.8843;-0.7645;0.3882];
+x0 = [0;0;-2.8843;-0.7645];
 [y,x,x0,eta,e] = simulateNLSS(...
     n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
-disp('--paused--')
-pause
 
 
 

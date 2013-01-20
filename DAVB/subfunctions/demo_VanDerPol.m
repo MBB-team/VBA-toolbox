@@ -6,7 +6,7 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 5e2;
+n_t = 2e2;
 deltat = 1e-1;
 f_fname = @f_vanDerPol;
 g_fname = @g_sigmoid;

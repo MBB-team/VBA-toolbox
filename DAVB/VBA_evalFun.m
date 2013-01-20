@@ -40,7 +40,6 @@ switch flagFun
         N = options.decim;
         if t~=0 && options.skipf(t)
             [fx,J,dfdP] = f_Id(Xt,P,ut,in);
-            d2fdxdP = zeros(d);
             return
         end
     case 'g'
@@ -53,7 +52,6 @@ switch flagFun
             [fx] = feval(fname,Xt,P,ut,in);
             J = zeros([d(1),d(3)]);
             dfdP = zeros([d(2),d(3)]);
-            d2fdxdP = zeros(d);
             return
         end
 end
@@ -89,9 +87,9 @@ if options.microU && N > 1
 else
     ut = repmat(ut,1,N);
 end
-[fx,J,dfdP] = EvalFun(fname,Xt,P,ut(:,1),in,dim,nout,nout0,options,d);
+[fx,J,dfdP] = EvalFun(fname,Xt,P,ut(:,1),in,dim,nout,nout0,d);
 for i=2:N
-    [fx,dfdx,dfdp] = EvalFun(fname,fx,P,ut(:,i),in,dim,nout,nout0,options,d);
+    [fx,dfdx,dfdp] = EvalFun(fname,fx,P,ut(:,i),in,dim,nout,nout0,d);
     if ~isempty(dfdx)
         J = J*dfdx;
     end
@@ -101,23 +99,12 @@ for i=2:N
 end
 
 
-function [fx,dfdx,dfdp] = EvalFun(fname,Xt,P,ut,in,dim,nout,nout0,options,d)
+function [fx,dfdx,dfdp] = EvalFun(fname,Xt,P,ut,in,dim,nout,nout0,d)
 % evaluates function, Jacobian and gradients (numerically if necessary)
 dfdx = [];
 dfdp = [];
 deriv = [1 1 1];
 switch nout
-%     case 4
-%         [fx,dfdx,dfdp,d2fdxdp] = feval(fname,Xt,P,ut,in);
-%         if isempty(dfdx)
-%             deriv(1) = 0;
-%         end
-%         if isempty(dfdp)
-%             deriv(2) = 0;
-%         end
-%         if isempty(d2fdxdp)
-%             deriv(3) = 0;
-%         end
     case 3
         [fx,dfdx,dfdp] = feval(fname,Xt,P,ut,in);
         deriv(3) = 0;
@@ -143,14 +130,6 @@ end
 if d(2) > 0 && ~deriv(2) && nout0>=3
     dfdp = numericDiff(fname,2,Xt,P,ut,in);
 end
-% if d(2) > 0
-%     if ~deriv(2) && nout0>=3
-%         dfdp = numericDiff(fname,2,Xt,P,ut,in);
-%     end
-%     if ~deriv(3) && nout0==4 && ~options.ignoreMF && dim.n > 0
-%         d2fdxdp = numericDiff(@numericDiff,3,fname,2,Xt,P,ut,in);
-%         d2fdxdp = reshape(d2fdxdp,d(1),d(2),d(3));
-%     end
-% end
+
 
 

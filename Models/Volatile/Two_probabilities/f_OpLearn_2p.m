@@ -19,6 +19,6 @@ elseif a==2
 end
 
 fx = x;
-fx(ixu) = f_VBvolatile_1p(x(ixu),P,u(2),in); % learning from outcome category (0 or 1), not from reward value
+fx(ixu) = f_VBvolatile_1p(x(ixu),P,r,in); % learning from outcome category (0 or 1), not from reward value
 
 

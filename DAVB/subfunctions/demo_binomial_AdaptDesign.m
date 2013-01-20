@@ -4,10 +4,10 @@ clear variables
 close all
 
 
-p = 2e2; %  number of trials
+p = 1e2; %  number of trials
 phi = [2.5;-0.25]; % simulated parameters: [log sigmoid slope ; inflexion point]
 gridu = -1:2e-2:1; % set of potential design control variables
-optimDesign = 1; % if 1: further optimize design locally
+optimDesign = 0; % if 1: further optimize design locally
 
 % get binomial sampling probabilities
 qx = g_sigm_binomial([],phi,gridu,[]);
@@ -40,13 +40,11 @@ f_fname = [];                   % evolution function (learning)
 
 % Call inversion routine
 options.binomial = 1;
-options.gradF = 0;
 options.priors.muPhi = [2;0];
 options.priors.SigmaPhi = 1e8*eye(2);
 options.DisplayWin = 0;
 options.TolFun = 1e-8;
 options.GnTolFun = 1e-8;
-options.Laplace = 0;
 options.verbose = 0;
 opt = options;
 

@@ -36,6 +36,8 @@ end
 
 %- State noise precision
 if dim.n >0
+    a0 = posterior.a_alpha;
+    b0 = posterior.b_alpha;
     iQx = VB_inv(options.priors.iQx{1},options.params2update.x{1},'replace');
     nx = length(options.params2update.x{1});
     [fx,dF_dX,dF_dTheta] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
@@ -96,6 +98,14 @@ for t=2:dim.n_t
     end
     
 end
+
+% regularize VB update
+if dim.n>0 && posterior.b_alpha <=0
+    posterior.a_alpha = a0;
+    posterior.b_alpha = b0;
+    VBA_disp('Warning: cancelling VB update of variance hyperparameter.',options);
+end
+
 
 if options.DisplayWin
     set(options.display.hm(2),'string','OK.');

@@ -1,5 +1,9 @@
 function [y,post,out,post123,out123] = demo_fool_dcmWhrf(lo,i,j)
 
+warning on
+warning('This demo is broken, but will be updated soon!')
+return
+
 % Demo for sDCM for fMRI (with 'missing region')
 
 close all

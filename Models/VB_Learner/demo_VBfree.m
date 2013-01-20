@@ -6,11 +6,10 @@
 % moments. The agent a priori belives that these can drift over time, with
 % transition variances (i.e. volatilities) exp(theta), where theta is the
 % 2x1 evolution parameter vector.
-% NB: there are 2 posterior moments per moment of the outcome distribution,
+% NB: there are 2 posteriro moments per moment of the outcome distribution,
 % which is action-dependent. With 2 available actions, this means there are
 % 2x2x2=8 hidden states in this model (to be compared with 2 Q-values for
 % RL).
-
 % NB2: the action emission law does not use any utility mapping yet!
 
 
@@ -20,45 +19,41 @@ clc
 
 
 % simulation parameters
-theta = [1;-32]; % volatilities
-phi = log(4); % inverse temperature = 4
+theta = [1;-2]; % volatilities
+phi = log(2); % inverse temperature = 4
 
 
 f_fname = @f_VBfree;
 g_fname = @g_ExpUtil;
-h_fname = @h_truefalse;
+h_fname = @h_randOutcome;
 
 % allocate feedback struture for simulations
-u0 = [ones(1,50)]; % possible feedbacks
-fb.inH.u0 = [u0,~u0,u0,~u0,u0,~u0,u0,u0,~u0,u0,~u0,u0,~u0,u0]; % with reversals
+u0 = repmat([ones(1,50),0*ones(1,50)],1,4); % 'correct' answers
+fb.inH.u0 = u0;
+fb.inH.er = 1; % expected reward when correct answer
+fb.inH.vr = .1; % reward variance
 fb.h_fname = h_fname;
 fb.indy = 1;
 fb.indfb = 2;
 
 % choose dummy initial conditions
-x0 = repmat([0;16;0;1],2,1);
+x0 = repmat([0;1;0;1],2,1);
 u = zeros(2,size(fb.inH.u0,2)+1);
 
 n_t = length(u); % number of trials
 
-dim = struct('n',8,...
-    'n_theta',2,...
-    'n_phi',1,...
-    'p',1,...
-    'n_t',n_t);
+dim = struct('n',8,'n_theta',2,'n_phi',1);
 
 priors.muPhi = zeros(dim.n_phi,1);
 priors.SigmaPhi = 1e0*eye(dim.n_phi);
-priors.muTheta = [0;-32];%0*ones(dim.n_theta,1);
-% priors.muTheta(2) = theta(2);
+priors.muTheta = [0;0];
 priors.SigmaTheta = 1e0*eye(dim.n_theta);
-priors.SigmaTheta(2,2) = 0;
+% priors.SigmaTheta(2,2) = 0;
 priors.muX0 = x0;%zeros(dim.n,1);
 priors.SigmaX0 = 0e0*eye(dim.n);
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 
-options.dim = dim;
 options.priors = priors;
 options.binomial = 1;
 options.skipf = zeros(1,n_t);
@@ -72,18 +67,13 @@ hold on
 plot(y,'kx')
 legend({'p(y=1|theta,phi,m)','binomial data samples'})
 figure
-ti = {'mu1','s1','mu2','s2'};
+ti = {'mu1: E[1st moment of u^{o}]','s1: V[1st moment of u^{o}]','mu2: E[log- 2nd moment of u^{o}]','s2: V[log- 2nd moment of u^{o}]'};
 for i=1:4
     subplot(2,2,i),plot(x([i,i+4],:)'),title(ti{i})
 end
 drawnow
 getSubplots
 
-% pause
-
-
-% options.isYout = zeros(1,size(y,2));
-% options.isYout(75:125) = 1;
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 

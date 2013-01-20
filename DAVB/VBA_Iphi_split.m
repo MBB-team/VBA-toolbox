@@ -1,5 +1,4 @@
-function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_split(...
-    phi,y,posterior,suffStat,dim,u,options)
+function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_split(phi,y,posterior,suffStat,dim,u,options)
 % Gauss-Newton update of the observation parameters
 % !! When the observation function is @VBA_odeLim, this Gauss-Newton update
 % actually implements a gradient ascent on the variational energy of the
@@ -28,8 +27,7 @@ if options.DisplayWin && ~init % Display progress
 end
 
 % Clear persistent variables if ODE mode
-if isequal(options.g_fname,@VBA_odeLim) || ...
-        isequal(options.g_fname,@VBA_smoothNLSS)
+if isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNLSS)
     clear VBA_odeLim
     clear VBA_smoothNLSS
 end
@@ -52,8 +50,6 @@ dy = zeros(dim.p,dim.n_t);
 vy = zeros(dim.p,dim.n_t);
 gx = zeros(dim.p,dim.n_t);
 dy2 = 0;
-SXd2gdx2 = 0;
-Sphid2gdphi2 = 0;
 d2gdx2 = 0;
 if isequal(options.g_fname,@VBA_odeLim)
     muX = zeros(options.inG.old.dim.n,dim.n_t);
@@ -86,18 +82,15 @@ for t=1:dim.n_t
         Sigma0(indIn,indIn) = sqrtS*diag(split.s(:,i))*sqrtS';
         
         % evaluate observation function at current mode
-        [gxt(:,i),dG_dX,dG_dPhi,d2G_dXdPhi] = VBA_evalFun('g',posterior.muX(:,t),Mu0,u(:,t),options,dim,t);
+        [gxt(:,i),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Mu0,u(:,t),options,dim,t);
         
         % mean-field terms
-        if dim.n > 0
-            SXd2gdx2 = SXd2gdx2 + split.w(i).*trace(dG_dX*iQy{t}*dG_dX'*posterior.SigmaX.current{t});
-        elseif isequal(options.g_fname,@VBA_odeLim)
+        if isequal(options.g_fname,@VBA_odeLim)
             % get sufficient statistics of the hidden states from unused i/o in
             % VBA_evalFun.
-            muXt(:,i) = dG_dX;
-            Vx{i} = d2G_dXdPhi'*Sigma0*d2G_dXdPhi;
+            muXt(:,i) = dG_dX.xt;
+            Vx{i} = dG_dX.dx'*Sigma0*dG_dX.dx;
         end
-        Sphid2gdphi2 = Sphid2gdphi2 + split.w(i).*trace(dG_dPhi*iQy{t}*dG_dPhi'*posterior.SigmaPhi);
         
         % posterior covariance matrix terms
         d2gdx2 = d2gdx2 + split.w(i).*dG_dPhi*iQy{t}*dG_dPhi';
@@ -106,8 +99,7 @@ for t=1:dim.n_t
         dyti = y(:,t) - gxt(:,i);
         dy(:,t) = dy(:,t)+ split.w(i).*dyti;
         dy2 = dy2 + split.w(i).*dyti'*iQy{t}*dyti;
-        ddydphi = ddydphi + split.w(i).*dG_dPhi*iQy{t}*dyti
-        pause
+        ddydphi = ddydphi + split.w(i).*dG_dPhi*iQy{t}*dyti;
         
         % Predictive density (data space)
         Vy{i} = dG_dPhi'*Sigma0*dG_dPhi + (1./sigmaHat).*VB_inv(iQy{t},[]);
@@ -181,19 +173,11 @@ deltaMuPhi = SigmaPhi*tmp;%split.s(1).*SigmaPhi*tmp;
 
 % variational energy
 Iphi = -0.5.*dphi0(indIn)'*iQ*dphi0(indIn) -0.5*sigmaHat.*dy2;
-if ~options.ignoreMF
-    Iphi = Iphi -0.5*sigmaHat.*SXd2gdx2;
-end
 if isweird(Iphi) || isweird(SigmaPhi) || div
     Iphi = -Inf;
 end
 
 % update sufficient statistics
-suffStat.Sphi = 0.5*length(indIn)*log(2*pi*exp(1)) ...
-    + 0.5*VBA_logDet(posterior.SigmaPhi,indIn);
-suffStat.SXd2gdx2 = SXd2gdx2;
-suffStat.Sphid2gdphi2 = Sphid2gdphi2;
-suffStat.Sphid2gdphidx = 0;
 suffStat.gx = gx;
 suffStat.dy = dy;
 suffStat.dy2 = dy2;

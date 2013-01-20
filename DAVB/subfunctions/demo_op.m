@@ -28,7 +28,6 @@ plot(gx')
 priors.muPhi = [0];         % prior mean on observation params
 priors.SigmaPhi = 1e4*eye(1); % prior covariance on observation params            % Jeffrey's prior
 % Build options structure
-% options.checkGrads = 1;
 options.priors = priors;        % include priors in options structure
 options.inG = inG;              % input structure (grid)
 options.GnFigs = 0;             % disable annoying figures

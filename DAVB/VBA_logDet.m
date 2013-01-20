@@ -31,4 +31,5 @@ else % full matrix
     ev = ev(abs(ev)>t);
     ldQ = sum(log(ev));
 end
-ldQ = real(ldQ);
+% ldQ = real(ldQ);
+

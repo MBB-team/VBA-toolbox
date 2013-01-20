@@ -7,7 +7,7 @@ close all
 
 % Choose basic settings for simulations
 % n_t = 8e2;
-n_t = 4e3;
+n_t = 1e3;
 
 delta_t = 2e-3;         % 10Hz sampling rate
 % delta_t = 1e0;         % 10Hz sampling rate
@@ -22,13 +22,8 @@ u       = 5e1*(randn(1,n_t)>1.5);
 figure,plot(u)
 
 % Build options structure for temporal integration of SDE
-<<<<<<< .mine
-inF.delta_t = delta_t;
-inF.a           = 0.5;
-=======
 inF.delta_t = delta_t;
 inF.sc = 5e1; % time scale change for HH model
->>>>>>> .r636
 inG.ind         = 1;
 options.inF     = inF;
 options.inG     = inG;

@@ -60,10 +60,10 @@ inG.k = 1;
 
 % Build priors for model inversion
 priors.muX0 = 0*ones(nreg,1);
-priors.SigmaX0 = 0e-1*eye(nreg);
+priors.SigmaX0 = 1e0*eye(nreg);
 priors.muTheta = 0*ones(size(theta));
 priors.muTheta(inF.indself) = -0;
-priors.SigmaTheta = 1e1*eye(length(theta));
+priors.SigmaTheta = 1e0*eye(length(theta));
 priors.a_alpha = 1e0;
 priors.b_alpha = 1e0;
 priors.a_sigma = 1e0;
@@ -82,10 +82,7 @@ options.inF     = inF;
 options.inG     = inG;
 options.decim = max([1,floor(TR./microDT)]);
 options.inF.deltat = TR./options.decim;
-options.GnFigs = 1;
 options.backwardLag = 10;
-options.Laplace = 0;
-options.gradF = 0;
 
 dim.n_theta         = length(theta);
 dim.n_phi           = 0;

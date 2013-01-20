@@ -4,7 +4,7 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 5e2;
+n_t = 2e2;
 f_fname = @f_Henon;
 g_fname = @g_sigmoid;
 u       = [];
@@ -25,10 +25,10 @@ options.inG     = [];
 % Build priors for model inversion
 
 priors.muX0 = 0*ones(2,1);
-priors.SigmaX0 = 1e-1*eye(2);
+priors.SigmaX0 = 1e0*eye(2);
 
 priors.muTheta = 0.*ones(2,1);
-priors.SigmaTheta = 1e1*eye(2);
+priors.SigmaTheta = 1e0*eye(2);
 
 % priors.muPhi = zeros(2,1);
 % priors.SigmaPhi = 1e4*speye(2);
@@ -42,8 +42,6 @@ priors.b_sigma = 1e0;
 
 options.priors      = priors;
 options.backwardLag = 4;
-options.ignoreMF    = 1;
-options.Laplace     = 1;
 dim.n_theta         = 2;
 dim.n_phi           = 0;
 dim.n               = 2;

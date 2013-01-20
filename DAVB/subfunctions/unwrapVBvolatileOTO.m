@@ -11,6 +11,10 @@ end
 mux = posterior.muX([2,4],:);
 sx = posterior.muX([3,5],:);
 
+ka = out.options.inF.lev2*sgm(posterior.muPhi(1),out.options.inF.kaub);
+om = posterior.muPhi(2);
+% th = sgm(posterior.muPhi(3),options.inF.thub);
+
 hf = figure('color',[1 1 1]);
 ha = subplot(3,1,1);
 set(ha,'ygrid','on')
@@ -35,8 +39,6 @@ hf = fill(...
 title(ha(2),'sgm( x2 ) = p(x1=1)')
 box(ha(2),'off')
 
-ka = posterior.muTheta(1);
-om = posterior.muTheta(2);
 ha(3) = subplot(3,1,3);
 set(ha(3),'nextplot','add','ygrid','on')
 er1 = mux(2,:) - sqrt(sx(2,:));
@@ -50,7 +52,7 @@ hf = fill(...
     'edgealpha',0,...
     'facealpha',0.25,...
     'parent',ha(3));
-title(ha(3),'exp( ka*x3 + om ) = STD[x2]')
+title(ha(3),'exp( ka*x3 + om ) = V[x2(t+1)|x(t)]')
 box(ha(3),'off')
 
 getSubplots

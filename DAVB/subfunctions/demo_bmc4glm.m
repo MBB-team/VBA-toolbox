@@ -1,6 +1,6 @@
-% demo BMC with GLM
-% function demo_bmc4glm
-% close all
+% This demo uses Monte-Carlo simulations to validate the Bayesian model
+% comparison ability in the context of non-nested models.
+% NB: the model evidence is evaluated at the frequentist limit.
 
 N = 1e4; % #simulations
 d = 16; % data dimension

@@ -15,19 +15,19 @@ h_fname = @h_truefalse;
 
 % allocate feedback struture for simulations
 u0 = [ones(1,50)]; % possible feedbacks
-fb.inH.u0 = repmat([u0,~u0],1,6); % with reversals
+fb.inH.u0 = repmat([u0,1-u0],1,2); % with reversals
 fb.h_fname = h_fname;
 fb.indy = 1;
 fb.indfb = 2;
 
 
 % simulation parameters
-theta = [1;-4;-1];
+theta = [1;-2;-1];
 inF.lev2 = 1; % remove 3rd level (volatility learning)
 inF.kaub = 1.4;
 inF.thub = 1;
 inF.rf = -1;
-phi = [1;0.5]; % inverse temperature = 2, bias towards 'a=1' = 1
+phi = [1;0]; % inverse temperature & bias towards
 inG.respmod = 'taylor';
 
 % choose initial conditions
@@ -37,11 +37,11 @@ u = zeros(2,size(fb.inH.u0,2)+1);
 dim = struct('n',2*5,'n_theta',3,'n_phi',2);
 
 priors.muPhi = zeros(dim.n_phi,1);
-priors.muTheta = [0;-4;0];
+priors.muTheta = [0;-2;0];
 priors.muX0 = x0;
-priors.SigmaPhi = 1e2*eye(dim.n_phi);
-priors.SigmaTheta = 1e2*eye(dim.n_theta);
-priors.SigmaX0 = 0e1*eye(dim.n);
+priors.SigmaPhi = 1e0*eye(dim.n_phi);
+priors.SigmaTheta = 1e0*eye(dim.n_theta);
+priors.SigmaX0 = 0e0*eye(dim.n);
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 
@@ -69,5 +69,9 @@ getSubplots
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)
+
+
+[ha] = unwrapVBvolatileOTO(posterior,out)
+
 
 

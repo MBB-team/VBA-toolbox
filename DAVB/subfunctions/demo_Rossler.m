@@ -9,9 +9,9 @@ clear variables
 f_fname = @f_Rossler;
 g_fname = @g_sigmoid;
 u       = [];
-n_t = 1e3;
+n_t = 5e2;
 deltat = 4e-2;
-alpha   = 6e2;
+alpha   = 1e3;
 sigma   = 1e3;
 theta   = [0.2;0.2;2.791];
 phi     = [];
@@ -24,10 +24,10 @@ options.backwardLag = 4;
 % options.checkGrads = 1;
 
 % Build priors for model inversion
-priors.muX0 = 2*[1;1;1];
-priors.SigmaX0 = 1e-1*eye(3);
+priors.muX0 = 0*[1;1;1];
+priors.SigmaX0 = 1e0*eye(3);
 priors.muTheta = 0.*ones(length(theta),1);
-priors.SigmaTheta = 1e-1*eye(3);
+priors.SigmaTheta = 1e0*eye(3);
 priors.a_alpha = 1e0;
 priors.b_alpha = 1e0;
 priors.a_sigma = 1e0;
@@ -39,15 +39,14 @@ dim.n_theta = 3;
 dim.n_phi   = 0;
 dim.n       = 3;
 
-
+options.checkGrads = 1;
 
 % Build time series of hidden states and observations
 stop = 0;
 it = 1;
 itmax = 10;
 while ~stop
-    [y,x,x0,eta,e] = simulateNLSS(...
-        n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+    [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
     if (~isweird(y) && ~isweird(x)) || it >= itmax
         stop = 1;
     else

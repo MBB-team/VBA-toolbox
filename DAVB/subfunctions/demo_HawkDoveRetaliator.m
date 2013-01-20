@@ -4,6 +4,10 @@ function demo_HawkDoveRetaliator
 
 % cf. 'Evolution and the theory of Games', Maynard-Smith, 1982.
 
+warning on
+warning('This demo is broken, but will be updated soon!')
+return
+
 c = 0.1; % retaliator advantage
 
 % Parameters of the simulation
@@ -12,7 +16,7 @@ dt = 1e-1;
 f_fname = @log_replicator;
 g_fname = @g_odds;
 alpha   = Inf;
-sigma   = Inf;
+sigma   = 1e3;
 theta   = [c];
 phi     = [];
 u = [];

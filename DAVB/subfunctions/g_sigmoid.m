@@ -1,4 +1,4 @@
-function [gx,dG_dX,dG_dPhi,d2G_dXdPhi] = g_sigmoid(Xt,Phi,ut,inG)
+function [gx,dG_dX,dG_dPhi] = g_sigmoid(Xt,Phi,ut,inG)
 % partially observable sigmoid mapping
 
 n = size(Xt,1);
@@ -31,7 +31,6 @@ end
 if size(Phi,1) >=2
     dG_dPhi(2:end,:)     = dsdp(:,ind1);
 end
-d2G_dXdPhi      = [];
 
 
 % [dsdp2] = numericDiff(@sigm,3,Xt,inG,Phi(2:end));

@@ -9,8 +9,6 @@ g_fname = @g_GLM;        % observation function
 ny = 1e2;
 
 % Build options/dim structure
-options.Laplace = 1;
-options.updateHP = 1;
 options.verbose = 0;
 options.DisplayWin = 0;
 dim.n_phi = 2;                  % nb of observation parameters
@@ -21,7 +19,7 @@ dim.p = ny*2;
 
 % form 2x2 model space using prior structures
 p0.muPhi = zeros(2,1);        % prior mean on observation params
-p0.SigmaPhi = 1e3*eye(2);     % prior covariance on observation params
+p0.SigmaPhi = 1e0*eye(2);     % prior covariance on observation params
 p0.a_sigma = 1e0;             % Jeffrey's prior
 p0.b_sigma = 1e0;             % Jeffrey's prior
 for i=1:2
@@ -53,10 +51,6 @@ for imcmc=1:N
         % sample GLM regressors
         A = [[1;0],[gridp(k);1-gridp(k)]];
         inG.X = X*A;
-%         figure
-%         subplot(2,1,1),imagesc(A)
-%         subplot(2,1,2),imagesc(inG.X)
-%         pause
         
         % simulate data under full model...
         [gx] = feval(g_fname,[],phi1,[],inG);
@@ -81,8 +75,14 @@ for imcmc=1:N
                     F1(i,j) = o1.F;
                     F0(i,j) = o0.F;
                 else
-                    [F1(i,j)] = VB_SavageDickey(p1,o1.options.priors,o1.F,dim,priors{i,j});
-                    [F0(i,j)] = VB_SavageDickey(p0,o0.options.priors,o0.F,dim,priors{i,j});
+                    options.priors = priors{i,j};
+                    [p1,o10] = VBA_NLStateSpaceModel(y1,[],[],g_fname,dim,options);
+                    [p0,o00] = VBA_NLStateSpaceModel(y0,[],[],g_fname,dim,options);
+                    F1(i,j) = o10.F;
+                    F0(i,j) = o00.F;
+                    
+%                     [F1(i,j)] = VB_SavageDickey(p1,o1.options.priors,o1.F,dim,priors{i,j});
+%                     [F0(i,j)] = VB_SavageDickey(p0,o0.options.priors,o0.F,dim,priors{i,j});
                 end
             end
         end

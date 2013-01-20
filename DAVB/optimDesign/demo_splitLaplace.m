@@ -1,6 +1,6 @@
 % demo for split-Laplace (MoG approx to a Gaussian density)
 
-% clear all
+clear variables
 close all
 
 % % 0- evaluate the MoG approximation to the N(0,1) density.

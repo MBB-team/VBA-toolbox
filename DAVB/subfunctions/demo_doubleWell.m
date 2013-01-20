@@ -9,9 +9,9 @@ close all
 f_fname = @f_doubleWell;
 g_fname = @g_sigmoid;
 u       = [];
-n_t = 8e2;
-deltat = 1e-2;
-alpha   = 6e1;
+n_t = 2e2;
+deltat = 2e-2;
+alpha   = 6e-1/deltat;
 sigma   = 1e2;
 theta   = [-2;3;1.5];
 phi     = [1;1];

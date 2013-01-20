@@ -4,7 +4,7 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 5e2;
+n_t = 2e2;
 dt = 1e-1;
 f_fname = @f_embedAR;  % this is an AR(1) embedding evolution function
 g_fname = @g_embedAR;  % this is an AR(1) embedding observation function

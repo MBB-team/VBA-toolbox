@@ -9,9 +9,9 @@ close all
 %---- Choose basic settings for simulations ----%
 
 % dimensions
-n_t             = 1e3;                      % number of time points
+n_t             = 2e2;                      % number of time points
 ns              = 8;                        % size of the square grid
-deltat          = 2e-2;                     % time discretization
+deltat          = 5e-2;                     % time discretization
 f_fname         = @f_2DneuralField;        % Evolution function
 g_fname         = @g_Id;              % Observation function
 

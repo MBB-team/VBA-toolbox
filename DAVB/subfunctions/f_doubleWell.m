@@ -1,4 +1,4 @@
-function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_doubleWell(Xt,Theta,ut,inF)
+function [fx,dF_dX,dF_dTheta] = f_doubleWell(Xt,Theta,ut,inF)
 % damped double Well Lyapunov evolution function
 % function [f,J] = f_doubleWell(t,x,theta)
 %
@@ -31,9 +31,6 @@ dF_dX               = deltat.*J' + eye(2);
 dF_dTheta           = deltat.*[ 0 2*(x1-b)^2+4*(x1-a)*(x1-b)
                                 0 4*(x1-a)*(x1-b)+2*(x1-a)^2
                                 0 -x2                        ];
-d2F_dXdTheta(:,:,1) = zeros(2,3);
-d2F_dXdTheta(:,:,2) = deltat.*[ 12*x1-8*b-4*a   12*x1-4*b-8*a   0 
-                                0               0               -1 ];
 
 
 

@@ -6,8 +6,8 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 5e2;
-delta_t = 1e-1;         % integration time step (Euler method)
+n_t = 2e2;
+delta_t = 2e-1;         % integration time step (Euler method)
 f_fname = @f_lin2D;
 g_fname = @g_sigmoid;
 
@@ -32,10 +32,10 @@ theta   = 1;
 phi     = [];
 
 % Build priors for model inversion
-priors.muX0 = [-2;-2];
-priors.SigmaX0 = 1e2*eye(2);
+priors.muX0 = zeros(2,1);
+priors.SigmaX0 = 1e0*eye(2);
 priors.muTheta = 0*ones(1,1);
-priors.SigmaTheta = 1e2*eye(1);
+priors.SigmaTheta = 1e0*eye(1);
 priors.a_alpha = 1e0;
 priors.b_alpha = 1e0;
 priors.a_sigma = 1e0;
@@ -57,8 +57,6 @@ dim.n               = 2;
 displaySimulations(y,x,eta,e)
 % disp('--paused--')
 % pause
-
-dbstop if error
 
 % Call inversion routine
 % [posterior,out] = VBA_onlineWrapper(y,u,f_fname,g_fname,dim,options);

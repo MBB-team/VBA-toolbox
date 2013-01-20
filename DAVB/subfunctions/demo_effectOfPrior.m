@@ -1,4 +1,4 @@
-% Demo for the effectof prior variance when testing for the mean
+% Demo for the multiple comparison problem
 
 close all
 clear variables
@@ -9,13 +9,11 @@ g_fname = @g_GLM;        % observation function
 ny = 1e2;
 
 % Build priors structure
-priors.muPhi = zeros(1,1);         % prior mean on observation params
-priors.SigmaPhi = 1e0*eye(1); % prior covariance on observation params
+priors.muPhi = 0;        % prior mean on observation params
+priors.SigmaPhi = 1e0;     % prior covariance on observation params
 priors.a_sigma = 1e0;             % Jeffrey's prior
 priors.b_sigma = 1e0;             % Jeffrey's prior
 options.priors = priors;        % include priors in options structure
-options.Laplace = 1;
-options.updateHP = 1;
 dim.n_phi = 1;                  % nb of observation parameters
 dim.n_theta = 0;                % nb of evolution parameters
 dim.n=0;                        % nb of hidden states
@@ -39,16 +37,13 @@ for i=1:N
     % simulate data under full model...
     phi = 1e0;
     [gx] = feval(g_fname,[],phi,[],inG);
-    e = sqrt(sigma.^-1)*randn(size(gx));
-    e = e - mean(e);
-    y1 = gx + e;
+    y1 = gx + sqrt(sigma.^-1)*randn(size(gx));
     % ... and under the null
     phi = 0e0;
     [gx] = feval(g_fname,[],phi,[],inG);
-    y0 = gx + e;
+    y0 = gx + sqrt(sigma.^-1)*randn(size(gx));
     
-    % Use Savage-Dickey ratio to obtain Bayes' factor given both types of
-    % data
+    % Derive Bayes' factor given both types of data
     for j=1:length(gridv)
         
         priors.SigmaPhi(1,1) = gridv(j);
@@ -63,11 +58,15 @@ for i=1:N
         v0(i,j) = sqrt(p0.SigmaPhi);
         
         priors.SigmaPhi(1,1) = 0;
-        [F1(i,j)] = VB_SavageDickey(p1,options.priors,o1.F,dim,priors);
-        dF1(i,j) = o1.F - F1(i,j);
+        options.priors = priors;
+        [p1,o10] = VBA_NLStateSpaceModel(y1,[],[],g_fname,dim,options);
+        [p0,o00] = VBA_NLStateSpaceModel(y0,[],[],g_fname,dim,options);
         
-        [F0(i,j)] = VB_SavageDickey(p0,options.priors,o0.F,dim,priors);
-        dF0(i,j) = o0.F - F0(i,j);
+%         [F1(i,j)] = VB_SavageDickey(p1,options.priors,o1.F,dim,priors);
+        dF1(i,j) = o1.F - o10.F;%F1(i,j);
+        
+%         [F0(i,j)] = VB_SavageDickey(p0,options.priors,o0.F,dim,priors);
+        dF0(i,j) = o0.F - o00.F;%F0(i,j);
         
     end
     

@@ -1,4 +1,4 @@
-function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_2DneuralField(Xt,Theta,ut,inF)
+function [fx,dF_dX,dF_dTheta] = f_2DneuralField(Xt,Theta,ut,inF)
 % 2D neural field evolution function (wave propagation)
 % function [fx,dF_dX,dF_dTheta,d2F_dXdTheta] = f_2DneuralField(Xt,Theta,ut,inF)
 % This function evaluates the evolution function of a linear 2D neural
@@ -48,7 +48,6 @@ dfdp(:,3) = [ On ; ut];
 
 dF_dTheta = deltat.*dfdp';
 
-d2F_dXdTheta = [];
 
 
 

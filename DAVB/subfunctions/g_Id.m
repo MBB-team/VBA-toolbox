@@ -1,4 +1,4 @@
-function [gx,dG_dX,dG_dPhi,d2G_dXdPhi] = g_Id(Xt,Phi,ut,inG)
+function [gx,dG_dX,dG_dPhi] = g_Id(Xt,Phi,ut,inG)
 % Identity observation mapping (partially observable)
 
 n = size(Xt,1);
@@ -28,4 +28,3 @@ if size(Phi,1) > 0
 else
     dG_dPhi = [];
 end
-d2G_dXdPhi = [];

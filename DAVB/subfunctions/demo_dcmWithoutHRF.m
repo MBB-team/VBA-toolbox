@@ -3,13 +3,13 @@
 % is replaced by a nonlinear sigmoid observation function.
 
 
-% close all
+close all
 clear variables
 
 
 
 % Choose basic settings for simulations
-n_t = 1.5e2;                      % number of time samples
+n_t = 1e2;                      % number of time samples
 TR = 1e0;                       % sampling period (in sec)
 microDT = 1e-1;                 % micro-time resolution (in sec)
 nreg = 3;
@@ -20,12 +20,6 @@ u(1,30:31) = 1;
 u(1,50:51) = 1;
 u(2,30:31) = 1;
 u(2,60:61) = 1;
-% u       = zeros(2,n_t);
-% u(1,100:150) = 1;
-% u(1,300:350) = 1;
-% % u(1,500:700) = 1;
-% u(2,300:350) = 1;
-% % u(2,600:650) = 1;
 alpha   = 1e2;
 sigma   = 1e3;
 theta   = [ -0.5
@@ -88,9 +82,6 @@ options.inF     = inF;
 options.inG     = inG;
 options.decim = max([1,floor(TR./microDT)]);
 options.inF.deltat = TR./options.decim;
-options.GnFigs = 1;
-options.Laplace = 0;
-options.gradF = 0;
 
 dim.n_theta         = length(theta);
 dim.n_phi           = 0;
@@ -109,8 +100,6 @@ displaySimulations(y,x,eta,e)
 
 
 % Call inversion routine
-% u = zeros(size(u));
-% options.embed = 1;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 % Display results

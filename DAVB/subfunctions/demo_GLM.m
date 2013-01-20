@@ -48,13 +48,17 @@ dim.n               = 0;
 
 % Invert model with confounds
 [p,o] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-displayResults(p,o,y,x,x0,theta,phi,alpha,sigma)
+[hres,hres2] = displayResults(p,o,y,x,x0,theta,phi,alpha,sigma);
+set(hres,'name','GLM with confounds')
+set(hres2,'name','GLM with confounds')
 
 % remove counfounds from the model
 n0 = floor(ns/2)+1:ns;
 options.priors.SigmaPhi(n0,n0) = zeros(length(n0));
 [p0,o0] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-displayResults(p0,o0,y,x,x0,theta,phi,alpha,sigma)
+[hres,hres2] = displayResults(p0,o0,y,x,x0,theta,phi,alpha,sigma)
+set(hres,'name','GLM without confounds')
+set(hres2,'name','GLM without confounds')
 
 
 % pre-whiten data + remove confounds from the model
@@ -65,10 +69,14 @@ IP0 = eye(n) - P0;
 y0 = IP0*y;
 options.priors.SigmaPhi(n0,n0) = zeros(length(n0));
 [p0,o0] = VBA_NLStateSpaceModel(y0,u,f_fname,g_fname,dim,options);
-displayResults(p0,o0,y0,x,x0,theta,phi,alpha,sigma)
+[hres,hres2] = displayResults(p0,o0,y0,x,x0,theta,phi,alpha,sigma)
+set(hres,'name','pre-whitened data, GLM without confounds')
+set(hres2,'name','pre-whitened data, GLM without confoundss')
+
 
 % pre-whiten data and observation function + remove confounds from the model
 options.inG.X = IP0*inG.X;
 [p1,o1] = VBA_NLStateSpaceModel(y0,u,f_fname,g_fname,dim,options);
-displayResults(p1,o1,y0,x,x0,theta,phi,alpha,sigma)
-
+[hres,hres2] = displayResults(p1,o1,y0,x,x0,theta,phi,alpha,sigma)
+set(hres,'name','pre-whitened data & GLM, GLM without confounds')
+set(hres2,'name','pre-whitened data & GLM, GLM without confoundss')

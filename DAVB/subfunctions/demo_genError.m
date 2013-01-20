@@ -59,7 +59,7 @@ for i=1:ns
     opt.priors = posterior;
     DIM = out.dim;
     DIM.n_t = 1;
-    [my(:,i),V] = getLaplace(u(:,i),[],g_fname,DIM,opt);
+    [my(:,i),V] = VBA_getLaplace(u(:,i),[],g_fname,DIM,opt);
     Vy(:,i) = diag(V);
     % store params for stability check
     P(:,i) = posterior.muPhi;

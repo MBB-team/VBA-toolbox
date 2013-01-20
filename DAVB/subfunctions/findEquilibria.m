@@ -67,7 +67,7 @@ if flag
 else
     Ym = Y-repmat(mean(Y,2),1,N);
     % approximate on a grid to help classifier
-    Ym = approxOnGrid(Ym,0:5e-2:1);
+%     Ym = approxOnGrid(Ym,0:5e-2:1);
     if isequal(Ym,zeros(size(Ym)))
         K = 1;
         out.lambda = 1;
@@ -76,7 +76,14 @@ else
         eq = mean(Y,2);
     else
         [u,ss,Kpca,v]=PCA_MoG(Ym,0.95,0);
-        [xi,Mu,F,out,K] = VBEM_GM(u',N);
+%         [xi,Mu,F,out,K] = VBEM_GM(u',N);
+        options.verbose = 0;
+        options.minSumZ = 1e-2;
+        options.init = 'hierarchical';
+%         options.priors.b_gamma = 1e-2*ones(2,1);
+        [posterior,out] = VBA_MoG(u',2,options);
+        Mu = posterior.muEta;
+        K = size(posterior.z,1);
         % [handles] = plotResults(Ym,xi,Mu,F,out,K);
         eq = v(:,1:Kpca)*diag(ss(1:Kpca))*Mu + repmat(mean(Y,2),1,K);
     end
@@ -90,8 +97,9 @@ if verbose
     multipie(eq+eps,1:K,ones(1,K),ha2);
     box(ha2,'off')
     set(ha2,'xtick',[1:K],'ylim',[0.4,2],'ytick',[],'xlim',[0 K+1])
+    f = posterior.d./sum(posterior.d);
     for i=1:K
-        str = [num2str(out.lambda(i),'% 10.2f'),' +/- ',num2str(out.varLambda(i),'% 10.2f')];
+        str = num2str(f(i),'% 10.2f');
         text(i-0.25,1.8,str,'parent',ha2);
     end
     title(ha2,['type and frequency of EGT steady states',str2])

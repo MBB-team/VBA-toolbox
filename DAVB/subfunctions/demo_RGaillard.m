@@ -1,5 +1,9 @@
 % OTO: demo 'observing the observer'
 
+warning on
+warning('This demo is broken, but will be updated soon!')
+return
+
 clear variables
 close all
 
@@ -100,8 +104,7 @@ elseif options.inF.flag == 3
 %     theta = [theta(1),-32];
 end
 % options.checkGrads = 1;
-[RT,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,...
-    theta,phi,u,Inf,Inf,options,X0);
+[RT,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,Inf,Inf,options,X0);
 
 hf = figure;
 ha = subplot(2,2,1,...

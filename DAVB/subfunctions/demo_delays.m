@@ -85,10 +85,10 @@ displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 
 
 % % Compare with no delay embedding
-% hfp = findobj('tag','VBNLSS');
-% set(hfp,'tag','0');
-% options.delays= [];
-% [posterior2,out2] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+hfp = findobj('tag','VBNLSS');
+set(hfp,'tag','0');
+options.delays= [];
+[posterior2,out2] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 
 

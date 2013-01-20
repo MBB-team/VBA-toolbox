@@ -45,7 +45,7 @@ options.inG.grid = [0.01:p-1+0.01]';
 inG.p = p;
 
 % Build time series of fMRI observations 
-[gx,dG_dX,dG_dPhi,d2G_dXdPhi] = feval(g_fname,[],phi,[],inG);
+[gx,dG_dX,dG_dPhi] = feval(g_fname,[],phi,[],inG);
 y = gx + sqrt(sigma.^-1)*randn(size(gx));
 
     

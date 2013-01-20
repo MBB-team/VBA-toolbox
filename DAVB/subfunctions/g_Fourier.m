@@ -1,4 +1,4 @@
-function [gx,dG_dX,dG_dPhi,d2G_dXdPhi] = g_Fourier(Xt,Phi,ut,inG)
+function [gx,dG_dX,dG_dPhi] = g_Fourier(Xt,Phi,ut,inG)
 % Fourier basis set observation function (dummy HRF model)
 
 % creating the discrete cosine Fourier set
@@ -11,10 +11,6 @@ for k = 1:K
 end
 X(:,1) = 1;
 
-% figure,plot(X)
-% pause
-
-
 % build data prediction (GLM)
 gx = X*Phi;
 
@@ -23,9 +19,6 @@ dG_dX = zeros(1,length(gx));
 
 dG_dPhi = X';
 
-for n = 1:length(gx)
-    d2G_dXdPhi(:,:,n) = zeros(1,length(Phi));
-end
 
 
 

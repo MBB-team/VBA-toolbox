@@ -7,7 +7,7 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 1e3;
+n_t = 5e2;
 f_fname = @f_SHC;
 g_fname = @g_Id;
 u       = [];

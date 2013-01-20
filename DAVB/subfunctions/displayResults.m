@@ -1,4 +1,4 @@
-function [] = displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
+function [hres,hres2] = displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 % compares VB posteriors with simulated parameters and hidden states
 
 if isempty(posterior)

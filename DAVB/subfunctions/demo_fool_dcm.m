@@ -4,6 +4,10 @@ function [y,post,out,post123,out123] = demo_fool_dcm(lo,i,j)
 % This demo inverts the DCM for fMRI model, without the ballon model, which
 % is replaced by a nonlinear sigmoid observation function.
 
+warning on
+warning('This demo is broken, but will be updated soon!')
+return
+
 % warning on
 % warning('This requires a .mat file containing simulations parameters!')
 % return

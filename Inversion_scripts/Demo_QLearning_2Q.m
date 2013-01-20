@@ -21,10 +21,10 @@ clc
 %% Simulate data
 
 % 1- Q-learner parameters
-Ntrials = 100; % # trials
+Ntrials = 200; % # trials
 alpha = 0.2; % learning rate
 beta = 1; % inverse temperature
-x0 = randn(2,1); % initial Q-values
+x0 = 1e-1*randn(2,1); % initial Q-values
 
 % 2- Define feedback.
 % NB: Here, the feedback is defined through a feedback function, which
@@ -77,13 +77,13 @@ displaySimulations(y,x,eta,e)
 
 % 1- Define priors (i.i.d. normal densities)
 priors.muPhi = zeros(dim.n_phi,1); 
-priors.SigmaPhi = 1e0*eye(dim.n_phi);
+priors.SigmaPhi = 1e1*eye(dim.n_phi);
 priors.muTheta = zeros(dim.n_theta,1);
-priors.SigmaTheta = 1e0*eye(dim.n_theta);
+priors.SigmaTheta = 1e1*eye(dim.n_theta);
 priors.muX0 = ones(dim.n,1)*0;
-priors.SigmaX0 =1e0*eye(dim.n);
-priors.a_alpha = Inf; % No state noise for deterministic update rules
-priors.b_alpha = 0;
+priors.SigmaX0 =1e1*eye(dim.n);
+% priors.a_alpha = Inf; % No state noise for deterministic update rules
+% priors.b_alpha = 0;
 options.priors = priors;
 
 % 2- call inversion routine

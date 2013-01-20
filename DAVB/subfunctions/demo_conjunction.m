@@ -1,4 +1,5 @@
-% demo for conjunction
+% This demo exemplifies a conjunction analysis, i.e. a joint test that two
+% parameters are both either positive or negative.
 
 clear all
 close all
@@ -35,3 +36,5 @@ end
 % same direction (for both datasets)
 pc1 = 1- ( (1-p1(1))*(1-p1(2))+(1-p1(3))*(1-p1(4)) )
 pc2 = 1- ( (1-p2(1))*(1-p2(2))+(1-p2(3))*(1-p2(4)) )
+
+

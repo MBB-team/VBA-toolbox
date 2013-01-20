@@ -6,9 +6,9 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 1e3;
-deltat = 1e-2;
-alpha   = 1e2;
+n_t = 5e2;
+deltat = 2e-2;
+alpha   = 1e0/deltat;
 sigma   = 1e2;
 theta   = [28;10;8/3];
 f_fname = @f_Lorenz;

@@ -58,7 +58,7 @@ for ii=1:N
     
     [p2,o2] = VBA_groupBMC(Lf,options2);
     
-    pause
+%     pause
     % VBA_displayGroupBMC(posterior,out)
     
 %     alpha0 = out.options.priors.a';

@@ -7,7 +7,7 @@ close all
 f_fname = @f_dbw;
 g_fname = @g_Id;
 u       = [];
-n_t = 4e3;
+n_t = 1e3;
 deltat = 1e-2;
 alpha   = 1e2;
 sigma   = Inf;
