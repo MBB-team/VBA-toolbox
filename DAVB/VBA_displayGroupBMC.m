@@ -136,7 +136,12 @@ else
     set(hf,'facecolor',[0 1 0])
     text(3*length(out.F)/4,out.families.F0-3/2,'log p(y|H0{families})','color',[0 1 0],'parent',handles.ha(5));
 end
-    
+try
+    [haf,hf,hp] = plotUncertainTimeSeries(out.Fffx.*[1,1],[3,3].^2,[0.5,length(out.F)+0.5],handles.ha(5));
+    set(hp,'color',[0 0 1])
+    set(hf,'facecolor',[0 0 1])
+    text(length(out.F)/2,out.Fffx-3/2,'log p(y|ffx)','color',[0 0 1],'parent',handles.ha(5));
+end
 xlabel(handles.ha(5),'VB iterations')
 ylabel(handles.ha(5),'VB free energy')
 set(handles.ha(5),...

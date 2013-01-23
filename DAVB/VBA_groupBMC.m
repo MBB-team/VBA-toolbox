@@ -185,7 +185,7 @@ if ~isempty(options.families)
     [out.families.Ef,out.families.Vf] = Dirichlet_moments(out.families.a);
     out.families.ep = VBA_ExceedanceProb(out.families.Ef,out.families.Vf,'gaussian');
 end
-
+[out.Fffx] = FE_ffx(L);
 
 
 function stop = checkStop(it,F,options)
@@ -246,6 +246,14 @@ for i=1:n
     end
 end
 
+function [Fffx] = FE_ffx(L)
+% derives the free energy of the 'fixed-effect' model
+[K,n] = size(L);
+r0 = ones(K,1)./K;
+ss = sum(L,2) + log(r0);
+logz = ss - max(ss);
+z = exp(logz)./sum(exp(logz));
+Fffx = z'*ss - sum(z.*log(z));
 
 
 function [E,V] = Dirichlet_moments(a)

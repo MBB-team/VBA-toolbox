@@ -52,8 +52,6 @@ for t=1:dim.n_t
     if isequal(options.g_fname,@VBA_odeLim)
         % get sufficient statistics of the hidden states from unused i/o in
         % VBA_evalFun.
-%         out.xt = xt;
-%         out.dx = [zeros(dim.n_phi,dim.n);dxdTheta;dxdx0];
         muX(:,t) = dG_dX.xt;
         SigmaX{t} = dG_dX.dx'*posterior.SigmaPhi*dG_dX.dx;
     end

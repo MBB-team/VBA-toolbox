@@ -16,7 +16,7 @@ display = options.display;
 VBA_pause(options)
 
 % First check whether this is standard DCM or ODE limit
-if isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNLSS)
+if isequal(options.g_fname,@VBA_odeLim)
     
     % Rebuild posterior from dummy 'ODE' posterior
     options0 = options;

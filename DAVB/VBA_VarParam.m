@@ -44,10 +44,7 @@ if dim.n >0
     dx = posterior.muX(:,1) - fx;
     dx2 = dx'*iQx*dx;
     posterior.a_alpha = options.priors.a_alpha + 0.5*nx;
-    posterior.b_alpha = options.priors.b_alpha ...
-        + 0.5*dx2 ...
-        + 0.5*trace(dF_dX*iQx*dF_dX'*posterior.SigmaX0) ...
-        + 0.5*trace(iQx*posterior.SigmaX.current{1});
+    posterior.b_alpha = options.priors.b_alpha + 0.5*dx2 + 0.5*trace(dF_dX*iQx*dF_dX'*posterior.SigmaX0) + 0.5*trace(iQx*posterior.SigmaX.current{1});
     if dim.n_theta >0
         posterior.b_alpha = posterior.b_alpha + 0.5*trace(dF_dTheta*iQx*dF_dTheta'*posterior.SigmaTheta);
     end
@@ -81,11 +78,7 @@ for t=2:dim.n_t
         dx = posterior.muX(:,t) - fx;
         dx2 = dx'*iQx*dx;
         posterior.a_alpha = posterior.a_alpha + 0.5*nx;
-        posterior.b_alpha = posterior.b_alpha ...
-            + 0.5*dx2 ...
-            + 0.5*trace(dF_dX*iQx*dF_dX'*posterior.SigmaX.current{t-1}) ...
-            + 0.5*trace(iQx*posterior.SigmaX.current{t}) ...
-            - trace(iQx*dF_dX'*posterior.SigmaX.inter{t-1});
+        posterior.b_alpha = posterior.b_alpha + 0.5*dx2 + 0.5*trace(dF_dX*iQx*dF_dX'*posterior.SigmaX.current{t-1}) + 0.5*trace(iQx*posterior.SigmaX.current{t}) - trace(iQx*dF_dX'*posterior.SigmaX.inter{t-1});
         if dim.n_theta >0
             posterior.b_alpha = posterior.b_alpha + 0.5*trace(dF_dTheta*iQx*dF_dTheta'*posterior.SigmaTheta);
         end

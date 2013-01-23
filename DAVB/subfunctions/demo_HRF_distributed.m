@@ -36,15 +36,15 @@ phi = [ phi
 
 % Build priors for model inversion
 priors.muX0         = [0;0;0;0];
-priors.SigmaX0      = 0e-2*eye(4);
+priors.SigmaX0      = 0e0*eye(4);
 priors.muTheta      = 0.1*ones(6,1);
-priors.SigmaTheta   = 1e-3*eye(6,6);
+priors.SigmaTheta   = 1e0*eye(6,6);
 priors.muPhi        = 0*ones(5,1);
-priors.SigmaPhi     = 1e-1*eye(5);
+priors.SigmaPhi     = 1e0*eye(5);
 priors.SigmaPhi(1)  = 0;
 priors.a_alpha      = Inf;%1e6;
 priors.b_alpha      = 0;%1e2;
-priors.a_sigma      = 1e6;
+priors.a_sigma      = 1e0;
 priors.b_sigma      = 1e0;
 
 % Build options and dim structures for model inversion

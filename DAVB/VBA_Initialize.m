@@ -37,10 +37,6 @@ if dim.n > 0
     % Reinitialize precision hyperparameters posterior and sufficient stats
     posterior.a_alpha = options.priors.a_alpha;
     posterior.b_alpha = options.priors.b_alpha;
-%     if ~options.binomial
-%         posterior.a_sigma = options.priors.a_sigma;
-%         posterior.b_sigma = options.priors.b_sigma;
-%     end
 
 else
     

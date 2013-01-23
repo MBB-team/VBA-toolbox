@@ -15,14 +15,14 @@ h_fname = @h_truefalse;
 
 % allocate feedback struture for simulations
 u0 = [ones(1,50)]; % possible feedbacks
-fb.inH.u0 = repmat([u0,1-u0],1,2); % with reversals
+fb.inH.u0 = repmat([u0,1-u0],1,4); % with reversals
 fb.h_fname = h_fname;
 fb.indy = 1;
 fb.indfb = 2;
 
 
 % simulation parameters
-theta = [1;-2;-1];
+theta = [1;-3;-1];
 inF.lev2 = 1; % remove 3rd level (volatility learning)
 inF.kaub = 1.4;
 inF.thub = 1;

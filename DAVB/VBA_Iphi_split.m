@@ -27,9 +27,10 @@ if options.DisplayWin && ~init % Display progress
 end
 
 % Clear persistent variables if ODE mode
-if isequal(options.g_fname,@VBA_odeLim) || isequal(options.g_fname,@VBA_smoothNLSS)
+if isequal(options.g_fname,@VBA_odeLim)
     clear VBA_odeLim
-    clear VBA_smoothNLSS
+    muX = zeros(options.inG.old.dim.n,dim.n_t);
+    SigmaX = cell(dim.n_t,1);
 end
 
 %  Look-up which evolution parameter to update
@@ -51,10 +52,6 @@ vy = zeros(dim.p,dim.n_t);
 gx = zeros(dim.p,dim.n_t);
 dy2 = 0;
 d2gdx2 = 0;
-if isequal(options.g_fname,@VBA_odeLim)
-    muX = zeros(options.inG.old.dim.n,dim.n_t);
-    SigmaX = cell(dim.n_t,1);
-end
 div = 0;
 
 % intermediary variables: MoG split

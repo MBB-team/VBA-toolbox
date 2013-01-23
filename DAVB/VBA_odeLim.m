@@ -13,9 +13,8 @@ function [gx,out,dgdp] = VBA_odeLim(Xt,P,ut,in)
 %   - in: the optional structure
 % OUT:
 %   - gx: the observation function evaluated at P
-%   - dgdx: [for hidden states book keeping]
+%   - out: [used to pass gradients of hidden states dynamics wrt evolution parameter]
 %   - dgdp: the derivatives wrt the parameters
-%   - d2gdxdp: [used to pass gradients wrt evolution parameter]
 
 persistent t xt dxdTheta dxdx0
 
