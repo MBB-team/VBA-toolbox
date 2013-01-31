@@ -1,12 +1,17 @@
 function [DKL,DJS] = VB_KL(m1,v1,m2,v2,distrib)
 % computes the KL and JS divergences between two distributions
-% FORMAT [DKL] = VB_KL(m1,v1,m2,v2,disp)
+% [DKL] = VB_KL(m1,v1,m2,v2,disp)
+% Note that the KL-divergence is not symmetric w.r.t. to the two
+% probability densities, i.e. KL(p1,p2) ~=KL(p2,p1). By convention, the
+% KL-divergence is defined as follows:
+% KL(p1,p2) = E[log(p1)-log(p2)]
+% where the expectation is taken under p1.
 % IN:
-%   - m1,m2: the posterior means
-%   - v1,v2: the posterior covariance matrices
+%   - m1,m2: the first order moments of p1 and p2, respectively. 
+%   - v1,v2: the second-orde moments of p1 and p2, respectively.
 %   - distrib: the type of distribution ({'Normal'} or 'Gamma')
 % OUT:
-%   - DKL: the KL-divergence D(p1||p2)
+%   - DKL: the KL-divergence KL(p1,p2)
 %   - DJS: the Jensen-Shannon divergence (symmetrized KL)
 
 if isequal(m1,m2) && isequal(full(v1),full(v2))

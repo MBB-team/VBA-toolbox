@@ -62,6 +62,8 @@ legend({'p(y=1|theta,phi,m)','binomial data samples'})
 getSubplots
 % pause
 
+[ha] = unwrapVBvolatileOTO(struct('muX',x),[])
+return
 
 % options.isYout = zeros(1,size(y,2));
 % options.isYout(75:125) = 1;

@@ -32,14 +32,14 @@ rf = in.rf;
 fx = zeros(size(x));
 
 % 1st level
-fx(1) = u(1);  
+fx(1) = u(1); % trivial
 
 % 2nd level
-s1h = sgm(x(2),1)*(1-sgm(x(2),1));
-pe1 = fx(1) - sgm(x(2),1);
-s2h = x(3) + exp(ka*x(4)+om);
-fx(3) = 1/(s2h^-1 + s1h);
-fx(2) = x(2) +fx(3)*pe1;
+s1h = sgm(x(2),1)*(1-sgm(x(2),1)); % likelihood precision
+pe1 = fx(1) - sgm(x(2),1); % prediction error
+s2h = x(3) + exp(ka*x(4)+om); % 2nd-level prediction variance
+fx(3) = 1/(s2h^-1 + s1h); % posterior variance
+fx(2) = x(2) +fx(3)*pe1; % 2nd-level update
 
 % 3rd level
 pi3h = 1/(x(5)+th);
@@ -51,7 +51,7 @@ if fx(5) <= 0
     if rf <= 0
         fx(4:5) = NaN;
     else
-        fx(5) = 1/rf*x(5);
+        fx(5) = x(5)/rf;
         fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
     end
 else
