@@ -1,13 +1,25 @@
 function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 % computes classical p-values for any contrast applied onto GLM effects
-% function [pv,stat,df] = GLM_contrast(X,y,c,type)
+% function [pv,stat,df] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
+% In brief, this function uses classical tests of linear mixtures of
+% effects, under the general linear model (GLM):
+%   y = X*beta + e
+% where y is the data, e is some (Gaussian) random noise, X is the design
+% matrix and beta are unknown GLM parameters.
+% Tests are specified in terms of a contrast matrix c, such that the
+% p-value computes the probability of the null H0:
+%  - 't' tests: H0={c'*beta>0}
+%  - 'F' tests: H0={c(:,1)'beta=0 AND ... c(:,m)'*beta=0}
+% For example, testing for the ith parameter corresponds to an all-zero
+% contrast vector, except on its ith entry. 
 % IN:
 %   - X: nXk design matrix
 %   - y: nXp data matrix
 %   - c: kXm contrast matrix
 %   - type: flag for t- or F- test. Can be set to 't' (default) or 'F'
 %   - verbose: flag for displaying results
-%   - names: kx1 cell array of independent variables names
+%   - Xnames: px1 cell array of independent variables names
+%   - Ynames: kx1 cell array of dependent variables names
 % OUT:
 %   - pv: pX1 vector of p-values
 %   - stat: pX1 vector of t- or F- statistics
@@ -30,6 +42,7 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 
 [n,p] = size(y);
 k = size(X,2);
+m = size(c,2);
 
 try;c;catch;c=eye(k);type='F';end
 try;type;catch;type='t';end
@@ -53,6 +66,15 @@ switch type
     
     case 't'
         
+        if m~=1
+            disp('Error: cannot have contrast matrices for ''t''-tests!')
+            pv = [];
+            stat = [];
+            df = [];
+            all = [];
+            return
+        end
+
         df = trR.^2./trace(R*R);
         for i=1:p
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
@@ -116,29 +138,28 @@ all.stat = zeros(k,p);
 all.df = zeros(k,2,p);
 for i=1:p
     for j=1:k
-        c = zeros(k,1);
-        c(j) = 1;
-        [all.pv(j,i),all.stat(j,i),all.df(j,:,i)] = GLM_contrast(X,y(:,i),c,'F',0);
+        cij = zeros(k,1);
+        cij(j) = 1;
+        [all.pv(j,i),all.stat(j,i),all.df(j,:,i)] = GLM_contrast(X,y(:,i),cij,'F',0);
     end
 end
 
+
+pos0 = get(0,'screenSize');
+pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
+handles.hf = figure('color',[1 1 1],'position',pos);
+
 % axes for predicted vs observed data
-handles.hf = figure('color',[1 1 1]);
-handles.ha = subplot(2,2,1,...
-    'parent',handles.hf,...
-    'nextplot','add',...
-    'visible','on');
+handles.ha = subplot(3,2,1,'parent',handles.hf,'nextplot','add','visible','on');
 
 % axes for parameter estimates
-handles.ha(2) = subplot(2,2,2,...
-    'parent',handles.hf,...
-    'nextplot','add',...
-    'visible','on');
+handles.ha(2) = subplot(3,2,2,'parent',handles.hf,'nextplot','add','visible','on');
+
+% axes for predicted and observed data
+handles.ha(6) = subplot(3,2,3,'parent',handles.hf,'nextplot','add','visible','on');
 
 % parameters' correlation matrix
-handles.ha(3) = subplot(2,2,3,...
-    'parent',handles.hf,...
-    'nextplot','add');
+handles.ha(3) = subplot(3,2,5,'parent',handles.hf,'nextplot','add');
 imagesc(cov2corr(iC),'parent',handles.ha(3))
 axis(handles.ha(3),'square')
 axis(handles.ha(3),'equal')
@@ -146,45 +167,44 @@ axis(handles.ha(3),'tight')
 colorbar('peer',handles.ha(3))
 colormap(cool)
 title(handles.ha(3),'parameters'' correlation matrix')
-set(handles.ha(3),...
-    'clim',[-1,1],...
-    'xdir','normal',...
-    'ydir','reverse',...
-    'xtick',[1:k],...
-    'ytick',[1:k])
+set(handles.ha(3),'clim',[-1,1],'xdir','normal','ydir','reverse','xtick',[1:k],'ytick',[1:k])
+
+% display contrast
+handles.ha(4) = subplot(3,2,4,'parent',handles.hf,'visible','on');
+switch type
+    case 't'
+        hp = bar(handles.ha(4),c,'facecolor',0.8*[1 1 1],'BarWidth',0.5);
+    case 'F'
+        hi = imagesc(c','parent',handles.ha(4));
+        colorbar('peer',handles.ha(4))
+        set(handles.ha(4),'ytick',[1:1:m],'ylim',[0.5,m+0.5],'ygrid','on')
+end
+set(handles.ha(4),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'ygrid','on')
+xlabel(handles.ha(4),'independent variables')
+title(handles.ha(4),'constrast')
+box(handles.ha(4),'off')
+
+% display design matrix
+handles.ha(5) = subplot(3,2,6,'parent',handles.hf,'visible','on');
+imagesc(X,'parent',handles.ha(5))
+colorbar('peer',handles.ha(5))
+set(handles.ha(5),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'xgrid','on','ygrid','off')
+xlabel(handles.ha(5),'independent variables')
+ylabel(handles.ha(5),'dependent variables')
+title(handles.ha(5),'design matrix')
 
 % display test results (p-value and F-test)
-ha = subplot(2,2,4,'parent',handles.hf,'visible','off');
-pos = get(ha,'position');
-un = get(ha,'units');
-delete(ha)
-dy = pos(4)/4;
-pos1 = pos + [0,-3*dy+pos(4),0,dy-pos(4)];
-handles.ht(1) = uicontrol(...
-    'parent',handles.hf,...
-    'style','text',...
-    'units',un,...
-    'position',pos1,...
-    'string',[],...
-    'fontsize',10,...
-    'backgroundcolor',[1 1 1],...
-    'HorizontalAlignment','left');
+pos1 = [0.4,0.03,0.6,0.02];
+un = 'normalized';
+handles.ht(1) = uicontrol('parent',handles.hf,'style','text','units',un,'position',pos1,'string',[],'fontsize',10,'backgroundcolor',[1 1 1],'HorizontalAlignment','left');
 
-pos1 = pos + [0,-4*dy+pos(4),0,dy-pos(4)];
+pos1 = pos1 + [0.2,0,0,0];
 if length(df)==1
     str = ['dof=',num2str(df)];
 else
     str = ['dof=[',num2str(df(1)),',',num2str(df(2)),']'];
 end
-handles.ht(2) = uicontrol(...
-    'parent',handles.hf,...
-    'style','text',...
-    'units',un,...
-    'position',pos1,...
-    'string',str,...
-    'fontsize',10,...
-    'backgroundcolor',[1 1 1],...
-    'HorizontalAlignment','left');
+handles.ht(2) = uicontrol('parent',handles.hf,'style','text','units',un,'position',pos1,'string',str,'fontsize',10,'backgroundcolor',[1 1 1],'HorizontalAlignment','left');
 
 % data selector
 str = cell(p,1);
@@ -204,31 +224,11 @@ ud.Xnames = Xnames;
 ud.Ynames = Ynames;
 ud.type = type;
 ud.handles = handles;
-pos1 = pos + [0,-2*dy+pos(4),0,dy-pos(4)];
-handles.ht(2) = uicontrol(...
-    'parent',handles.hf,...
-    'style','popupmenu',...
-    'units',un,...
-    'position',pos1,...
-    'string',str,...
-    'fontsize',10,...
-    'backgroundcolor',0.8*[1 1 1],...
-    'HorizontalAlignment','left',...
-    'userdata',ud,...
-    'callback',@myData);
+pos1 = [0.4,0.96,0.2,0.02];
+handles.ht(2) = uicontrol('parent',handles.hf,'style','popupmenu','units',un,'position',pos1,'string',str,'fontsize',10,'backgroundcolor',0.8*[1 1 1],'HorizontalAlignment','left','userdata',ud,'callback',@myData);
 feval(@myData,handles.ht(2),[])
 
 try,getSubplots;end
-
-
-
-function colors = getColors(n)
-hf = figure('visible','off');
-ha = axes('parent',hf);
-colors = get(ha,'colororder');
-colors = repmat(colors,ceil(n/size(colors,1)),1);
-colors = colors(1:n,:);
-delete(hf)
 
 
 function myData(e1,e2)
@@ -251,7 +251,17 @@ axis(ud.handles.ha(1),'tight')
 xlabel(ud.handles.ha(1),'observed data')
 ylabel(ud.handles.ha(1),'predicted data')
 grid(ud.handles.ha(1),'on')
-title(ud.handles.ha(1),'data fit')
+title(ud.handles.ha(1),'data alignement')
+
+cla(ud.handles.ha(6))
+hp = plot(ud.handles.ha(6),ud.yhat(:,ind),'r');
+hp = plot(ud.handles.ha(6),ud.y(:,ind),'k.');
+legend(ud.handles.ha(6),{'predicted data','observed data'})
+axis(ud.handles.ha(6),'tight')
+xlabel(ud.handles.ha(6),'data dimensions')
+ylabel(ud.handles.ha(6),'data')
+grid(ud.handles.ha(6),'on')
+title(ud.handles.ha(6),'data fit')
 
 % parameter estimates
 cla(ud.handles.ha(2))
@@ -291,8 +301,7 @@ function F = myTcdf(x,v)
 if nargin<2, error('Insufficient arguments'), end
 ad = [ndims(x);ndims(v)];
 rd = max(ad);
-as = [[size(x),ones(1,rd-ad(1))];...
-      [size(v),ones(1,rd-ad(2))]];
+as = [[size(x),ones(1,rd-ad(1))];[size(v),ones(1,rd-ad(2))]];
 rs = max(as);
 xa = prod(as,2)>1;
 if all(xa) && any(diff(as(xa,:)))
@@ -343,9 +352,7 @@ end
 %-Check argument sizes
 ad = [ndims(x);ndims(v);ndims(w)];
 rd = max(ad);
-as = [[size(x),ones(1,rd-ad(1))];...
-      [size(v),ones(1,rd-ad(2))];...
-      [size(w),ones(1,rd-ad(3))]];
+as = [[size(x),ones(1,rd-ad(1))];[size(v),ones(1,rd-ad(2))];[size(w),ones(1,rd-ad(3))]];
 rs = max(as);
 xa = prod(as,2)>1;
 if sum(xa)>1 && any(any(diff(as(xa,:)),1))
