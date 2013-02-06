@@ -96,7 +96,7 @@ end
 if dim.n>0 && posterior.b_alpha <=0
     posterior.a_alpha = a0;
     posterior.b_alpha = b0;
-    VBA_disp('Warning: cancelling VB update of variance hyperparameter.',options);
+    VBA_disp('Warning: cancelling VB update of state noise variance hyperparameter!',options);
 end
 
 

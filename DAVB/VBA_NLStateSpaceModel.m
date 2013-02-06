@@ -101,7 +101,6 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       the inner regularized Gauss-Newton loops {1e-5}
 %       .GnFigs: flag to display (=1) or not (=0) the Gauss-Newton inner
 %       loops display figures {0}.
-%       .Laplace: flag for equilibrium free energy evaluation ({1})
 %       .delays: dim.nX1 vector containing the discrete delays for the
 %       evolution function.
 %       NB: nonzero delays induces an embedding of the system, thereby

@@ -39,11 +39,8 @@ priors.b_sigma = 1;             % Jeffrey's prior
 % priors.iQy{1}(300,300) = 1;
 % Build options structure
 % options.checkGrads = 1;
-options.Laplace = 1;
 options.priors = priors;        % include priors in options structure
 options.inG = inG;              % input structure (grid)
-options.GnFigs = 0;             % disable annoying figures
-options.verbose = 1;
 dim.n_phi = 4;                  % nb of observation parameters
 dim.n_theta = 0;                % nb of evolution parameters
 dim.n=0;                        % nb of hidden states

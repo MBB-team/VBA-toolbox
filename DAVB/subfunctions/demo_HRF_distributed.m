@@ -62,8 +62,7 @@ dim.n               = 4;
 % options.checkGrads = 1;
 
 % Simulate time series of hidden states and observations
-[y,x,x0,eta,e]   = simulateNLSS(...
-    n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+[y,x,x0,eta,e]   = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 
 % Display simulated time series
 displaySimulations(y,x,eta,e)
@@ -83,8 +82,7 @@ displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 % Make predictions
 try
     options = out.options;
-    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(...
-        n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
+    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
 catch
     disp('------!!Unable to form predictions!!------')
 end

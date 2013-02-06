@@ -7,15 +7,17 @@
 clear variables
 % close all
 
-in.A1 = [[ones(4,1);zeros(4,1)],[zeros(4,1);ones(4,1)]];
-in.A2 = ones(2,1);
-in.mu3_0 = 0;
+n = 8;
+
+in.A1 = kron(eye(n),[[ones(4,1);zeros(4,1)],[zeros(4,1);ones(4,1)]]);
+in.A2 = kron(eye(n),ones(2,1));
+in.mu3_0 = zeros(n,1);
 in.df = 1e-2;
 
 [n1,n2] = size(in.A1);
 n3 = size(in.A2,2);
 
-smooth = 0
+smooth = 1
 if smooth
     in.L1 = lap(n1)'*lap(n1);
     in.L2 = lap(n2)'*lap(n2);
@@ -42,7 +44,7 @@ pe4 = zeros(length(s3),N);
 
 for j=1:length(s3)
     
-    P = .01*[s3(j);1;1;1];
+    P = .1*[s3(j);1;1;1];
     
     
     for i=1:N

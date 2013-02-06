@@ -24,10 +24,10 @@ switch form
                 ep(k) = ep(k)*VB_PPM(c'*m,c'*V*c,0,0);
             end
         end
+        ep = ep./sum(ep);
     case 'dirichlet'
         ep = myget_ep(mu,1e4,verbose);
 end
-ep = ep./sum(ep);
 
 
 

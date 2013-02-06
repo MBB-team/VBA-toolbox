@@ -72,7 +72,7 @@ if isempty(priors) || ~isfield(priors,'a') || isempty(priors.a)
         nf = length(options.families);
         for i=1:nf
             indf = options.families{i};
-            priors.a(indf) = 1./length(indf);
+            priors.a(indf) = nf./length(indf);
         end
     end
     options.priors = priors;
@@ -149,8 +149,10 @@ if options.verbose
     fprintf(['     - models: K=',num2str(K),'\n'])
     if ~isempty(out.options.families)
         fprintf(['     - families: m=',num2str(nf),'\n'])
+        prfx = 1/(1+exp(out.families.F0-out.F(end)));
+    else
+        prfx = 1/(1+exp(out.F0-out.F(end)));
     end
-    prfx = 1/(1+exp(out.F0-out.F(end)));
     fprintf(['Posterior probabilities:','\n'])
     fprintf(['     - RFX: p(H1|y)= ','%4.3f','\n'],prfx)
     fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],1-prfx)
@@ -205,16 +207,15 @@ function [F,ELJ,Sqf,Sqm] = FE(L,posterior,priors)
 % derives the free energy for the current approximate posterior
 [K,n] = size(L);
 a0 = sum(posterior.a);
-Sqf = sum(gammaln(posterior.a)) - gammaln(a0) + (a0-K)*psi(a0) - sum((posterior.a-1).*psi(posterior.a));
+Elogr = psi(posterior.a) - psi(sum(posterior.a));
+Sqf = sum(gammaln(posterior.a)) - gammaln(a0) - sum((posterior.a-1).*Elogr);
 Sqm = 0;
 for i=1:n
     Sqm = Sqm - sum(posterior.r(:,i).*log(posterior.r(:,i)+eps));
 end
-Elogr = psi(posterior.a) - psi(sum(posterior.a));
-ELJ = -sum(gammaln(priors.a)) + gammaln(sum(priors.a));
-for k=1:K
-    ELJ = ELJ + (priors.a(k)-1)*Elogr(k);
-    for i=1:n
+ELJ = gammaln(sum(priors.a)) - sum(gammaln(priors.a)) + sum((priors.a-1).*Elogr);
+for i=1:n
+    for k=1:K
         ELJ = ELJ + posterior.r(k,i).*(Elogr(k)+L(k,i));
     end
 end
@@ -225,26 +226,25 @@ F = ELJ + Sqf + Sqm;
 function [F0m,F0f] = FE_null(L,options)
 % derives the free energy of the 'null' (H0: equal model frequencies)
 [K,n] = size(L);
-F0m = 0;
 if ~isempty(options.families)
     f0 = options.C*sum(options.C,1)'.^-1/size(options.C,2);
     F0f = 0;
 else
     F0f = [];
 end
+F0m = 0;
 for i=1:n
     tmp = L(:,i) - max(L(:,i));
     g = exp(tmp)./sum(exp(tmp));
     for k=1:K
-        tmp = L(:,i);
-        cst = max(tmp);
-        tmp = tmp -cst;
-        F0m = F0m + g(k).*(log(sum(exp(tmp)))+cst-log(K));
+        F0m = F0m + g(k).*(L(k,i)-log(K)-log(g(k)+eps));
         if ~isempty(options.families)
-            F0f = F0f + g(k).*(log(sum(exp(tmp)))+cst+log(f0(k)));
+            F0f = F0f + g(k).*(L(k,i)-log(g(k))+log(f0(k)));
         end
     end
 end
+
+
 
 function [Fffx] = FE_ffx(L)
 % derives the free energy of the 'fixed-effect' model
@@ -254,6 +254,7 @@ ss = sum(L,2) + log(r0);
 logz = ss - max(ss);
 z = exp(logz)./sum(exp(logz));
 Fffx = z'*ss - sum(z.*log(z));
+
 
 
 function [E,V] = Dirichlet_moments(a)

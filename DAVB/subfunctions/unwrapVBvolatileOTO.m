@@ -43,3 +43,5 @@ title(ha(3),'LEARNING RATE: = V[x2(t)|o(1:t)]')
 box(ha(3),'off')
 
 getSubplots
+
+

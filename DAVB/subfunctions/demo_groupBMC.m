@@ -17,8 +17,8 @@ options2 = options;
 % for i=1:K
 %     options.families{i} = i;
 % end
-options.families{1} = 1:floor(K/4);
-options.families{2} = floor(K/4)+1:K;%floor(K/2);
+options.families{1} = 1:floor(K/2);
+options.families{2} = floor(K/2)+1:K;%floor(K/2);
 % options.families{3} = floor(K/2)+1:floor(3*K/4);
 % options.families{4} = floor(3*K/4)+1:K;
 
@@ -46,7 +46,7 @@ for ii=1:N
     
     ii
     
-    bias = [0 *rand*randn(floor(K/2),1);zeros(ceil(K/2),1)];
+    bias = [10*ones(floor(K/2),1);zeros(ceil(K/2),1)];
     for i=1:n
         L(:,i) = 1*randn(K,1) + bias;
     end
