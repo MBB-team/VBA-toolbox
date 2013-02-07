@@ -12,8 +12,9 @@ function [X] = sampleFromArbitraryP(p,gridX,N)
 
 try; N; catch, N=1; end 
 pcdf = cumsum(p(:));
-X = zeros(N,1);
+k = size(gridX,2);
+X = zeros(N,k);
 for i=1:N
     below = find(rand<=pcdf);
-    X(i) = gridX(below(1));
+    X(i,:) = gridX(below(1),:);
 end

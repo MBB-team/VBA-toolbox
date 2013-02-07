@@ -135,8 +135,8 @@ close all
 % 'closed' scenario
 
 % 1- assign flat utility U0 to the items
-n = 9; % # items
-U0 = 0.*randn(n,1);
+n = 3; % # items
+U0 = [-1;0;1];%0.*randn(n,1);
 U0 = U0 - mean(U0); % for comparison with estimated utility
 
 % 2- Perform first preference rating r1
@@ -174,10 +174,10 @@ options.skipf(1) = 1;
 x0(1:n,1) = U0; % initial utility
 S0 = 1*eye(n); % initial variance on utility
 x0(n+1:n+n^2) = vec(S0); % initial variance
-phi = -1; % log temperature
-theta = [0;-8]; % E[log-temperature] & E[log-transition variance]
+phi = 2; % log temperature
+theta = [2;-64]; % E[log-temperature] & E[log-transition variance]
 
-N = 32;
+N = 1;
 pa = zeros(n*(n-1)/2,N);
 dv = zeros(n*(n-1)/2,N);
 for ii=1:N
