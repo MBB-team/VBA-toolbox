@@ -21,6 +21,7 @@ homogeneous = 1;              % params of g(x) homogeneous accross regions
 lin = 0;
 alpha = 1e2/TR;              % state noise precision
 sigma = Inf;%1e2;              % measurement noise precision
+stochastic = 0;
 
 %--- Input
 u = zeros(1,n_t);%zeros(2,n_t);
@@ -50,7 +51,7 @@ dim.n_phi           = 2;
 dim.n               = 5*nreg;
 
 %--- Build priors for model inversion
-options.priors = getPriors(nreg,n_t,options,0,1);
+options.priors = getPriors(nreg,n_t,options,0,stochastic);
 options.microU = 0;
 options.backwardLag = ceil(16/TR);  % 16 secs effective backward lag
 options.GnFigs = 0;

@@ -75,8 +75,7 @@ for t=1:dim.n_t
     % Display progress
     if mod(t,dim.n_t./10) < 1
         if  options.DisplayWin
-            set(options.display.hm(2),...
-                'string',[num2str(floor(100*t/dim.n_t)),'%']);
+            set(options.display.hm(2),'string',[num2str(floor(100*t/dim.n_t)),'%']);
             drawnow
         end
     end

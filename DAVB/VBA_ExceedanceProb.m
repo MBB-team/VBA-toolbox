@@ -2,7 +2,9 @@ function ep = VBA_ExceedanceProb(mu,Sigma,form,verbose)
 % calculates the exceedance probability for mutivariate Gaussian variables
 % function ep = VBA_ExceedanceProb(mu,Sigma)
 % IN:
-%   - mu/Sigma: first- and second-order moments of the Gaussian density
+%   - mu/Sigma: sufficient statistics of the pdf
+%       -> if form='gaussian': mu=E[x] and Sigma=V[x]
+%       -> if form='dirichlet': mu=Dirichlet counts and Sigma is unused
 %   - form: 'gaussian' or 'dirichlet'
 % OUT:
 %   - ep: vector of exceedance probabilities, i.e. the probability, for
@@ -26,39 +28,10 @@ switch form
         end
         ep = ep./sum(ep);
     case 'dirichlet'
-        ep = myget_ep(mu,1e4,verbose);
+        Nsamp = 1e4;
+        r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose)';
+        [y,j]=max(r_samp,[],2);
+        tmp=histc(j,1:length(mu))';
+        ep=tmp/Nsamp;
 end
 
-
-
-function xp = myget_ep(alpha,Nsamp,verbose)
-% sampling approx for dirichlet disitribution
-if verbose
-    fprintf(1,'Evaluating exceedance probability...');
-    fprintf(1,'%6.2f %%',0)
-end
-Nk = size(alpha,1);
-r_samp = zeros(Nsamp,Nk);
-for samp=1:Nsamp
-    for k = 1:Nk
-        r(:,k) = spm_gamrnd(alpha(k),1);
-    end
-    sr = sum(r,2);
-    for k = 1:Nk
-        r(:,k) = r(:,k)./sr;
-    end
-    r_samp(samp,:)=r;
-    if mod(samp,1e3) < 1 && verbose
-        fprintf(1,repmat('\b',1,8))
-        fprintf(1,'%6.2f %%',100*samp/Nsamp)
-    end
-end
-xp = zeros(1,Nk);
-[y,j]=max(r_samp,[],2);
-tmp=histc(j,1:Nk)';
-xp=tmp/Nsamp;
-if verbose
-    fprintf(1,repmat('\b',1,8))
-    fprintf(' OK.')
-    fprintf('\n')
-end

@@ -33,8 +33,8 @@ priors.SigmaTheta = 1e0*eye(2);
 % priors.muPhi = zeros(2,1);
 % priors.SigmaPhi = 1e4*speye(2);
 
-priors.a_alpha = 1e0;
-priors.b_alpha = 1e0;
+priors.a_alpha = 1;
+priors.b_alpha = 1;
 
 priors.a_sigma = 1e0;
 priors.b_sigma = 1e0;
@@ -60,7 +60,7 @@ displaySimulations(y,x,eta,e)
 % disp('--paused--')
 % pause
 
-
+% options.checkGrads = 1;
 
 % Call inversion routine
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);

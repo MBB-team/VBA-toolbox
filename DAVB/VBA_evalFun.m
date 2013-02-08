@@ -61,7 +61,7 @@ end
 [fx,J,dfdP] = EvalFunN(fname,Xt,P,ut,in,dim,nout,nout0,options,d,N);
 
 % Check Jacobian and gradients?
-if options.checkGrads && ~isequal(fname,@VBA_odeLim) && ~isequal(fname,@VBA_smoothNLSS)
+if options.checkGrads && ~isequal(fname,@VBA_odeLim)
     mayPause = 0;
     if ~isempty(Xt) && nout > 1
         J2 = numericDiff(@EvalFunN,2,fname,Xt,P,ut,in,dim,nout,nout0,options,d,N);
@@ -107,7 +107,6 @@ deriv = [1 1 1];
 switch nout
     case 3
         [fx,dfdx,dfdp] = feval(fname,Xt,P,ut,in);
-        deriv(3) = 0;
         if isempty(dfdx)
             deriv(1) = 0;
         end
@@ -116,18 +115,18 @@ switch nout
         end
     case 2
         [fx,dfdx] = feval(fname,Xt,P,ut,in);
-        deriv(2:3) = 0;
+        deriv(2) = 0;
         if isempty(dfdx)
             deriv(1) = 0;
         end
     case 1
         [fx] = feval(fname,Xt,P,ut,in);
-        deriv(1:3) = 0;
+        deriv(1:2) = 0;
 end
 if ~deriv(1) && dim.n>0 && nout0>=2
     dfdx = numericDiff(fname,1,Xt,P,ut,in);
 end
-if d(2) > 0 && ~deriv(2) && nout0>=3
+if d(2) > 0 && ~deriv(2) && nout0==3
     dfdp = numericDiff(fname,2,Xt,P,ut,in);
 end
 

@@ -5,9 +5,8 @@ clear all
 clc
 
 gridn = 2.^[4,6]; % # subjects
-K = 8; % # models
+K = 4; % # models
 f = ones(K,1)./K; % true frequency of models
-f2 = [K;ones(K-1,1)]./(2*K-1);
 a0 = 1; % priors counts for each model
 alpha = 0.05; % significance level
 N = 2^10; % # Monte-Carlo simulations
@@ -71,6 +70,7 @@ for i=1:length(gridn)
         mep(i,j,1) = max(ep);
         mEf(i,j,1) = max(Ef);
         % invert model under the alternative
+        f2 = VBA_sample('dirichlet',struct('d',a0*ones(K,1)),1,0);
         m = sampleFromArbitraryP(f2,eye(length(f)),n)';
         [F,F0,a] = PolyaLEV(m,a0);
         ep = VBA_ExceedanceProb(a,[],'dirichlet',0);

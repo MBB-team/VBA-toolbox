@@ -25,6 +25,8 @@ y = repmat(y,1,4);
 c = eye(3);
 [pv,stat,df,all] = GLM_contrast(X,y,c,'F',1,{'reward','effort','mean'});
 
+return
+
 C = {[1;0;0],[0;1;0],[-1;0;0],[0;-1;0]};
 
 for i=1:4

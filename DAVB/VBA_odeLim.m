@@ -1,6 +1,6 @@
 function [gx,out,dgdp] = VBA_odeLim(Xt,P,ut,in)
 % collapses evolution and observation functions for ODE limit inversion
-% function [gx,dgdx,dgdp,d2gdxdp] = VBA_odeLim(Xt,P,ut,in)
+% function [gx,out,dgdp] = VBA_odeLim(Xt,P,ut,in)
 % This function evaluates the evolution/observation functions that are
 % embedded in the observation function of a deterministic (ODE) state-space
 % model. It also outputs the derivatives with respect to the parameters.
@@ -46,14 +46,13 @@ end
 [xt,dF_dX,dF_dP] = VBA_evalFun('f',xt,Theta,ut,options,dim,t);
 [gx,dG_dX,dG_dP] = VBA_evalFun('g',xt,Phi,ut,options,dim,t);
 
-
 % Obtain derivatives of path wrt parameters...
 if dim.n_theta > 0
     dxdTheta = dF_dP + dxdTheta*dF_dX;
 end
 % ... and initial conditions
 if options.updateX0
-    if ~isempty(dxdx0) 
+    if ~isempty(dxdx0)
         dxdx0 = dxdx0*dF_dX;
     else % initial condition (t=0)
         dxdx0 = dF_dX;
@@ -75,8 +74,10 @@ if options.updateX0
     dgdp(dim.n_phi+dim.n_theta+1:end,:) = dxdx0*dG_dX;
 end
 
+
 % for hidden states book keeping
 out.xt = xt;
 out.dx = [zeros(dim.n_phi,dim.n);dxdTheta;dxdx0];
-        
-    
+out.t = t;
+
+
