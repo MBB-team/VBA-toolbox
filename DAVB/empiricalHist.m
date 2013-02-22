@@ -26,11 +26,17 @@ gridy = zeros(n-1,p);
 for i=1:p
     sy = sort(y(:,i));
     [sy,ecdf] = unique(sy);
-    dy = (sy(end) - sy(1))./(n-1);
-    gridyi = [sy(1):dy:sy(end)]';
-    ecdf = interp1(sy,ecdf./n,gridyi);
-    py(:,i) = conv(diff(ecdf),kernel,'same');
-    gridy(:,i) = D*gridyi;
-    py(:,i) = py(:,i)./sum(py(:,i));
+    if length(sy) > 1
+        dy = (sy(end) - sy(1))./(n-1);
+        gridyi = [sy(1):dy:sy(end)]';
+        ecdf = interp1(sy,ecdf./n,gridyi);
+        py(:,i) = conv(diff(ecdf),kernel,'same');
+        gridy(:,i) = D*gridyi;
+        py(:,i) = py(:,i)./sum(py(:,i));
+    else
+        gridy(1,i) = sy;
+        py(1,i) = 1;
+        
+    end
 end
     

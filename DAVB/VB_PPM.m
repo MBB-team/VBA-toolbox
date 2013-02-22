@@ -32,7 +32,6 @@ switch form
 %         f = (gridx.^(m-1)).*((1-gridx).^(v-1));
 end
 f = f./sum(f);
-figure,plot(gridx,f)
 if length(t) == 1
     [mp,indt] = min(abs(gridx-t));
     p = sum(f(indt:end));

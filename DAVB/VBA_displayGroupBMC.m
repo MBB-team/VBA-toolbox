@@ -139,8 +139,9 @@ else
     set(handles.ho,'string',[str,' RFX evidence: log p(y|H1) >= ',num2str(out.F(end),'%1.3e'),'.'])
 end
 
+drawnow
 try;getSubplots;end
 
-drawnow
+
 
 

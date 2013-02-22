@@ -2,7 +2,7 @@ function [posterior,out] = VBA_groupBMC(L,options)
 % VB algorithm for group-level Bayesian Model Comparison
 % function [posterior,out] = VBA_groupBMC(L,options)
 % IN:
-%   - L: Kxn matrix of log-model evidences (K models; n subjects)
+%   - L: Kxn array of log-model evidences (K models; n subjects)
 %   - options: a structure containing the following fields:
 %       .priors: this variable can contain a field .a, which is the Kx1
 %       vector of dummy 'prior counts' of each model (default is one per
@@ -24,20 +24,25 @@ function [posterior,out] = VBA_groupBMC(L,options)
 %       sufficient statistics of the posterior Dirichlet density on model
 %       frequencies.
 %   - out: structure containing the following fields:
-%       .ep: Kx1 vector of model exceedance probabilities
+%       .dt: the algorithm execution time (in sec)
 %       .options: this is useful when using default options
-%       .dt: the running time of the VB algorithm (in sec)
+%       .L: Kxn array of log-model evidences (for book keeping)
 %       .F: the series of free energies along the VB iterations
 %       .Ef/Vf: first- and second-order posterior moments of the model
 %       frequencies
+%       .ep: Kx1 vector of model exceedance probabilities
 %       .ELJ/Sqf/Sqm: the expected log-joint, and entropies of the VB
 %       marginal densities
 %       .F0: the null model evidence
+%       .bor: Bayesian Omnibus Risk (comparison with the null)
+%       .Fffx: the fixed-effect log-evidence
+%       .date: date vector, in matlab format (see clock.m)
 %       .families: a structure containing the following fields:
+%           .F0: the (family-) null model evidence
 %           .ep: nfx1 vector of family exceedance probabilities
 %           .Ef/Vf: first- and second-order posterior moments of the
 %           familiy frequencies
-%       .r/a: family 'posterior counts' and attributions.
+%           .r/a: family 'posterior counts' and attributions.
 
 [K,n] = size(L);
 
@@ -149,13 +154,10 @@ if options.verbose
     fprintf(['     - models: K=',num2str(K),'\n'])
     if ~isempty(out.options.families)
         fprintf(['     - families: m=',num2str(nf),'\n'])
-        prfx = 1/(1+exp(out.families.F0-out.F(end)));
-    else
-        prfx = 1/(1+exp(out.F0-out.F(end)));
     end
     fprintf(['Posterior probabilities:','\n'])
-    fprintf(['     - RFX: p(H1|y)= ','%4.3f','\n'],prfx)
-    fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],1-prfx)
+    fprintf(['     - RFX: p(H1|y)= ','%4.3f','\n'],1-out.bor)
+    fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],out.bor)
     fprintf('\n')
 end
 
@@ -177,8 +179,10 @@ out.ep = VBA_ExceedanceProb(out.Ef,out.Vf,'gaussian');
 % derive Free Energy under the null:
 if ~isempty(options.families)
     [out.F0,out.families.F0] = FE_null(L,options);
+    out.bor = 1/(1+exp(F-out.families.F0));
 else
     [out.F0] = FE_null(L,options);
+    out.bor = 1/(1+exp(F-out.F0));
 end
 % pool evidence over families
 if ~isempty(options.families)
@@ -253,7 +257,7 @@ r0 = ones(K,1)./K;
 ss = sum(L,2) + log(r0);
 logz = ss - max(ss);
 z = exp(logz)./sum(exp(logz));
-Fffx = z'*ss - sum(z.*log(z));
+Fffx = z'*ss - sum(z.*log(z+eps));
 
 
 

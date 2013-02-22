@@ -64,6 +64,10 @@ end
 if ~isfield(options,'updateHP')
     options.updateHP = 1;
 end
+% Flag for hyperparameters initialization
+if ~isfield(options,'initHP')
+    options.initHP = 1;
+end
 % time lag of the short-sighted backward-pass
 if ~isfield(options,'backwardLag')
     options.backwardLag = 1;

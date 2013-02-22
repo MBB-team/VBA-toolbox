@@ -47,7 +47,7 @@ end
 options.priors = priors;
 options.inF = in;
 options.inG = in;
-options.backwardLag  = 0;
+options.backwardLag  = 8;
 dim.n_theta = in.dim.n_theta;
 dim.n_phi = 0;
 dim.n = 2*in.dim.n;

@@ -170,31 +170,36 @@ else
     str{9} = [' '];
 end
 str{10} = sprintf(['Estimation efficiency (minus posterior entropies):','\n ']);
-str{11} = sprintf(['Information gain (Kullback-Leibler divergences DKL{prior||posterior}):','\n ']);
+% str{11} = sprintf(['Information gain (Kullback-Leibler divergences DKL{prior||posterior}):','\n ']);
 if ~isnan(diagnostics.efficiency.X)
     str{10} = sprintf([str{10},'    - hidden states: ',num2str(diagnostics.efficiency.X,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},'    - hidden states: ',num2str(diagnostics.DKL.X,'%4.3e'),'\n ']);
+%     str{11} = sprintf([str{11},'    - hidden states: ',num2str(diagnostics.DKL.X,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.X0)
     str{10} = sprintf([str{10},'    - initial conditions: ',num2str(diagnostics.efficiency.X0,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},'    - initial conditions: ',num2str(diagnostics.DKL.X0,'%4.3e'),'\n ']);
+%     str{11} = sprintf([str{11},'    - initial conditions: ',num2str(diagnostics.DKL.X0,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.Theta)
     str{10} = sprintf([str{10},'    - evolution parameters: ',num2str(diagnostics.efficiency.Theta,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},'    - evolution parameters: ',num2str(diagnostics.DKL.Theta,'%4.3e'),'\n ']);
+%     str{11} = sprintf([str{11},'    - evolution parameters: ',num2str(diagnostics.DKL.Theta,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.Phi)
     str{10} = sprintf([str{10},'    - observation parameters: ',num2str(diagnostics.efficiency.Phi,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},'    - observation parameters: ', num2str(diagnostics.DKL.Phi,'%4.3e'),'\n ']);
+%     str{11} = sprintf([str{11},'    - observation parameters: ', num2str(diagnostics.DKL.Phi,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.alpha)
     str{10} = sprintf([str{10},'    - state noise precision hyperparameter: ',num2str(diagnostics.efficiency.alpha,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},'    - state noise precision hyperparameter: ',num2str(diagnostics.DKL.alpha,'%4.3e'),'\n ']);
+%     str{11} = sprintf([str{11},'    - state noise precision hyperparameter: ',num2str(diagnostics.DKL.alpha,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.sigma)
     str{10} = sprintf([str{10},'    - data noise precision hyperparameter: ',num2str(diagnostics.efficiency.sigma,'%4.3e'),'\n ']);
-    str{11} = sprintf([str{11},'    - data noise precision hyperparameter: ',num2str(diagnostics.DKL.sigma,'%4.3e'),'\n ']);
+%     str{11} = sprintf([str{11},'    - data noise precision hyperparameter: ',num2str(diagnostics.DKL.sigma,'%4.3e'),'\n ']);
 end
+str{11} = sprintf(['Classical fit accuracy metrics:','\n ']);
+str{11} = sprintf([str{11},'    - coefficient of determination (R2): ',num2str(out.fit.R2,'%4.3f'),'\n ']);
+str{11} = sprintf([str{11},'    - log-likelihood: ',num2str(out.fit.LL,'%4.3e'),'\n ']);
+str{11} = sprintf([str{11},'    - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n ']);
+str{11} = sprintf([str{11},'    - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n ']);
 uicontrol('parent',hf,'style','text','tag','VBLaplace','units','normalized','position',[0.1,0.05,0.8,0.85],'backgroundcolor',[1,1,1],'HorizontalAlignment','left','fontsize',11,'string',str);
 
 
@@ -702,6 +707,8 @@ end
 
 u = out.u;
 y = out.y;
+
+try; out.fit; catch; out.fit = VBA_fit(posterior,out); end
 
 % get kernels (NB: dcm = special case)
 if isequal(out.options.f_fname,@f_DCMwHRF) && isequal(out.options.g_fname,@g_HRF3)
