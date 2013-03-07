@@ -116,12 +116,13 @@ set(handles.ha(5),'xtick',1:length(out.F),'xticklabel',[],'xlim',[0.5,length(out
 title(handles.ha(5),'VB algorithm convergence')
 
 if ~isempty(out.options.families)
+    familiesName=out.options.familiesName;
     nf = size(out.options.C,2);
     cla(handles.ha(6))
     [haf,hf,hp] = plotUncertainTimeSeries(out.families.Ef,diag(out.families.Vf),[],handles.ha(6));
     plot(handles.ha(6),[0.5,nf+0.5],[1,1]/nf,'r')
     xlabel(handles.ha(6),'families')
-    set(handles.ha(6),'xtick',1:nf,'xlim',[0.5,nf+0.5],'ylim',[0 1],'ygrid','on')
+    set(handles.ha(6),'xtick',1:nf,'XTickLabel',familiesName,'xlim',[0.5,nf+0.5],'ylim',[0 1],'ygrid','on')
     title(handles.ha(6),'estimated family frequencies')
 end
 
