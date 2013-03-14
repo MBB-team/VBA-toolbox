@@ -14,54 +14,121 @@ function [priors] = getPriors(nreg,n_t,options,reduced_f,stochastic)
 %   - priors: the 'priors' structure that can be used to invert the DCM
 %   using VBA_NLStateSpaceModel.m
 
-dim.n_theta = options.inF.ind5(end);
-if options.inG.homogeneous
-    dim.n_phi = 2;
+extended = isfield(options.inF,'extended') && options.inF.extended ;
+
+
+%% get dimensions
+try
+    dim.n_theta = options.inF.ind5(end);
+catch
+    dim.n_theta = 0;
+end
+
+if extended
+    dim.n_phi = options.inG.indr;
 else
-    dim.n_phi = 2*nreg;
+    dim.n_phi = options.inG.ind2(end);
 end
 dim.n = 5*nreg;
 
-% initial conditions
-priors.muX0 = zeros(5*nreg,1);
-priors.SigmaX0 = 1e-4*eye(5*nreg);
 
-% evolution parameters
-priors.muTheta = zeros(dim.n_theta,1);
+if extended
+    dim.n_r = numel(options.inG.r) ;
+else
+    dim.n_r=0;
+end
+
+%% SET PRIORS
+
+%% == initial conditions
+
+nx = 5*nreg;
+if extended
+    nx=nx+dim.n_r;
+end
+%- state %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TODO Different for predictors ?
+priors.muX0 = zeros(nx,1); 
+priors.SigmaX0 = 1e-4*eye(nx);
+
+
+%% == evolution parameters
+priors.muTheta = zeros(dim.n_theta,1); 
+
+%- HRF
 priors.SigmaTheta = 1e-2*eye(dim.n_theta);
-priors.SigmaTheta(1:options.inF.indself,1:options.inF.indself) = 1e0*eye(options.inF.indself);
-% priors.SigmaTheta(options.inF.indself,options.inF.indself) = 0;
 if reduced_f
     % fix some HRF params to their default values
     priors.SigmaTheta(options.inF.ind1,options.inF.ind1) = 0;
     priors.SigmaTheta(options.inF.ind3,options.inF.ind3) = 0;
     priors.SigmaTheta(options.inF.ind5,options.inF.ind5) = 0;
 end
-
-% observation parameters
-priors.muPhi = zeros(dim.n_phi,1);
-priors.SigmaPhi = 1e-2*eye(dim.n_phi);
-
-% state and measurement noise covariances
-for t = 1:n_t
-    dq = 1e2*ones(dim.n,1);
-    dq(options.inF.n5) = 1;
-    priors.iQx{t} = diag(dq);
-    priors.iQy{t} = eye(nreg);
+%- DCM
+idx = 1:(options.inF.indself-1);
+priors.SigmaTheta(idx,idx) =   1e0*eye(length(idx));
+priors.SigmaTheta(options.inF.indself,options.inF.indself) = 1e-1;
+%- extension
+if extended
+    idx = options.inF.indself+1:options.inF.indhself-1;
+    priors.SigmaTheta(idx,idx) =   2e0*eye(numel(idx));
+    % fixed Dirac kernel
+    priors.muTheta(options.inF.indhself) = log(1/options.inF.deltat); 
+    priors.SigmaTheta(options.inF.indhself,options.inF.indhself) = 0; 
+    % const
+    priors.muTheta(options.inF.indconst) = 0; 
+    priors.SigmaTheta(options.inF.indconst,options.inF.indconst) = 1e-1; 
+    
 end
 
-% precision hyperparameters
-priors.a_sigma = 1e0;
-priors.b_sigma = 1e0;
+
+%% == observation parameters
+%- HRF
+priors.muPhi = zeros(dim.n_phi,1);
+priors.SigmaPhi = 1e-2*eye(dim.n_phi);
+%- extension
+if extended
+    priors.SigmaPhi(options.inG.indr,options.inG.indr)=0; 
+end
+
+
+%% == state and measurement noise covariances
+for t = 1:n_t
+    dq = 1e2*ones(dim.n,1); 
+    dq(options.inF.n5) = 1;
+    priors.iQx{t} = diag(dq);
+%     dq = [ones(1,nreg)];
+%     priors.iQy{t,1} = diag(dq);         
+end
+% muxer
+if isfield(options,'sources')
+    g_source = [options.sources(:).type]==0;
+    n_sources = numel(options.sources(g_source));
+    dim_y = [options.sources(g_source).out];
+else
+    n_sources=1;
+    dim_y=nreg;
+end
+for n=1:n_sources % default variance for other sources
+    try 
+        prec=options.sources(n).prec;
+    catch
+        prec=1;
+    end
+    for t = 1:n_t
+        dq = [ones(1,numel(dim_y(n)))];
+        priors.iQy{t,n} = diag(dq);         
+    end
+end
+
+%= precision hyperparameters
+priors.a_sigma = 1e0*ones(n_sources,1);
+priors.b_sigma = 1e0*ones(n_sources,1);
 if ~stochastic
     priors.a_alpha = Inf;
     priors.b_alpha = 0;
 else
     TR = options.decim.*options.inF.deltat;
-    priors.b_alpha = 1e0;%TR*1e-2;
+    priors.b_alpha = 1e0;%TR/1e2;
     priors.a_alpha = 1e0;
 end
-
-
 
 

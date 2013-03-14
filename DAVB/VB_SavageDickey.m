@@ -75,7 +75,7 @@ if isfield(po1,'a_sigma') && ~isempty(po1.a_sigma)
     po2.a_sigma = po2.b_sigma.*mr;
     F2 = F2 +dF;
 end
-if isfield(po1,'a_alpha') && ~isempty(po1.a_alpha)
+if isfield(po1,'a_alpha') && ~isempty(po1.a_alpha) && ~isinf(po1.a_alpha)
     mf = po1.a_alpha./po1.b_alpha;
     Sf = po1.a_alpha./(po1.b_alpha^2);
     mf0 = pr1.a_alpha./pr1.b_alpha;

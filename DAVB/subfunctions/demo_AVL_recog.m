@@ -197,6 +197,7 @@ switch options.inF.flag
     case 3
         dim.n               = 6;
 end
+
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 

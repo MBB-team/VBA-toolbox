@@ -16,10 +16,10 @@ function [F] = VBA_FreeEnergy(posterior,suffStat,options)
 % OUT:
 %   - F: the free energy under the local Laplace approximation
 
-% if ~options.Laplace
-%     [F] = VBA_FreeEnergy_old(posterior,suffStat,options);
-%     return
-% end
+if options.extended
+    [F] = VBA_FreeEnergy_extended(posterior,suffStat,options);
+    return
+end
 
 if options.DisplayWin % Display progress
     try
@@ -131,4 +131,3 @@ if options.DisplayWin % Display progress
         drawnow
     end
 end
-

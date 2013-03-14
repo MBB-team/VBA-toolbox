@@ -31,7 +31,7 @@ end
 % Covariance structure: measurement noise precision matrices
 priors.iQy = cell(dim.n_t,1);
 for t=1:dim.n_t
-    priors.iQy{t} = eye(dim.p);
+    priors.iQy{t,1} = eye(dim.p);
 end
 
 % prior Gaussian pdf of the observation parameters

@@ -42,9 +42,10 @@ if ~isempty(phi)
 end
 
 % hyperparameters
-if ~out.options.binomial
-    sigmaHat = posterior.a_sigma(end)./posterior.b_sigma(end);
-    vs = posterior.a_sigma(end)./(posterior.b_sigma(end).^2);
+n_gs = sum([out.options.sources(:).type]==0);
+if n_gs>0 %~out.options.binomial
+    sigmaHat = posterior.a_sigma./posterior.b_sigma;
+    vs = posterior.a_sigma./(posterior.b_sigma.^2);
     lvs = log(sigmaHat+sqrt(vs)) - log(sigmaHat);
     try
         alphaHat = posterior.a_alpha(end)./posterior.b_alpha(end);
@@ -52,18 +53,21 @@ if ~out.options.binomial
         lva = log(alphaHat+sqrt(va)) - log(alphaHat);
         lm = log([alphaHat;sigmaHat]);
         lv = [lva;lvs];
-        xtick = [1,2];
-        lab = {'alpha','sigma'};
+        xtick = [1,(1:n_gs)+1];
+        
+        lab = {'alpha'};
+        
     catch
         lm = log(sigmaHat);
         lv = lvs;
-        xtick = 1;
-        lab = 'sigma';
+        xtick = 1:n_gs;
+        lab={};
     end
+    for i=1:n_gs, lab{end+1} = ['sigma' num2str(i)]; end
     hs = subplot(2,2,3,'parent',hres);
     set(hs,'nextplot','add')
     plotUncertainTimeSeries(lm,lv.^2,[],hs);
-    plot(hs,log([alpha;sigma]),'go')
+    plot(hs,log([alpha;sigma(:)]),'go')
     set(hs,'xtick',xtick,'xticklabel',lab)
     ylabel(hs,'log-precisions')
     title(hs,'precision hyperparameters')

@@ -22,5 +22,5 @@ mu_p = P(1);
 s_p  = exp(P(2));
 
 gx = s_s.^2./(s_s.^2+s_p^2)*mu_p + s_p^2./(s_s.^2+s_p^2).*x_s; % predicted shift
-
+gx=gx';
 end

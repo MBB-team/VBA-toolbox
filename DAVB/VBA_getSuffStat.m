@@ -55,7 +55,7 @@ end
 try
     suffStat.dy2;
 catch
-    suffStat.dy2 = 0;
+    suffStat.dy2 = zeros(1,numel(options.sources));
 end
 try
     suffStat.dx2;
@@ -111,10 +111,10 @@ catch
     suffStat.SX0 = 0;
 end
 
-if options.binomial
-    try
+try
         suffStat.logL;
-    catch
+catch
         suffStat.logL = -Inf;
-    end
 end
+    
+

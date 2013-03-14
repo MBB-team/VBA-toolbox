@@ -4,6 +4,12 @@ function VBA_updateDisplay(posterior,suffStat,options,y,it,flag)
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
 
+if options.extended
+    VBA_updateDisplay_extended(posterior,suffStat,options,y,it,flag);
+    %fprintf('Display extended\n');
+    return
+end
+
 F = real(suffStat.F);
 
 if ~options.DisplayWin
@@ -17,12 +23,12 @@ VBA_pause(options)
 
 % First check whether this is standard DCM or ODE limit
 if isequal(options.g_fname,@VBA_odeLim)
-    
+   
     % Rebuild posterior from dummy 'ODE' posterior
     options0 = options;
     [posterior,options,dim,suffStat] = VBA_odeLim2NLSS(posterior,options,options.dim,suffStat,[],0);
     options.display = options0.display;
-    
+   
     % Then call VBA_updateDisplay again
     if ~isempty(it)
         VBA_updateDisplay(posterior,suffStat,options,y,it,'precisions')
@@ -36,9 +42,9 @@ if isequal(options.g_fname,@VBA_odeLim)
     if dim.n_theta > 0
         VBA_updateDisplay(posterior,suffStat,options,y,it,'theta')
     end
-    
+   
     return
-    
+   
 end
 
 
@@ -117,11 +123,11 @@ end
 
 
 switch flag % What piece of the model to display?
-    
-    
+   
+   
     case 'X' % Hidden-states related quantities
-        
-        
+       
+       
         % update top-left subplot: predictive density
         cla(display.ha(1))
         plot(display.ha(1),dTime,y',':')
@@ -129,7 +135,7 @@ switch flag % What piece of the model to display?
         plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
         set(display.ha(1),'ygrid','on','xgrid','off')
         axis(display.ha(1),'tight')
-        
+       
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
         if  ~options.binomial
@@ -158,14 +164,14 @@ switch flag % What piece of the model to display?
         end
         grid(display.ha(2),'on')
         axis(display.ha(2),'tight')
-        
+       
         % get display indices if delay embedding
         if sum(options.delays) > 0
             ind = 1:options.inF.dim.n;
         else
             ind = 1:size(mux,1);
         end
-        
+       
         % update middle-left subplot: hidden states
         try
             cla(display.ha(3))
@@ -176,7 +182,7 @@ switch flag % What piece of the model to display?
         end
         set(display.ha(3),'ygrid','on','xgrid','off')
         axis(display.ha(3),'tight')
-        
+       
         % update middle-right subplot: initial conditions
         if options.updateX0
             cla(display.ha(4))
@@ -186,12 +192,12 @@ switch flag % What piece of the model to display?
             plotUncertainTimeSeries(dx0,vx0,1,display.ha(4));
             set(display.ha(4),'ygrid','on','xgrid','off')
         end
-        
+       
         displayDF(F,display)
-        
+       
     case 'phi' % Observation parameters
-        
-        
+       
+       
         % update top-left subplot: predictive density
         cla(display.ha(1))
         plot(display.ha(1),dTime,y',':')
@@ -199,7 +205,7 @@ switch flag % What piece of the model to display?
         plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
         set(display.ha(1),'ygrid','on','xgrid','off')
         axis(display.ha(1),'tight')
-        
+       
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
         if  ~options.binomial
@@ -228,7 +234,7 @@ switch flag % What piece of the model to display?
         end
         grid(display.ha(2),'on')
         axis(display.ha(2),'tight')
-        
+       
         % update bottom-left subplot: observation parameters
         if size(dphi,2) == 1 % for on-line wrapper
             dTime = 1;
@@ -236,36 +242,36 @@ switch flag % What piece of the model to display?
         cla(display.ha(5))
         plotUncertainTimeSeries(-dphi,vphi,dTime,display.ha(5));
         set(display.ha(5),'ygrid','on','xgrid','off')
-        
+       
         displayDF(F,display)
-        
-        
-        
+       
+       
+       
     case 'theta' % Evolution parameters
-        
+       
         % update bottom-right subplot: observation parameters
-        
+       
         if size(dtheta,2) == 1 % for on-line wrapper
             dTime = 1;
         end
         cla(display.ha(7))
         plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
         set(display.ha(7),'ygrid','on','xgrid','off')
-        
+       
         displayDF(F,display)
-        
-        
+       
+       
     case 'precisions' % Precision hyperparameters
-        
+       
         % update top-left subplot: predictive density
         cla(display.ha(1))
         plot(display.ha(1),dTime,y',':')
         plot(display.ha(1),dTime,y','.')
         plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
-        
-        
+       
+       
         if options.updateHP || (isequal(it,0) && ~options.binomial)
-            
+           
             % update middle-left subplot: measurement noise
             if ~options.binomial
                 if size(sigmaHat,2) > 1  % for on-line wrapper
@@ -278,7 +284,7 @@ switch flag % What piece of the model to display?
                 plotUncertainTimeSeries(log(sigmaHat),logCI.^2,dTime,display.ha(6));
                 set(display.ha(6),'ygrid','on','xgrid','off')
             end
-            
+           
             % update middle-right subplot: state noise
             if options.dim.n > 0 && ~any(isinf(alphaHat))
                 if size(alphaHat,2) > 1  % for on-line wrapper
@@ -291,13 +297,13 @@ switch flag % What piece of the model to display?
                 plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
                 set(display.ha(8),'ygrid','on','xgrid','off')
             end
-            
+           
             displayDF(F,display)
-            
+           
         end
-        
+       
     case 'F' % Free energy
-        
+       
         % Output in main matlab window
         dF = diff(F);
         if it > 0 && options.verbose
@@ -307,7 +313,7 @@ switch flag % What piece of the model to display?
                 '         ... dF=','%4.3e'],F(end),dF(end))
             fprintf('\n')
         end
-        
+       
 end
 
 drawnow

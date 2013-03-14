@@ -10,7 +10,7 @@ function [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options,checkVar)
 %   - checkVar: flag for eyeballing the quality of the covariance matrix
 % OUT:
 %   - muy: the 1st-order moment of the prior predictive density.
-%   - Vy: the second-order moement of the prior predictive density.
+%   - Vy: the second-order moment of the prior predictive density.
 %   - iVp: the predicted posterior precision matrix of the model parameters
 % SEE ALSO: splitLaplace
 
@@ -70,19 +70,32 @@ if dim.n > 0
     dgdp(dim.n_phi+dim.n_theta+1:end,1:dim.p) = dxdx0*dG_dX;
 end
 muy(1:dim.p,1) = gx(:,1);
-if options.binomial
-    gx(:,1) = checkGX_binomial(gx(:,1)); % fix numerical instabilities
-    Vy(1:dim.p,1:dim.p) = diag(gx(:,1).*(1-gx(:,1)));
-    tmp = 1./gx(:,1) + 1./(1-gx(:,1));
-    if get_iVp
-        iVp = iVp + dG_dP(:,1:dim.p)*diag(tmp)*dG_dP(:,1:dim.p)';
+gsi = find([options.sources(:).type]==0);
+for si=1:numel(options.sources)
+    s_idx = options.sources(si).out ;
+    % - binary
+    if options.sources(si).type 
+        % true binomial
+        if length(options.sources(si).out) == 1 
+            Vy_tmp = diag(gx(s_idx,1).*(1-gx(s_idx,1)));
+            tmp = diag(1./gx(s_idx,1) + 1./(1-gx(s_idx,1)));
+        % multinomial
+        else 
+            Vy_tmp = diag(gx(s_idx,1).*(1-gx(s_idx,1)));
+            tmp = diag(1./gx(s_idx,1)); % MUXER_TODO : check this !
+        end
+    % - gaussian
+    else 
+        varY = options.priors.b_sigma(gsi(si))./options.priors.a_sigma(gsi(si));
+        Qy = VB_inv(options.priors.iQy{1,si});
+        Vy_tmp = varY.*Qy;
+        tmp = options.priors.iQy{1,si}./varY ;
     end
-else
-    varY = options.priors.b_sigma./options.priors.a_sigma;
-    Qy = VB_inv(options.priors.iQy{1});
-    Vy(1:dim.p,1:dim.p) = varY.*Qy;
+    
+    % aggregate
+    Vy(s_idx,s_idx) = Vy_tmp ;
     if get_iVp
-        iVp = iVp + dgdp(:,1:dim.p)*options.priors.iQy{1}*dgdp(:,1:dim.p)'./varY;
+        iVp = iVp + dgdp(:,s_idx)*tmp*dgdp(:,s_idx)';
     end
 end
 
@@ -106,21 +119,36 @@ for t = 2:dim.n_t
         dgdp(dim.n_phi+dim.n_theta+1:end,1+(t-1)*dim.p:t*dim.p) = dxdx0*dG_dX;
     end
     muy(dim.p*(t-1)+1:dim.p*t) = gx(:,t);
-    if options.binomial
-        % fix numerical instabilities
-        gx(:,t) = checkGX_binomial(gx(:,t));
-        Vy(dim.p*(t-1)+1:dim.p*t,dim.p*(t-1)+1:dim.p*t) = diag(gx(:,t).*(1-gx(:,t)));
-        tmp = 1./gx(:,t) + 1./(1-gx(:,t));
-        if get_iVp
-            iVp = iVp + dgdp(:,1+(t-1)*dim.p:t*dim.p)*diag(tmp)*dgdp(:,1+(t-1)*dim.p:t*dim.p)';
+
+    for si=1:numel(options.sources)
+        s_idx = options.sources(si).out ;
+        s_idx_t = dim.p*(t-1)+s_idx ;
+        % - binary
+        if options.sources(si).type
+            % true binomial
+            if length(options.sources(si).out) == 1
+                Vy_tmp = diag(gx(s_idx,t).*(1-gx(s_idx,t)));
+                tmp = diag(1./gx(s_idx,t) + 1./(1-gx(s_idx,t)));
+                % multinomial
+            else
+                Vy_tmp = diag(gx(s_idx,t).*(1-gx(s_idx,t)));
+                tmp = diag(1./gx(s_idx,t)); % MUXER_TODO : check this !
+            end
+            % - gaussian
+        else
+            varY = options.priors.b_sigma(gsi(si))./options.priors.a_sigma(gsi(si));
+            Qy = VB_inv(options.priors.iQy{t,si});
+            Vy_tmp = varY.*Qy;
+            tmp = options.priors.iQy{t,si}./varY ;
         end
-    else
-        Qy = VB_inv(options.priors.iQy{t});
-        Vy(dim.p*(t-1)+1:dim.p*t,dim.p*(t-1)+1:dim.p*t) = varY.*Qy;
+        
+        % aggregate
+        Vy(s_idx_t,s_idx_t) = Vy_tmp ;
         if get_iVp
-            iVp = iVp + dgdp(:,1+(t-1)*dim.p:t*dim.p)*options.priors.iQy{t}*dgdp(:,1+(t-1)*dim.p:t*dim.p)'./varY;
+            iVp = iVp + dgdp(:,s_idx_t)*tmp*dgdp(:,s_idx_t)';
         end
     end
+
 end
 % form Laplace approximation to the covariance matrix
 Vy0 = Vy;

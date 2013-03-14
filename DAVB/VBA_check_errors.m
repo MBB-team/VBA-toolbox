@@ -2,6 +2,11 @@ function [suffStat,posterior] = VBA_check_errors(y,u,options)
 % Function merging VBA_getsuffstat and the content of VBA_Initialize
 % regarding deterministic DCM
 
+if options.extended
+    [suffStat,posterior] = VBA_check_errors_extended(y,u,options);
+    return
+end
+
 [suffStat] = VBA_getSuffStat(options,[],0);
 dim = options.dim;
 posterior = options.priors;
@@ -141,6 +146,3 @@ if ~options.binomial
 else
     suffStat.logL = logL;
 end
-
-
-

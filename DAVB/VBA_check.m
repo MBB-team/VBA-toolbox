@@ -126,12 +126,31 @@ end
 if ~isfield(options,'binomial')
     options.binomial = 0;
 end
-if options.binomial
-    options.ignoreMF = 1;
-    if ~isbinary(y(:))
-        error('Data should be binary!')
+
+% muxer
+if ~isfield(options,'sources')
+  options.sources(1).type=options.binomial;
+  options.sources(1).out=1:dim.p;
+end
+if ~isfield(options,'extended')
+    options.extended = numel(options.sources)>1;
+end
+
+
+% binomial check
+for i=1:numel(options.sources)
+    if options.sources(i).type % if binomial
+        if ~isempty(y)
+        if ~isbinary(y(options.sources(i).out,:))
+            error('*** Data should be binary!')
+        end
+        end
     end
 end
+
+
+
+
 if ~isfield(options,'isYout')
     options.isYout = zeros(dim.p,dim.n_t);
 end
@@ -172,6 +191,10 @@ if isfield(options,'priors')
         VBA_disp('---> Using default(non-informative) priors',options)
     end
     % check dimension and infinite precision priors
+    if isfield(options.priors,'a_sigma')
+        priors.a_sigma = options.priors.a_sigma(:);
+        priors.b_sigma = options.priors.b_sigma(:);
+    end
     if dim.n_theta > 0 % This finds which evolution params to update
         dpc = diag(priors.SigmaTheta);
         iz = find(dpc==0);
@@ -223,11 +246,13 @@ end
 
 
 % ensure excluded data consistency
-if ~options.binomial
-    for t=1:dim.n_t
-        diQ = diag(priors.iQy{t}).*~options.isYout(:,t);
-        options.isYout(:,t) = ~diQ;
-        priors.iQy{t} = diag(diQ)*priors.iQy{t}*diag(diQ);
+for i=numel(options.sources) 
+    if options.sources(i).type == 0 % if gaussian    
+        for t=1:dim.n_t
+            diQ = diag(priors.iQy{t,i}).*~options.isYout(options.sources(i).out,t);
+            options.isYout(options.sources(i).out,t) = ~diQ;
+            priors.iQy{t,i} = diag(diQ)*priors.iQy{t,i}*diag(diQ);
+        end
     end
 end
 
@@ -358,6 +383,7 @@ if dim.n > 0
         options.priors = priors;
         options.dim = dim;
     else
+       
         % Derive marginalization operators for the lagged Kalman filter
         n = dim.n;
         lag = options.backwardLag + 1;

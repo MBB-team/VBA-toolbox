@@ -192,14 +192,14 @@ if ~isnan(diagnostics.efficiency.alpha)
 %     str{11} = sprintf([str{11},'    - state noise precision hyperparameter: ',num2str(diagnostics.DKL.alpha,'%4.3e'),'\n ']);
 end
 if ~isnan(diagnostics.efficiency.sigma)
-    str{10} = sprintf([str{10},'    - data noise precision hyperparameter: ',num2str(diagnostics.efficiency.sigma,'%4.3e'),'\n ']);
-%     str{11} = sprintf([str{11},'    - data noise precision hyperparameter: ',num2str(diagnostics.DKL.sigma,'%4.3e'),'\n ']);
+    str{10} = sprintf([str{10},'    - data noise precision hyperparameter: ',num2str(diagnostics.efficiency.sigma','%4.3e '),'\n ']);
+%     str{11} = sprintf([str{11},'    - data noise precision hyperparameter: ',num2str(diagnostics.DKL.sigma','%4.3e '),'\n ']);
 end
 str{11} = sprintf(['Classical fit accuracy metrics:','\n ']);
-str{11} = sprintf([str{11},'    - coefficient of determination (R2): ',num2str(out.fit.R2,'%4.3f'),'\n ']);
-str{11} = sprintf([str{11},'    - log-likelihood: ',num2str(out.fit.LL,'%4.3e'),'\n ']);
-str{11} = sprintf([str{11},'    - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n ']);
-str{11} = sprintf([str{11},'    - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n ']);
+str{11} = sprintf([str{11},' - coefficient of determination (R2): ',num2str(out.fit.R2,'%4.3f'),'\n ']);
+str{11} = sprintf([str{11},' - log-likelihood: ',num2str(out.fit.LL,'%4.3e'),'\n ']);
+str{11} = sprintf([str{11},' - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n ']);
+str{11} = sprintf([str{11},' - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n ']);
 uicontrol('parent',hf,'style','text','tag','VBLaplace','units','normalized','position',[0.1,0.05,0.8,0.85],'backgroundcolor',[1,1,1],'HorizontalAlignment','left','fontsize',11,'string',str);
 
 
@@ -309,7 +309,11 @@ suffStat.dx0 = -posterior.muX0;
 suffStat.dtheta = -posterior.muTheta;
 suffStat.dphi = -posterior.muPhi;
 suffStat.vy = ud.diagnostics.pvy;
-
+try
+    Ns=numel(options.sources);
+catch
+    Ns=1;
+end
 
 % Initialize display figure
 options.display.hfp = hfig;
@@ -320,7 +324,7 @@ delete(options.display.hpause)
 delete(options.display.hm)
 delete(options.display.ho)
 if options.dim.n == 0 || isinf(posterior.a_alpha(end))
-    try delete(options.display.ha(8)); end
+    try delete(options.display.ha(2*Ns+6)); end
 end
 
 % Display data and hidden states (if any)
@@ -332,9 +336,9 @@ end
 % Display precision hyperparameters
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
-    xlabel(options.display.ha(6),' ')
+    xlabel(options.display.ha(2*Ns+4),' ')
     try
-        xlabel(options.display.ha(8),' ')
+        xlabel(options.display.ha(2*Ns+6),' ')
     end
 end
 
@@ -641,6 +645,7 @@ if ~isempty(hc)
     delete(hc)
 end
 
+
 % Second: re-display VB-Laplace inversion output
 ud = get(hfig,'userdata');
 out = ud.out;
@@ -651,7 +656,11 @@ options = out.options;
 options.noPause = 1;
 options.DisplayWin =1;
 suffStat = out.suffStat;
-
+try
+    Ns=numel(options.sources);
+catch
+    Ns=1;
+end
 dim = out.dim;
 
 % Initialize display figure
@@ -663,7 +672,7 @@ delete(options.display.hpause)
 delete(options.display.hm)
 delete(options.display.ho)
 if options.dim.n == 0 || isinf(posterior.a_alpha(end))
-    try delete(options.display.ha(8)); end
+    try delete(options.display.ha(2*Ns+6)); end
 end
 hfig = options.display.hfp;
 drawnow
@@ -676,9 +685,9 @@ end
 % Display precision hyperparameters
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
-    xlabel(options.display.ha(6),' ')
+    xlabel(options.display.ha(2*Ns+4),' ')
     try
-        xlabel(options.display.ha(8),' ')
+        xlabel(options.display.ha(2*Ns+6),' ')
     end
 end
 
@@ -709,7 +718,7 @@ u = out.u;
 y = out.y;
 
 try; out.fit; catch; out.fit = VBA_fit(posterior,out); end
-
+    
 % get kernels (NB: dcm = special case)
 if isequal(out.options.f_fname,@f_DCMwHRF) && isequal(out.options.g_fname,@g_HRF3)
     dcm = 1;
@@ -723,12 +732,13 @@ end
 [LLH0] = VBA_LMEH0(y);
 
 % Entropies and KL divergences
-if ~out.options.binomial
+
+if sum([out.options.sources(:).type]==0)>0 %~out.options.binomial
     efficiency.sigma = -out.suffStat.Ssigma;
     m0 = out.options.priors.a_sigma./out.options.priors.b_sigma;
-    v0 = out.options.priors.a_sigma./out.options.priors.b_sigma^2;
-    m = posterior.a_sigma(end)./posterior.b_sigma(end);
-    v = posterior.a_sigma(end)./posterior.b_sigma(end)^2;
+    v0 = out.options.priors.a_sigma./out.options.priors.b_sigma.^2;
+    m = posterior.a_sigma./posterior.b_sigma;
+    v = posterior.a_sigma./posterior.b_sigma.^2;
     DKL.sigma = VB_KL(m0,v0,m,v,'Gamma');
 else
     efficiency.sigma = NaN;

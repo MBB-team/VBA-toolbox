@@ -32,9 +32,12 @@ function [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,flag)
 
 switch flag
     case 'X'
+        if options.extended
+            error('*** Stochastic multichannel VB is not yet supported !');
+        end
         indIn = options.params2update.x;
         PreviousMu = posterior.muX;
-        if ~options.binomial
+        if ~options.binomial 
             fname = @VBA_IX_lagged;
         else
             fname = @VBA_IX_lagged_binomial;
@@ -50,13 +53,18 @@ switch flag
     case 'Phi'
         indIn = options.params2update.phi;
         PreviousMu = posterior.muPhi(indIn);
-        if options.nmog > 1
-            fname = @VBA_Iphi_split;
+        if options.extended
+            fname = @VBA_Iphi_extended;
         else
-            if ~options.binomial
-                fname = @VBA_Iphi;
-            else
+            if options.nmog > 1
+                if options.extended
+                    error('*** Splitted multichannel VB is not yet supported !');
+                end
+                fname = @VBA_Iphi_split;
+            elseif options.binomial
                 fname = @VBA_Iphi_binomial;
+            else
+                fname = @VBA_Iphi;
             end
         end
         s1 = 'I(<Phi>) =';
@@ -75,7 +83,7 @@ end
 
 % Get variational energy (I) and propose move (deltaMu)
 try
-    [I,Sigma,deltaMu,suffStat2] = feval(fname,PreviousMu,y,posterior,suffStat,dim,u,options);
+   [I,Sigma,deltaMu,suffStat2] = feval(fname,PreviousMu,y,posterior,suffStat,dim,u,options);
     PreviousI = I;
 catch
     VBA_disp(['Warning: could not evaluate variational energy on ',flag,'!'],options)

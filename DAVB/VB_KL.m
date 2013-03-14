@@ -39,10 +39,10 @@ switch distrib
     case 'Gamma'
         
         % derive standard parameters of the Gamma distribution
-        b1 = m1/v1;
-        b2 = m2/v2;
-        a1 = b1*m1;
-        a2 = b2*m2;
+        b1 = m1./v1;
+        b2 = m2./v2;
+        a1 = b1.*m1;
+        a2 = b2.*m2;
         
         try
             psia1 = psi(a1);
@@ -50,7 +50,7 @@ switch distrib
             psia1 = my_psi(a1);
         end
         
-        DKL = gammaln(a2) - gammaln(a1) - a1*(1-b2/b1) + a2*log(b1/b2) + (a1-a2)*psia1 ;
+        DKL = gammaln(a2) - gammaln(a1) - a1.*(1-b2./b1) + a2.*log(b1./b2) + (a1-a2).*psia1 ;
         
     otherwise
         

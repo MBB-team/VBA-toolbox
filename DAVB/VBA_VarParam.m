@@ -17,21 +17,26 @@ if options.DisplayWin
 end
 
 
-%- Measurement noise precision
-if ~options.binomial
-    iQy = options.priors.iQy{1};
-    [gx,dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,1),posterior.muPhi,u(:,1),options,dim,1);
-    dy = y(:,1) - gx;
-    dy2 = dy'*iQy*dy;
-    ny = length(find(diag(iQy)~=0));
-    posterior.a_sigma = options.priors.a_sigma + 0.5*ny;
-    posterior.b_sigma = options.priors.b_sigma + 0.5*dy2;
+%---- Measurement noise precision ----%
+[gx,dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,1),posterior.muPhi,u(:,1),options,dim,1);
+
+gsi = find([options.sources(:).type]==0);
+for si=1:length(gsi)
+    s_out = options.sources(gsi(si)).out ;
+    % first store variance over predicted data
+    iQyt=options.priors.iQy{1,si};
+    ny = length(find(diag(iQyt)~=0));
+    dy = y(s_out,1) - gx(s_out);
+    dy2 = dy'*iQyt*dy; 
+    posterior.a_sigma(si) = options.priors.a_sigma(si) + 0.5*ny;
+    posterior.b_sigma(si) = options.priors.b_sigma(si) + 0.5*dy2 ; 
     if dim.n > 0
-        posterior.b_sigma = posterior.b_sigma + 0.5*trace(dG_dX*iQy*dG_dX'*posterior.SigmaX.current{1});
+        posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt*dG_dX(:,s_out)'*posterior.SigmaX.current{1});
     end
     if dim.n_phi > 0
-        posterior.b_sigma = posterior.b_sigma + 0.5*trace(dG_dPhi*iQy*dG_dPhi'*posterior.SigmaPhi);
+        posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
     end
+  
 end
 
 %- State noise precision
@@ -52,23 +57,27 @@ end
 
 
 for t=2:dim.n_t
-    
-    %- Measurement noise precision
-    if ~options.binomial
-        iQy = options.priors.iQy{t};
-        [gx,dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),posterior.muPhi,u(:,t),options,dim,t);
-        dy = y(:,t) - gx;
-        dy2 = dy'*iQy*dy;
-        ny = length(find(diag(iQy)~=0));
-        posterior.a_sigma = posterior.a_sigma + 0.5*ny;
-        posterior.b_sigma = posterior.b_sigma + 0.5*dy2;
-        if dim.n > 0
-            posterior.b_sigma = posterior.b_sigma + 0.5*trace(dG_dX*iQy*dG_dX'*posterior.SigmaX.current{t});
-        end
-        if dim.n_phi > 0
-            posterior.b_sigma = posterior.b_sigma + 0.5*trace(dG_dPhi*iQy*dG_dPhi'*posterior.SigmaPhi);
-        end
+[gx,dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),posterior.muPhi,u(:,t),options,dim,t);
+
+%- Measurement noise precision         
+gsi = find([options.sources(:).type]==0);
+for si=1:length(gsi)
+    s_out = options.sources(gsi(si)).out ;
+    % first store variance over predicted data
+    iQyt=options.priors.iQy{t,si};
+    ny = length(find(diag(iQyt)~=0));
+    dy = y(s_out,t) - gx(s_out);
+    dy2 = dy'*iQyt*dy; 
+    posterior.a_sigma(si) = options.priors.a_sigma(si) + 0.5*ny;
+    posterior.b_sigma(si) = options.priors.b_sigma(si) + 0.5*dy2 ; 
+    if dim.n > 0
+        posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt*dG_dX(:,s_out)'*posterior.SigmaX.current{t});
     end
+    if dim.n_phi > 0
+        posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
+    end
+  
+end
     
     %- State noise precision
     if dim.n>0 && t<dim.n_t
@@ -96,7 +105,7 @@ end
 if dim.n>0 && posterior.b_alpha <=0
     posterior.a_alpha = a0;
     posterior.b_alpha = b0;
-    VBA_disp('Warning: cancelling VB update of state noise variance hyperparameter!',options);
+    VBA_disp('Warning: cancelling VB update of variance hyperparameter.',options);
 end
 
 
