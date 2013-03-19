@@ -23,18 +23,21 @@ end
 gsi = find([options.sources(:).type]==0);
 for si=1:length(gsi)
     s_out = options.sources(gsi(si)).out ;
-    % first store variance over predicted data
-    iQyt=options.priors.iQy{1,si};
-    ny = length(find(diag(iQyt)~=0));
-    dy = y(s_out,1) - gx(s_out);
-    dy2 = dy'*iQyt*dy; 
-    posterior.a_sigma(si) = options.priors.a_sigma(si) + 0.5*ny;
-    posterior.b_sigma(si) = options.priors.b_sigma(si) + 0.5*dy2 ; 
-    if dim.n > 0
-        posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt*dG_dX(:,s_out)'*posterior.SigmaX.current{1});
-    end
-    if dim.n_phi > 0
-        posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
+    s_out = s_out(options.isYout(s_out,1)==0);
+    if ~isempty(s_out)
+     % first store variance over predicted data
+        iQyt=options.priors.iQy{1,si};
+    	ny = length(find(diag(iQyt)~=0));
+        dy = y(s_out,1) - gx(s_out);
+        dy2 = dy'*iQyt*dy; 
+        posterior.a_sigma(si) = options.priors.a_sigma(si) + 0.5*ny;
+        posterior.b_sigma(si) = options.priors.b_sigma(si) + 0.5*dy2 ; 
+        if dim.n > 0
+            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt*dG_dX(:,s_out)'*posterior.SigmaX.current{1});
+        end
+        if dim.n_phi > 0
+            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
+        end
     end
   
 end
@@ -63,6 +66,8 @@ for t=2:dim.n_t
 gsi = find([options.sources(:).type]==0);
 for si=1:length(gsi)
     s_out = options.sources(gsi(si)).out ;
+    s_out = s_out(options.isYout(s_out,t)==0);
+    if ~isempty(s_out)
     % first store variance over predicted data
     iQyt=options.priors.iQy{t,si};
     ny = length(find(diag(iQyt)~=0));
@@ -76,7 +81,7 @@ for si=1:length(gsi)
     if dim.n_phi > 0
         posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
     end
-  
+    end
 end
     
     %- State noise precision

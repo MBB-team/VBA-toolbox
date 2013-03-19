@@ -140,15 +140,12 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
+        dTime_in = find(sum(options.isYout(s_out,:))==0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
-        if options.sources(s_i).type==0
-         vy_s = interpOut(vy(s_out,:),options.isYout(s_out,:));
-        else
-           vy_s= vy(s_out,:);
-        end
-        plotUncertainTimeSeries(gx(s_out,:),vy_s,dTime,display.ha(2*s_i-1));
+        vy_s= vy(s_out,:);
+        plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
         set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
         
@@ -224,15 +221,12 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
+        dTime_in = find(sum(options.isYout(s_out,:))==0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
-        if options.sources(s_i).type==0
-         vy_s = interpOut(vy(s_out,:),options.isYout(s_out,:));
-        else
-           vy_s= vy(s_out,:);
-        end
-        plotUncertainTimeSeries(gx(s_out,:),vy_s,dTime,display.ha(2*s_i-1));
+        vy_s= vy(s_out,:);
+        plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
          set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
         
@@ -306,15 +300,12 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
+        dTime_in = find(sum(options.isYout(s_out,:))==0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
-         if options.sources(s_i).type==0
-         vy_s = interpOut(vy(s_out,:),options.isYout(s_out,:));
-        else
-           vy_s= vy(s_out,:);
-         end
-         plotUncertainTimeSeries(gx(s_out,:),vy_s,dTime,display.ha(2*s_i-1));
+        vy_s= vy(s_out,:);
+        plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
         set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
 
@@ -378,12 +369,14 @@ end
 end
 
 function [nseq] = interpOut(seq,isYout)
+    nseq=seq;
+    return
 [n,t]=size(seq);
 times=1:t;
 for i = 1:n
     mask =  isYout(i,:)==0;
     nseq_i = seq(i,:);
-    nseq_i(~mask) = interp1(times(mask), nseq_i(mask), times(~mask));
+    nseq_i(~mask) = interp1(times(mask), nseq_i(mask), times(~mask),'spline',0);
     nseq_i(isnan(nseq_i))=0;
     nseq(i,:)=nseq_i;
 end

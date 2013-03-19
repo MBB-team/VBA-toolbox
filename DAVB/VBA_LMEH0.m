@@ -1,4 +1,4 @@
-function [LLH0] = VBA_LMEH0(y,priors)
+function [LLH0] = VBA_LMEH0(y,options)
 % evaluates the log-evidence of the null (H0) model
 % [LLH0] = VBA_LMEH0(y)
 % This function evaluates the exact log marginal likelihood of a null model
@@ -11,6 +11,11 @@ function [LLH0] = VBA_LMEH0(y,priors)
 %   - y: the data matrix;
 % OUT:
 %   - LLH0: the log evidence of the null model
+
+if options.extended
+    LLH0=VBA_LMEH0_extended(y,options);
+    return;
+end
 
 n = numel(y);
 if ~isbinary(y)

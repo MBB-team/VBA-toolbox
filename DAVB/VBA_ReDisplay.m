@@ -729,7 +729,7 @@ end
 [kernels.H1,kernels.K1,kernels.tgrid] = getKernels(posterior,out,dcm);
 
 % get null model (H0) evidence
-[LLH0] = VBA_LMEH0(y);
+[LLH0] = VBA_LMEH0(y,out.options);
 
 % Entropies and KL divergences
 

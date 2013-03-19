@@ -73,57 +73,7 @@ for t=1:dim.n_t
     
  
     
-%     %- check gaussian sources
-%     gsi = find([options.sources(:).type]==0) ;
-%     for i=1:length(gsi)   
-%         si = gsi(i) ; % source number
-%         s_out = options.sources(si).out ; % corresponding observation indices
-%         % Get precision parameters
-%         sigmaHat = posterior.a_sigma(si)./posterior.b_sigma(si);
-%          % error terms
-%         s_yin = s_out(~options.isYout(s_out,t));
-% %         if length(s_yin) == length(s_out)
-%             dy(s_yin,t) = y(s_yin,t) - gx(s_yin,t);
-%             dy2_t = dy(s_yin,t)'*iQy{t,si}*dy(s_yin,t);
-%             dy2(gsi(si)) = dy2(gsi(si)) + dy2_t;
-%             logL(si) = 0;% logL(si) -.5*sigmaHat*dy2_t;
-% %         end
-%         % Predictive density (data space)
-%         V = dG_dPhi(:,s_out)'*posterior.SigmaPhi*dG_dPhi(:,s_out) + (1./sigmaHat).*VB_inv(iQy{t,si},[]);
-%         vy(s_out,t) = diag(V);
-%     end
-%     %- check binomial sources
-%     bsi = find([options.sources(:).type]==1) ;
-%     for i=1:length(bsi)
-%         si = bsi(i) ; % source number
-%         s_out = options.sources(si).out ; % corresponding observation indices
-%         % fix numerical instabilities
-%         gx(s_out,t) = checkGX_binomial(gx(s_out,t)); 
-%         % predicted variance over binomial data
-%         vy(s_out,t) = gx(s_out,t).*(1-gx(s_out,t));
-%         s_yin = s_out(~options.isYout(s_out,t));
-%         % accumulate log-likelihood
-%         logL(si) = logL(si) + y(s_yin,t)'*log(gx(s_yin,t)) + (1-y(s_yin,t))'*log(1-gx(s_yin,t));
-%         % prediction error
-%         dy(s_yin,t) = y(s_yin,t) - gx(s_yin,t);
-%     end
-%     %- check multinomial sources
-%     msi = find([options.sources(:).type]==2) ;
-%     for i=1:length(msi)
-%         si = msi(i) ; % source number
-%         s_out = options.sources(si).out ; % corresponding observation indices
-%         % fix numerical instabilities
-%         gx(s_out,t) = checkGX_binomial(gx(s_out,t));
-%         % predicted variance over binomial data
-%         vy(s_out,t) = gx(s_out,t).*(1-gx(s_out,t));
-%         s_yin = s_out(~options.isYout(s_out,t));
-%         % accumulate log-likelihood
-%         logL(si) = logL(si) + log(gx(s_yin,t))'*y(s_yin,t) ;
-%         % prediction error
-%         dy(s_yin,t) = y(s_yin,t) - gx(s_yin,t);
-%         
-%     end
-%%
+
    % accumulate gradients, hessian and likelyhood
     gsi = find([options.sources(:).type]==0) ;
     for si = 1:numel(options.sources)
@@ -146,22 +96,30 @@ for t=1:dim.n_t
             % aggregate
             dy2(si) = dy2(si) + dy2_t;
             logL(si) = logL(si) + logL_t;
-
+            
+             if options.sources(si).type==0
+                V = dG_dPhi(:,idx_obs)'*posterior.SigmaPhi*dG_dPhi(:,idx_obs) ;
+                if dim.n > 0
+                    V = V + dG_dX(:,idx_obs)'*posterior.SigmaX.current{t}*dG_dX(:,idx_obs);
+                end
+                vy(idx_obs,t) = vy(idx_obs,t) + diag(V);
+            end
+                 
         end
         
         
         
     end
 
-    % include parameter variance in predictive density of data
-    Vsi = [options.sources(gsi).out];
-    if ~isempty(Vsi)
-    	V = dG_dPhi(:,Vsi)'*posterior.SigmaPhi*dG_dPhi(:,Vsi) ;
-        if dim.n > 0
-            V = V + dG_dX(:,Vsi)'*posterior.SigmaX.current{t}*dG_dX(:,Vsi);
-        end
-        vy(Vsi,t) = vy(Vsi,t) + diag(V);
-    end
+%     % include parameter variance in predictive density of data
+%     Vsi = [options.sources(gsi).out];
+%     if ~isempty(Vsi)
+%     	V = dG_dPhi(:,Vsi)'*posterior.SigmaPhi*dG_dPhi(:,Vsi) ;
+%         if dim.n > 0
+%             V = V + dG_dX(:,Vsi)'*posterior.SigmaX.current{t}*dG_dX(:,Vsi);
+%         end
+%         vy(Vsi,t) = vy(Vsi,t) + diag(V);
+%     end
 
  %%
     

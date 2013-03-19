@@ -73,6 +73,8 @@ muy(1:dim.p,1) = gx(:,1);
 gsi = find([options.sources(:).type]==0);
 for si=1:numel(options.sources)
     s_idx = options.sources(si).out ;
+    s_idx = s_idx(options.isYout(s_idx,1)==0);
+    if ~isempty(s_idx)
     % - binary
     if options.sources(si).type 
         % true binomial
@@ -96,6 +98,7 @@ for si=1:numel(options.sources)
     Vy(s_idx,s_idx) = Vy_tmp ;
     if get_iVp
         iVp = iVp + dgdp(:,s_idx)*tmp*dgdp(:,s_idx)';
+    end
     end
 end
 
@@ -122,6 +125,8 @@ for t = 2:dim.n_t
 
     for si=1:numel(options.sources)
         s_idx = options.sources(si).out ;
+        s_idx = s_idx(options.isYout(s_idx,1)==0);
+        if ~isempty(s_idx)
         s_idx_t = dim.p*(t-1)+s_idx ;
         % - binary
         if options.sources(si).type
@@ -146,6 +151,7 @@ for t = 2:dim.n_t
         Vy(s_idx_t,s_idx_t) = Vy_tmp ;
         if get_iVp
             iVp = iVp + dgdp(:,s_idx_t)*tmp*dgdp(:,s_idx_t)';
+        end
         end
     end
 

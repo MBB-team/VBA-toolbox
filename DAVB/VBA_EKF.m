@@ -42,7 +42,6 @@ if ~exist('flag','var') || isempty(flag)
     flag = 1;
 end
 
-
 % This checks and fills in required dummy variables
 if isempty(u)
     u = zeros(1,dim.n_t);

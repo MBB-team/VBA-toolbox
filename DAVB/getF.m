@@ -15,4 +15,4 @@ end
 
 [F] = VBA_FreeEnergy(posterior,out.suffStat,out.options);
 
-[FH0] = VBA_LMEH0(out.y);
+[FH0] = VBA_LMEH0(out.y,out.options);

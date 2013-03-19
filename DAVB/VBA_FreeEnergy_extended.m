@@ -51,7 +51,7 @@ for si=1:length(gsi)
     ElogS(si) = psi(posterior.a_sigma(si)) - log(posterior.b_sigma(si));
 end
 for si=1:length(bmsi)
-    SSE = SSE -2*suffStat.logL(bmsi(si));
+    SSE = SSE - 2*suffStat.logL(bmsi(si));
 end
 ldQ = 0;
 S = 0;

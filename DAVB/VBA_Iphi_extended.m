@@ -85,21 +85,29 @@ for t=1:dim.n_t
             dy2(si) = dy2(si) + dy2_t;
             logL(si) = logL(si) + logL_t;
 
+            if options.sources(si).type==0
+                V = dG_dPhi(:,idx_obs)'*posterior.SigmaPhi*dG_dPhi(:,idx_obs) ;
+                if dim.n > 0
+                    V = V + dG_dX(:,idx_obs)'*posterior.SigmaX.current{t}*dG_dX(:,idx_obs);
+                end
+                vy(idx_obs,t) = vy(idx_obs,t) + diag(V);
+            end
+                
         end
         
         
         
     end
 
-    % include parameter variance in predictive density of data
-    Vsi = [options.sources(gsi).out];
-    if ~isempty(Vsi)
-      V = dG_dPhi(:,Vsi)'*posterior.SigmaPhi*dG_dPhi(:,Vsi) ;
-      if dim.n > 0
-        V = V + dG_dX(:,Vsi)'*posterior.SigmaX.current{t}*dG_dX(:,Vsi);
-      end
-      vy(Vsi,t) = vy(Vsi,t) + diag(V);
-    end
+%     % include parameter variance in predictive density of data
+%     Vsi = [options.sources(gsi).out];
+%     if ~isempty(Vsi)
+%       V = dG_dPhi(:,Vsi)'*posterior.SigmaPhi*dG_dPhi(:,Vsi) ;
+%       if dim.n > 0
+%         V = V + dG_dX(:,Vsi)'*posterior.SigmaX.current{t}*dG_dX(:,Vsi);
+%       end
+%       vy(Vsi,t) = vy(Vsi,t) + diag(V);
+%     end
     
     
     % Display progress
