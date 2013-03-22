@@ -122,15 +122,18 @@ for i=1:n_sources
         end
         y(s_idx,1) = gt(s_idx) ;
         y(s_idx,1) = y(s_idx,1) + e(s_idx,1);
-    else % binary
-        if length(s_idx) == 1 % true binomial
-            y(s_idx,1) = sampleFromArbitraryP([gt(s_idx),1-gt(s_idx)],[1,0],1);
+    elseif  options.sources(i).type == 1% binary
+     % true binomial
+            for k=1:length(s_idx)
+                y(s_idx(k),1) = sampleFromArbitraryP([gt(s_idx(k)),1-gt(s_idx(k))],[1,0]',1);
+                e(s_idx(k),1) = y(s_idx(k),1) - gt(s_idx(k));
+            end
         else % multinomial
             resp = zeros(length(s_idx),1) ;
             resp(sampleFromArbitraryP(gt(s_idx),1:length(s_idx),1)) = 1;
             y(s_idx,1) = resp;
-        end
-        e(s_idx,1) = y(s_idx,1) - gt(s_idx);
+            e(s_idx,1) = y(s_idx,1) - gt(s_idx);
+        
     end
 end
 

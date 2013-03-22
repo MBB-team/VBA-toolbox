@@ -22,6 +22,11 @@ function [priors] = VBA_priors(dim,options)
 %       Gamma pdf upon the stochastic innovations precision
 
 
+if options.extended
+    [priors] = VBA_priors_extended(dim,options);
+    return
+end
+
 % prior Gamma pdf of the measurement noise (Jeffrey)
 if ~options.binomial
     priors.a_sigma = 1e0;
