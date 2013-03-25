@@ -22,7 +22,7 @@ function [priors] = VBA_priors(dim,options)
 %       Gamma pdf upon the stochastic innovations precision
 
 
-if options.extended
+if isfield(options,'extended') && options.extended
     [priors] = VBA_priors_extended(dim,options);
     return
 end
