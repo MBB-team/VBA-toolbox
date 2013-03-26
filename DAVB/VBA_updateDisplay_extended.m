@@ -140,7 +140,7 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(options.isYout(s_out,:))==0);
+        dTime_in = find(sum(options.isYout(s_out,:),1)==0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
@@ -221,7 +221,7 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(options.isYout(s_out,:))==0);
+        dTime_in = find(sum(options.isYout(s_out,:),1)==0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
@@ -300,7 +300,7 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(options.isYout(s_out,:))==0);
+        dTime_in = find(sum(options.isYout(s_out,:),1)==0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
