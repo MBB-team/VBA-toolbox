@@ -130,7 +130,9 @@ try
         out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',0);
     end
 catch
-    disp('Warning: exceedance probabilities are approximated!')
+    if options.verbose
+        disp('Warning: exceedance probabilities are approximated!');
+    end
 end
 out.date = clock;
 if options.DisplayWin

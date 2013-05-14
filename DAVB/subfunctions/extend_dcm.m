@@ -17,15 +17,16 @@ inF.hD = inFtemp.D ;
 
 %- parameter indices
 inF.indhA = inFtemp.indA + inF.indself ;
-for i=1:length(hB)
+for i=1:length(inF.hB)
     inF.indhB{i} = inFtemp.indB{i} + inF.indself ;
 end
 inF.indhC = inFtemp.indC + inF.indself ;
-for i=1:length(hD)
+for i=1:length(inF.hD)
     inF.indhD{i} = inFtemp.indD{i} + inF.indself ;
 end
+inFtemp.indself = inFtemp.indself + (0:n_r-1);
 inF.indhself = inFtemp.indself + inF.indself ;
-inF.indconst = inF.indhself + (1:n_r);
+inF.indconst = inF.indhself(end) + (1:n_r);
 %- indicators
 inF.dhA = inFtemp.dA;
 inF.dhB = inFtemp.dB;

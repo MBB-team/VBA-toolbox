@@ -30,16 +30,6 @@ else
     dgdx(:,:)=beta*ex /(ex+1)^2; 
     
     %derivative wrt parameters
-    dgdp(in.indr,:) = Xt*beta*ex/(ex+1)^2;
-    
-%     ex = exp(-beta*Xt);
-%     gx=.05/(.05+ex);
-%     
-%     % derivative wrt state
-%     dgdx(:,:)=.05*beta*ex /(ex+.05)^2; 
-%     
-%     %derivative wrt parameters
-%     dgdp(in.indr,:) = .05*Xt*beta*ex/(ex+.05)^2;
-    
+    dgdp(in.indr,:) = Xt*beta*ex/(ex+1)^2;   
 
 end

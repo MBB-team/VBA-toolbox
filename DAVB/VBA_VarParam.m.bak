@@ -6,12 +6,6 @@ function [posterior,suffStat] = VBA_VarParam(y,posterior,suffStat,dim,u,options)
 % posterior pdf of the variance parameters (measurement noise and
 % stochastic innovations).
 
-if isfield(options,'extended')
-    if options.extended
-        [posterior,suffStat] = VBA_VarParam_extended(y,posterior,suffStat,dim,u,options);
-        return
-    end
-end
 if isequal(options.g_fname,@VBA_odeLim)
     clear VBA_odeLim
 end
@@ -58,7 +52,7 @@ end
 
 
 for t=2:dim.n_t
-   
+    
     %- Measurement noise precision
     if ~options.binomial
         iQy = options.priors.iQy{t};
@@ -75,7 +69,7 @@ for t=2:dim.n_t
             posterior.b_sigma = posterior.b_sigma + 0.5*trace(dG_dPhi*iQy*dG_dPhi'*posterior.SigmaPhi);
         end
     end
-   
+    
     %- State noise precision
     if dim.n>0 && t<dim.n_t
         iQx = VB_inv(options.priors.iQx{t},options.params2update.x{t},'replace');
@@ -89,13 +83,13 @@ for t=2:dim.n_t
             posterior.b_alpha = posterior.b_alpha + 0.5*trace(dF_dTheta*iQx*dF_dTheta'*posterior.SigmaTheta);
         end
     end
-   
+    
     % Display progress
     if options.DisplayWin && mod(t,dim.n_t./10) < 1
         set(options.display.hm(2),'string',[num2str(floor(100*t/dim.n_t)),'%']);
         drawnow
     end
-   
+    
 end
 
 % regularize VB update
@@ -110,5 +104,8 @@ if options.DisplayWin
     set(options.display.hm(2),'string','OK.');
     drawnow
 end
+
+
+
 
 

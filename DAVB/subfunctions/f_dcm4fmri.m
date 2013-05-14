@@ -22,17 +22,17 @@ nu = size(ut,1);
 dfdp = zeros(size(Theta,1),n);
 dfdp(inF.indself,:) = -exp(Theta(inF.indself)).*Xt';
 In = eye(n);
-xI = kron(Xt',In);
+xI = mykron(Xt',In);
 
 A = inF.A;
-if isempty(A)
-    A = zeros(n,n);
-end
+% if isempty(A)
+%     A = zeros(n,n);
+% end
 indA = inF.indA;
 if ~isempty(indA)
     A(A~=0) = Theta(indA);
     A = A - exp(Theta(inF.indself)).*eye(n);
-    dfdp(indA,:) = [xI*inF.dA]';
+    dfdp(indA,:) = (xI*inF.dA)';
 else
     A = A - exp(Theta(inF.indself)).*eye(n);
 end
@@ -41,24 +41,24 @@ B = inF.B;
 indB = inF.indB;
 dxB = zeros(n,n);
 for i=1:nu
-    if isempty(B{i})
-        B{i} = zeros(n,n);
-    end
+%     if isempty(B{i})
+%         B{i} = zeros(n,n);
+%     end
     if ~isempty(indB{i})
         B{i}(B{i}~=0) = Theta(indB{i});
-        dfdp(indB{i},:) = ut(i).*[xI*inF.dB{i}]';
+        dfdp(indB{i},:) = ut(i).*(xI*inF.dB{i})';
         dxB = dxB + ut(i).*B{i};
     end
 end
 
 C = inF.C;
-if isempty(C)
-    C = zeros(n,nu);
-end
+% if isempty(C)
+%     C = zeros(n,nu);
+% end
 indC = inF.indC;
 if ~isempty(indC)
     C(C~=0) = Theta(indC);
-    dfdp(indC,:) = [kron(ut',In)*inF.dC]';
+    dfdp(indC,:) = (mykron(ut',In)*inF.dC)';
 end
 
 D = inF.D;
@@ -66,16 +66,16 @@ indD = inF.indD;
 dxD = zeros(n,n);
 dxD2 = dxD;
 for i=1:n
-    if isempty(D{i})
-        D{i} = zeros(n,n);
-    end
+%     if isempty(D{i})
+%         D{i} = zeros(n,n);
+%     end
     if ~isempty(indD{i})
         D{i}(D{i}~=0) = Theta(indD{i});
         tmp = Xt(i)*D{i};
         dxD = dxD + tmp;
         tmp(:,i) = tmp(:,i)+D{i}*Xt;
         dxD2 = dxD2 +tmp;
-        dfdp(indD{i},:) = Xt(i)*[xI*inF.dD{i}]';
+        dfdp(indD{i},:) = Xt(i)*(xI*inF.dD{i})';
     end
 end
 

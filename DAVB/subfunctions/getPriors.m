@@ -25,7 +25,7 @@ catch
 end
 
 if extended
-    dim.n_phi = options.inG.indr;
+    dim.n_phi = options.inG.indr(end);
 else
     dim.n_phi = options.inG.ind2(end);
 end
@@ -71,11 +71,11 @@ if extended
     idx = options.inF.indself+1:options.inF.indhself-1;
     priors.SigmaTheta(idx,idx) =   5e0*eye(numel(idx));
     % fixed Dirac kernel
-    priors.muTheta(options.inF.indhself) = log(.8/options.inF.deltat); 
-    priors.SigmaTheta(options.inF.indhself,options.inF.indhself) = .1; 
+    priors.muTheta(options.inF.indhself) = log(.5/options.inF.deltat); 
+    priors.SigmaTheta(options.inF.indhself,options.inF.indhself) = 1*eye(dim.n_r); 
     % const
     priors.muTheta(options.inF.indconst) = 0; 
-    priors.SigmaTheta(options.inF.indconst,options.inF.indconst) = 5e0; 
+    priors.SigmaTheta(options.inF.indconst,options.inF.indconst) = 5e0*eye(dim.n_r); 
     
 end
 
@@ -86,7 +86,7 @@ priors.muPhi = zeros(dim.n_phi,1);
 priors.SigmaPhi = 1e-2*eye(dim.n_phi);
 %- extension
 if extended
-    priors.SigmaPhi(options.inG.indr,options.inG.indr)=0; 
+   priors.SigmaPhi(options.inG.indr,options.inG.indr)=1*eye(dim.n_r); 
 end
 
 
@@ -94,6 +94,9 @@ end
 for t = 1:n_t
     dq = 1e2*ones(dim.n,1); 
     dq(options.inF.n5) = 1;
+    if extended
+        dq(options.inF.r) = 100;
+    end
     priors.iQx{t} = diag(dq);
 %     dq = [ones(1,nreg)];
 %     priors.iQy{t,1} = diag(dq);         

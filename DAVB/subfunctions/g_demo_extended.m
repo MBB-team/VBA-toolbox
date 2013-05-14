@@ -1,4 +1,8 @@
 function [gx,dgdx,dgdp] = g_demo_extended(Xt,P,ut,in) 
+% canonical observation function for extended DCM.
+% The output is the concatenation of:
+% - classical HRF applied on neural states
+% - multinomial prediction from hidden extended states
 
 %- initializations
 idX1 = 1:in.n5(end);

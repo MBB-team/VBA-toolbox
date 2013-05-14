@@ -9,8 +9,32 @@ function [inF] = prepare_dcm(A,B,C,D)
 % OUT:
 %   - inF: the optional input structure to @f_dcm4fmri
 
+%check for empty matrices
+nu = max([numel(B) size(C,2)]);
+nx1 = max([size(A,1) cellfun(@(cel) size(cel,1),B) size(C,1) cellfun(@(cel) size(cel,1),D) ]);
+nx2 = max([size(A,2) cellfun(@(cel) size(cel,2),B) size(C,1) cellfun(@(cel) size(cel,2),D) ]);
+
+if isempty(A)
+    A = zeros(nx1,nx2);
+end
+for i=1:nu
+    if isempty(B) || numel(B)<i || isempty(B{i})
+        B{i} = zeros(nx1,nx2);
+    end
+end
+if isempty(C)
+    C = zeros(nx1,nu);
+end
+for i=1:nx2
+    if isempty(D) || numel(D)<i || isempty(D{i})
+        D{i} = zeros(nx1,nx2);
+    end
+end
+
+%prepare indices
 [indA,indB,indC,indD,indself] = find_dcm(A,B,C,D);
 
+%save
 inF.indself = indself;
 inF.A = A;
 inF.indA = indA;
@@ -20,6 +44,8 @@ inF.C = C;
 inF.indC = indC;
 inF.D = D;
 inF.indD = indD;
+
+
 
 [inF.dA,inF.dB,inF.dC,inF.dD] = get_dMatdvec(inF);
 

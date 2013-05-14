@@ -14,19 +14,24 @@ function fit = VBA_fit(posterior,out)
 suffStat = out.suffStat;
 
 % Log-likelihood
-if ~out.options.binomial
-    v = posterior.b_sigma./posterior.a_sigma;
-    fit.LL = -0.5*out.suffStat.dy2/v;
-    fit.ny = 0;
+gsi = find([out.options.sources.type]==0);
+for i=1:length(gsi)
+    si=gsi(i);
+    v(i) = posterior.b_sigma(i)/posterior.a_sigma(i);
+    fit.LL(si) = -0.5*out.suffStat.dy2(i)/v(i);
+    fit.ny(si) = 0;
     for t=1:out.dim.n_t
-        ldq = VBA_logDet(out.options.priors.iQy{t}/v);
-        fit.ny = fit.ny + length(find(diag(out.options.priors.iQy{t})~=0));
-        fit.LL = fit.LL - 0.5*ldq;
+        ldq = VBA_logDet(out.options.priors.iQy{t,i}/v(i));
+        fit.ny(si) = fit.ny(si) + length(find(diag(out.options.priors.iQy{t,i})~=0));
+        fit.LL(si) = fit.LL(si) - 0.5*ldq;
     end
-    fit.LL = fit.LL - 0.5*fit.ny*log(2*pi);
-else
-    fit.LL = out.suffStat.logL;
-    fit.ny = sum(1-out.options.isYout(:));
+    fit.LL(si) = fit.LL(si) - 0.5*fit.ny(si)*log(2*pi);
+end
+bsi = find([out.options.sources.type]~=0);
+for i=1:length(bsi)
+    si=bsi(i);
+    fit.LL(si) = out.suffStat.logL(si);
+    fit.ny(si) = sum(1-out.options.isYout(:));
 end
 
 % coefficient of determination
@@ -51,6 +56,6 @@ if out.dim.n > 0  && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.
     end
 end
 fit.AIC = fit.LL - fit.ntot;
-fit.BIC = fit.LL - 0.5*fit.ntot*log(fit.ny);
+fit.BIC = fit.LL - 0.5*fit.ntot.*log(fit.ny);
 
 

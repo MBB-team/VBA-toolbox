@@ -46,9 +46,10 @@ if isequal(options.g_fname,@VBA_odeLim)
 end
 div = 0;
 
+isTout = sum(options.isYout)==size(options.isYout,1);
+
 %--- Loop over time series ---%
 for t=1:dim.n_t
-    
     % evaluate observation function at current mode
     [gx(:,t),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
         
@@ -60,12 +61,15 @@ for t=1:dim.n_t
         SigmaX{t} = dG_dX.dx'*posterior.SigmaPhi*dG_dX.dx;  
     end
     
+    if ~isTout(t)
+        
     % accumulate gradients, hessian and likelyhood
     gsi = find([options.sources(:).type]==0) ;
     for si = 1:numel(options.sources)
         % compute source contribution
         idx_obs_all = options.sources(si).out;
-        idx_obs = idx_obs_all(options.isYout(idx_obs_all,t)==0);
+        is_obs_out = find(options.isYout(idx_obs_all,t)==0);
+        idx_obs = idx_obs_all(is_obs_out);
        
         if ~isempty(idx_obs) 
             
@@ -75,8 +79,9 @@ for t=1:dim.n_t
                 gi = find(si==gsi) ;
                 sigmaHat = posterior.a_sigma(gi)./posterior.b_sigma(gi);
                 iQyt = iQy{t,gi};
+                iQyt=iQyt(is_obs_out,is_obs_out);
             end
-            
+         
             [ddydphi_t,d2gdx2_t,logL_t,dy(idx_obs,t),dy2_t,vy(idx_obs,t)] = VBA_get_dL(gx(idx_obs,t),dG_dPhi(:,idx_obs),y(idx_obs,t),options.sources(si).type,iQyt,sigmaHat);
                        
             % aggregate
@@ -99,16 +104,7 @@ for t=1:dim.n_t
         
     end
 
-%     % include parameter variance in predictive density of data
-%     Vsi = [options.sources(gsi).out];
-%     if ~isempty(Vsi)
-%       V = dG_dPhi(:,Vsi)'*posterior.SigmaPhi*dG_dPhi(:,Vsi) ;
-%       if dim.n > 0
-%         V = V + dG_dX(:,Vsi)'*posterior.SigmaX.current{t}*dG_dX(:,Vsi);
-%       end
-%       vy(Vsi,t) = vy(Vsi,t) + diag(V);
-%     end
-    
+   end 
     
     % Display progress
     if mod(t,dim.n_t./10) < 1
@@ -118,11 +114,14 @@ for t=1:dim.n_t
         end
     end
     
+    
+    
     % Accelerate divergent update
     if isweird({dy2,dG_dPhi,dG_dX})
         div = 1;
         break
     end
+    
     
 end
 

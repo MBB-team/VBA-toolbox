@@ -140,12 +140,14 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(options.isYout(s_out,:),1)==0);
+        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
         vy_s= vy(s_out,:);
+        if ~isempty(dTime_in)
         plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+        end
         set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
         
@@ -221,12 +223,14 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(options.isYout(s_out,:),1)==0);
+        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
         vy_s= vy(s_out,:);
+        if ~isempty(dTime_in)
         plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+        end
          set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
         
@@ -300,13 +304,15 @@ switch flag % What piece of the model to display?
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(options.isYout(s_out,:),1)==0);
+        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
         plot(display.ha(2*s_i-1),dTime,y_s',':')
         plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
         plot(display.ha(2*s_i-1),dTime,y_s_on','.')
         vy_s= vy(s_out,:);
-        plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
-        set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
+        if ~isempty(dTime_in)
+            plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+        end
+         set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
 
      end   
