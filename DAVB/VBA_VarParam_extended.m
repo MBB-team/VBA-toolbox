@@ -58,31 +58,25 @@ if dim.n >0
     end
 end
 
-
+gsi = find([options.sources(:).type]==0);
 for t=2:dim.n_t
 [gx,dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),posterior.muPhi,u(:,t),options,dim,t);
 
 %- Measurement noise precision         
-gsi = find([options.sources(:).type]==0);
+
 for si=1:length(gsi)
     s_out = options.sources(gsi(si)).out ;
-    is_s_out = find(options.isYout(s_out,t)==0);
-    s_out = s_out(is_s_out);
-    if ~isempty(s_out)
-    % first store variance over predicted data
     iQyt=options.priors.iQy{t,si};
-    iQyt = iQyt(is_s_out,is_s_out);
-    ny = length(find(diag(iQyt)~=0));
-    dy = y(s_out,t) - gx(s_out);
+    dy = y(s_out,t) - gx(s_out); 
     dy2 = dy'*iQyt*dy; 
-    posterior.a_sigma(si) = options.priors.a_sigma(si) + 0.5*ny;
-    posterior.b_sigma(si) = options.priors.b_sigma(si) + 0.5*dy2 ; 
+    ny = length(find(diag(iQyt)~=0));
+    posterior.a_sigma(si) = posterior.a_sigma(si) + 0.5*ny;
+    posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*dy2; 
     if dim.n > 0
         posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt*dG_dX(:,s_out)'*posterior.SigmaX.current{t});
     end
     if dim.n_phi > 0
         posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
-    end
     end
 end
     
@@ -114,7 +108,6 @@ if dim.n>0 && posterior.b_alpha <=0
     posterior.b_alpha = b0;
     VBA_disp('Warning: cancelling VB update of variance hyperparameter.',options);
 end
-
 
 if options.DisplayWin
     set(options.display.hm(2),'string','OK.');
