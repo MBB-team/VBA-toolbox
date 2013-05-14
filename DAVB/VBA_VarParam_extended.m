@@ -65,11 +65,16 @@ for t=2:dim.n_t
 %- Measurement noise precision         
 
 for si=1:length(gsi)
-    s_out = options.sources(gsi(si)).out ;
+   s_out = options.sources(gsi(si)).out ;
+    is_s_out = find(options.isYout(s_out,t)==0);
+    s_out = s_out(is_s_out);
+    if ~isempty(s_out)
+    % first store variance over predicted data
     iQyt=options.priors.iQy{t,si};
-    dy = y(s_out,t) - gx(s_out); 
-    dy2 = dy'*iQyt*dy; 
+    iQyt = iQyt(is_s_out,is_s_out);
     ny = length(find(diag(iQyt)~=0));
+    dy = y(s_out,t) - gx(s_out);
+    dy2 = dy'*iQyt*dy; 
     posterior.a_sigma(si) = posterior.a_sigma(si) + 0.5*ny;
     posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*dy2; 
     if dim.n > 0
@@ -77,6 +82,7 @@ for si=1:length(gsi)
     end
     if dim.n_phi > 0
         posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
+    end
     end
 end
     
