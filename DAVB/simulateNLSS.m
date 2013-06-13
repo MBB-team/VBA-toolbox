@@ -174,7 +174,8 @@ for i=1:n_sources
         y(s_idx,t) = y(s_idx,t) + e(s_idx,t);
     else % binary
         if length(s_idx) == 1 % true binomial
-            y(s_idx,t) = sampleFromArbitraryP([gt(s_idx),1-gt(s_idx)],[1,0],1);
+%             y(s_idx,t) = sampleFromArbitraryP([gt(s_idx),1-gt(s_idx)],[1,0],1);
+            y(s_idx,t) = binomial_sample(gt(s_idx));
         else % multinomial
             resp = zeros(length(s_idx),1) ;
             try
