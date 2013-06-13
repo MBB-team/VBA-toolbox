@@ -1,9 +1,11 @@
-function [y,dy] = safePositif(x)
+function [y,dy] = safePositif(x,k)
 % safePositif: max(0,x) but toolbox friendly (with gradient)
 % y      = safePositif(x)
 % [y,dy] = safePositif(x)
 
-k = 30;
+if nargin<2
+	k = 30;
+end
 
 %%
 y = log(1+exp(k*x))/k;
