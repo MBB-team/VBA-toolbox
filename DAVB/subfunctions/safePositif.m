@@ -3,7 +3,7 @@ function [y,dy] = safePositif(x)
 % y      = safePositif(x)
 % [y,dy] = safePositif(x)
 
-k = 150;
+k = 30;
 
 %%
 y = log(1+exp(k*x))/k;
