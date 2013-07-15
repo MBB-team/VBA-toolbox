@@ -15,6 +15,7 @@ y(isinf(y))=x(isinf(y));
 if nargout>1
     dy=exp(k*x) ./ (exp(k*x) + 1); 
     dy(isnan(dy))=1;
+    dy(dy==0) = 1e-7;
 end
 
 end

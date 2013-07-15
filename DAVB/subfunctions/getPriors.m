@@ -75,7 +75,7 @@ if extended
     priors.SigmaTheta(options.inF.indhself,options.inF.indhself) = 1*eye(dim.n_r); 
     % const
     priors.muTheta(options.inF.indconst) = 0; 
-    priors.SigmaTheta(options.inF.indconst,options.inF.indconst) = 5e0*eye(dim.n_r); 
+    priors.SigmaTheta(options.inF.indconst,options.inF.indconst) = .1*eye(dim.n_r); 
     
 end
 
@@ -86,7 +86,7 @@ priors.muPhi = zeros(dim.n_phi,1);
 priors.SigmaPhi = 1e-2*eye(dim.n_phi);
 %- extension
 if extended
-   priors.SigmaPhi(options.inG.indr,options.inG.indr)=1*eye(dim.n_r); 
+   priors.SigmaPhi(options.inG.indr,options.inG.indr)=1e-2*eye(dim.n_r); 
 end
 
 
