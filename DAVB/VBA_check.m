@@ -226,6 +226,10 @@ if isfield(options,'priors')
             end
         end
     end
+    % insure vertical priors
+    priors.muPhi=priors.muPhi(:);
+    priors.muTheta=priors.muTheta(:);
+    
 else % Build default (non-informative) priors
     priors = VBA_priors(dim,options);
 end
