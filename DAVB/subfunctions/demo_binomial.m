@@ -19,11 +19,7 @@ sx = g_sigm_binomial([],phi,u,[]);
 y = zeros(p,1);
 seed = 1e4*rand;
 for t=1:p
-    try
-        [y(t),seed] = binomial_sample(1,sx(t),seed);
-    catch
-        [y(t)] = sampleFromArbitraryP([sx(t),1-sx(t)],[1,0],1);
-    end
+    [y(t)] = sampleFromArbitraryP([sx(t),1-sx(t)]',[1,0]',1);
 end
 
 figure

@@ -1,4 +1,23 @@
 % Demo for linear system with AR(1) state noise
+% The class of generative models that the toolbox can deal with is actually
+% more general that may appear at first glance. In fact, it can deal with
+% any form of of auto-regressive or state-dependant noises (both at the
+% level of hidden states and observations). In most instances, it suffices
+% to construct an augmented state space X, where Xt = (xt,zt)T and
+% appropriately modify the evolution and observation functions, as well as
+% the priors. In the case of AR(1) noise, this could be implemented as
+% follows: 
+%      X_t+1 = [ f(x_t,theta,u_t) + zt , zt ] + eta_t
+%      yt    = g(x_t,phi) + e_t
+% where the f is the original evolution function. Note that one has to
+% ensure that z is the most likely perturbation force on the system. This
+% is because both AR(1) and white noise (respectively zt and ?t) can drive 
+% the system. This can be done by defining the augmented state noise
+% covariance matrix Qx (of eta) such that its upper-left half is
+% effectively zero. In addition, one may have to increase the lag k. This
+% is because the effect of the AR(1) retarded state noise on the hidden
+% states is maximal one time step in the future. On thus need to look back
+% one time step in the past to infer on the retarded state noise.
 
 clear variables
 close all
@@ -68,6 +87,24 @@ displaySimulations(y,x,eta,e)
 
 % Display results
 displayResults(posterior,out,y-e,x,x0,theta,phi,alpha,sigma)
+
+
+% now invert data without AR(1) priors on state noise
+f_fname = @f_lin2D;
+g_fname = @g_Id;
+dim.n = in.dim.n;
+options.inF = in.opt.inF;
+options.inG = [];
+options.priors.muX0 = zeros(in.dim.n,1);
+options.priors.SigmaX0 = 1e-1*eye(in.dim.n);
+for t=1:n_t
+    options.priors.iQx{t} = eye(2);
+end
+[p0,o0] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+
+% Display results
+displayResults(p0,o0,y-e,x(1:2,:),x0(1:2),theta,phi,alpha,sigma)
+
 
 
 

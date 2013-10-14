@@ -10,7 +10,11 @@ function [X] = sampleFromArbitraryP(p,gridX,N)
 % OUT:
 %   - X: NX1 vector of samples
 
-try; N; catch, N=1; end 
+try; N; catch, N=1; end
+p = vec(p);
+if size(gridX,1)==1
+    gridX = vec(gridX);
+end
 pcdf = cumsum(p(:));
 k = size(gridX,2);
 X = zeros(N,k);

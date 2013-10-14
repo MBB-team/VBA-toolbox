@@ -19,7 +19,7 @@ a = a.*exp(Theta(1));
 A = [   -b  -a
         1   -b];
     
-fx = Xt + deltat.*A*Xt;
+fx = Xt + deltat.*(A*Xt + ut*[1;1]);
 dF_dX = eye(size(Xt,1)) + deltat.*A';
 
 dF_dTheta = deltat.*[-a.*Xt(2),0];

@@ -1,4 +1,4 @@
-function [ha] = unwrapVBvolatileOTO(posterior,out)
+function [ha,hf] = unwrapVBvolatileOTO(posterior,out)
 % OTO: recovers posterior sufficient statistics from VB inversion
 
 if isempty(posterior)
@@ -32,9 +32,19 @@ hfi = fill(xp,yp,'r','facecolor','b','edgealpha',0,'facealpha',0.25,'parent',ha(
 title(ha(2),'OUTCOME PROBABILITY: sgm( x2 ) = p(x1=1)')
 box(ha(2),'off')
 
+% x = posterior.muX;
+% x(3,:) = exp(x(3,:));
+% x(5,:) = exp(x(5,:));
+% ka = out.options.inF.lev2*sgm(posterior.muTheta(1),out.options.inF.kaub);
+% om = posterior.muTheta(2);
+% s1h = sgm(x(2,:),1).*(1-sgm(x(2,:),1)); % likelihood precision
+% s2h = x(3,:) + exp(ka*x(4,:)+om); % 2nd-level prediction variance
+% lr = 1./(s2h.^-1 + s1h); % posterior variance
+
 ha(3) = subplot(3,1,3,'parent',hf,'nextplot','add','ygrid','on','xlim',[1,n_t]);
 % er1 = exp(sx(1,:)) - sqrt(exp(mux(3,:)).*sx(3,:));
 % er2 = exp(mux(3,:)) + sqrt(exp(mux(3,:)).*sx(3,:));
+% plot(ha(3),lr);
 plot(ha(3),exp(sx(1,:)));
 % yp = [er2,fliplr(er1)];
 % xp = [1:size(mux,2),fliplr(1:size(mux,2))];

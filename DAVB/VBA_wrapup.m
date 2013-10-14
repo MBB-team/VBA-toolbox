@@ -31,7 +31,6 @@ if fromPause
     return
 end
 
-
 % Display inversion status
 if ~options.OnLine
     [st,i] = dbstack;
@@ -41,6 +40,11 @@ if ~options.OnLine
             if options.DisplayWin
                 % display diagnostics
                 figure(display.hfp)
+                set(display.hm(1),'string','Deriving diagnostics... ');
+                set(display.hm(2),'string','0%');
+                out.options.display = display;
+                out.diagnostics = VBA_getDiagnostics(posterior,out);
+                set(display.hm(2),'string','OK');
                 VBA_ReDisplay(posterior,out);
             end
             out.options = rmfield(out.options,'display');
@@ -55,12 +59,13 @@ if ~options.OnLine
     else
         timeString = [num2str(floor(out.dt./60)),' min'];
     end
-    str = ['VB ',status,' complete (took ~',timeString,').'];
-    VBA_disp(str,options)
+    VBA_disp(['VB ',status,' complete (took ~',timeString,').'],options)
+    if ~ifInit
+        str = VBA_summary(out);
+        VBA_disp(str(setdiff(1:6,1:2)),options)
+    end
     VBA_disp(' ',options)
     drawnow
 end
-
-
 
 

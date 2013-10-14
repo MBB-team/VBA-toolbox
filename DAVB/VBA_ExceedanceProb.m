@@ -18,20 +18,26 @@ ep = ones(K,1);
 c = [1;-1];
 switch form
     case 'gaussian'
+        Nsamp = 1e4;
+        r_samp = VBA_sample('gaussian',struct('mu',mu,'Sigma',Sigma),Nsamp,verbose)';
+        [y,j] = max(r_samp,[],2);
+        tmp = histc(j,1:length(mu))';
+        ep = tmp/Nsamp;
+    case 'gaussian2'
         for k=1:K
             for l=setdiff(1:K,k)
                 ind = [k,l];
                 m = mu(ind);
                 V = Sigma(ind,ind);
-                ep(k) = ep(k)*VB_PPM(c'*m,c'*V*c,0,0);
+                ep(k) = ep(k)*VBA_PPM(c'*m,c'*V*c,0,0);
             end
         end
         ep = ep./sum(ep);
     case 'dirichlet'
         Nsamp = 1e4;
         r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose)';
-        [y,j]=max(r_samp,[],2);
-        tmp=histc(j,1:length(mu))';
-        ep=tmp/Nsamp;
+        [y,j] = max(r_samp,[],2);
+        tmp = histc(j,1:length(mu))';
+        ep = tmp/Nsamp;
 end
 

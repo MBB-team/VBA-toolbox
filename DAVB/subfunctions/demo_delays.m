@@ -33,41 +33,45 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 1e2;
+n_t = 32;
 delta_t = 1e0;         % integration time step (Euler method)
 f_fname = @f_lin2D;
 g_fname = @g_Id;
-u       = [];
+u = zeros(1,n_t);
+u(2) = -1;
 
 % Build options structure for temporal integration of SDE
-inF.deltat = delta_t/4;
-inF.a           = 0.1;
-inF.b           = 0.5e0; % decay rate
-options.decim   = 4;
-options.inF     = inF;
-options.delays = [[1,8];[12,1]];
+inF.deltat = delta_t;
+inF.a = 1e-1;
+inF.b = 1e-1; % decay rate
+options.decim = 8;
+options.inF = inF;
+options.delays = 1.*[[1,3];[3,1]];
+
+
 
 % Parameters of the simulation
-alpha   = Inf;
-sigma   = 1e1;
-theta   = 3;
-phi     = [];
+alpha = Inf;%1e3;
+sigma = 1e2;
+theta = 0.5;
+phi = [];
 
 % Build priors for model inversion
-priors.muX0 = [-2;-2];
-priors.SigmaX0 = 1e-1*eye(2);
+priors.muX0 = [0;0];
+priors.SigmaX0 = 0e-2*eye(2);
 priors.muTheta = 0*ones(1,1);
-priors.SigmaTheta = 1e2*eye(1);
+priors.SigmaTheta = 1e0*eye(1);
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 priors.a_sigma = 1e0;
 priors.b_sigma = 1e0;
 
 % Build options and dim structures for model inversion
-options.priors      = priors;
-dim.n_theta         = 1;
-dim.n_phi           = 0;
-dim.n               = 2;
+options.priors = priors;
+options.backwardLag = 32;
+dim.n_theta = 1;
+dim.n_phi = 0;
+dim.n = 2;
 
 % Build time series of hidden states and observations
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
@@ -75,20 +79,19 @@ dim.n               = 2;
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
 
-
 % Call inversion routine
-% [posterior,out] = VBA_onlineWrapper(y,u,f_fname,g_fname,dim,options);
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+hfp = findobj('tag','VBNLSS');
+set(hfp,'tag','0','name','inversion with delays');
 
 % Display results
 displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 
 
-% % Compare with no delay embedding
-hfp = findobj('tag','VBNLSS');
-set(hfp,'tag','0');
-options.delays= [];
+% Compare with no delay embedding
+options.delays = [];
 [posterior2,out2] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+set(gcf,'name','inversion without delays')
 
 
 

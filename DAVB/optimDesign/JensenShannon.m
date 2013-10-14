@@ -1,6 +1,5 @@
 function [DJS,b,muy,Vy] = JensenShannon(mus,Qs,ps,binomial,base)
 % evaluates the Jensen-Shannon divergence (DJS)
-%
 % function [DJS,b] = JensenShannon(mus,Qs,ps,binomial)
 % This function evaluates the DJS:
 % - either from a set of N-D Gaussian densities, in which case those are
@@ -26,7 +25,7 @@ function [DJS,b,muy,Vy] = JensenShannon(mus,Qs,ps,binomial,base)
 try,binomial;catch,binomial=0;end
 try,base;catch,base='2';end
 
-n = length(mus);         % number of models to be compared
+n = length(mus); % number of models to be compared
 if ~binomial
     Vy = zeros(size(Qs{1}));
 end
@@ -38,7 +37,7 @@ for i=1:n
     muy = muy + ps(i).*mus{i};
     % get weighted sum of entropies 
     if binomial
-        sH = sH -sum(mus{i}.*LOG(mus{i},base));
+        sH = sH -sum(mus{i}.*LOG(mus{i},base)) -sum((1-mus{i}).*LOG((1-mus{i}),base));
     else
         [e] = eig(full(Qs{i}));
         logDet = sum(LOG(e,base));
@@ -48,7 +47,7 @@ end
 
 % get mixture entropy
 if binomial
-    Hy = -sum(muy.*LOG(muy,base));
+    Hy = -sum(muy.*LOG(muy,base)) -sum((1-muy).*LOG((1-muy),base));
 else
     % get second order moment of sum of densities
     for i=1:n
@@ -61,10 +60,10 @@ else
     Hy = 0.5*sum(LOG(e,base));
 end
 
-% Get Jensen-Shannon approximation
+% get Jensen-Shannon approximation
 DJS = Hy - sH;
 
-% Get error probability upper bound
+% get error probability upper bound
 Hp = -sum(ps.*LOG(ps,base));
 b = max([-Inf,Hp - DJS]);
 

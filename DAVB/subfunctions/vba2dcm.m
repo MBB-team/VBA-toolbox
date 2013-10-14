@@ -198,10 +198,8 @@ for i=1:nu
         Bi(nzB) = V(indB{i});
         Vp.B(:,:,i) = Bi;
         Cp(nzB+offsetB,nzB+offsetB) = fullV(indB{i},indB{i});
-        Cp(iself,nzB+offsetB) = ...
-            esc.*repmat(fullV(indself,indB{i}),nreg,1);
-        Cp(nzB+offsetB,iself) = ...
-            esc.*repmat(fullV(indB{i},indself),1,nreg);
+        Cp(iself,nzB+offsetB) = esc.*repmat(fullV(indself,indB{i}),nreg,1);
+        Cp(nzB+offsetB,iself) = esc.*repmat(fullV(indB{i},indself),1,nreg);
         Cp(iHemo,nzB+offsetB) = fullV(indhemo,indB{i});
         Cp(nzB+offsetB,iHemo) = fullV(indB{i},indhemo);
         if ~isempty(indA)
@@ -260,10 +258,8 @@ for i=1:nreg
         Di(nzD) = V(indD{i});
         Vp.D(:,:,i) = Di;
         Cp(nzD+offsetD,nzD+offsetD) = fullV(indD{i},indD{i});
-        Cp(iself,nzD+offsetD) = ...
-            esc.*repmat(fullV(indself,indD{i}),nreg,1);
-        Cp(nzD+offsetD,iself) = ...
-            esc.*repmat(fullV(indD{i},indself),1,nreg);
+        Cp(iself,nzD+offsetD) = esc.*repmat(fullV(indself,indD{i}),nreg,1);
+        Cp(nzD+offsetD,iself) = esc.*repmat(fullV(indD{i},indself),1,nreg);
         Cp(iHemo,nzD+offsetD) = fullV(indhemo,indD{i});
         Cp(nzD+offsetD,iHemo) = fullV(indD{i},indhemo);
         if ~isempty(indA)
@@ -275,10 +271,8 @@ for i=1:nreg
             offsetB = offsetB + nreg^2;
             if ~isempty(indB{j}) && ~isempty(find(inF.B{j}~=0))
                 nzB = find(inF.B{j}~=0);
-                Cp(nzD+offsetD,nzB+offsetB) = ...
-                    fullV(indD{i},indB{j});
-                Cp(nzB+offsetB,nzD+offsetD) = ...
-                    fullV(indB{j},indD{i});
+                Cp(nzD+offsetD,nzB+offsetB) = fullV(indD{i},indB{j});
+                Cp(nzB+offsetB,nzD+offsetD) = fullV(indB{j},indD{i});
             end
         end
         offsetC = nreg^2*(nu+1);

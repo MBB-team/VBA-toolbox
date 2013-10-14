@@ -9,7 +9,7 @@ close all
 n_t = 5e2;
 deltat = 2e-2;
 alpha   = 1e0/deltat;
-sigma   = 1e2;
+sigma   = 1e-1;
 theta   = [28;10;8/3];
 f_fname = @f_Lorenz;
 g_fname = @g_sigmoid;

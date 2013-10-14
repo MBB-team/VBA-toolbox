@@ -1,4 +1,6 @@
 % Demo for fitting mixture of Gaussians
+% This demo first simulates a noisy MoG density profile, whose mode
+% position and width are then estimated using VBA.
 
 close all
 clear variables
@@ -20,8 +22,6 @@ figure,
 plot(y','ro')
 hold on;
 plot(gx')
-% disp('--paused--')
-% pause
 
 
 %---- Invert gbf on simulated data ----%
@@ -31,14 +31,6 @@ priors.muPhi = zeros(4,1);         % prior mean on observation params
 priors.SigmaPhi = 1e0*eye(4); % prior covariance on observation params
 priors.a_sigma = 1;             % Jeffrey's prior
 priors.b_sigma = 1;             % Jeffrey's prior
-% priors.iQy{1} = 0*eye(length(gx));
-% priors.iQy{1}(150,150) = 1;
-% priors.iQy{1}(250,250) = 1;
-% priors.iQy{1}(100,100) = 1;
-% priors.iQy{1}(200,200) = 1;
-% priors.iQy{1}(300,300) = 1;
-% Build options structure
-% options.checkGrads = 1;
 options.priors = priors;        % include priors in options structure
 options.inG = inG;              % input structure (grid)
 dim.n_phi = 4;                  % nb of observation parameters

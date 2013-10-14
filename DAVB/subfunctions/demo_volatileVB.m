@@ -62,8 +62,9 @@ legend({'p(y=1|theta,phi,m)','binomial data samples'})
 getSubplots
 % pause
 
-[ha] = unwrapVBvolatileOTO(struct('muX',x),[])
-return
+[ha,hf] = unwrapVBvolatileOTO(struct('muX',x),[]);
+set(hf,'name','simulated volatile VB learner')
+% return
 
 % options.isYout = zeros(1,size(y,2));
 % options.isYout(75:125) = 1;
@@ -73,7 +74,8 @@ return
 displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)
 
 
-[ha] = unwrapVBvolatileOTO(posterior,out)
+[ha,hf] = unwrapVBvolatileOTO(posterior,out);
+set(hf,'name','estimated volatile VB learner')
 
 
 

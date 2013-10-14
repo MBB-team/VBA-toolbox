@@ -5,6 +5,7 @@
 % supra-threshold input create large deviations from equilibrium membrane
 % depolarization. NB: an AP approximately corresponds to a deviation of
 % about 1 A.U. w.r.t. equilibrium.
+% [see demo_fitzhugh.m]
 
 clear variables
 close all
@@ -12,14 +13,12 @@ close all
 
 
 % Choose basic settings for simulations
-n_t = 1e3;
-dt = 1e-1;         % 10Hz sampling rate
+n_t = 1e3; % # length of time series 
+dt = 1e-1; % 10Hz sampling rate
 f_fname = @f_FitzHughNagumo;
 g_fname = @g_Id;
 
-u       = 1e1*(randn(1,n_t)>2);
-
-% figure,plot(u)
+u = 1e1*(randn(1,n_t)>2); % about 10 to 15% of samples are 'on'
 
 % Build options structure for temporal integration of SDE
 inF.dt = dt;
@@ -58,8 +57,7 @@ title(ha,'output membrane depolarization (A.U.)')
 xlabel('time')
 
 
-% return
-
+% invert FHN model on membrane potential data
 dim.n = 2;
 dim.n_phi = 0;
 dim.n_theta = 4;

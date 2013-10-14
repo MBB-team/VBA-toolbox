@@ -17,6 +17,9 @@ if options.extended
     return;
 end
 
+try
+    y = y(options.isYout==0);
+end
 n = numel(y);
 if ~isbinary(y)
     try

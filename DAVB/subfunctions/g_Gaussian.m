@@ -4,7 +4,7 @@ function [gx] = g_Gaussian(Xt,P,ut,in)
 % This function evaluates a gaussian-like observation function.
 % IN:
 %   - Xt: [useless]
-%   - P: a 3X1 parameter vector
+%   - P: a 4X1 parameter vector
 %   - ut: [useless]
 %   - in: input structure. Contains the grid at which to evaluate the
 %   gaussian bump gunction

@@ -25,7 +25,7 @@ end
 y = y(:);
 gx = gx(:);
 ny = numel(y);
-try;maxn;catch;maxn = max([floor(ny/64),4]);end
+try;maxn;catch;maxn=min([floor(ny/2),6]);end
 ne = min([maxn,ny]);
 p = 0:(1/ne):1;
 sg = sort(gx);

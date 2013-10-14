@@ -3,59 +3,98 @@
 close all
 clear all
 
-dim.p = 5e2;
+dim.p = 32;
 dim.n_t = 1;
-dim.n_phi = 8;
+dim.n_phi = 16;
 dim.n_theta = 0;
 dim.n = 0;
 
-phi = randn(dim.n_phi,1);
+
 g_fname = @g_classif;
-
-
-options.inG.X = randn(dim.n_phi-1,dim.p);
 options.binomial = 1;
 options.priors.muPhi = zeros(dim.n_phi,1);
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
+options.isYout = zeros(dim.p,1);
+options.DisplayWin = 0;
 
+Nmcmc = 64;
+p = cell(2,2,Nmcmc);
+o = cell(2,2,Nmcmc);
+F = zeros(2,2,Nmcmc);
+ner = zeros(2,2,Nmcmc); % proportion of correct predictions
+mner = zeros(2,Nmcmc); % maximum performance rate
 
-
-[y] = simulateNLSS(dim.n_t,[],g_fname,[],phi,[],[],[],options,[]);
-
-% options.checkGrads = 1;
-
-options.isYout = randn(size(y))>2;
-[posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
-
-displayResults(posterior,out,y,[],[],[],phi,[],[])
-
-
-
-nmcmc = 1e4;
-q = zeros(nmcmc,1);
-mu = options.priors.muPhi;
-sS = getISqrtMat(options.priors.SigmaPhi,0);
-et0 = clock;
-fprintf(1,'MCMC estimate of the model evidence...')
-fprintf(1,'%6.2f %%',0)
-for i=1:nmcmc
-    Pi = mu + sS*randn(dim.n_phi,1);
-    gi = feval(g_fname,[],Pi,[],options.inG);
-    tmp = [gi.^y,(1-gi).^(1-y)];
-    q(i) = prod(tmp(:));
-    if mod(100*i/nmcmc,10) <1
-        fprintf(1,repmat('\b',1,8))
-        fprintf(1,'%6.2f %%',floor(100*i/nmcmc))
+for ii=1:Nmcmc
+    options.inG.X = randn(dim.n_phi-1,dim.p);
+    for i=1:2
+        % simulate data with and without real mapping
+        phi = (2-i)*randn(dim.n_phi,1);
+        [y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,[],[],[],options,[]);
+        g = y-e;
+        g = g>0.5; % denoised data
+        mner(i,ii) = sum(g.*y + (1-g).*(1-y))./dim.p; % max performance rate
+        for j=1:2
+            % invert model with and without the 2nd half of the data
+            options.isYout(dim.p/2:dim.p) = 2-j;
+            [p{j,i,ii},o{j,i,ii}] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
+            F(j,i,ii) = o{j,i,ii}.F - VBA_LMEH0(y,options);
+            % proportion of correct predictions on 2nd half of the data
+            gx = o{j,i,ii}.suffStat.gx(dim.p/2:dim.p);
+            g0 = y(dim.p/2:dim.p);
+            ner(j,i,ii) = sum(gx.*g0 + (1-gx).*(1-g0))./(dim.p/2);
+        end
+        
     end
+    
 end
-fprintf(1,repmat('\b',1,8))
-fprintf(1,[' OK (took ',num2str(etime(clock,et0)),' seconds).'])
-fprintf(1,'\n')
-lpy0 = log(mean(q))
-% 
-% X = [options.inG.X',ones(size(options.inG.X,2),1)];
-% tmp = X*options.priors.muPhi;
-% tmp = tmp./(sqrt(1+0.368.*diag(X*options.priors.SigmaPhi*X')));
-% Es = 1./(1+exp(-tmp));
-% lpy = sum(log(1-y+Es.*(-1).^(1-y)))
+
+
+hf = figure('color',[1 1 1]);
+pos = get(hf,'position');
+set(hf,'position',pos.*[1 1 1.5 1]);
+test = {'test','train'};
+data = {'half dataset','full dataset'};
+model = {'H1','H0'};
+ylim = [0;0];
+
+for j=1:2
+    
+    ha(j,1) = subplot(2,2,(j-1)*2+1,'parent',hf);
+    mr = squeeze(mean(ner(j,:,:),3));
+    vr = squeeze(var(ner(j,:,:),[],2)./Nmcmc);
+    plotUncertainTimeSeries(mr',vr',[],ha(j,1));
+    set(ha(j,1),'xlim',[0,3],'xtick',[1,2],'xticklabels',model)
+    xlabel(ha(j,1),'type of simulated data')
+    ylabel(ha(j,1),['P[correct prediction]'])
+    title(ha(j,1),test{j})
+    box(ha(j,1),'off')
+    hold(ha(j,1),'on')
+    plot(ha(j,1),[0,3],[0.5,0.5],'r--')
+    mmr = mean(mner,2);
+    plot(ha(j,1),[1,2],mmr,'go')
+    
+    ha(j,2) = subplot(2,2,(j-1)*2+2,'parent',hf);
+    dF = F(j,:,:);
+    mdF = squeeze(mean(dF,3));
+    vdF = squeeze(var(dF,[],3)./Nmcmc);
+    plotUncertainTimeSeries(mdF',vdF',[],ha(j,2));
+    set(ha(j,2),'xlim',[0,3],'xtick',[1,2],'xticklabels',model)
+    xlabel(ha(j,2),'type of simulated data')
+    ylabel(ha(j,2),['log p(y|H1) - log p(y|H0)'])
+    title(ha(j,2),'evidence for a mapping')
+    box(ha(j,2),'off')
+    title(ha(j,2),data{j})
+    
+    ylim(1) = min([ylim(1),get(ha(j,2),'ylim')]);
+    ylim(2) = max([ylim(2),get(ha(j,2),'ylim')]);
+end
+
+for j=1:2
+    set(ha(j,2),'ylim',ylim)
+end
+
+
+getSubplots
+
+
 

@@ -76,6 +76,13 @@ set(handles.hc,'visible','on')
 cla(handles.ha(3))
 [haf,hf,hp] = plotUncertainTimeSeries(out.Ef,diag(out.Vf),[],handles.ha(3));
 plot(handles.ha(3),[0.5,K+0.5],[1,1]/K,'r')
+if ~isempty(out.options.families)
+    for i=1:K
+        xx((i-1)*2+1:i*2) = [0.5+i-1,0.5+i];
+        yy((i-1)*2+1:i*2) = repmat(out.options.priors.a(i)./sum(out.options.priors.a),1,2);
+    end
+    plot(handles.ha(3),xx,yy,'g')
+end
 xlabel(handles.ha(3),'models')
 set(handles.ha(3),'xtick',1:K,'xlim',[0.5,K+0.5],'ylim',[0 1],'ygrid','on')
 title(handles.ha(3),'estimated model frequencies')
@@ -96,19 +103,19 @@ plot(handles.ha(5),out.F,'k.')
 set(hp,'color',[1 0 0])
 set(hf,'facecolor',[1 0 0])
 if isempty(out.options.families)
-    text(length(out.F)/2,out.F0-3/2,'log p(y|H0)','color',[1 0 0],'parent',handles.ha(5));
+    text(1,out.F0-3/2,'log p(y|H0)','color',[1 0 0],'parent',handles.ha(5));
 else
-    text(length(out.F)/4,out.F0-3/2,'log p(y|H0{models})','color',[1 0 0],'parent',handles.ha(5));
+    text(1,out.F0-3/2,'log p(y|H0{models})','color',[1 0 0],'parent',handles.ha(5));
     [haf,hf,hp] = plotUncertainTimeSeries(out.families.F0.*[1,1],[3,3].^2,[0.5,length(out.F)+0.5],handles.ha(5));
     set(hp,'color',[0 1 0])
     set(hf,'facecolor',[0 1 0])
-    text(3*length(out.F)/4,out.families.F0-3/2,'log p(y|H0{families})','color',[0 1 0],'parent',handles.ha(5));
+    text(1,out.families.F0-3/2,'log p(y|H0{families})','color',[0 1 0],'parent',handles.ha(5));
 end
 try
     [haf,hf,hp] = plotUncertainTimeSeries(out.Fffx.*[1,1],[3,3].^2,[0.5,length(out.F)+0.5],handles.ha(5));
     set(hp,'color',[0 0 1])
     set(hf,'facecolor',[0 0 1])
-    text(length(out.F)/2,out.Fffx-3/2,'log p(y|ffx)','color',[0 0 1],'parent',handles.ha(5));
+    text(1,out.Fffx-3/2,'log p(y|ffx)','color',[0 0 1],'parent',handles.ha(5));
 end
 xlabel(handles.ha(5),'VB iterations')
 ylabel(handles.ha(5),'VB free energy')
@@ -116,13 +123,12 @@ set(handles.ha(5),'xtick',1:length(out.F),'xticklabel',[],'xlim',[0.5,length(out
 title(handles.ha(5),'VB algorithm convergence')
 
 if ~isempty(out.options.families)
-    familiesName=out.options.familiesName;
     nf = size(out.options.C,2);
     cla(handles.ha(6))
     [haf,hf,hp] = plotUncertainTimeSeries(out.families.Ef,diag(out.families.Vf),[],handles.ha(6));
-    plot(handles.ha(6),[0.5,nf+0.5],[1,1]/nf,'r')
+    plot(handles.ha(6),[0.5,nf+0.5],[1,1]/nf,'g')
     xlabel(handles.ha(6),'families')
-    set(handles.ha(6),'xtick',1:nf,'XTickLabel',familiesName,'xlim',[0.5,nf+0.5],'ylim',[0 1],'ygrid','on')
+    set(handles.ha(6),'xtick',1:nf,'xlim',[0.5,nf+0.5],'ylim',[0 1],'ygrid','on')
     title(handles.ha(6),'estimated family frequencies')
 end
 

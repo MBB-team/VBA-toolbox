@@ -1,4 +1,6 @@
 % Demo for Lotka-Volterra competitive system
+% NB: this is a highly nonlinear system, which means that one may have to
+% run the simulation many times before its returns non-NaN data...
 
 clear variables
 close all
@@ -39,23 +41,27 @@ dim.n       = 2;
 
 % Build time series of hidden states and observations
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+if isweird(y)
+    disp('Warning: problem with simulated data: re-run the demo!')
+    return
+end
+
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
-% disp('--paused--')
-% pause
 
+
+% invert model
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 
 % Display results
 displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 
-% Make predictions
+% check predictions
 try
     options = out.options;
-    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(...
-        n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
+    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
 catch
     disp('------!!Unable to form predictions!!------')
 end

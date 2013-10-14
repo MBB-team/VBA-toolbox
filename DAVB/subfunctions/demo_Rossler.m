@@ -39,8 +39,6 @@ dim.n_theta = 3;
 dim.n_phi   = 0;
 dim.n       = 3;
 
-options.checkGrads = 1;
-
 % Build time series of hidden states and observations
 stop = 0;
 it = 1;

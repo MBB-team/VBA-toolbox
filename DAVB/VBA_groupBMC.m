@@ -77,7 +77,8 @@ if isempty(priors) || ~isfield(priors,'a') || isempty(priors.a)
         nf = length(options.families);
         for i=1:nf
             indf = options.families{i};
-            priors.a(indf) = nf./length(indf);
+            relativeSize = length(indf)/K;
+            priors.a(indf) = 1/(relativeSize*nf);
         end
     end
     options.priors = priors;
@@ -85,9 +86,33 @@ end
 if ~isempty(options.families)
     nf = length(options.families);
     options.C = zeros(K,nf);
+    tmp = [];
     for i=1:nf
         indf = options.families{i};
+        if isempty(indf)
+            disp(['Error: family #',num2str(i),' is empty!'])
+            posterior = [];
+            out = [];
+            return
+        end
+        if ~isempty(intersect(tmp,indf))
+            disp('Error: families are not mutually exclusive!')
+            posterior = [];
+            out = [];
+            return
+        end
+        tmp = [tmp;vec(indf)];
         options.C(indf,i) = 1;
+    end
+    if ~isequal(vec(unique(tmp)),vec(1:K))
+        if numel(unique(tmp)) < K
+            disp('Error: families do not cover the entire set of models!')
+        else
+            disp('Error: families contain models that do not exist!')
+        end
+        posterior = [];
+        out = [];
+        return
     end
 end
 
@@ -160,7 +185,6 @@ if options.verbose
     fprintf(['Posterior probabilities:','\n'])
     fprintf(['     - RFX: p(H1|y)= ','%4.3f','\n'],1-out.bor)
     fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],out.bor)
-    fprintf('\n')
 end
 
 
@@ -208,7 +232,6 @@ if abs(dF)<=options.TolFun || it>=options.MaxIter
 end
 
 
-
 function [F,ELJ,Sqf,Sqm] = FE(L,posterior,priors)
 % derives the free energy for the current approximate posterior
 [K,n] = size(L);
@@ -228,9 +251,8 @@ end
 F = ELJ + Sqf + Sqm;
 
 
-
 function [F0m,F0f] = FE_null(L,options)
-% derives the free energy of the 'null' (H0: equal model frequencies)
+% derives the free energy of the 'null' (H0: equal frequencies)
 [K,n] = size(L);
 if ~isempty(options.families)
     f0 = options.C*sum(options.C,1)'.^-1/size(options.C,2);
@@ -243,13 +265,12 @@ for i=1:n
     tmp = L(:,i) - max(L(:,i));
     g = exp(tmp)./sum(exp(tmp));
     for k=1:K
-        F0m = F0m + g(k).*(L(k,i)-log(K)-log(g(k)+eps));
+        F0m = F0m + g(k).*(L(k,i)-log(g(k)+eps)-log(K));
         if ~isempty(options.families)
             F0f = F0f + g(k).*(L(k,i)-log(g(k))+log(f0(k)));
         end
     end
 end
-
 
 
 function [Fffx] = FE_ffx(L)
@@ -262,7 +283,6 @@ z = exp(logz)./sum(exp(logz));
 Fffx = z'*ss - sum(z.*log(z+eps));
 
 
-
 function [E,V] = Dirichlet_moments(a)
 % derives the firs- and second-order moments of a Dirichlet density
 a0 = sum(a);
@@ -270,5 +290,7 @@ E = a./a0;
 V = -a*a';
 V = V - diag(diag(V)) + diag(a.*(a0-a));
 V = V./((a0+1)*a0^2);
+
+
 
 

@@ -3,8 +3,8 @@
 % as a generalized observation function (not affected by stochastic
 % innovations).
 
-% close all
-% clear variables
+close all
+clear variables
 
 %-----------------------------------------------------------
 %-------------- DCM model specification --------------------

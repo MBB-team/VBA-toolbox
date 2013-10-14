@@ -1,4 +1,9 @@
-% FitzHugh-Nagum demo for calcium imaging of spike trains
+% demo for calcium imaging of spike trains
+% The script first simulates the response of a Fitz-Hugh-Nagumo (FHN)
+% neuron to spiky input current. It then inverts a FHN-neuron model,
+% without the input current info. Practically speaking, this means
+% deconvolving the FHN-neuron response to estimate its input.
+% [see demo_HodgkinHuxley.m and demo_FHN.m]
 
 clear variables
 close all
@@ -9,9 +14,7 @@ deltat = 1e-1;         % 10Hz sampling rate
 f_fname = @f_FitzHughNagumo;
 g_fname = @g_Id;
 
-u       = 0e0*(randn(1,n_t)>2);
 u = randn(1,n_t);
-figure,plot(u)
 
 % Build options structure for temporal integration of SDE
 inF.dt     = deltat;
@@ -40,7 +43,7 @@ displaySimulations(y,x,eta,e)
 % Build priors for model inversion
 priors.muX0 = 0*ones(2,1);
 priors.SigmaX0 = 1e0*eye(2);
-priors.muTheta = theta;%0.*ones(5,1);
+priors.muTheta = 0.*ones(5,1);
 priors.SigmaTheta = 1e0*eye(5);
 priors.SigmaTheta(2,2) = 0;
 priors.a_alpha      = 1e0;
@@ -65,4 +68,14 @@ dim.n               = 2;
 
 %------------ Display results ------------------%
 displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
+
+
+[ehat,v_e,etahat,v_eta] = VBA_getNoise(posterior,out);
+[haf,hf,hp] = plotUncertainTimeSeries(etahat,VBA_getVar(v_eta));
+set(get(haf,'parent'),'name','simulated versus estimated input')
+set(haf,'nextplot','add')
+rescale = inv(u*u')*u*etahat(1,:)';
+plot(rescale*u,'k--')
+
+
 

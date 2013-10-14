@@ -22,12 +22,17 @@ else
     set(hfp,'name',options.figName);
 end
 
+try
+    out.diagnostics;
+catch
+    [out.diagnostics,out] = VBA_getDiagnostics(posterior,out);
+end
 ud.posterior = posterior;
 ud.out = out;
-ud.diagnostics = getDiagnostics(posterior,out);
+
 
 set(hfp,'userdata',ud);
-if ~isempty(ud.diagnostics.kernels)
+if ~isempty(out.diagnostics.kernels)
     if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
         labels = {'summary','VB inversion','diagnostics','kernels','conv','priors','deterministic'};
         callbacks = {@mySummary,@myVB,@myDiagnostics,@myKernels,@myConv,@myPriors,@myDeterministic};
@@ -52,14 +57,14 @@ set(handles.hp,'backgroundcolor',[1 1 1])
 set(handles.htab(1),'tooltipstring','summary description of the VB inversion')
 set(handles.htab(2),'tooltipstring','results of the VB inversion (posterior pdfs)')
 set(handles.htab(3),'tooltipstring','VB inversion diagnostics (residuals and parameters covariance matrices)')
-if ~isempty(ud.diagnostics.kernels)
+if ~isempty(out.diagnostics.kernels)
     if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
-        set(handles.htab(4),'tooltipstring','impulse response of the system to deterministic inputs')
+        set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
         set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
         set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
         set(handles.htab(7),'tooltipstring','results of the VB inversion of the deterministic system')
     else
-        set(handles.htab(4),'tooltipstring','impulse response of the system to deterministic inputs')
+        set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
         set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
         set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
     end
@@ -74,7 +79,6 @@ else
 end
 
 function mySummary(hfp)
-
 try
     hf = hfp;
 catch
@@ -84,122 +88,28 @@ hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
 if ~isempty(hc)
     delete(hc)
 end
-
 ud = get(hf,'userdata');
 out = ud.out;
-diagnostics = ud.diagnostics;
-
-try F = out.F(end); catch, F = '?'; end
-
-str{1} = sprintf(['Date: ',datestr(out.date),'\n ']);
-if ~out.options.OnLine
-    s0 = ['VB converged in ',num2str(out.it),' iterations'];
-else
-    s0 = ['Online VB algorithm'];
+str = VBA_summary(out,1);
+str{7} = sprintf(['Estimation efficiency (minus posterior entropies):','\n ']);
+if ~isnan(out.diagnostics.efficiency.X)
+    str{7} = sprintf([str{7},'    - hidden states: ',num2str(out.diagnostics.efficiency.X,'%4.3e'),'\n ']);
 end
-try
-    if floor(out.dt./60) == 0
-        timeString = [num2str(floor(out.dt)),' sec'];
-    else
-        timeString = [num2str(floor(out.dt./60)),' min'];
-    end
-    str{2} = sprintf([s0,' (took ~',timeString,')','\n']);
-catch
-    str{2} = sprintf([s0,'\n']);
+if ~isnan(out.diagnostics.efficiency.X0)
+    str{7} = sprintf([str{7},'    - initial conditions: ',num2str(out.diagnostics.efficiency.X0,'%4.3e'),'\n ']);
 end
-str{3} = sprintf(['Dimensions of the model:','\n ',...
-    '    - data: p=',num2str(out.dim.p),'\n ',...
-    '    - time samples: t=',num2str(out.dim.n_t),'\n ',...
-    '    - hidden states: n=',num2str(out.dim.n),'\n ',...
-    '    - evolution parameters: n_theta=',num2str(out.dim.n_theta),'\n ',...
-    '    - observation parameters: n_phi=',num2str(out.dim.n_phi),'\n ']);
-if out.options.binomial
-    tmp = ' (binomial data)';
-else
-    tmp = [];
+if ~isnan(out.diagnostics.efficiency.Theta)
+    str{7} = sprintf([str{7},'    - evolution parameters: ',num2str(out.diagnostics.efficiency.Theta,'%4.3e'),'\n ']);
 end
-if out.dim.n >= 1
-    if isinf(out.options.priors.a_alpha) && isequal(out.options.priors.b_alpha,0)
-        str{4} = 'This was a deterministic dynamical system';
-    else
-        str{4} = 'This was a stochastic dynamical system';
-    end
-    if isa(out.options.g_fname,'function_handle')
-        gfn = func2str(out.options.g_fname);
-    else
-        gfn = out.options.g_fname;
-    end
-    if isequal(gfn,'g_embed')
-        gfn0 = out.options.inG.g_fname;
-        if isa(gfn0,'function_handle')
-            gfn0 = func2str(gfn0);
-        end
-        gfn = [gfn,' (',gfn0,')'];
-        str{4} = [str{4},' (with delay embedding)'];
-    end
-    if isa(out.options.f_fname,'function_handle')
-        ffn = func2str(out.options.f_fname);
-    else
-        ffn = out.options.f_fname;
-    end
-    if isequal(ffn,'f_embed')
-        ffn0 = out.options.inF.f_fname;
-        if isa(ffn0,'function_handle')
-            ffn0 = func2str(ffn0);
-        end
-        ffn = [ffn,' (',ffn0,')'];
-    end
-    str{5} = sprintf(['    - observation function: ',gfn,tmp,'\n','    - evolution function: ',ffn,'\n ']);
-else
-    str{4} = 'The model was static (no hidden states)';
-    if isa(out.options.g_fname,'function_handle')
-        gfn = func2str(out.options.g_fname);
-    else
-        gfn = out.options.g_fname;
-    end
-    str{5} = sprintf(['    - observation function: ',gfn,tmp,'\n ']);
+if ~isnan(out.diagnostics.efficiency.Phi)
+    str{7} = sprintf([str{7},'    - observation parameters: ',num2str(out.diagnostics.efficiency.Phi,'%4.3e'),'\n ']);
 end
-str{6} = ['Log model evidences:'];
-str{7} = ['    - full model: log p(y|m) > ',num2str(F,'%4.3e')];
-str{8} = ['    - null hypothesis: log p(y|H0) = ',...
-    num2str(diagnostics.LLH0,'%4.3e')];
-if ~out.options.OnLine && out.dim.n >= 1 && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0)
-    Fd = out.options.init.out.F;
-    str{9} = sprintf(['    - deterministic variant: log p(y|m,eta=0) > ',num2str(Fd,'%4.3e'),'\n ']);
-else
-    str{9} = [' '];
+if ~isnan(out.diagnostics.efficiency.alpha)
+    str{7} = sprintf([str{7},'    - state noise precision hyperparameter: ',num2str(out.diagnostics.efficiency.alpha,'%4.3e'),'\n ']);
 end
-str{10} = sprintf(['Estimation efficiency (minus posterior entropies):','\n ']);
-% str{11} = sprintf(['Information gain (Kullback-Leibler divergences DKL{prior||posterior}):','\n ']);
-if ~isnan(diagnostics.efficiency.X)
-    str{10} = sprintf([str{10},'    - hidden states: ',num2str(diagnostics.efficiency.X,'%4.3e'),'\n ']);
-%     str{11} = sprintf([str{11},'    - hidden states: ',num2str(diagnostics.DKL.X,'%4.3e'),'\n ']);
+if ~isnan(out.diagnostics.efficiency.sigma)
+    str{7} = sprintf([str{7},'    - data noise precision hyperparameter: ',num2str(out.diagnostics.efficiency.sigma,'%4.3e'),'\n ']);
 end
-if ~isnan(diagnostics.efficiency.X0)
-    str{10} = sprintf([str{10},'    - initial conditions: ',num2str(diagnostics.efficiency.X0,'%4.3e'),'\n ']);
-%     str{11} = sprintf([str{11},'    - initial conditions: ',num2str(diagnostics.DKL.X0,'%4.3e'),'\n ']);
-end
-if ~isnan(diagnostics.efficiency.Theta)
-    str{10} = sprintf([str{10},'    - evolution parameters: ',num2str(diagnostics.efficiency.Theta,'%4.3e'),'\n ']);
-%     str{11} = sprintf([str{11},'    - evolution parameters: ',num2str(diagnostics.DKL.Theta,'%4.3e'),'\n ']);
-end
-if ~isnan(diagnostics.efficiency.Phi)
-    str{10} = sprintf([str{10},'    - observation parameters: ',num2str(diagnostics.efficiency.Phi,'%4.3e'),'\n ']);
-%     str{11} = sprintf([str{11},'    - observation parameters: ', num2str(diagnostics.DKL.Phi,'%4.3e'),'\n ']);
-end
-if ~isnan(diagnostics.efficiency.alpha)
-    str{10} = sprintf([str{10},'    - state noise precision hyperparameter: ',num2str(diagnostics.efficiency.alpha,'%4.3e'),'\n ']);
-%     str{11} = sprintf([str{11},'    - state noise precision hyperparameter: ',num2str(diagnostics.DKL.alpha,'%4.3e'),'\n ']);
-end
-if ~isnan(diagnostics.efficiency.sigma)
-    str{10} = sprintf([str{10},'    - data noise precision hyperparameter: ',num2str(diagnostics.efficiency.sigma','%4.3e '),'\n ']);
-%     str{11} = sprintf([str{11},'    - data noise precision hyperparameter: ',num2str(diagnostics.DKL.sigma','%4.3e '),'\n ']);
-end
-str{11} = sprintf(['Classical fit accuracy metrics:','\n ']);
-str{11} = sprintf([str{11},' - coefficient of determination (R2): ',num2str(out.fit.R2,'%4.3f'),'\n ']);
-str{11} = sprintf([str{11},' - log-likelihood: ',num2str(out.fit.LL,'%4.3e'),'\n ']);
-str{11} = sprintf([str{11},' - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n ']);
-str{11} = sprintf([str{11},' - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n ']);
 uicontrol('parent',hf,'style','text','tag','VBLaplace','units','normalized','position',[0.1,0.05,0.8,0.85],'backgroundcolor',[1,1,1],'HorizontalAlignment','left','fontsize',11,'string',str);
 
 
@@ -303,12 +213,12 @@ options.noPause = 1;
 options.DisplayWin =1;
 dim = out.dim;
 suffStat = out.suffStat;
-suffStat.gx = ud.diagnostics.pgx;
+suffStat.gx = out.diagnostics.pgx;
 % set dx = -prior.muX (for display purposes)
 suffStat.dx0 = -posterior.muX0;
 suffStat.dtheta = -posterior.muTheta;
 suffStat.dphi = -posterior.muPhi;
-suffStat.vy = ud.diagnostics.pvy;
+suffStat.vy = out.diagnostics.pvy;
 try
     Ns=numel(options.sources);
 catch
@@ -373,7 +283,7 @@ end
 
 ud = get(hf,'userdata');
 out = ud.out;
-diagnostics = ud.diagnostics;
+diagnostics = out.diagnostics;
 
 if length(out.suffStat.F)>2
     nit = length(out.suffStat.F)-1;
@@ -460,36 +370,43 @@ hf = get(hObject,'parent');
 ind = get(hObject,'Value');
 ud = get(hf,'userdata');
 try
-    delete(ud.handles.hkernels)
+    if isequal(get(ud.handles.hkernels,'parent'),hf)
+        delete(ud.handles.hkernels)
+    end
 end
 out = ud.out;
-kernels = ud.diagnostics.kernels;
+kernels = out.diagnostics.kernels;
 
 % input effects - hidden states
-kx = kernels.K1(:,:,ind);
 handles.hkernels(1) = subplot(2,1,1,'parent',hf,'nextplot','add','ygrid','on','tag','VBLaplace');
-plot(handles.hkernels(1),kernels.tgrid,kx)
-set(handles.hkernels(1),'XLim',[min(kernels.tgrid) max(kernels.tgrid)])
 pos = get(handles.hkernels(1),'position');
-set(handles.hkernels(1),'position',[0.2 pos(2) 0.6 pos(4)])
-title(handles.hkernels(1),['states impulse responses to input #''' num2str(ind) ''''],'fontsize',12)
-xlabel(handles.hkernels(1),'time')
+set(handles.hkernels(1),'position',[0.2 pos(2) 0.6 pos(4)]);
+[t1,t2,hp] = plotUncertainTimeSeries(kernels.x.m(:,:,ind),kernels.x.v(:,:,ind),[],handles.hkernels(1));
+set(hp,'marker','.')
+set(handles.hkernels(1),'XLim',[0.5 size(kernels.x.m,2)+0.5],'xtick',[1:size(kernels.x.m,2)],'xticklabel',[0:size(kernels.x.m,2)-1])
+title(handles.hkernels(1),['states'' Volterra kernels: input #',num2str(ind),' (R2=',num2str(mean(kernels.x.R2),'%4.2f'),')'],'fontsize',12)
+ylabel(handles.hkernels(1),'(lagged) input weight')
+xlabel(handles.hkernels(1),'time lag')
 
 % input effects - observables
-ky = kernels.H1(:,:,ind);
 handles.hkernels(2) = subplot(2,1,2,'parent',hf,'nextplot','add','ygrid','on','tag','VBLaplace');
 pos = get(handles.hkernels(2),'position');
 set(handles.hkernels(2),'position',[0.2 pos(2) 0.6 pos(4)])
-plot(handles.hkernels(2),kernels.tgrid,ky)
-set(handles.hkernels(2),'XLim',[min(kernels.tgrid) max(kernels.tgrid)])
-title(handles.hkernels(2),['observables impulse responses to input #''' num2str(ind) ''''],'fontsize',12)
-xlabel(handles.hkernels(2),'time')
+hold(handles.hkernels(2),'on')
+plot(handles.hkernels(2),kernels.g.m(1,:,ind)','marker','.','color',[0 0 0])
+plot(handles.hkernels(2),kernels.y.m(1,:,ind)','marker','.','linestyle',':','color',[0 0 0])
+legend(handles.hkernels(2),{['simulated observables',' (R2=',num2str(mean(kernels.g.R2),'%4.2f'),')'],['observed samples',' (R2=',num2str(mean(kernels.y.R2),'%4.2f'),')']})
+plot(handles.hkernels(2),kernels.y.m(:,:,ind)','marker','.','linestyle',':')
+[t1,t2,hp] = plotUncertainTimeSeries(kernels.g.m(:,:,ind),kernels.g.v(:,:,ind),[],handles.hkernels(2));
+set(hp,'marker','.')
+set(handles.hkernels(2),'XLim',[0.5 size(kernels.g.m,2)+0.5],'xtick',[1:size(kernels.g.m,2)],'xticklabel',[0:size(kernels.g.m,2)-1])
+title(handles.hkernels(2),['observables'' Volterra kernels: input #',num2str(ind)],'fontsize',12)
+ylabel(handles.hkernels(2),'(lagged) input weight')
+xlabel(handles.hkernels(2),'time lag')
 
 ud.handles = handles;
 set(hf,'userdata',ud);
 try getSubplots; end
-
-
 
 function myDiagnostics()
 
@@ -504,7 +421,7 @@ end
 ud = get(hf,'userdata');
 out = ud.out;
 y = out.y;
-diagnostics = ud.diagnostics;
+diagnostics = out.diagnostics;
 
 % display micro-time hidden-states
 if ~isempty(diagnostics.MT_x)
@@ -704,260 +621,6 @@ end
 
 try
     getSubplots
-end
-
-
-
-function diagnostics = getDiagnostics(posterior,out)
-
-if out.options.verbose
-    fprintf(1,['Deriving diagnostics ...'])
-end
-
-u = out.u;
-y = out.y;
-
-try; out.fit; catch; out.fit = VBA_fit(posterior,out); end
-    
-% get kernels (NB: dcm = special case)
-if isequal(out.options.f_fname,@f_DCMwHRF) && isequal(out.options.g_fname,@g_HRF3)
-    dcm = 1;
-    [out.options] = VBA_check4DCM(out.options);
-else
-    dcm = 0;
-end
-[kernels.H1,kernels.K1,kernels.tgrid] = getKernels(posterior,out,dcm);
-
-% get null model (H0) evidence
-[LLH0] = VBA_LMEH0(y,out.options);
-
-% Entropies and KL divergences
-
-if sum([out.options.sources(:).type]==0)>0 %~out.options.binomial
-    efficiency.sigma = -out.suffStat.Ssigma;
-    m0 = out.options.priors.a_sigma./out.options.priors.b_sigma;
-    v0 = out.options.priors.a_sigma./out.options.priors.b_sigma.^2;
-    m = posterior.a_sigma./posterior.b_sigma;
-    v = posterior.a_sigma./posterior.b_sigma.^2;
-    DKL.sigma = VB_KL(m0,v0,m,v,'Gamma');
-else
-    efficiency.sigma = NaN;
-    DKL.sigma = NaN;
-end
-
-if out.dim.n > 0 % hidden states and initial conditions
-    efficiency.X = -out.suffStat.SX;
-    efficiency.X0 = -out.suffStat.SX0;
-    if isinf(out.options.priors.a_alpha) ...
-            && isequal(out.options.priors.b_alpha,0)
-        efficiency.alpha = NaN;
-        DKL.alpha = NaN;
-    else
-        efficiency.alpha = -out.suffStat.Salpha;
-        m0 = out.options.priors.a_alpha./out.options.priors.b_alpha;
-        v0 = out.options.priors.a_alpha./out.options.priors.b_alpha^2;
-        m = posterior.a_alpha(end)./posterior.b_alpha(end);
-        v = posterior.a_alpha(end)./posterior.b_alpha(end)^2;
-        DKL.alpha = VB_KL(m0,v0,m,v,'Gamma');
-    end
-    try
-        DKL.X = 0;
-        for t=1:out.dim.n_t
-            IN = out.options.params2update.x{t};
-            m0 = out.options.priors.muX(IN,t);
-            v0 = out.options.priors.SigmaX.current{t}(IN,IN);
-            m = posterior.muX(IN,t);
-            v = posterior.SigmaX.current{t}(IN,IN);
-            DKL.X = DKL.X + VB_KL(m0,v0,m,v,'Normal');
-        end
-    catch
-        DKL.X = NaN;
-    end
-    IN = out.options.params2update.x0;
-    m0 = out.options.priors.muX0(IN);
-    v0 = out.options.priors.SigmaX0(IN,IN);
-    m = posterior.muX0(IN);
-    v = posterior.SigmaX0(IN,IN);
-    DKL.X0 = VB_KL(m0,v0,m,v,'Normal');
-else
-    efficiency.X = NaN;
-    efficiency.X0 = NaN;
-    efficiency.alpha = NaN;
-    DKL.X = NaN;
-    DKL.X0 = NaN;
-    DKL.alpha = NaN;
-end
-if out.dim.n_phi > 0 % observation parameters
-    efficiency.Phi = -out.suffStat.Sphi;
-    IN = out.options.params2update.phi;
-    m0 = out.options.priors.muPhi(IN);
-    v0 = out.options.priors.SigmaPhi(IN,IN);
-    if ~out.options.OnLine
-        m = posterior.muPhi(IN);
-        v = posterior.SigmaPhi(IN,IN);
-    else
-        m = posterior.muPhi(IN,end);
-        v = posterior.SigmaPhi{end}(IN,IN);
-    end
-    DKL.Phi = VB_KL(m0,v0,m,v,'Normal');
-else
-    efficiency.Phi = NaN;
-    DKL.Phi = NaN;
-end
-if out.dim.n_theta > 0 % evolution parameters
-    efficiency.Theta = -out.suffStat.Stheta;
-    IN = out.options.params2update.theta;
-    m0 = out.options.priors.muTheta(IN);
-    v0 = out.options.priors.SigmaTheta(IN,IN);
-    if ~out.options.OnLine
-        m = posterior.muTheta(IN);
-        v = posterior.SigmaTheta(IN,IN);
-    else
-        m = posterior.muTheta(IN,end);
-        v = posterior.SigmaTheta{end}(IN,IN);
-    end
-    DKL.Theta = VB_KL(m0,v0,m,v,'Normal');
-else
-    efficiency.Theta = NaN;
-    DKL.Theta = NaN;
-end
-
-% get prior predictive density
-[muy,Vy] = VBA_getLaplace(u,out.options.f_fname,out.options.g_fname,out.dim,out.options);
-
-% get micro-time posterior hidden-states estimates
-try
-    [MT_x,MT_gx,microTime,sampleInd] = VBA_microTime(posterior,u,out);
-catch
-    MT_x = [];
-    MT_gx = [];
-    microTime = [];
-    sampleInd = [];
-end
-
-% get residuals: data noise
-dy.dy = out.suffStat.dy(:);
-dy.R = spm_autocorr(out.suffStat.dy);
-dy.m = mean(dy.dy);
-dy.v = var(dy.dy);
-[dy.ny,dy.nx] = hist(dy.dy,10);
-dy.ny = dy.ny./sum(dy.ny);
-d = diff(dy.nx);
-d = abs(d(1));
-dy.d = d;
-spgy = sum(exp(-0.5.*(dy.m-dy.nx).^2./dy.v));
-dy.grid = dy.nx(1):d*1e-2:dy.nx(end);
-dy.pg = exp(-0.5.*(dy.m-dy.grid).^2./dy.v);
-dy.pg = dy.pg./spgy;
-if  ~out.options.binomial
-    shat = posterior.a_sigma(end)./posterior.b_sigma(end);
-    spgy = sum(exp(-0.5.*shat.*dy.nx.^2));
-    dy.pg2 = exp(-0.5.*shat.*dy.grid.^2);
-    dy.pg2 = dy.pg2./spgy;
-end
-
-% get residuals: state noise
-dx.dx = out.suffStat.dx(:);
-if ~isempty(dx.dx)
-    dx.m = mean(dx.dx);
-    dx.v = var(dx.dx);
-    [dx.ny,dx.nx] = hist(dx.dx,10);
-    dx.ny = dx.ny./sum(dx.ny);
-    d = diff(dx.nx);
-    d = abs(d(1));
-    dx.d = d;
-    spgy = sum(exp(-0.5.*(dx.m-dx.nx).^2./dx.v));
-    dx.grid = dx.nx(1):d*1e-2:dx.nx(end);
-    dx.pg = exp(-0.5.*(dx.m-dx.grid).^2./dx.v);
-    dx.pg = dx.pg./spgy;
-    ahat = posterior.a_alpha(end)./posterior.b_alpha(end);
-    spgy = sum(exp(-0.5.*ahat.*dx.nx.^2));
-    dx.pg2 = exp(-0.5.*ahat.*dx.grid.^2);
-    dx.pg2 = dx.pg2./spgy;
-end
-
-
-% get parameters posterior correlation matrix
-if out.dim.n > 0 && isinf(out.options.priors.a_alpha) && isequal(out.options.priors.b_alpha,0)
-    S = out.suffStat.ODE_posterior.SigmaPhi;
-else
-    S = NaN*zeros(out.dim.n+out.dim.n_theta+out.dim.n_phi);
-    ind = 0;
-    if out.dim.n_phi > 0
-        if iscell(posterior.SigmaPhi) % online version
-            SP = posterior.SigmaPhi{end};
-        else
-            SP = posterior.SigmaPhi;
-        end
-        S(1:out.dim.n_phi,1:out.dim.n_phi) = SP;
-        ind = out.dim.n_phi;
-    end
-    if out.dim.n_theta > 0
-        if iscell(posterior.SigmaTheta) % online version
-            SP = posterior.SigmaTheta{end};
-        else
-            SP = posterior.SigmaTheta;
-        end
-        S(ind+1:ind+out.dim.n_theta,ind+1:ind+out.dim.n_theta) = SP;
-        ind = ind + out.dim.n_theta;
-    end
-    if out.dim.n > 0 && out.options.updateX0
-        if iscell(posterior.SigmaX0) % online version
-            SP = posterior.SigmaX0{end};
-        else
-            SP = posterior.SigmaX0;
-        end
-        S(ind+1:ind+out.dim.n,ind+1:ind+out.dim.n) = SP;
-    end
-end
-C = cov2corr(S);
-C = C + diag(NaN.*diag(C));
-tick = [0];
-ltick = [];
-ticklabel = cell(0,0);
-if out.dim.n_phi > 0
-    ltick = [ltick,tick(end)+out.dim.n_phi/2];
-    tick = [tick,out.dim.n_phi];
-    ticklabel{end+1} = 'phi';
-end
-if out.dim.n_theta > 0
-    ltick = [ltick,tick(end)+out.dim.n_theta/2];
-    tick = [tick,tick(end)+out.dim.n_theta];
-    ticklabel{end+1} = 'theta';
-end
-if out.dim.n > 0 && out.options.updateX0
-    ltick = [ltick,tick(end)+out.dim.n/2];
-    tick = [tick,tick(end)+out.dim.n];
-    ticklabel{end+1} = 'x0';
-end
-tick = tick +0.5;
-tick = tick(2:end-1);
-ltick = ltick + 0.5;
-
-diagnostics.pgx = reshape(muy,out.dim.p,out.dim.n_t);
-diagnostics.pvy = reshape(diag(Vy),out.dim.p,out.dim.n_t);
-if ~isempty(kernels.tgrid)
-    diagnostics.kernels = kernels;
-else
-    diagnostics.kernels = [];
-end
-diagnostics.efficiency = efficiency;
-diagnostics.DKL = DKL;
-diagnostics.LLH0 = LLH0;
-diagnostics.MT_x = MT_x;
-diagnostics.MT_gx = MT_gx;
-diagnostics.microTime = microTime;
-diagnostics.sampleInd = sampleInd;
-diagnostics.dy = dy;
-diagnostics.dx = dx;
-diagnostics.ltick = ltick;
-diagnostics.tick = tick;
-diagnostics.ticklabel = ticklabel;
-diagnostics.C = C;
-
-if out.options.verbose
-    fprintf(' OK.')
-    fprintf('\n')
 end
 
 

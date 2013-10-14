@@ -11,7 +11,7 @@ optimDesign = 0; % if 1: further optimize design locally
 
 % get binomial sampling probabilities
 qx = g_sigm_binomial([],phi,gridu,[]);
-hf0 = figure;
+hf0 = figure('color',[1 1 1]);
 ha0 = subplot(2,1,1,'parent',hf0);
 plot(ha0,gridu,qx,'k--')
 xlabel(ha0,'u: design control variable (coherency)')
@@ -51,7 +51,7 @@ opt = options;
 mu = zeros(dim.n_phi,p);
 va = zeros(dim.n_phi,p);
 posterior = options.priors;
-hf = figure;
+hf = figure('color',[1 1 1]);
 ha = subplot(2,1,1,'parent',hf);
 ha2 = subplot(2,1,2,'parent',hf);
 set(ha,'nextplot','add')
@@ -101,11 +101,7 @@ for t=1:p
     
     % then sample choice according to simulated params
     sx(t) = g_sigm_binomial([],phi,u(t),[]);
-    try
-        [y(t),seed] = binomial_sample(1,sx(t),seed);
-    catch
-        [y(t)] = sampleFromArbitraryP([sx(t),1-sx(t)],[1,0],1);
-    end
+    [y(t)] = sampleFromArbitraryP([sx(t),1-sx(t)]',[1,0]',1);
     
     % finally, invert model with all inputs and choices
     dim.p = t;

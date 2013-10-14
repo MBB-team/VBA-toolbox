@@ -1,4 +1,9 @@
 % Hodgkin-Huxley demo
+% The script first simulates the response of a Hodgkin-Huxley (HH)
+% neuron to spiky input current. It then inverts a HH-neuron model,
+% without the input current info. Practically speaking, this means
+% deconvolving the HH-neuron response to estimate its input.
+% [see demo_fitzhugh.m]
 
 clear variables
 close all
@@ -20,7 +25,7 @@ figure,plot(u)
 priors.muX0 = [0;0;-2.8843;-0.7645];
 priors.SigmaX0 = 1e0*eye(4);
 priors.muTheta = [1;0*ones(4,1)];
-priors.SigmaTheta = 0e1*eye(5);
+priors.SigmaTheta = 1e0*eye(5);
 priors.SigmaTheta(2,2) = 0;
 priors.a_alpha      = 1e0;
 priors.b_alpha      = 1e0;
@@ -52,8 +57,7 @@ sigma   = 1e1;
 theta   = [1;0;0*randn(3,1)];
 phi     = [];
 x0 = [0;0;-2.8843;-0.7645];
-[y,x,x0,eta,e] = simulateNLSS(...
-    n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
+[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
