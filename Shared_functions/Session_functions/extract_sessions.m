@@ -53,6 +53,9 @@ out_s = out;
 out_s.options.dim = dim;
 out_s.dim = dim;
 
+
+
+
 % -- Calculating new posterior
 posterior_s = posterior;
 posterior_s.muPhi = posterior.muPhi(ind.phi);
@@ -92,9 +95,12 @@ end
 % -- Declaring new options
 
 out_s.options.isYout = out.options.isYout(ind.gx,:);
+out_s.options.params2update.phi = out.options.params2update.phi(phimap(phimap>0));
+out_s.options.params2update.theta = out.options.params2update.theta(thetamap(thetamap>0));
 
 % -- Calculating new data
 out_s.y = out.y(ind.gx,:);
+out_s.u = out.u(ind.u,:);
 
 % -- Declaring new functions
 if Nsess == 1
@@ -119,5 +125,15 @@ else % Nsess > 1 => create extended model for multiple sessions
     [ f_fname_e,g_fname_e,dim_e,options_e ] = makeExtendedModel(dim,out_s.options,in_sessions); % building new model for multiple sessions
     out_s.options = options_e;
     
+end
+
+% -- Extract sources
+for iSource = 1:numel(out.options.sources)
+    ns=numel(out.options.sources(iSource).out)*(Nsess/numel(sess));
+    out_s.options.sources(iSource).out = out.options.sources(iSource).out(1:ns);
+end
+
+try
+    out_s = rmfield(out_s,'diagnostics');
 end
 

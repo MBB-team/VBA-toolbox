@@ -54,6 +54,12 @@ i_gx = 0; % cumulated index of output
 i_x = 0; % cumulated index of hidden states
 i_u = 0; % cumulated index of inputs
 
+% check for sources
+if ~isfield(options,'sources')
+    options.sources(1).type = options.binomial;
+    options.sources(1).out = 1:dim.p;
+end
+
 for i = 1 : n_sess
     
     try dim_s = dim{i};
@@ -77,6 +83,7 @@ for i = 1 : n_sess
     in.sess(i).ind.gx = i_gx+1:i_gx+dim_s.p;   i_gx = i_gx + dim_s.p;
     in.sess(i).ind.u = i_u+1:i_u+dim_s.u;   i_u = i_u + dim_s.u;
     
+
     % Information about the evolution/obsevation paramaters for each session
     if isempty(in_sessions.ind.theta)
         in.sess(i).ind.theta = [];
@@ -137,7 +144,13 @@ options_e.dim = dim_e;
 
 options_e.isYout = zeros(dim_e.p,dim_e.n_t); 
 
-
+%%sources
+for iSess = 1 : n_sess-1
+    for iSource = 1:numel(options.sources)
+       options_e.sources(iSource).out =  [options_e.sources(iSource).out options.sources(iSource).out+dim.p*iSess];
+    end
+end 
+    
 %---- Function handles
 
 f_fname_e = @f_nsess;
