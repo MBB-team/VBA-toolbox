@@ -81,7 +81,7 @@ f_fname = @f_DCMwHRF; % DCM evolution function
 g_fname = @g_HRF3; % DCM observation function
 [options] = prepare_fullDCM(A,B,C,D,TR,microDT,0);
 options.priors = getPriors(nreg,ny,options,reduced_f,stochastic);
-options.DisplayWin = 1; % VBA inversion window is shown
+options.DisplayWin = 0; % VBA inversion window is shown
 options.backwardLag = ceil(16/TR); % spans 16secs of fMRI data
 options.init0 = 0; % use dDCM parameter estimate for sDCM inversion
 options.microU = 1; % inputs are defined at microtime resolution
@@ -105,7 +105,11 @@ end
 
 % Get data and add in confounds
 y0 = DCM.Y.y';
-X0 = DCM.Y.X0; % minimal confounds: slow drifts
+try
+    X0 = DCM.Y.X0; % minimal confounds: slow drifts
+catch
+    X0 = [];
+end
 if ~isequal(confounds,0)
     if isequal(confounds,'find')
         [X0,isYout] = spm_Xadjust(DCM.xY(1).SPMfile,DCM.xY(1).VOIfile);
@@ -148,11 +152,13 @@ end
 % [u,alpha] = spm_resample(full(uu),dt/microDT);
 
 function [y] = adjustY(y,X0)
-iX0 = pinv(X0'*X0)*X0';
-for i=1:size(y,1)
-    beta = iX0*y(i,:)';
-    yc = X0*beta;
-    y(i,:) = y(i,:) - yc';
+if ~isempty(X0)
+    iX0 = pinv(X0'*X0)*X0';
+    for i=1:size(y,1)
+        beta = iX0*y(i,:)';
+        yc = X0*beta;
+        y(i,:) = y(i,:) - yc';
+    end
 end
 
 

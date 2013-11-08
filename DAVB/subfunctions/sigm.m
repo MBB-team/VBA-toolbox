@@ -48,13 +48,14 @@ if ~in.mat
 end
 
 if exist('Phi','var') && ~isempty(Phi)
-    in.beta = in.beta.*exp(Phi(1));
+    b = in.beta.*exp(Phi(1));
     if size(Phi,1) > 1
         th = Phi(2);
     else
         th = 0;
     end
 else
+    b = in.beta;
     Phi = [];
     th = 0;
 end
@@ -62,13 +63,13 @@ end
 if in.INV
     % evaluate inverse sigmoid
     ixg = in.G0.*(x-in.S0).^-1 - 1;
-    Sx = th - in.beta.^-1.*log(ixg);
+    Sx = th - b.^-1.*log(ixg);
     dsdx = [];
     dsdp = [];
     return
 else
     % evaluate sigmoid (and check numerical instabilities)
-    bx = in.beta*(x-th);
+    bx = b*(x-th);
     Sx = in.G0./(1+exp(-bx));
     Sx = Sx + in.S0;
 end
@@ -79,7 +80,7 @@ end
 if nargout < 2 ; return; end
 
 % evaluate derivative wrt x
-dsdx = in.beta*Sx.*(1-Sx./in.G0);
+dsdx = b*Sx.*(1-Sx./in.G0);
 
 if nargout < 3 ; return; end
 
@@ -87,7 +88,7 @@ if nargout < 3 ; return; end
 % evaluate derivatives wrt parameters
 if size(Phi,1) >= 1
     dsdp = zeros(size(Phi,1),length(x));
-    dsdp(1,:) = in.beta.*in.G0./(1+exp(-bx)).^2.*x.*exp(-bx);
+    dsdp(1,:) = (x-th).*in.beta.*dsdx;
     if size(Phi,1) == 2
         dsdp(2,:) = -dsdx;
     end

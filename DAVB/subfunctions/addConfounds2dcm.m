@@ -13,23 +13,25 @@ function [u,options,dim] = addConfounds2dcm(X0,u,options,dim)
 %   - u/options/dim: input to VBA inversion of a DCM (augmented with
 %   confounds).
 
-nreg = size(options.inF.A,1);
-nu = size(u,1);
-[n_t,n_p0] = size(X0);
-
-S0 = options.priors.SigmaPhi;
-options.priors.muPhi = [options.priors.muPhi;zeros(nreg*n_p0,1)];
-options.priors.SigmaPhi = eye(dim.n_phi+nreg*n_p0);
-options.priors.SigmaPhi(1:dim.n_phi,1:dim.n_phi) = S0;
-options.inF.confounds.indu = 1:nu;
-options.inG.confounds.indu = 1:nu;
-options.inG.confounds.indt = nu+1;
-options.inG.confounds.X0 = X0;
-options.inG.confounds.indp = dim.n_phi+1:dim.n_phi+nreg*n_p0;
-ux0 = 1:n_t;
-if options.microU && ~isequal(options.decim,1)
-     ux0 = kron(ux0,ones(1,options.decim));
+if ~isempty(X0)
+    nreg = size(options.inF.A,1);
+    nu = size(u,1);
+    [n_t,n_p0] = size(X0);
+    
+    S0 = options.priors.SigmaPhi;
+    options.priors.muPhi = [options.priors.muPhi;zeros(nreg*n_p0,1)];
+    options.priors.SigmaPhi = eye(dim.n_phi+nreg*n_p0);
+    options.priors.SigmaPhi(1:dim.n_phi,1:dim.n_phi) = S0;
+    options.inF.confounds.indu = 1:nu;
+    options.inG.confounds.indu = 1:nu;
+    options.inG.confounds.indt = nu+1;
+    options.inG.confounds.X0 = X0;
+    options.inG.confounds.indp = dim.n_phi+1:dim.n_phi+nreg*n_p0;
+    ux0 = 1:n_t;
+    if options.microU && ~isequal(options.decim,1)
+        ux0 = kron(ux0,ones(1,options.decim));
+    end
+    u = [u;[ux0,zeros(size(u,2)-size(ux0,2))]];
+    dim.n_phi = dim.n_phi + nreg*n_p0;
 end
-u = [u;[ux0,zeros(size(u,2)-size(ux0,2))]];
-dim.n_phi = dim.n_phi + nreg*n_p0;
 

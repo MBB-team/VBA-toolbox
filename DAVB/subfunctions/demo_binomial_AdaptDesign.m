@@ -1,55 +1,35 @@
 % demo for binomial data inversion with adaptative design
+% This demo simulates a psychophysics paradigm similar to a signal
+% detection task, whereby the detection probability is a sigmoidal function
+% of the stimulus contrast (which is the design control variable). However,
+% neither does one know the inflexion point (detection threshold) nor the
+% sigmoid steepness (d prime). Thus, the design is adpated online, in the
+% aim of providing the most efficient estimate of these model parameters,
+% given trial-by-trial subjects' binary choice data (seen/unseen).
 
 clear variables
 close all
 
 
 p = 1e2; %  number of trials
-phi = [2.5;-0.25]; % simulated parameters: [log sigmoid slope ; inflexion point]
-gridu = -1:2e-2:1; % set of potential design control variables
-optimDesign = 0; % if 1: further optimize design locally
+phi = [2.5;-0.5]; % simulated parameters: [log sigmoid slope ; inflexion point]
+gridu = -1:5e-2:1; % set of potential design control variables
 
-% get binomial sampling probabilities
-qx = g_sigm_binomial([],phi,gridu,[]);
-hf0 = figure('color',[1 1 1]);
-ha0 = subplot(2,1,1,'parent',hf0);
-plot(ha0,gridu,qx,'k--')
-xlabel(ha0,'u: design control variable (coherency)')
-ylabel(ha0,'proba of choosing ''outward'' (sigmoid)')
-legend(ha0,{'sampling proba: p(y|x)'})
-% pause
-
-% sample binomial data
-addpath('../sampling')
-addpath('../optimDesign')
-
-y = zeros(p,1);
-u = zeros(p,1);
-sx = zeros(p,1);
-
-seed = 1e4*rand;
-
-dim.n_phi = 2;                  % nb of observation parameters
-dim.n_theta = 0;                % nb of evolution parameters
-dim.n=0;                        % nb of hidden states
+% configure simulation and VBA inversion 
+dim.n_phi = 2;
+dim.n_theta = 0;
+dim.n=0;
 dim.n_t = 1;
 dim.p = p;
-
-g_fname = @g_sigm_binomial;     % observation function
-f_fname = [];                   % evolution function (learning)
-
-% Call inversion routine
+g_fname = @g_sigm_binomial;
 options.binomial = 1;
-options.priors.muPhi = [2;0];
-options.priors.SigmaPhi = 1e8*eye(2);
+options.priors.muPhi = [0;0];
+options.priors.SigmaPhi = 1e2*eye(2);
 options.DisplayWin = 0;
-options.TolFun = 1e-8;
-options.GnTolFun = 1e-8;
 options.verbose = 0;
 opt = options;
 
-mu = zeros(dim.n_phi,p);
-va = zeros(dim.n_phi,p);
+% prepare graphical output window
 posterior = options.priors;
 hf = figure('color',[1 1 1]);
 ha = subplot(2,1,1,'parent',hf);
@@ -58,111 +38,76 @@ set(ha,'nextplot','add')
 set(ha2,'nextplot','add')
 xlabel(ha,'trials')
 ylabel(ha,'sigmoid parameters')
-xlabel(ha2,'u: design control variable (coherency)')
+xlabel(ha2,'u: design control variable (stimulus contrast)')
 ylabel(ha2,'design efficiency')
+
+% pre-allocate trial-dependent variables
+y = zeros(p,1);
+u = zeros(p,1);
+sx = zeros(p,1);
+eu = zeros(p,1);
+mu = zeros(dim.n_phi,p);
+va = zeros(dim.n_phi,p);
 for t=1:p
     
-    % first optimize experimental design
+    % update prior for design efficiency derivation
     dim.p = 1;
     opt.priors = posterior;
-    for i=1:length(gridu)
-        [e(i)] = designEfficiency(f_fname,g_fname,dim,opt,gridu(i),'parameters');
-    end
-    ind = find(e==max(e));
-    ustar = gridu(ind);
-    if optimDesign
-        hil = inline(...
-            'designEfficiency([],args{1},args{2},args{3},x,''parameters'')',...
-            'x','args');
-        OPT.args = {{g_fname,dim,opt}};
-        OPT.minimize = 0;
-        OPT.GnMaxIter = length(gridu);
-        if t>1
-            u0 = u(t-1);
-        else
-            u0 = 0;
-        end
-        [ou,curv,out] = optimCost(hil,u0,OPT);
-        [oe] = designEfficiency([],g_fname,dim,opt,ou,'parameters');
-        u(t) = ou;
+    
+    if t==1
+        u(1) = min(gridu);
+        eu(1) = VBA_designEfficiency([],g_fname,dim,opt,u(1),'parameters');
+    elseif t==2
+        u(2) = max(gridu);
+        eu(2) = VBA_designEfficiency([],g_fname,dim,opt,u(2),'parameters');
     else
-        u(t) = ustar(1);
+        % find most efficient control variable
+        for i=1:length(gridu)
+            [e(i)] = VBA_designEfficiency([],g_fname,dim,opt,gridu(i),'parameters');
+        end
+        ind = find(e==max(e));
+        u(t) = gridu(ind(1));
+        eu(t) = e(ind(1));
+        % display design eficiency as a function of control variable
+        cla(ha2)
+        plot(ha2,gridu,e)
+        plot(ha2,gridu(ind),e(ind),'go')
+        drawnow
     end
     
-    
-    cla(ha2)
-    plot(ha2,gridu,e)
-    plot(ha2,gridu(ind),e(ind),'go')
-    if optimDesign
-        plot(ha2,ou,oe,'r+')
-    end
-    drawnow
-%     pause(.01)
-    
-    % then sample choice according to simulated params
+    % sample choice according to simulated params
     sx(t) = g_sigm_binomial([],phi,u(t),[]);
     [y(t)] = sampleFromArbitraryP([sx(t),1-sx(t)]',[1,0]',1);
     
-    % finally, invert model with all inputs and choices
+    % invert model with all inputs and choices
     dim.p = t;
-    [posterior,out] = VBA_NLStateSpaceModel(...
-        y(1:t),u(1:t),[],g_fname,dim,options);
+    [posterior,out] = VBA_NLStateSpaceModel(y(1:t),u(1:t),[],g_fname,dim,options);
     mu(:,t) = posterior.muPhi;
     va(:,t) = diag(posterior.SigmaPhi);
+    
+    % display posterior credible intervals
     if t > 1
         cla(ha)
         plotUncertainTimeSeries(mu(:,1:t),sqrt(va(:,1:t)),1:t,ha,1:2);
-%         set(ha,'xtick',1:t)
     end
-    
-    
     
 end
 
 
-% qxhat = g_sigm_binomial([],posterior.muPhi,gridu,[]);
-% qx2 = g_sigm_binomial([],posterior.muPhi,u,[]);
-% plot(ha0,gridu,qxhat,'k--')
-% plot(ha0,u,qx2,'b.')
-% legend({'sampling proba: p(y|x)','sigmoid estimate','sampled points'})
-
-
-%---- Display results ----%
+% compare final estimates with simulations
 displayResults(posterior,out,y,[],[],[],phi,[],[])
 
 
-% graphical output
-set(ha0,'nextplot','add')
-g0 = 1/2;
-slope = exp(posterior.muPhi(1))./4;
-vslope = slope.^2.*posterior.SigmaPhi(1,1);
-options.priors = posterior;
-dim.p = length(gridu);
-[gx,vy] = VBA_getLaplace(gridu(:),[],g_fname,dim,options);
-gxhat = g_sigm_binomial([],posterior.muPhi,sort(u),[]);
-vy = diag(vy);
-plotUncertainTimeSeries(gx(:)',vy(:)',gridu(:)',ha0);
-plot(ha0,sort(u),gxhat,'b.')
-plot(ha0,posterior.muPhi(2),g0,'ro')
-yy = [0 g0 1];
-xx = (yy-g0)./slope;
-vyy = ((xx.*(slope+sqrt(vslope))+g0)-yy).^2;
-[haf,hf,hp] = plotUncertainTimeSeries(yy,vyy,xx+posterior.muPhi(2),ha0);
-set(hf,'facecolor',[1 0 0])
-set(hp,'color',[1 0 0])
-legend(ha0,...
-    {'simulated response',...
-    'sigmoid estimate',...
-    '90% confidence interval',...
-    'data samples',...
-    'inflexion point',...
-    'sigmoid slope'})
-
-[ny,nx] = hist(u);
-ha02 = subplot(2,1,2,'parent',hf0);
-bar(ha02,nx,ny);
-xl0 = get(ha0,'xlim');
-set(ha02,'xlim',xl0);
-xlabel(ha02,'u: design control variable (coherency)')
-ylabel(ha02,'empirical distribution of u')
-
+% summarize results of adaptive design strategy
+[handles] = displayUncertainSigmoid(posterior,out);
+set(handles.ha0,'nextplot','add')
+qx = g_sigm_binomial([],phi,gridu,[]);
+plot(handles.ha0,gridu,qx,'k--')
+VBA_ReDisplay(posterior,out)
+hf = figure('color',[1 1 1]);
+ha = axes('parent',hf);
+plot(ha,eu,'k','marker','.');
+ylabel(ha,'design efficiency')
+xlabel(ha,'trials')
+box(ha,'off')
+set(ha,'ygrid','on')

@@ -98,9 +98,16 @@ try
     % DCM.Ep.epsilon = 0;
 end
 
-[DCM.H1,DCM.K1] = getKernels(posterior,out,1);
+try
+    kernels = out.diagnostics.kernels;
+catch
+    [kernels] = VBA_VolterraKernels(posterior,out,ceil(32/TR));
+end
+DCM.H1 = kernels.g.m;
+DCM.K1 = kernels.x.m(out.options.inF.n5,:,:);
+% [DCM.H1,DCM.K1] = VBA_getKernels(posterior,out,1);
 DCM.M.N = size(DCM.H1,2);
-DCM.M.dt = out.options.inF.deltat;
+DCM.M.dt = TR;
 
 
 % fill in inputs if augmented DCM
@@ -289,5 +296,5 @@ function [ps] = getPPMS(m,v,t)
 n = length(m);
 ps = zeros(n,1);
 for i=1:n
-    [ps(i)] = VB_PPM(abs(m(i)),v(i),t,0);
+    [ps(i)] = VBA_PPM(abs(m(i)),v(i),t,0);
 end
