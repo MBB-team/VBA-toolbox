@@ -12,8 +12,8 @@ This toolbox runs in Matlab.
 
 ## How do I install the toolbox?
 1. Get the toolbox
-   - [fork](https://github.com/MBB-team/VBA-toolbo/fork) this repo and clone it on your computer ([help!](https://help.github.com/articles/fork-a-repo))
-   - download and unzip the [latest stable relase]() or the [current beta version](https://github.com/MBB-team/VBA-toolbox/archive/master.zip)
+   - [fork](https://github.com/MBB-team/VBA-toolbox/fork) this repo and clone it on your computer ([help!](https://help.github.com/articles/fork-a-repo))
+   - download and unzip the ~~[latest stable relase]()~~ or the [current beta version](https://github.com/MBB-team/VBA-toolbox/archive/master.zip)
 1. Add the toolbox folder to your Matlab path:
 ```matlab
 addpath(genpath('path_to_your_VBA_folder'))
