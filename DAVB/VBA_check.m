@@ -162,7 +162,10 @@ if ~isfield(options,'nmog')
     options.nmog = 1;
 end
 
-
+% split in multisession
+if isfield(options,'multisession')
+    [f_fname,g_fname,dim,options,u] = VBA_multisession_expand(f_fname,g_fname,dim,options,u);
+end
 % Deal with micro-resolution input
 u = VBA_getU(u,options,dim,'2macro');
 VBA_disp(' ',options)
