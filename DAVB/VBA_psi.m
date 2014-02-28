@@ -2,7 +2,7 @@ function [f] = VBA_psi(z)
 % psi(x) = d[log(gamma(x))]/dx
 
 try
-    f = psi(z);
+    f = psi(z+1)-1./z; % for numerical purposes
 catch
     siz = size(z);
     z=z(:);

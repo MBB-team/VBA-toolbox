@@ -30,7 +30,7 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 %       for F-test).
 %       .b: kXp matrix of parameter OLS-estimates
 %       .iC: kXk unscaled parameter covariance matrix
-%       .vhat: kX1 vector of residal variances
+%       .vhat: pX1 vector of residual variances
 %   NB: the covariance matrix Q of the i^th set of parameter is defined by:
 %   Q = all.vhat(i).*all.iC.
 %   If verbose=1, then 'all' also contains summary statistics of F-tests
@@ -75,7 +75,7 @@ switch type
             return
         end
 
-        df = trR.^2./trace(R*R);
+        df = trR.^2./sum(sum(R.^2,1));
         for i=1:p
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
             V = vhat(i).*c'*iC*c;
@@ -96,7 +96,7 @@ switch type
         yhat_a = R0*yhat;
         R2_a = zeros(p,1);
         M = R0 - R;
-        df = [trace(M).^2./trace(M*M),trR.^2./trace(R*R)];
+        df = [trace(M).^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];
         for i=1:p
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
             stat(i) = ((b(:,i)'*X'*M*X*b(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trace(R0-R));
@@ -237,7 +237,7 @@ ind = get(e1,'value');
 
 % plot data
 cla(ud.handles.ha(1))
-hp = plot(ud.handles.ha(1),ud.y(:,ind),ud.yhat(:,ind),'k.');
+hp = plot(ud.handles.ha(1),ud.yhat(:,ind),ud.y(:,ind),'k.');
 mi = min([ud.y(:,ind);ud.yhat(:,ind)]);
 ma = max([ud.y(:,ind);ud.yhat(:,ind)]);
 plot(ud.handles.ha(1),[mi,ma],[mi,ma],'r')
@@ -248,13 +248,13 @@ if isequal(ud.type,'F')
 end
 text(xx,xx,str,'parent',ud.handles.ha(1),'color','r')
 axis(ud.handles.ha(1),'tight')
-xlabel(ud.handles.ha(1),'observed data')
-ylabel(ud.handles.ha(1),'predicted data')
+xlabel(ud.handles.ha(1),'predicted data')
+ylabel(ud.handles.ha(1),'observed data')
 grid(ud.handles.ha(1),'on')
 title(ud.handles.ha(1),'data alignement')
 
 cla(ud.handles.ha(6))
-hp = plot(ud.handles.ha(6),ud.yhat(:,ind),'r');
+hp = plot(ud.handles.ha(6),ud.yhat(:,ind),'linestyle','-','marker','.','color',[1,0,0]);
 hp = plot(ud.handles.ha(6),ud.y(:,ind),'k.');
 legend(ud.handles.ha(6),{'predicted data','observed data'})
 axis(ud.handles.ha(6),'tight')
@@ -270,11 +270,7 @@ k = size(ud.all.b,1);
 for j=1:k
     hp = bar(ud.handles.ha(2),j,ud.all.b(j,ind),'facecolor',0.8*[1 1 1],'BarWidth',0.5);
     hcmenu = uicontextmenu;
-    str = ['data #',num2str(ind)];
-    if ~isempty(ud.Ynames)
-        str = [str,' (',ud.Ynames{ind},')'];
-    end
-    str = [str,', variable #',num2str(j)];
+    str = ['variable #',num2str(j)];
     if ~isempty(ud.Xnames)
         str = [str,' (',ud.Xnames{j},')'];
     end
@@ -285,6 +281,7 @@ for j=1:k
     set(get(hp,'children'),'uicontextmenu',hcmenu);
     set(hp,'uicontextmenu',hcmenu);
     hp = errorbar(ud.handles.ha(2),j,ud.all.b(j,ind),1.96*sqrt(Vb(j)),'r.');
+%     hp = errorbar(ud.handles.ha(2),j,ud.all.b(j,ind),sqrt(Vb(j)),'r.');
     set(hp,'uicontextmenu',hcmenu);
 end
 set(ud.handles.ha(2),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'ygrid','on')

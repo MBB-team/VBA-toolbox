@@ -77,8 +77,7 @@ if isempty(priors) || ~isfield(priors,'a') || isempty(priors.a)
         nf = length(options.families);
         for i=1:nf
             indf = options.families{i};
-            relativeSize = length(indf)/K;
-            priors.a(indf) = 1/(relativeSize*nf);
+            priors.a(indf) = 1/length(indf);
         end
     end
     options.priors = priors;
@@ -128,7 +127,8 @@ it = 1;
 while ~stop
     it = it+1;
     % update subject attributions
-    Elogr = psi(posterior.a) - psi(sum(posterior.a));
+    Elogr = VBA_ElogBeta(posterior.a,sum(posterior.a)-posterior.a);
+%     Elogr = psi(posterior.a) - psi(sum(posterior.a));
     for i=1:n
         tmp = L(:,i)+Elogr;
         g = exp(tmp-max(tmp));
@@ -166,7 +166,6 @@ end
 
 %-- display summary statistics
 if options.verbose
-    fprintf('\n')
     fprintf('---')
     fprintf('\n')
     fprintf(['Date: ',datestr(out.date),'\n'])
@@ -206,9 +205,11 @@ out.ep = VBA_ExceedanceProb(out.Ef,out.Vf,'gaussian');
 if ~isempty(options.families)
     [out.F0,out.families.F0] = FE_null(L,options);
     out.bor = 1/(1+exp(F-out.families.F0));
+    [out.Fffx,out.families.Fffx] = FE_ffx(L,options);
 else
     [out.F0] = FE_null(L,options);
     out.bor = 1/(1+exp(F-out.F0));
+    [out.Fffx] = FE_ffx(L,options);
 end
 % pool evidence over families
 if ~isempty(options.families)
@@ -217,7 +218,6 @@ if ~isempty(options.families)
     [out.families.Ef,out.families.Vf] = Dirichlet_moments(out.families.a);
     out.families.ep = VBA_ExceedanceProb(out.families.Ef,out.families.Vf,'gaussian');
 end
-[out.Fffx] = FE_ffx(L);
 
 
 function stop = checkStop(it,F,options)
@@ -236,7 +236,8 @@ function [F,ELJ,Sqf,Sqm] = FE(L,posterior,priors)
 % derives the free energy for the current approximate posterior
 [K,n] = size(L);
 a0 = sum(posterior.a);
-Elogr = psi(posterior.a) - psi(sum(posterior.a));
+Elogr = VBA_ElogBeta(posterior.a,sum(posterior.a)-posterior.a);
+% Elogr = psi(posterior.a) - psi(sum(posterior.a));
 Sqf = sum(gammaln(posterior.a)) - gammaln(a0) - sum((posterior.a-1).*Elogr);
 Sqm = 0;
 for i=1:n
@@ -267,24 +268,32 @@ for i=1:n
     for k=1:K
         F0m = F0m + g(k).*(L(k,i)-log(g(k)+eps)-log(K));
         if ~isempty(options.families)
-            F0f = F0f + g(k).*(L(k,i)-log(g(k))+log(f0(k)));
+            F0f = F0f + g(k).*(L(k,i)-log(g(k)+eps)+log(f0(k)));
         end
     end
 end
 
 
-function [Fffx] = FE_ffx(L)
-% derives the free energy of the 'fixed-effect' model
+function [Fffx,Fffx_fam] = FE_ffx(L,options)
+% derives the free energy of the 'fixed-effect' analysis
 [K,n] = size(L);
 r0 = ones(K,1)./K;
 ss = sum(L,2) + log(r0);
 logz = ss - max(ss);
 z = exp(logz)./sum(exp(logz));
 Fffx = z'*ss - sum(z.*log(z+eps));
-
+if isempty(options.families)
+    Fffx_fam = [];
+else
+    f0 = options.C*sum(options.C,1)'.^-1/size(options.C,2);
+    ss = sum(L,2) + log(f0);
+    logz = ss - max(ss);
+    zf = exp(logz)./sum(exp(logz));
+    Fffx_fam = zf'*ss - sum(zf.*log(zf+eps));
+end
 
 function [E,V] = Dirichlet_moments(a)
-% derives the firs- and second-order moments of a Dirichlet density
+% derives the first- and second-order moments of a Dirichlet density
 a0 = sum(a);
 E = a./a0;
 V = -a*a';
