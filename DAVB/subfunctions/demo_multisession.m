@@ -3,7 +3,7 @@ function [posterior,out] = demo_multisession()
 
 %% ### Model Definition 
 
-function [fx, dfdx,dfdp]=f_demo_multisession(Xt,Theta,ut,inF)
+function [fx,dfdx,dfdp]=f_demo_multisession(Xt,Theta,ut,inF)
 fx = Xt + Theta*ut;
 dfdx = 1;
 dfdp = ut;
@@ -41,11 +41,11 @@ y = [y1 y2];
 
 % = Set the priors for as if data were from a unique session
 priors.muX0 = 0;
-priors.SigmaX0 = .001;
+priors.SigmaX0 = 1;
 priors.muTheta = 0;
 priors.SigmaTheta = 1;     
 priors.muPhi = 0;         % prior mean on observation params
-priors.SigmaPhi = 1;      % prior covariance on observation params
+priors.SigmaPhi = 0;      % prior covariance on observation params
 priors.a_sigma = 1;       % Jeffrey's prior
 priors.b_sigma = 1;       % Jeffrey's prior
 priors.a_alpha = Inf;     
@@ -71,7 +71,7 @@ options.multisession.split = [120 120]; % two sessions of 120 datapoints each
 % options.multisession.fixed.phi = 1; % <~ uncomment for fixing phi(1)
 
 % + Example: same initial state in both sessions
-% options.multisession.fixed.X0 = 1; <~ uncomment for fixing X0(1)
+% options.multisession.fixed.X0 = 1; % <~ uncomment for fixing X0(1)
 
 % = Model identification as usual
 [posterior,out] = VBA_NLStateSpaceModel(y,u,@f_demo_multisession,@g_demo_multisession,dim,options);

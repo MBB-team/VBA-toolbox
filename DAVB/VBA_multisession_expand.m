@@ -21,7 +21,7 @@ end
 
 n_session = numel(options.multisession.split);
 session_id = ones(1,dim.n_t);
-for i=cumsum(options.multisession.split)
+for i=cumsum(options.multisession.split(1:end-1))
     session_id(i+1:end) = session_id(i+1:end) + 1;
 end
 
@@ -90,7 +90,6 @@ indices.theta = param_indices(dim.n_theta,theta_multi,n_session);
 indices.phi = param_indices(dim.n_phi,phi_multi,n_session);
 
 multisession.indices = indices;
-multisession.indices = indices;
 
 %% set new evolution and observation functions
 
@@ -130,12 +129,13 @@ function  [fx,dF_dX,dF_dTheta] = f_multi(Xt,Theta,ut,in)
     in) ;
 
     % store evolution
-    fx = zeros(in.multisession.dim.n,1);
+    fx = Xt;
     fx(idx_X0) = output{1};
+    
       
     % store derivatives if possible
     if nout>=2
-        dF_dX = zeros(in.multisession.dim.n,in.multisession.dim.n);
+        dF_dX = eye(in.multisession.dim.n,in.multisession.dim.n);
         dF_dX(idx_X0,idx_X0) = output{2} ;
     else
         dF_dX = [];
