@@ -3,7 +3,7 @@ function [posterior,out] = demo_multisession()
 
 %% ### Model Definition 
 
-function [fx, dfdx,dfdp]=f_demo_multisession(Xt,Theta,ut,inF)
+function [fx,dfdx,dfdp]=f_demo_multisession(Xt,Theta,ut,inF)
 fx = Xt + Theta*ut;
 dfdx = 1;
 dfdp = ut;
@@ -71,7 +71,7 @@ options.multisession.split = [120 120]; % two sessions of 120 datapoints each
 % options.multisession.fixed.phi = 1; % <~ uncomment for fixing phi(1)
 
 % + Example: same initial state in both sessions
-% options.multisession.fixed.X0 = 1; <~ uncomment for fixing X0(1)
+% options.multisession.fixed.X0 = 1; % <~ uncomment for fixing X0(1)
 
 % = Model identification as usual
 [posterior,out] = VBA_NLStateSpaceModel(y,u,@f_demo_multisession,@g_demo_multisession,dim,options);
