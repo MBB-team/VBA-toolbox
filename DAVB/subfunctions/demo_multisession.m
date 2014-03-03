@@ -41,11 +41,11 @@ y = [y1 y2];
 
 % = Set the priors for as if data were from a unique session
 priors.muX0 = 0;
-priors.SigmaX0 = .001;
+priors.SigmaX0 = 1;
 priors.muTheta = 0;
 priors.SigmaTheta = 1;     
 priors.muPhi = 0;         % prior mean on observation params
-priors.SigmaPhi = 1;      % prior covariance on observation params
+priors.SigmaPhi = 0;      % prior covariance on observation params
 priors.a_sigma = 1;       % Jeffrey's prior
 priors.b_sigma = 1;       % Jeffrey's prior
 priors.a_alpha = Inf;     
