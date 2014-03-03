@@ -144,7 +144,11 @@ function  [fx,dF_dX,dF_dTheta] = f_multi(Xt,Theta,ut,in)
       
     % store derivatives if possible
     if nout>=2
+<<<<<<< HEAD
         dF_dX = eye(multisession.dim.n,multisession.dim.n);
+=======
+        dF_dX = eye(in.multisession.dim.n,in.multisession.dim.n);
+>>>>>>> ae4d13364dd6c0ff1f17c222f7751f5335b55ef3
         dF_dX(idx_X0,idx_X0) = output{2} ;
     else
         dF_dX = [];
