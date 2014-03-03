@@ -27,11 +27,15 @@ for i=1:numel(out.options.multisession.split)
     
     posteriors(i).muPhi = posterior.muPhi(idx_phi);
     posteriors(i).SigmaPhi = posterior.SigmaPhi(idx_phi,idx_phi);
-
-    posteriors(i).a_sigma =  posterior.a_sigma ;
-    posteriors(i).b_sigma =  posterior.b_sigma ;
-    posteriors(i).a_alpha =  posterior.a_alpha ;
-    posteriors(i).b_alpha =  posterior.b_alpha ;
+    
+    if isfield(posterior,'a_sigma')
+        posteriors(i).a_sigma =  posterior.a_sigma ;
+        posteriors(i).b_sigma =  posterior.b_sigma ;
+    end
+    if isfield(posterior,'a_alpha')
+        posteriors(i).a_alpha =  posterior.a_alpha ;
+        posteriors(i).b_alpha =  posterior.b_alpha ;
+    end
     
     
     idx_t = (Ts(i)+1):Ts(i+1);
@@ -39,10 +43,10 @@ for i=1:numel(out.options.multisession.split)
     posteriors(i).iQy = posterior.iQy{idx_t,:};
     
    
-    posteriors(i).iQx =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.iQx(idx_t,:)); 
+    posteriors(i).iQx =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.iQx(idx_t,:),'UniformOutput',false); 
     posteriors(i).muX = posterior.muX(idx_X0,idx_t);
-    posteriors(i).SigmaX.current =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.current(idx_t,:)); 
-    posteriors(i).SigmaX.inter =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.inter(:,idx_t)); 
+    posteriors(i).SigmaX.current =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.current(idx_t,:),'UniformOutput',false); 
+    posteriors(i).SigmaX.inter =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.inter(:,idx_t),'UniformOutput',false); 
 
 end
  
