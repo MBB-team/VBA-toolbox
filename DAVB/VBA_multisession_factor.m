@@ -9,11 +9,15 @@ end
 %% extract session_wise posteriors
 Ts = [0 cumsum(out.options.multisession.split)];
 
+multisession = out.options.inF{2};
+out.options.inF = out.options.inF{1:end-1};
+out.options.inG = out.options.inG{1:end-1};
+    
 for i=1:numel(out.options.multisession.split)
 
-    idx_X0 = out.options.inF.multisession.indices.X0(:,i);
-    idx_theta = out.options.inF.multisession.indices.theta(:,i);
-    idx_phi = out.options.inF.multisession.indices.phi(:,i);
+    idx_X0 = multisession.indices.X0(:,i);
+    idx_theta = multisession.indices.theta(:,i);
+    idx_phi = multisession.indices.phi(:,i);
        
     posteriors(i).muX0 = posterior.muX0(idx_X0);
     posteriors(i).SigmaX0 = posterior.SigmaX0(idx_X0,idx_X0);
