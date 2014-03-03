@@ -25,6 +25,10 @@ for i=cumsum(options.multisession.split)
     session_id(i+1:end) = session_id(i+1:end) + 1;
 end
 
+for i=cumsum(options.multisession.split(1:end-1))
+    session_id(i+1) = -session_id(i+1) ; % signal beginning of a session
+end
+
 % = append session number to inputs
 if options.microU
     session_id = repmat(session_id,decim,1);
@@ -94,17 +98,15 @@ multisession.indices = indices;
 
 %% set new evolution and observation functions
 
+multisession.f_fname = f_fname;
+multisession.g_fname = g_fname;
 multisession.dim = dim_multi;
 multisession.X0_multi = X0_multi;
 multisession.theta_multi = theta_multi;
 multisession.phi_multi = phi_multi;
-multisession.expanded = true;
 
-options.inF.multisession = multisession ;
-options.inG.multisession = multisession ;
-
-options.inF.multisession.f_fname = f_fname;
-options.inG.multisession.g_fname = g_fname;
+options.inF = {options.inF multisession} ;
+options.inG = {options.inG multisession} ;
 
 f_fname_multi = @f_multi;
 g_fname_multi = @g_multi;
@@ -117,32 +119,39 @@ end
 % = wrapper for the evolution function
 function  [fx,dF_dX,dF_dTheta] = f_multi(Xt,Theta,ut,in)
     
+    % extract options
+    inF = in{1};
+    multisession = in{2};
     % extract session wise states and params
-    idx_X0 = in.multisession.indices.X0(:,ut(end));
-    idx_theta = in.multisession.indices.theta(:,ut(end));
+    session_id = abs(ut(end));
+    idx_X0 = multisession.indices.X0(:,session_id);
+    idx_theta = multisession.indices.theta(:,session_id);
     
+    if ut(end) < 1
+        Xt = f_multi(Xt,Theta,[ut(1:end-1);session_id] ,in);
+    end
     % call original function
-    nout = nargout(in.multisession.f_fname);
-    [output{1:nout}] = feval(in.multisession.f_fname, ...
+    nout = nargout(multisession.f_fname);
+    [output{1:nout}] = feval(multisession.f_fname, ...
     Xt(idx_X0), ...
     Theta(idx_theta), ...
     ut(1:end-1),...
-    in) ;
+    inF) ;
 
     % store evolution
-    fx = zeros(in.multisession.dim.n,1);
+    fx = zeros(multisession.dim.n,1);
     fx(idx_X0) = output{1};
       
     % store derivatives if possible
     if nout>=2
-        dF_dX = zeros(in.multisession.dim.n,in.multisession.dim.n);
+        dF_dX = zeros(multisession.dim.n,multisession.dim.n);
         dF_dX(idx_X0,idx_X0) = output{2} ;
     else
         dF_dX = [];
     end
     
     if nout>=3
-        dF_dTheta = zeros(in.multisession.dim.n_theta,in.multisession.dim.n);
+        dF_dTheta = zeros(multisession.dim.n_theta,multisession.dim.n);
         dF_dTheta(idx_theta,idx_X0) = output{3} ;
     else
         dF_dTheta = [];
@@ -153,31 +162,36 @@ end
 % = wrapper for the observation function
 function  [gx,dG_dX,dG_Phi] = g_multi(Xt,Phi,ut,in)
     
+    % extract options
+    inG = in{1};
+    multisession = in{2};
+    
     % extract session wise states and params
-    idx_X0 = in.multisession.indices.X0(:,ut(end));
-    idx_phi = in.multisession.indices.phi(:,ut(end));
+    session_id = abs(ut(end));
+    idx_X0 = multisession.indices.X0(:,session_id);
+    idx_phi = multisession.indices.phi(:,session_id);
     
     % call original function
-    nout = nargout(in.multisession.g_fname);
-    [output{1:nout}] = feval(in.multisession.g_fname, ...
+    nout = nargout(multisession.g_fname);
+    [output{1:nout}] = feval(multisession.g_fname, ...
     Xt(idx_X0), ...
     Phi(idx_phi), ...
     ut(1:end-1),...
-    in) ;
+    inG) ;
 
     % store observation
     gx = output{1};
     
     % store derivatives if possible
     if nout>=2
-        dG_dX = zeros(in.multisession.dim.n,numel(gx));
+        dG_dX = zeros(multisession.dim.n,numel(gx));
         dG_dX(idx_X0,:) = output{2} ;
     else
         dG_dX = [];
     end
     
     if nout>=3
-        dG_Phi = zeros(in.multisession.dim.n_phi,numel(gx));
+        dG_Phi = zeros(multisession.dim.n_phi,numel(gx));
         dG_Phi(idx_phi,:) = output{3} ;
     else
         dG_Phi = [];
