@@ -29,10 +29,10 @@ for i=1:numel(out.options.multisession.split)
         posteriors(i).a_alpha =  posterior.a_alpha ;
         posteriors(i).b_alpha =  posterior.b_alpha ;
         
-        posteriors(i).iQx =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.iQx(idx_t,:));
+        posteriors(i).iQx =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.iQx(idx_t,:),'UniformOutput',false);
         posteriors(i).muX = posterior.muX(idx_X0,idx_t);
-        posteriors(i).SigmaX.current =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.current(idx_t,:));
-        posteriors(i).SigmaX.inter =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.inter(:,idx_t));
+        posteriors(i).SigmaX.current =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.current(idx_t,:),'UniformOutput',false);
+        posteriors(i).SigmaX.inter =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.inter(:,idx_t),'UniformOutput',false);
         
         % evolution
         idx_theta = multisession.indices.theta(:,i);
