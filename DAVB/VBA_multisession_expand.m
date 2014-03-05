@@ -229,7 +229,7 @@ function indices = param_indices(n,idx,n_session)
 
 indices = repmat(1:n,n_session,1)';
 for k=2:n_session
-    indices(idx,k) = (k-1)*n + (1:numel(idx));
+    indices(idx,k) = n + (k-2)*numel(idx) + (1:numel(idx));
 end
 
 end
