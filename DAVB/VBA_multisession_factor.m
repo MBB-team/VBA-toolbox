@@ -49,6 +49,10 @@ for i=1:numel(out.options.multisession.split)
         posteriors(i).b_sigma =  posterior.b_sigma ;
     end
     
+    if isfield(posterior,'a_alpha')
+        posteriors(i).a_alpha =  posterior.a_alpha ;
+        posteriors(i).b_alpha =  posterior.b_alpha ;
+    end
     
     idx_t = (Ts(i)+1):Ts(i+1);   
     posteriors(i).iQy = posterior.iQy{idx_t,:};
