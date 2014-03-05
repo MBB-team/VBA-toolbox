@@ -62,18 +62,20 @@ end
 % = expand (duplicate) priors and dimensions to cover all sessions
 priors = options.priors;
 
+if dim.n > 0
 [priors_multi.muX0, priors_multi.SigmaX0, dim_multi.n] ...
-    = expand_param(priors.muX0,priors.SigmaX0,X0_multi,n_session) ;
+    = expand_param(priors.muX0,priors.SigmaX0,X0_multi,n_session) ; 
 
 [priors_multi.muTheta, priors_multi.SigmaTheta, dim_multi.n_theta] ...
-    = expand_param(priors.muTheta,priors.SigmaTheta,theta_multi,n_session) ;
+    = expand_param(priors.muTheta,priors.SigmaTheta,theta_multi,n_session) ;    
+end
 
 [priors_multi.muPhi, priors_multi.SigmaPhi, dim_multi.n_phi] ...
     = expand_param(priors.muPhi,priors.SigmaPhi,phi_multi,n_session) ;
 
 
 % = restrict initial hidden states
-if isfield(options.multisession,'fixed') && isfield(options.multisession.fixed,'X0')
+if isfield(options.multisession,'fixed') && isfield(options.multisession.fixed,'X0') && dim.n > 0
     % enforce covariance across states (duplication is needed for evolution
     % independance)
     for i= options.multisession.fixed.X0
@@ -100,7 +102,7 @@ multisession.indices = indices;
 multisession.f_fname = f_fname;
 multisession.g_fname = g_fname;
 multisession.dim = dim_multi;
-multisession.X0_multi = X0_multi;
+
 multisession.theta_multi = theta_multi;
 multisession.phi_multi = phi_multi;
 
