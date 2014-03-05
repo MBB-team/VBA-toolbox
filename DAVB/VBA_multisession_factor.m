@@ -17,6 +17,8 @@ dim = out.options.dim;
 
 for i=1:numel(out.options.multisession.split)
     
+    idx_t = (Ts(i)+1):Ts(i+1);   
+
     if dim.n > 0
         % state
         idx_X0 = multisession.indices.X0(:,i);
@@ -56,7 +58,6 @@ for i=1:numel(out.options.multisession.split)
         posteriors(i).b_alpha =  posterior.b_alpha ;
     end
     
-    idx_t = (Ts(i)+1):Ts(i+1);   
     posteriors(i).iQy = posterior.iQy{idx_t,:};
     
 end
