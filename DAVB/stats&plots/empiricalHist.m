@@ -36,7 +36,6 @@ for i=1:p
     else
         gridy(1,i) = sy;
         py(1,i) = 1;
-        
     end
 end
     

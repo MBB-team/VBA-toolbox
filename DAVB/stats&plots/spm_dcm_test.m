@@ -1,6 +1,11 @@
 function DCM = spm_dcm_test(DCM)
-% tests whether DCM params are zero using Savage-Dickey ratios
-
+% tests whether DCM parameters are zero using Savage-Dickey ratios
+% function DCM = spm_dcm_test(DCM)
+% IN:
+%   - DCM: the DCM structure
+% OUT:
+%   - DCM: the DCM structure, augmented with field .sdr, which contains the
+%   Savage-Dickey ratios in the same format as DCM.Ep
 
 n = size(DCM.Ep.A,1);
 nu = size(DCM.Ep.C,2);
@@ -13,14 +18,17 @@ V0 = DCM.M.pC;
 sdr.A = zeros(n,n);
 for i=1:n
     for j=1:n
+        % 0- identify param index in DCM.Cp
         tmp = DCM.Vp;
         tmp.A(i,j) = 0;
         ind = find(full(spm_vec(tmp))~=full(spm_vec(DCM.Vp)));
+        % 1- define reduced model
         E0r = E0;
         E0r(ind) = 0;
         V0r = V0;
         V0r(ind,:) = 0;
         V0r(:,ind) = 0;
+        % 2- call Savage-Dickey ratios
         if isempty(ind) % this param was fixed
             if isequal(E0,E0r)
                 dF = Inf;
@@ -30,6 +38,7 @@ for i=1:n
         else
             dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
         end
+        % 3- store Bayes factor
         sdr.A(i,j) = 1./(1+exp(dF));
     end
 end

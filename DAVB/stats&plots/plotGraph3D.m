@@ -1,4 +1,4 @@
-function [hi,px,gx,x] = plotGraph3D(px,gx,x,ha,va)
+function [hi,px,gx,x] = plotGraph3D(px,gx,x,ha,va,norm)
 % plot image as a map in 3D
 % function [hi] = plotGraph3D(px,gx,x,ha,va)
 % IN:
@@ -18,6 +18,9 @@ end
 if ~exist('va','var') || isempty(va)
     va = 0;
 end
+if ~exist('norm','var') || isempty(norm)
+    norm = 1;
+end
 
 if va > 0
     nv = 4;
@@ -36,8 +39,9 @@ else
     nv = 0;
 end
 
-% normalize px
-px =  bsxfun(@rdivide,px,sum(px,2));
+if norm % normalize px
+    px =  bsxfun(@rdivide,px,sum(px,2));
+end
 mig = min(gx);
 mag = max(gx);
 gx = [mig-flipud(offset(:));gx;mag+offset(:)];
@@ -45,9 +49,7 @@ gt = [-nv:size(px,1)-nv-1]';
 hi = surf(gt,gx,px','parent',ha);
 set(hi,'edgecolor',0.8*[1 1 1]);%'edgealpha',0.1,
 
-
-if isempty(x)
-   % compute first-order moment from time-dependent density
+if isempty(x) % compute first-order moment from time-dependent density
    x = zeros(1,length(gt)-2*nv);
    for t=1:length(gt)-2*nv
        pxt = px(t+nv,:);
@@ -62,8 +64,6 @@ ny = double(~~ny);
 ny(ny==0) = NaN;
 z = px'.*ny;
 zz = z(~isnan(z));
-% xx = repmat(gx,1,size(px,1)).*ny;
-% xx= xx(~isnan(xx));
 xx = x(~isnan(x));
 tt = repmat(gt',size(px,2),1).*ny;
 tt = tt(~isnan(tt));

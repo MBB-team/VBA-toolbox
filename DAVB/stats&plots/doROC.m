@@ -1,6 +1,26 @@
-function [p,out] = doROC(xp,xn)
+function [p,out,hf] = doROC(xp,xn,displayWin)
+% implements a ROC analysis on samples from alternative hypotheses
+% function [p,out] = doROC(xp,xn)
+% IN:
+%   - xp: values under the 'positive' hypothesis (H1)
+%   - xn: values under the 'negative' hypothesis (H0)
+% OUT:
+%   - p: area under the ROC curve (probability of discriminatng between the
+%   two hypotheses)
+%   - out: structure with the following fields:
+%       .TP: true positive rate for each threshold
+%       .TN: true negative rate ...
+%       .FP: false positive rate ...
+%       .FN: false negative rate ...
+%       .threshold: 5% FPR threshold
+%       .power: TPR at 5% FPR threshold
+%       .t_star: disambiguation threshold. This is the value for which the
+%       total error rate (P(e)=FPR+FNR) is minimal.
+%   - hf: the figure handle
 
-ux = unique([xp(:),xn(:)]);
+try;displayWin;catch;displayWin=1;end
+
+ux = unique([xp(:);xn(:)]);
 Np = length(xp);
 Nn = length(xn);
 n = length(ux);
@@ -17,6 +37,9 @@ for i=1:n
     out.TN(i) = length(find(xn<t))./Nn;
 end
 
+% area under the ROC curve
+p = -trapz(1-out.TN,out.TP);
+
 [hp,gp] = empiricalHist(xp(:),1);
 [hn,gn] = empiricalHist(xn(:),1);
 
@@ -26,10 +49,14 @@ d = (0.05-out.FP).^2;
 out.threshold = ux(mi);
 out.power = out.TP(mi);
 
-% find reversal threshold
+% find disambiguation threshold
 r = out.FP+out.FN;
 [mfp,mi] = min(r);
 out.t_star = ux(mi);
+
+if ~displayWin
+    return
+end
 
 hf = figure('color',[1 1 1]);
 
@@ -48,7 +75,6 @@ plot(ha(2),[0,0.05],[out.power,out.power],'r')
 plot(ha(2),0.05,out.power,'r.')
 xlabel(ha(2),'FPR (1-specificity)')
 ylabel(ha(2),'TPR (sensitivity)')
-p = -trapz(1-out.TN,out.TP);
 title(ha(2),['ROC curve: p = ',num2str(p),' , [FPR=0.05]: power=',num2str(out.power),' ,threshold=',num2str(out.threshold)])
 
 ha(3) = subplot(3,1,3,'parent',hf,'xlim',[min(ux),max(ux)],'ylim',[min(r),max(r)],'nextplot','add');
@@ -56,6 +82,6 @@ plot(ha(3),ux,r,'b.')
 plot(ha(3),[out.t_star,out.t_star],[min(r),max(r)],'k--')
 xlabel(ha(3),'threshold values')
 ylabel(ha(3),'P(e) = FPR+FNR')
-title(ha(3),['reversal threshold=',num2str(out.t_star)])
+title(ha(3),['disambiguation threshold=',num2str(out.t_star)])
 
 

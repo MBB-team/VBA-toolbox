@@ -7,7 +7,7 @@ catch
     handles.hf0 = figure('color',ones(1,3));
 end
 handles.ha0 = subplot(2,1,1,'parent',handles.hf0,'nextplot','add');
-title(handles.ha0,'detection: experimental response curve')
+title(handles.ha0,'experimental response')
 xlabel(handles.ha0,'u: design control variable (motion coherency)')
 ylabel(handles.ha0,'detection probability')
 grid(handles.ha0,'on')
@@ -17,7 +17,7 @@ u = out.u;
 
 
 % check sigmoid-like response curve
-ne = 6; % number of bins
+ne = 8; % number of bins
 mi = min(u);
 ma = max(u);
 dx = (ma-mi)./ne;
@@ -47,8 +47,7 @@ plot(handles.ha0,sort(u),gx,'b.')
 yy = [0 g0 1];
 xx = (yy-g0)./slope;
 vyy = ((xx.*(slope+sqrt(vslope))+g0)-yy).^2;
-[haf,handles.hf,handles.hp] = plotUncertainTimeSeries(...
-    yy,vyy,xx+posterior.muPhi(2),handles.ha0);
+[haf,handles.hf,handles.hp] = plotUncertainTimeSeries(yy,vyy,xx+posterior.muPhi(2),handles.ha0);
 set(handles.hf,'facecolor',[1 0 0])
 set(handles.hp,'color',[1 0 0])
 plot(handles.ha0,posterior.muPhi(2),g0,'go')
@@ -57,13 +56,14 @@ plot(handles.ha0,[posterior.muPhi(2)-sip,posterior.muPhi(2)+sip],[g0 g0],'g')
 legend(handles.ha0,...
     {'binned responses',...
     'sigmoid estimate',...
-    '1 sigmoid standard deviation',...
+    '1 sigmoid std',...
     'data samples',...
     'sigmoid slope estimate',...
-    '1 sigmoid slope standard deviation',...
+    '1 sigmoid slope std',...
     'inflexion point estimate',...
-    '1 inflexion point standard deviation'})
-
+    '1 inflexion point std'})
+box(handles.ha0,'off')
+set(handles.ha0,'xgrid','off')
 
 [ny,nx] = hist(u);
 handles.ha02 = subplot(2,1,2,'parent',handles.hf0);
@@ -74,4 +74,7 @@ xlabel(handles.ha02,'u: design control variable (stimulus contrast)')
 ylabel(handles.ha02,'empirical distribution of u')
 title(handles.ha02,'empirical histogram')
 grid(handles.ha02,'on')
+box(handles.ha02,'off')
+set(handles.ha02,'xgrid','off')
+
 try getSubplots; end
