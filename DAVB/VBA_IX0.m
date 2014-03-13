@@ -10,7 +10,7 @@ if options.DisplayWin % Display progress
 end
 
 % check infinite precision transition pdf
-iQx0 = VB_inv(options.priors.iQx{1},options.params2update.x{1},'replace');
+iQx0 = VBA_inv(options.priors.iQx{1},options.params2update.x{1},'replace');
 IN = diag(~~diag(iQx0));
 
 % Get precision parameters
@@ -32,11 +32,11 @@ dx0 = muX0-x0;
 
 % posterior covariance matrix terms
 Q = options.priors.SigmaX0(indIn,indIn);
-iQ = VB_inv(Q,[]);
+iQ = VBA_inv(Q,[]);
 iSigmaX0 = iQ + alphaHat.*dF_dX0(indIn,:)*iQx0(indIn,indIn)*dF_dX0(indIn,:)';
 
 % posterior covariance matrix
-SigmaX0 = VB_inv(iSigmaX0,[]);
+SigmaX0 = VBA_inv(iSigmaX0,[]);
 
 % mode
 tmp = iQ*dx0(indIn) + alphaHat.*dF_dX0(indIn,:)*iQx0(indIn,indIn)*dx;

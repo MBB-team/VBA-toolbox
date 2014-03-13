@@ -48,7 +48,7 @@ switch in.flag
 end
 
 % VB update of the sufficient statistics (in.n iterations)
-[pxi,Ex,Vx] = VB_AVL(prior,Theta,u(in.uu),in);
+[pxi,Ex,Vx] = VBA_AVL(prior,Theta,u(in.uu),in);
 
 switch in.flag
     case {1,2}
@@ -67,17 +67,17 @@ end
 % % posterior(1) = sigm(0.5*posterior(1)+0.25,struct('INV',1))
 % % d2f = numericDiff(@numericDiff,3,@FE,1,posterior,u,prior,Theta,in);
 % [F,d2f,d2f0] = FE(posterior,u,prior,Theta,in);
-% % [hf] = VB_displayGrads(d2f,d2f0,'Jacobian','FE','g');
+% % [hf] = VBA_displayGrads(d2f,d2f0,'Jacobian','FE','g');
 % % pause
 % % [F,d2f,d2f0] = FE(posterior,u,prior,Theta,in);
-% % [hf] = VB_displayGrads(d2f,pinv(d2f),'Jacobian','FE','g');
+% % [hf] = VBA_displayGrads(d2f,pinv(d2f),'Jacobian','FE','g');
 % J = - pinv(d2f)*d2f0';
 % dfdx = [    J                       , zeros(3,1)
 %             [0,pxi(1)*(1-pxi(1)),0] , 0  ];
 % dfdx = dfdx';
 
 
-function [pxi,Ex,Vx] = VB_AVL(prior,Theta,u,in)
+function [pxi,Ex,Vx] = VBA_AVL(prior,Theta,u,in)
 
 % allocate dummy variables
 opt.GnTolFun = 1e-4;

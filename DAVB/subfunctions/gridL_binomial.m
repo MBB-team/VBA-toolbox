@@ -3,7 +3,7 @@ function [logP,bestPhi] = gridL_binomial(y,u,f_fname,g_fname,dim,options)
 % nuemrically evaluates the posterior of (binomial) likelihood parameters
 
 [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
-iQ = VB_inv(options.priors.SigmaPhi);
+iQ = VBA_inv(options.priors.SigmaPhi);
 
 gridPhi1 = -3:0.2e-1:3;
 gridPhi2 = -0.5:1e-2:0.5;

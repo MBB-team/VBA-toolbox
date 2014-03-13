@@ -65,7 +65,7 @@ for i=1:N
     F2(i,1) = o2.F;
     
     % Use Savage-Dickey ratio
-    [F2sd(i,1),p2sd] = VB_SavageDickey(p1,priors,o1.F,dim,priors2);
+    [F2sd(i,1),p2sd] = VBA_SavageDickey(p1,priors,o1.F,dim,priors2);
     
     % Use frequentist limit:
     F1_f(i,1) = lev_GLM(y1,inG.X);
@@ -74,7 +74,7 @@ for i=1:N
     % repeat without Laplace free energy:
     [F1_0(i,1)] = getF(p1,o1,0);
     [F2_0(i,1)] = getF(p2,o2,0);
-    [F2sd_0(i,1)] = VB_SavageDickey(p1,priors,F1_0(i,1),dim,priors2);
+    [F2sd_0(i,1)] = VBA_SavageDickey(p1,priors,F1_0(i,1),dim,priors2);
     
     
     % Invert full model on 'reduced' data
@@ -88,7 +88,7 @@ for i=1:N
     F2(i,2) = o2.F;
     
     % Use Savage-Dickey ratio
-    [F2sd(i,2),p2sd] = VB_SavageDickey(p1,priors,o1.F,dim,priors2);
+    [F2sd(i,2),p2sd] = VBA_SavageDickey(p1,priors,o1.F,dim,priors2);
     
     % Use frequentist limit:
     F1_f(i,2) = lev_GLM(y2,inG.X);
@@ -97,7 +97,7 @@ for i=1:N
     % repeat without Laplace free energy:
     [F1_0(i,2)] = getF(p1,o1,0);
     [F2_0(i,2)] = getF(p2,o2,0);
-    [F2sd_0(i,2)] = VB_SavageDickey(p1,priors,F1_0(i,2),dim,priors2);
+    [F2sd_0(i,2)] = VBA_SavageDickey(p1,priors,F1_0(i,2),dim,priors2);
     
     
 

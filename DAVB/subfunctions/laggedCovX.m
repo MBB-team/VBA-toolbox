@@ -5,15 +5,15 @@ function [SigmaX] = laggedCovX(SigmaX,muX,t,...
 
 Sinter = SigmaX.inter{t};
 
-R = VB_inv(iR{t},indIn{t});
+R = VBA_inv(iR{t},indIn{t});
 if t == dim.n_t-1
-    Rp = VB_inv(iRp{t+1},indIn{t+1});
-    Kt = Rp*dG_dX{t+1}*VB_inv((VB_inv(iQy{t+1},[])/sigmaHat ...
+    Rp = VBA_inv(iRp{t+1},indIn{t+1});
+    Kt = Rp*dG_dX{t+1}*VBA_inv((VBA_inv(iQy{t+1},[])/sigmaHat ...
         + dG_dX{t+1}'*Rp*dG_dX{t+1}),indIn{t+1});
     SigmaX.inter{t} = (eye(dim.n) - Kt*dG_dX{t+1}')*dF_dX{t}'*R;
 else
     Jt = R*dF_dX{t}*iRp{t+1};
-    R2 = VB_inv(iR{t+1},indIn{t+1});
+    R2 = VBA_inv(iR{t+1},indIn{t+1});
     SigmaX.inter{t} = R2*Jt' + Jt*(SigmaX.inter{t+1}-...
         dF_dX{t}'*R2)*Jt';
 end

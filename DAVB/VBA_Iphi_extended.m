@@ -24,7 +24,7 @@ indIn = options.params2update.phi;
 % Preallocate intermediate variables
 iQy = options.priors.iQy;
 Q = options.priors.SigmaPhi(indIn,indIn);
-iQ = VB_inv(Q,[]);
+iQ = VBA_inv(Q,[]);
 muPhi0 = options.priors.muPhi;
 Phi = muPhi0;
 Phi(indIn) = phi;
@@ -135,7 +135,7 @@ end
 % posterior covariance matrix
 
 iSigmaPhi = iQ + d2gdx2(indIn,indIn);
-SigmaPhi = VB_inv(iSigmaPhi,[]);
+SigmaPhi = VBA_inv(iSigmaPhi,[]);
 
 % mode
 tmp = iQ*dphi0(indIn) + ddydphi(indIn);

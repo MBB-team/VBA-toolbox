@@ -46,7 +46,7 @@ end
 if dim.n >0
     a0 = posterior.a_alpha;
     b0 = posterior.b_alpha;
-    iQx = VB_inv(options.priors.iQx{1},options.params2update.x{1},'replace');
+    iQx = VBA_inv(options.priors.iQx{1},options.params2update.x{1},'replace');
     nx = length(options.params2update.x{1});
     [fx,dF_dX,dF_dTheta] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
     dx = posterior.muX(:,1) - fx;
@@ -88,7 +88,7 @@ end
     
     %- State noise precision
     if dim.n>0 && t<dim.n_t
-        iQx = VB_inv(options.priors.iQx{t},options.params2update.x{t},'replace');
+        iQx = VBA_inv(options.priors.iQx{t},options.params2update.x{t},'replace');
         nx = length(options.params2update.x{t});
         [fx,dF_dX,dF_dTheta] = VBA_evalFun('f',posterior.muX(:,t-1),posterior.muTheta,u(:,t),options,dim,t);
         dx = posterior.muX(:,t) - fx;

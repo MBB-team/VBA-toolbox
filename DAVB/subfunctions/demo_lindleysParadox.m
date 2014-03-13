@@ -11,7 +11,7 @@ n = 16;
 my = -16:1e-1:16;
 X = ones(n,1);
 V = s1*(X*X') + s0*eye(n);
-iV = VB_inv(V);
+iV = VBA_inv(V);
 
 lbf = zeros(3,length(my));
 M = zeros(1,length(my));
@@ -28,7 +28,7 @@ for i=1:length(my)
     M(i) = S*(n*my(i)/s0 + m1/s1);
     dy = my(i)-M(i);
     dm = m1-M(i);
-    lp2 = -(n/2)*log(2*pi) - (n/2)*log(s0) - (n/(2*s0))*dy.^2 -(n*S/s0)/2 - VB_KL(M(i),S,m1,s1,'Normal');    
+    lp2 = -(n/2)*log(2*pi) - (n/2)*log(s0) - (n/(2*s0))*dy.^2 -(n*S/s0)/2 - VBA_KL(M(i),S,m1,s1,'Normal');    
     lbf(2,i) = lp2-lp0;
     
     k1 = 1./s1;

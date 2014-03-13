@@ -65,12 +65,12 @@ if options.checkGrads && ~isequal(fname,@VBA_odeLim)
     mayPause = 0;
     if ~isempty(Xt) && nout > 1
         J2 = numericDiff(@EvalFunN,2,fname,Xt,P,ut,in,dim,nout,nout0,options,d,N);
-        [hf(1)] = VB_displayGrads(J,J2,'Jacobian',fname,flagFun);
+        [hf(1)] = VBA_displayGrads(J,J2,'Jacobian',fname,flagFun);
         mayPause = 1;
     end
     if ~isempty(P) && nout > 2
         dfdP2 = numericDiff(@EvalFunN,3,fname,Xt,P,ut,in,dim,nout,nout0,options,d,N);
-        [hf(2)] = VB_displayGrads(dfdP,dfdP2,'Gradients wrt parameters',fname,flagFun);
+        [hf(2)] = VBA_displayGrads(dfdP,dfdP2,'Gradients wrt parameters',fname,flagFun);
         mayPause = 1;
     end
     if mayPause

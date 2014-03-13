@@ -1,6 +1,6 @@
 function [p] = VBA_PPM(m,v,t,disp,form)
 % computes the exceedance probability of a random effect (+ plots)
-% FORMAT [p] = VB_PPM(m,v,t,disp,form)
+% FORMAT [p] = VBA_PPM(m,v,t,disp,form)
 % IN:
 %   - m/v: sufficient statistics of the pdf
 %       -> if form='gaussian', m=E[x] and v=V[x]

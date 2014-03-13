@@ -21,7 +21,7 @@ indIn = options.params2update.phi;
 
 % Preallocate intermediate variables
 Q = options.priors.SigmaPhi(indIn,indIn);
-iQ = VB_inv(Q,[]);
+iQ = VBA_inv(Q,[]);
 muPhi0 = options.priors.muPhi;
 Phi = muPhi0;
 Phi(indIn) = phi;
@@ -61,7 +61,7 @@ for t=1:dim.n_t
     ddydphi = ddydphi + dG_dPhi*iQy{t}*dy(:,t);
     
     % Predictive density (data space)
-    V = dG_dPhi'*posterior.SigmaPhi*dG_dPhi + (1./sigmaHat).*VB_inv(iQy{t},[]);
+    V = dG_dPhi'*posterior.SigmaPhi*dG_dPhi + (1./sigmaHat).*VBA_inv(iQy{t},[]);
     if dim.n > 0
         V = V + dG_dX'*posterior.SigmaX.current{t}*dG_dX;
     end
@@ -94,7 +94,7 @@ end
 
 % posterior covariance matrix
 iSigmaPhi = iQ + sigmaHat.*d2gdx2(indIn,indIn);
-SigmaPhi = VB_inv(iSigmaPhi,[]);
+SigmaPhi = VBA_inv(iSigmaPhi,[]);
 
 % mode
 tmp = iQ*dphi0(indIn) + sigmaHat.*ddydphi(indIn);

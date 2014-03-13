@@ -40,7 +40,7 @@ if nargout < 3
     get_iVp = 0;
 else
     get_iVp = 1;
-    iVp = VB_inv(Sigma);
+    iVp = VBA_inv(Sigma);
 end
 
 
@@ -89,7 +89,7 @@ for si=1:numel(options.sources)
     % - gaussian
     else 
         varY = options.priors.b_sigma(gsi(si))./options.priors.a_sigma(gsi(si));
-        Qy = VB_inv(options.priors.iQy{1,si});
+        Qy = VBA_inv(options.priors.iQy{1,si});
         Vy_tmp = varY.*Qy;
         tmp = options.priors.iQy{1,si}./varY ;
     end
@@ -142,7 +142,7 @@ for t = 2:dim.n_t
             % - gaussian
         else
             varY = options.priors.b_sigma(gsi(si))./options.priors.a_sigma(gsi(si));
-            Qy = VB_inv(options.priors.iQy{t,si});
+            Qy = VBA_inv(options.priors.iQy{t,si});
             Vy_tmp = varY.*Qy;
             tmp = options.priors.iQy{t,si}./varY ;
         end
@@ -176,7 +176,7 @@ if checkVar
         + dgdphi'*options.priors.SigmaPhi*dgdphi ...
         + dgdx0'*options.priors.SigmaX0*dgdx0 ...
         + Vy0;
-    [hf] = VB_displayGrads(Vy,Vy2);
+    [hf] = VBA_displayGrads(Vy,Vy2);
 end
 
 

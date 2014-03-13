@@ -66,8 +66,8 @@ end
     VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim);
 
 % check infinite precision transition pdf
-iQ = VB_inv(iQx{1},indIn{1},'replace');
-Q = VB_inv(iQ,indIn{1});
+iQ = VBA_inv(iQx{1},indIn{1},'replace');
+Q = VBA_inv(iQ,indIn{1});
 IN = diag(~~diag(iQ));
 
 % mean-field terms
@@ -97,9 +97,9 @@ if ~options.ignoreMF && dim.n_phi > 0
     A2g = A1g*kron(iQy{1},posterior.SigmaPhi);
     C{1} = C{1} + (sigmaHat./Te)*A2g*A1g';
 end
-iRp{1} = VB_inv(Rp,indIn{1});
+iRp{1} = VBA_inv(Rp,indIn{1});
 iR{1} =  iRp{1} + C{1};
-R = VB_inv(iR{1},indIn{1});
+R = VBA_inv(iR{1},indIn{1});
 
 % prediction : p(X_1|X_0)
 mStar(:,1) = fx0;
@@ -140,8 +140,8 @@ SX = 0.5*dim.n*dim.n_t*log(2*pi*exp(1)) ...
 for t = 2:dim.n_t
    
     % check infinite precision transition pdf
-    iQ = VB_inv(iQx{t},indIn{t},'replace');
-    Q =  VB_inv(iQx{t},indIn{t});
+    iQ = VBA_inv(iQx{t},indIn{t},'replace');
+    Q =  VBA_inv(iQx{t},indIn{t});
     IN = diag(~~diag(iQ));
     
     % evaluate evolution function at current mode
@@ -154,7 +154,7 @@ for t = 2:dim.n_t
 
 %     % artificial prior
 %     args = {'f',muxp(:,t-1),posterior.muTheta,u(:,t),options,dim};
-%     [muxp(:,t),SUxp{t},CUxp{t}] = VB_UT(muxp(:,t-1),SUxp{t-1},'VBA_evalFun',args,2);
+%     [muxp(:,t),SUxp{t},CUxp{t}] = VBA_UT(muxp(:,t-1),SUxp{t-1},'VBA_evalFun',args,2);
 %     SUxp{t} = SUxp{t} + Q./alphaHat;
     
     
@@ -189,7 +189,7 @@ for t = 2:dim.n_t
         A2f = A1f*kron(iQ,posterior.SigmaTheta);
         B = B + (alphaHat./Te)*A2f*A1f';
     end
-    iB{t-1} = VB_inv(B,indIn{t});
+    iB{t-1} = VBA_inv(B,indIn{t});
     iRp2 = (alphaHat./Te)*iQ*...
         ( In - (alphaHat./Te)*iQ*dF_dX{t-1}'*iB{t-1}*dF_dX{t-1} );
     C{t} = (sigmaHat./Te)*dG_dX{t}*iQy{t}*dG_dX{t}';
@@ -200,9 +200,9 @@ for t = 2:dim.n_t
     end
     
     Rp = dF_dX{t-1}'*R*dF_dX{t-1} + (Te./alphaHat)*Q;
-    iRp{t} = VB_inv(Rp,indIn{t});
+    iRp{t} = VBA_inv(Rp,indIn{t});
     iR{t} = iRp{t} + C{t};
-    R = VB_inv(iR{t},indIn{t});
+    R = VBA_inv(iR{t},indIn{t});
     
     % prediction : p(X_t|Y_1:t-1)
     mStar(:,t) = fx(:,t-1) ...
@@ -268,7 +268,7 @@ drawnow
 if ~div % only if forward-pass converged
     
     % check infinite precision transition pdf
-    iQ = VB_inv(iQx{dim.n_t},indIn{dim.n_t},'replace');
+    iQ = VBA_inv(iQx{dim.n_t},indIn{dim.n_t},'replace');
     
     % Final condition beta-message (by convention)
 %     ohmega(:,dim.n_t) = m(:,dim.n_t);
@@ -281,31 +281,31 @@ if ~div % only if forward-pass converged
         t = dim.n_t-i;
         
         % check infinite precision transition pdf
-        iQ = VB_inv(iQx{t},indIn{t},'replace');
-        Qi = VB_inv(iQx{t},indIn{t});
-        Qy = VB_inv(iQy{t+1},[]);
-        iQ2 = VB_inv(iQx{t+1},indIn{t+1},'replace');
+        iQ = VBA_inv(iQx{t},indIn{t},'replace');
+        Qi = VBA_inv(iQx{t},indIn{t});
+        Qy = VBA_inv(iQy{t+1},[]);
+        iQ2 = VBA_inv(iQx{t+1},indIn{t+1},'replace');
         IN = diag(~~diag(iQ));
         
 %         % backward Markov kernel
-%         tmp = CUxp{t+1}*VB_inv(SUxp{t+1},[]);
+%         tmp = CUxp{t+1}*VBA_inv(SUxp{t+1},[]);
 %         mub = muxp(:,t) + tmp*(X(:,t+1)-muxp(:,t+1));
 %         Pb = SUxp{t} - tmp*CUxp{t+1}';
 %         
 %         % observational moments
 %         args = {'g',X(:,t),posterior.muPhi,u(:,t),options,dim};
-%         [muy,Py,Pxy] = VB_UT(mub,Pb,'VBA_evalFun',args,2);
+%         [muy,Py,Pxy] = VBA_UT(mub,Pb,'VBA_evalFun',args,2);
 %         Py = Py + Qy./sigmaHat;
 %         
 %         % backward update step
-%         tmp = Pxy*VB_inv(Py,[]);
+%         tmp = Pxy*VBA_inv(Py,[]);
 %         ohmega = mub + tmp*(y(:,t)-muy);
 %         Px = Pb - tmp*Pxy';
 %         
-%         iP = iRp{t} + VB_inv(Px,[]);
-%         xTilde = VB_inv(iP,[])*(iRp{t}*m(:,t) + iP*ohmega);
+%         iP = iRp{t} + VBA_inv(Px,[]);
+%         xTilde = VBA_inv(iP,[])*(iRp{t}*m(:,t) + iP*ohmega);
 %         
-%         SigmaX.current{t} = VB_inv(iP-VB_inv(SUxp{t},[]),[]);
+%         SigmaX.current{t} = VBA_inv(iP-VBA_inv(SUxp{t},[]),[]);
 %         muX(:,t) = SigmaX.current{t}*(iP*xTilde-SUxp{t}*muxp(:,t));
         
 %         % call unscented transform
@@ -315,7 +315,7 @@ if ~div % only if forward-pass converged
 %         PX(dim.n+1:2*dim.n,dim.n+1:2*dim.n) = Qi./alphaHat;
 %         PX(2*dim.n+1:2*dim.n+dim.p,2*dim.n+1:2*dim.n+dim.p) = Qy./sigmaHat;
 %         args = {mX,posterior,u(:,t+1),options,dim};
-%         [muU,SU,CU] = VB_UT(mX,PX,'getGFX',args,1);
+%         [muU,SU,CU] = VBA_UT(mX,PX,'getGFX',args,1);
 %         
 %         mux = muU(1:dim.n);
 %         muy = muU(2*dim.n+1:2*dim.n+dim.p);
@@ -324,10 +324,10 @@ if ~div % only if forward-pass converged
         
 %         % call unscented transform
 %         args = {'f',X(:,t),posterior.muTheta,u(:,t+1),options,dim};
-%         [muU,SU,CU] = VB_UT(X(:,t),posterior.SigmaX.current{t},'VBA_evalFun',args,2);
+%         [muU,SU,CU] = VBA_UT(X(:,t),posterior.SigmaX.current{t},'VBA_evalFun',args,2);
 %         SU = SU + Qi./alphaHat;
 %         
-%         D = CU*VB_inv(SU,[]);
+%         D = CU*VBA_inv(SU,[]);
 %         SigmaX.current{t} = SigmaX.current{t} + D*(SigmaX.current{t+1} - SU)*D';
 %         muX(:,t) = m(:,t) + D*(muX(:,t+1)-muU);
         
@@ -352,7 +352,7 @@ if ~div % only if forward-pass converged
             Dy = Dy + A*(ytilde - Gtilde*m(:,t));
         end
         
-        SigmaX.current{t} = VB_inv(iR{t}+SiX,indIn{t+1});
+        SigmaX.current{t} = VBA_inv(iR{t}+SiX,indIn{t+1});
         muX(:,t) = m(:,t) + SigmaX.current{t}*Dy;
         
 %         [gfx,dG_dfx] =...
@@ -361,18 +361,18 @@ if ~div % only if forward-pass converged
 %         Sytp1 = Qy./sigmaHat + dG_dfx'*Qi*dG_dfx./alphaHat;
 %         ytilde = y(:,t+1) - gfx + Gtilde*X(:,t);
 %         A = Gtilde'*pinv(full(Sytp1));
-%         SigmaX.current{t} = VB_inv(iR{t}+A*Gtilde,indIn{t+1});
+%         SigmaX.current{t} = VBA_inv(iR{t}+A*Gtilde,indIn{t+1});
 %         muX(:,t) = m(:,t) + SigmaX.current{t}*A*(ytilde - Gtilde*m(:,t));
          
 
 %         % prediction step: p(X_t|Y_t+1:n_t)
-%         iRtilde1 = VB_inv(options.priors.SigmaX.current{t},indIn{t});
-%         iRtilde2 = VB_inv(options.priors.SigmaX.current{t+1},indIn{t});
+%         iRtilde1 = VBA_inv(options.priors.SigmaX.current{t},indIn{t});
+%         iRtilde2 = VBA_inv(options.priors.SigmaX.current{t+1},indIn{t});
 %         F = iS + (alphaHat./Te).*iQ - iRtilde2;
-%         iF = VB_inv(F,indIn{t});
+%         iF = VBA_inv(F,indIn{t});
 %         A = dF_dX{t}*(In-(alphaHat./Te).*iF);
 %         iGamma = iRtilde1 - (alphaHat./Te).*(A*dF_dX{t}');
-%         Gamma = VB_inv(iGamma,indIn{t});
+%         Gamma = VBA_inv(iGamma,indIn{t});
 %         muTilde(:,t) = -IN*Gamma*( ...
 %             (alphaHat./Te).*A*(fx(:,t)-dF_dX{t}'*X(:,t)) ...
 %             +(alphaHat./Te).*dF_dX{t}*iF*...
@@ -381,13 +381,13 @@ if ~div % only if forward-pass converged
 %         
 %         % Update step: p(X_t|Y_t:n_t)
 %         iS = iGamma + C{t};
-%         S = VB_inv(iS,indIn{t});
+%         S = VBA_inv(iS,indIn{t});
 %         ohmega(:,t) = X(:,t) ...
 %             + (sigmaHat./Te).*IN*S*dG_dX{t}*dy(:,t) ...
 %             + S*iGamma*(muTilde(:,t)-X(:,t));
 %         
 %         %--- alpha-beta message (full posterior) : p(X_t|Y_1:n_t)
-%         SigmaX.current{t} = VB_inv(iR{t}+iGamma-iRtilde1,indIn{t});
+%         SigmaX.current{t} = VBA_inv(iR{t}+iGamma-iRtilde1,indIn{t});
 %         vx(:,t) = diag(SigmaX.current{t});
 %         
 %         muX(:,t) = m(:,t) + ...
@@ -399,7 +399,7 @@ if ~div % only if forward-pass converged
         %-- !! only stable update: inter-time step covariance !! --%
 
         % Posterior inter-time covariance matrix
-        A = VB_inv( (Te./alphaHat)*E -...
+        A = VBA_inv( (Te./alphaHat)*E -...
             (alphaHat./Te).*iQ*dF_dX{t}'*iB{t}*dF_dX{t}*iQ,indIn{t} );
         SigmaX.inter{t} = iB{t}*dF_dX{t}*iQ*A;
         
@@ -413,7 +413,7 @@ if ~div % only if forward-pass converged
         SX = SX + 0.5*( ldj - ldm );
         
         % update lagged covariance intermediate matrices
-        iE = VB_inv(E,indIn{t+1});
+        iE = VBA_inv(E,indIn{t+1});
         iPsi = (alphaHat./Te)*(  dF_dX{t}*iQ2*dF_dX{t}' + ...
             -(alphaHat./Te)*dF_dX{t}*iQ2*iE*iQ2*dF_dX{t}' );
         E = iPsi +(alphaHat./Te)*iQ + (sigmaHat./Te)*C{t};

@@ -26,13 +26,13 @@ stop = 0;
 it = 1;
 while ~stop
     
-    Si1 = VB_inv(eye(n1)/s0 + in.L1/s1);
+    Si1 = VBA_inv(eye(n1)/s0 + in.L1/s1);
     mu1 = Si1*(u./s0 + in.L1*A1*mu2/s1);
     
-    Si2 = VB_inv((A1'*in.L1*A1)/s1 + in.L2/s2);
+    Si2 = VBA_inv((A1'*in.L1*A1)/s1 + in.L2/s2);
     mu2 = Si2*(A1'*in.L1*mu1/s1 + in.L2*A2*mu3/s2);
     
-    Si3 = VB_inv((A2'*in.L2*A2)/s2 + in.L3/s3);
+    Si3 = VBA_inv((A2'*in.L2*A2)/s2 + in.L3/s3);
     mu3 = Si3*(A2'*in.L2*mu2/s2 + in.L3*mu3_0/s3);
 
     [F,PE1,PE2,PE3,PE4] = ve(mu1,Si1,mu2,Si2,mu3,Si3,u,P,in);

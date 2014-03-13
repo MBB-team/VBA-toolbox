@@ -62,10 +62,10 @@ for i=1:N
         [p1,o10] = VBA_NLStateSpaceModel(y1,[],[],g_fname,dim,options);
         [p0,o00] = VBA_NLStateSpaceModel(y0,[],[],g_fname,dim,options);
         
-%         [F1(i,j)] = VB_SavageDickey(p1,options.priors,o1.F,dim,priors);
+%         [F1(i,j)] = VBA_SavageDickey(p1,options.priors,o1.F,dim,priors);
         dF1(i,j) = o1.F - o10.F;%F1(i,j);
         
-%         [F0(i,j)] = VB_SavageDickey(p0,options.priors,o0.F,dim,priors);
+%         [F0(i,j)] = VBA_SavageDickey(p0,options.priors,o0.F,dim,priors);
         dF0(i,j) = o0.F - o00.F;%F0(i,j);
         
     end

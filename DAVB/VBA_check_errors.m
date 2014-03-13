@@ -70,7 +70,7 @@ for t=1:dim.n_t
         VBA_disp(codeline,options)
         VBA_disp('---------------',options)
         if isequal(ME.message,'Subscripted assignment dimension mismatch.')
-            VB_disp('Output dimensions of either the observation or evolution function are incorrect',options)
+            VBA_disp('Output dimensions of either the observation or evolution function are incorrect',options)
         end
         VBA_disp(' ',options)
         posterior = [];
@@ -84,7 +84,7 @@ for t=1:dim.n_t
         dy(:,t) = y(:,t) - gx(:,t);
         dy2 = dy2 + dy(:,t)'*iQy{t}*dy(:,t);
         % Predictive density (data space)
-        V = dG_dPhi'*posterior.SigmaPhi*dG_dPhi + (1./sigmaHat).*VB_inv(iQy{t},[]);
+        V = dG_dPhi'*posterior.SigmaPhi*dG_dPhi + (1./sigmaHat).*VBA_inv(iQy{t},[]);
         vy(:,t) = diag(V);
     else
         % fix numerical instabilities

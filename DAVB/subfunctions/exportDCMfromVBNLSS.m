@@ -266,5 +266,5 @@ function [ps] = getPPMS(m,v,t)
 n = length(m);
 ps = zeros(n,1);
 for i=1:n
-    [ps(i)] = VB_PPM(abs(m(i)),v(i),t,0);
+    [ps(i)] = VBA_PPM(abs(m(i)),v(i),t,0);
 end

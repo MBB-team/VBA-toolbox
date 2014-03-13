@@ -255,7 +255,7 @@ while ~stop
     Egam = EV(posterior);
     for k=1:dim.K
         iS = suffStat.iS0{k} + Egam(k)*sumZ(k)*eye(dim.p);
-        posterior.SigmaEta{k} = VB_inv(iS);
+        posterior.SigmaEta{k} = VBA_inv(iS);
         posterior.muEta(:,k) = posterior.SigmaEta{k}*(suffStat.iS0{k}*priors.muEta(:,k)+Egam(k)*y*posterior.z(k,:)');
     end
     suffStat.Ed2 = Ed2(y,posterior);

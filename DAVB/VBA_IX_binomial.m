@@ -56,8 +56,8 @@ tmp = y(:,1)./gx(:,1).^2 - (y(:,1)-1)./(1-gx(:,1)).^2;
 d2gdx2 = dG_dX{1}*diag(tmp)*dG_dX{1}';
 
 % check infinite precision transition pdf
-iQ = VB_inv(iQx{1},indIn{1},'replace');
-Q = VB_inv(iQ,indIn{1});
+iQ = VBA_inv(iQx{1},indIn{1},'replace');
+Q = VBA_inv(iQ,indIn{1});
 IN = diag(~~diag(iQ));
 
 % mean-field terms
@@ -77,9 +77,9 @@ logL = y(:,1)'*log(gx(:,1)) + (1-y(:,1))'*log(1-gx(:,1));
 % covariance matrices
 Rp = dF_dX0'*posterior.SigmaX0*dF_dX0 + (1./alphaHat)*Q;
 C{1} = d2gdx2;
-iRp{1} = VB_inv(Rp,indIn{1});
+iRp{1} = VBA_inv(Rp,indIn{1});
 iR{1} =  iRp{1} + C{1};
-R = VB_inv(iR{1},indIn{1});
+R = VBA_inv(iR{1},indIn{1});
 
 % prediction : p(X_1|X_0)
 mStar(:,1) = fx0;
@@ -99,8 +99,8 @@ SX = 0.5*length(indIn{1})*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaX.cur
 for t = 2:dim.n_t
    
     % check infinite precision transition pdf
-    iQ = VB_inv(iQx{t},indIn{t},'replace');
-    Q =  VB_inv(iQx{t},indIn{t});
+    iQ = VBA_inv(iQx{t},indIn{t},'replace');
+    Q =  VBA_inv(iQx{t},indIn{t});
     IN = diag(~~diag(iQ));
     
     % evaluate evolution function at current mode
@@ -144,13 +144,13 @@ for t = 2:dim.n_t
     % covariance matrices
     if ~options.noSXi
         B = iR{t-1} + alphaHat*dF_dX{t-1}*iQ*dF_dX{t-1}';
-        iB{t-1} = VB_inv(B,indIn{t-1});
+        iB{t-1} = VBA_inv(B,indIn{t-1});
     end
     Rp = dF_dX{t-1}'*R*dF_dX{t-1} + (1./alphaHat)*Q;
-    iRp{t} = VB_inv(Rp,indIn{t});
+    iRp{t} = VBA_inv(Rp,indIn{t});
     C{t} = d2gdx2;
     iR{t} = iRp{t} + C{t};
-    R = VB_inv(iR{t},indIn{t});
+    R = VBA_inv(iR{t},indIn{t});
     
     % prediction : p(X_t|Y_1:t-1)
     mStar(:,t) = fx(:,t-1) + IN*dF_dX{t-1}'*(m(:,t-1) -X(:,t-1));     
@@ -195,7 +195,7 @@ if ~div % only if forward-pass converged
     
     % Final condition beta-message (by convention)
     if ~options.noSXi
-        iQ = VB_inv(iQx{dim.n_t},indIn{dim.n_t},'replace');
+        iQ = VBA_inv(iQx{dim.n_t},indIn{dim.n_t},'replace');
         E = alphaHat*iQ + sigmaHat*C{dim.n_t};
     end
     
@@ -207,17 +207,17 @@ if ~div % only if forward-pass converged
         % Posterior inter-time covariance matrix
         if ~options.noSXi
             % check infinite precision transition pdf
-            iQ = VB_inv(iQx{t},indIn{t},'replace');
-            iQ2 = VB_inv(iQx{t+1},indIn{t+1},'replace');
-            A = VB_inv( (1./alphaHat)*E - alphaHat.*iQ*dF_dX{t}'*iB{t}*dF_dX{t}*iQ,indIn{t} );
-            %         A = VB_inv( (1./alphaHat)*VB_inv(SigmaX.current{t+1},indIn{t+1})...
+            iQ = VBA_inv(iQx{t},indIn{t},'replace');
+            iQ2 = VBA_inv(iQx{t+1},indIn{t+1},'replace');
+            A = VBA_inv( (1./alphaHat)*E - alphaHat.*iQ*dF_dX{t}'*iB{t}*dF_dX{t}*iQ,indIn{t} );
+            %         A = VBA_inv( (1./alphaHat)*VBA_inv(SigmaX.current{t+1},indIn{t+1})...
             %             + iQ -alphaHat.*iQ*dF_dX{t}'*iB{t}*dF_dX{t}*iQ,indIn{t} );
             %         SigmaX.inter{t} = SigmaX.inter{t}';
             %         [SigmaX] = laggedCovX(SigmaX,muX,t,...
             %             dim,iR,indIn,iRp,sigmaHat,dG_dX,dF_dX,iQy,1);
             SigmaX.inter{t} = iB{t}*dF_dX{t}*iQ*A;
             % update lagged covariance intermediate matrices
-            iE = VB_inv(E,indIn{t+1});
+            iE = VBA_inv(E,indIn{t+1});
             iPsi = alphaHat*(  dF_dX{t}*iQ2*dF_dX{t}' + -alphaHat*dF_dX{t}*iQ2*iE*iQ2*dF_dX{t}' );
             E = iPsi + alphaHat*iQ + sigmaHat*C{t};
         else

@@ -18,7 +18,7 @@ alphaHat = posterior.a_alpha./posterior.b_alpha;
 % Preallocate intermediate variables
 iQx = options.priors.iQx;
 Q = options.priors.SigmaTheta(indIn,indIn);
-iQ = VB_inv(Q,[]);
+iQ = VBA_inv(Q,[]);
 muTheta0 = options.priors.muTheta;
 Theta = muTheta0;
 Theta(indIn) = theta;
@@ -32,7 +32,7 @@ div = 0;
 [fx,dF_dX,dF_dTheta] = VBA_evalFun('f',posterior.muX0,Theta,u(:,1),options,dim,1);
 
 % check infinite precision transition pdf
-iQ2 = VB_inv(iQx{1},indInx{1},'replace');
+iQ2 = VBA_inv(iQx{1},indInx{1},'replace');
 
 % posterior covariance matrix terms
 d2fdx2 = dF_dTheta*iQ2*dF_dTheta';
@@ -46,7 +46,7 @@ ddxdtheta = dF_dTheta*iQ2*dx(:,1);
 for t=1:dim.n_t-1
     
     % check infinite precision transition pdf
-    iQ2 = VB_inv(iQx{t+1},indInx{t+1},'replace');
+    iQ2 = VBA_inv(iQx{t+1},indInx{t+1},'replace');
     
     % evaluate evolution function at current mode
     [fx,dF_dX,dF_dTheta] = VBA_evalFun('f',posterior.muX(:,t),Theta,u(:,t+1),options,dim,t+1);  
@@ -80,7 +80,7 @@ end
 
 % posterior covariance matrix
 iSigmaTheta = iQ + alphaHat.*d2fdx2(indIn,indIn);
-SigmaTheta = VB_inv(iSigmaTheta,[]);
+SigmaTheta = VBA_inv(iSigmaTheta,[]);
 
 % mode
 tmp = iQ*dtheta0(indIn) + alphaHat.*ddxdtheta(indIn);

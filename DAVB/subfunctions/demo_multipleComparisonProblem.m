@@ -81,8 +81,8 @@ for imcmc=1:N
                     F1(i,j) = o10.F;
                     F0(i,j) = o00.F;
                     
-%                     [F1(i,j)] = VB_SavageDickey(p1,o1.options.priors,o1.F,dim,priors{i,j});
-%                     [F0(i,j)] = VB_SavageDickey(p0,o0.options.priors,o0.F,dim,priors{i,j});
+%                     [F1(i,j)] = VBA_SavageDickey(p1,o1.options.priors,o1.F,dim,priors{i,j});
+%                     [F0(i,j)] = VBA_SavageDickey(p0,o0.options.priors,o0.F,dim,priors{i,j});
                 end
             end
         end

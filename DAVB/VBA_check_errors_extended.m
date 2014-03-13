@@ -64,7 +64,7 @@ for t=1:dim.n_t
         VBA_disp(codeline,options)
         VBA_disp('---------------',options)
         if isequal(ME.message,'Subscripted assignment dimension mismatch.')
-            VB_disp('Output dimensions of either the observation or evolution function are incorrect',options)
+            VBA_disp('Output dimensions of either the observation or evolution function are incorrect',options)
         end
         VBA_disp(' ',options)
         posterior = [];
