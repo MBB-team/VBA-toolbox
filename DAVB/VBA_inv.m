@@ -40,7 +40,6 @@ else % (p)invert Q
     else % full matrix
         tol  = max(eps(norm(subQ,'inf'))*length(indIn),exp(-32)); 
         subiQ = inv(subQ + eye(length(indIn))*tol);
-%         subiQ = pinv(subQ);
     end
     iQ = zeros(size(Q));
     iQ(indIn,indIn) = subiQ;

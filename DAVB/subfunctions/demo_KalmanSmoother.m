@@ -4,7 +4,7 @@
 % half a period of the oscillation. We then invert the model (under AR
 % priors on hidden states), with and without large backward lag.
 
-clear all
+clear variables
 close all
 
 nt = 10;

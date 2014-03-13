@@ -23,8 +23,8 @@ end
 n = numel(y);
 if ~isbinary(y)
     try
-        a0 = priors.a_sigma;
-        b0 = priors.b_sigma;
+        a0 = options.priors.a_sigma;
+        b0 = options.priors.b_sigma;
     catch
         a0 = 1;
         b0 = 1;

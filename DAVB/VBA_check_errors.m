@@ -1,6 +1,5 @@
 function [suffStat,posterior] = VBA_check_errors(y,u,options)
-% Function merging VBA_getsuffstat and the content of VBA_Initialize
-% regarding deterministic DCM
+% dummy diagnostic of model specification
 
 if options.extended
     [suffStat,posterior] = VBA_check_errors_extended(y,u,options);

@@ -1,4 +1,4 @@
-function [fx,J,dfdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim,t,repeat)
+function [fx,J,dfdP] = VBA_evalFun(flagFun,Xt,P,ut,options,dim,t)
 % smart wrapper for evolution and observation functions
 % function [fx,J,dfdP] = VBA_evalFun(flagFun,posterior,u,options,dim)
 %

@@ -55,7 +55,7 @@ d2gdx2 = 0;
 div = 0;
 
 % intermediary variables: MoG split
-sqrtS = getISqrtMat(posterior.SigmaPhi(indIn,indIn),0);
+sqrtS = VBA_getISqrtMat(posterior.SigmaPhi(indIn,indIn),0);
 split = options.split;
 nd = size(split.m,2);
 Mu0 = muPhi0;

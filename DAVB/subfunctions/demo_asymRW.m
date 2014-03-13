@@ -2,7 +2,7 @@
 
 
 
-% close all
+close all
 clear all
 clc
 
@@ -15,7 +15,7 @@ g_fname = @g_goNogo; % -> 'go' choice probability
 feedbacks = {-1;0;1}; % feedbacks: negative, neutral, positive
 truemodel = 1; % index of true model (which generates the data)
 theta = [2;0;1;0];
-phi = [-1];
+phi = [-1]; % value of the 'no-go' option
 sigma = 1e1; % precision on value signal
 x0 = 0; % initial conditions
 
@@ -32,6 +32,9 @@ opt{1}.inF.inda = 2; % last choice
 opt{1}.priors.a_alpha = Inf; % deterministic system
 opt{1}.priors.b_alpha = 0; % [id]
 opt{1}.binomial = 1; % binary (go/nogo) choices
+opt{1}.skipf = zeros(1,n_t);
+opt{1}.skipf(1) = 1; % apply identity mapping from x0 to x1.
+
 
 % model 2: gain/loss asymmetry in learning rate
 d{2} = d{1};
@@ -109,7 +112,7 @@ xlabel(ha,'time (trials)')
 % invert all models
 F = zeros(4,1);
 str = cell(4,1);
-for i=1:4
+for i=1:1
     % invert models on choice data
     opt{i}.figName = opt{i}.inF.model;
     opt{i}.DisplayWin = 1;

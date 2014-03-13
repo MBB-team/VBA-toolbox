@@ -65,7 +65,7 @@ displaySimulations(y,x,eta,e)
 
 
 % Call inversion routine
-[posterior,out] = VBA_NLStateSpaceModel(y,[],f_fname,g_fname,dim,options);
+[posterior,out] = VBA_NLStateSpaceModel(y,zeros(1,n_t),f_fname,g_fname,dim,options);
 
 
 %------------ Display results ------------------%

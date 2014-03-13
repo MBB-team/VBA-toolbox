@@ -16,6 +16,7 @@ options.priors.muPhi = zeros(dim.n_phi,1);
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
 options.isYout = zeros(dim.p,1);
 options.DisplayWin = 0;
+options.verbose = 0;
 
 Nmcmc = 64;
 p = cell(2,2,Nmcmc);
@@ -23,6 +24,9 @@ o = cell(2,2,Nmcmc);
 F = zeros(2,2,Nmcmc);
 ner = zeros(2,2,Nmcmc); % proportion of correct predictions
 mner = zeros(2,Nmcmc); % maximum performance rate
+
+fprintf(1,['MCMC simulations... ']);
+fprintf(1,'%6.2f %%',0)
 
 for ii=1:Nmcmc
     options.inG.X = randn(dim.n_phi-1,dim.p);
@@ -46,7 +50,15 @@ for ii=1:Nmcmc
         
     end
     
+    fprintf(1,repmat('\b',1,8))
+    fprintf(1,'%6.2f %%',100*ii/Nmcmc)
+    
+    
 end
+
+fprintf(1,repmat('\b',1,8))
+fprintf(' OK.')
+fprintf('\n')
 
 
 hf = figure('color',[1 1 1]);

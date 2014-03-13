@@ -6,7 +6,7 @@ function  fx = f_OpLearn( x,P,u,in )
 % - u_t : previous action and feedback
 % - in : []
 
-a = u(1)+1; % action that was chosen on the previous trial
+a = u(1);%+1; % action that was chosen on the previous trial
 r = u(2); % feedback received on the previous trial
 
 if a==1
