@@ -82,10 +82,12 @@ if isfield(po1,'a_alpha') && ~isempty(po1.a_alpha) && ~isinf(po1.a_alpha)
     Sf0 = pr1.a_alpha./(pr1.b_alpha^2);
     mr0 = pr2.a_alpha./pr2.b_alpha;
     Sr0 = pr2.a_alpha./(pr2.b_alpha^2);
-    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
-    po2.b_alpha = mr./Sr;
-    po2.a_alpha = po2.b_alpha.*mr;
-    F2 = F2 +dF;
+    for iSource = 1:numel(po1.a_alpha)
+        [dF,mr,Sr] = spm_log_evidence(mf(iSource),Sf(iSource),mf0(iSource),Sf0(iSource),mr0(iSource),Sr0(iSource));
+        po2.b_alpha(iSource) = mr/Sr;
+        po2.a_alpha(iSource) = po2.b_alpha(iSource)*mr;
+        F2 = F2 +dF;
+    end
 end   
 
 function priors = checkPriors(priors,dim)

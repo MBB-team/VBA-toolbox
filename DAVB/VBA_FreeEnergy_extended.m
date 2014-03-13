@@ -47,7 +47,7 @@ for si=1:length(gsi)
     E0 = priors.a_sigma(si)./priors.b_sigma(si);
     V0 = priors.a_sigma(si)./priors.b_sigma(si)^2;
     SSE = SSE + E*suffStat.dy2(gsi(si));
-    dF = dF -VB_KL(E,V,E0,V0,'Gamma');
+    dF = dF -VBA_KL(E,V,E0,V0,'Gamma');
     ElogS(si) = psi(posterior.a_sigma(si)) - log(posterior.b_sigma(si));
 end
 for si=1:length(bmsi)

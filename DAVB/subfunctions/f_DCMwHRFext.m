@@ -11,7 +11,13 @@ nr = length(inF.r);
 
 %- hidden states evolution
 xn = Xt(inF.n5);
-[fxh,dfdxh,dfdph] = f_HRF3(Xt(1:nx-nr),Theta,xn,inF);
+if ~isfield(inF,'fast')
+    [fxh,dfdxh,dfdph] = f_HRF3(Xt(1:nx-nr),Theta,xn,inF);
+else
+    fxh = zeros(nx-nr,1);
+    dfdxh = zeros(nx-nr,nx-nr);
+    dfdph = zeros(length(Theta),nx-nr);
+end
 
 [fxn,dfdxn,dfdpn] = f_dcm4fmri(Xt(inF.n5),Theta,ut,inF);
 [fxr,dfdxr,dfdpr] = f_dcm_extension(Xt([inF.n5 inF.r]),Theta,ut,inF);

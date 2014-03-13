@@ -42,7 +42,7 @@ if ~options.binomial
     E0 = priors.a_sigma./priors.b_sigma;
     V0 = priors.a_sigma./priors.b_sigma^2;
     SSE = E*suffStat.dy2;
-    dF = -VB_KL(E,V,E0,V0,'Gamma');
+    dF = -VBA_KL(E,V,E0,V0,'Gamma');
     ElogS = psi(posterior.a_sigma) - log(posterior.b_sigma);
 else
     SSE = -2*suffStat.logL;
@@ -58,7 +58,7 @@ if dim.n > 0 && ~isinf(priors.a_alpha) && ~isequal(priors.b_alpha,0)
     E0 = priors.a_alpha./priors.b_alpha;
     V0 = priors.a_alpha./priors.b_alpha^2;
     ElogA = psi(posterior.a_alpha) - log(posterior.b_alpha);
-    dF = dF - VB_KL(E,V,E0,V0,'Gamma');
+    dF = dF - VBA_KL(E,V,E0,V0,'Gamma');
     SSE = SSE + E*suffStat.dx2;
     S = S + suffStat.SX;
 end

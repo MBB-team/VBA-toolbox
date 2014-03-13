@@ -1,12 +1,13 @@
 function [k,dkdp,landmarks,dadp]=kernel_biexp(A,alpha,beta,tList)
 
-error('not the right function')
-base = (tList.^alpha).*exp(-beta*tList);
-k=A.*base;
+% error('*** bad gradients');
 
-dkdp = [ base;
-    k.*log(tList+eps);
-    -k.*tList ];
+tList = tList+2*eps;
+k=A.*(tList.^alpha).*exp(-beta*tList);
+
+dkdp = [ (tList.^alpha).*exp(-beta*tList);
+    	 A*(tList.^alpha).*exp(-beta*tList).*log(tList)
+        -A*(tList.^(alpha+1)).*exp(-beta*tList) ]; 
 
 if nargout > 2
     % time to peak: alpha/beta

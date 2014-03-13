@@ -21,18 +21,15 @@ nu = size(ut,1);
 
 dfdp = zeros(size(Theta,1),n);
 dfdp(inF.indself,:) = -exp(Theta(inF.indself)).*Xt';
-In = eye(n);
-xI = mykron(Xt',In);
+
+xI = easykron(Xt,n,n);
 
 A = inF.A;
-% if isempty(A)
-%     A = zeros(n,n);
-% end
 indA = inF.indA;
 if ~isempty(indA)
     A(A~=0) = Theta(indA);
     A = A - exp(Theta(inF.indself)).*eye(n);
-    dfdp(indA,:) = (xI*inF.dA)';
+    dfdp(indA,:) = inF.dA'*xI;
 else
     A = A - exp(Theta(inF.indself)).*eye(n);
 end
@@ -46,7 +43,7 @@ for i=1:nu
 %     end
     if ~isempty(indB{i})
         B{i}(B{i}~=0) = Theta(indB{i});
-        dfdp(indB{i},:) = ut(i).*(xI*inF.dB{i})';
+        dfdp(indB{i},:) = ut(i).*(inF.dB{i}'*xI);
         dxB = dxB + ut(i).*B{i};
     end
 end
@@ -58,7 +55,7 @@ C = inF.C;
 indC = inF.indC;
 if ~isempty(indC)
     C(C~=0) = Theta(indC);
-    dfdp(indC,:) = (mykron(ut',In)*inF.dC)';
+    dfdp(indC,:) = inF.dC'*easykron(ut,nu,n);
 end
 
 D = inF.D;
@@ -66,22 +63,27 @@ indD = inF.indD;
 dxD = zeros(n,n);
 dxD2 = dxD;
 for i=1:n
-%     if isempty(D{i})
-%         D{i} = zeros(n,n);
-%     end
     if ~isempty(indD{i})
         D{i}(D{i}~=0) = Theta(indD{i});
         tmp = Xt(i)*D{i};
         dxD = dxD + tmp;
         tmp(:,i) = tmp(:,i)+D{i}*Xt;
         dxD2 = dxD2 +tmp;
-        dfdp(indD{i},:) = Xt(i)*(xI*inF.dD{i})';
+        dfdp(indD{i},:) = Xt(i)*(inF.dD{i}'*xI);
     end
 end
 
 flow = A + dxB + dxD; % Unperturbed flow
 dxdt = flow*Xt + C*ut; % vector field
 J = A + dxB + dxD2; % Jacobian
+
+function B=easykron(X,nx,n)
+B = zeros(n*nx,n);
+  idx = 1:n:(n*nx+eps);
+  for k = 1:n  
+    B(idx,k) = X;
+    idx = idx+1;
+  end
 
 
 

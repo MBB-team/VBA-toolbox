@@ -46,7 +46,7 @@ if isequal(options.g_fname,@VBA_odeLim)
 end
 div = 0;
 
-isTout = sum(options.isYout)==size(options.isYout,1);
+isTout = sum(options.isYout,1)==size(options.isYout,1);
 
 %--- Loop over time series ---%
 for t=1:dim.n_t
