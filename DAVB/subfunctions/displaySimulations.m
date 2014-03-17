@@ -1,7 +1,8 @@
-function [] = displaySimulations(y,x,eta,e)
+function [hf] = displaySimulations(y,x,eta,e)
 % plots simulated time series (including state-space SVD projections)
 
 if isweird({y,x,eta,e})
+    hf = [];
     return
 end
 
@@ -15,24 +16,26 @@ set(hf,...
     'color',ones(1,3),...
     'menubar','none');
 
-
-ha = subplot(3,2,1,'parent',hf);
+% plot simulated hidden states
+ha = subplot(3,2,1,'parent',hf,'ygrid','on','xgrid','off');
 plot(ha,dTime,x')
-grid(ha,'on')
+box(ha,'off')
 axis(ha,'tight')
 xlabel(ha,'time')
 ylabel(ha,'x')
 title(ha,'simulated hidden-states time series')
-ha = subplot(3,2,2,'parent',hf,'nextplot','add');
-plot(ha,dTime,y',':')
-plot(ha,dTime,y','.')
+
+% plot simulated observations
+ha = subplot(3,2,2,'parent',hf,'nextplot','add','ygrid','on','xgrid','off');
+plot(ha,dTime,y','LineStyle',':','marker','.')
 plot(ha,dTime,y'-e')
-% plot(ha,dTime,y'-e','.')
-grid(ha,'on')
+box(ha,'off')
 axis(ha,'tight')
 xlabel(ha,'time')
 ylabel(ha,'y')
 title(ha,'simulated observations')
+
+% plot hidden-states eigenspace
 if size(x,1) > 3
     [u,s,v] = svd(x,0);
     xp = u(1:3,1:3)*s(1:3,:)*v';
@@ -47,6 +50,7 @@ ha = subplot(3,2,3,'parent',hf);
 plot3(ha,xp(1,:),xp(2,:),xp(3,:),'.')
 set(ha,'nextplot','add')
 plot3(ha,xp(1,:),xp(2,:),xp(3,:))
+box(ha,'off')
 grid(ha,'on')
 axis(ha,'tight')
 title(ha,'x: state space')
@@ -54,7 +58,7 @@ xlabel(ha,'x1')
 ylabel(ha,'x2')
 zlabel(ha,'x3')
 
-
+% plot data eigenspace
 if size(y,1) > 3
     [u,s,v] = svd(y,0);
     yp = u(1:3,1:3)*s(1:3,:)*v';
@@ -76,17 +80,19 @@ xlabel(ha,'y1')
 ylabel(ha,'y2')
 zlabel(ha,'y3')
 
-ha = subplot(3,2,5);
+% plot state noise
+ha = subplot(3,2,5,'parent',hf,'nextplot','add','ygrid','on','xgrid','off');
 plot(ha,dTime,eta);
-grid(ha,'on')
+box(ha,'off')
 axis(ha,'tight')
 title(ha,'stochastic innovations')
 xlabel(ha,'time')
 ylabel(ha,'eta')
 
-ha = subplot(3,2,6);
+% pliot measurement noise
+ha = subplot(3,2,6,'parent',hf,'nextplot','add','ygrid','on','xgrid','off');
 plot(ha,dTime,e);
-grid(ha,'on')
+box(ha,'off')
 axis(ha,'tight')
 title(ha,'measurement noise')
 xlabel(ha,'time')

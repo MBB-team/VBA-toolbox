@@ -5,20 +5,20 @@ if isempty(posterior)
     return
 end
 
+hres = figure;
+pos = get(hres,'position');
+set(hres,'name','Simulation results','position',[pos(1),pos(2)-pos(4),pos(3),2*pos(4)],'color',ones(1,3),'menubar','none');
+
 % parameters
-hres = figure(...
-    'name','Simulation results',...
-    'color',[1 1 1],...
-    'menubar','none');
 if ~isempty(theta)
     hs = subplot(2,2,1,'parent',hres);
     xtick = 1:out.dim.n_theta;
     set(hs,'xtick',xtick,'nextplot','add','xlim',[.2,out.dim.n_theta+.8])
     if ~out.options.OnLine
-        V = getVar(posterior.SigmaTheta);
+        V = VBA_getVar(posterior.SigmaTheta);
         muTheta = posterior.muTheta;
     else
-        V = getVar(posterior.SigmaTheta{end});
+        V = VBA_getVar(posterior.SigmaTheta{end});
         muTheta = posterior.muTheta(:,end);
     end
     plotUncertainTimeSeries(muTheta,V,[],hs);
@@ -30,10 +30,10 @@ if ~isempty(phi)
     xtick = 1:out.dim.n_phi;
     set(hs,'xtick',xtick,'nextplot','add','xlim',[.2,out.dim.n_phi+.8])
     if ~out.options.OnLine
-        V = getVar(posterior.SigmaPhi);
+        V = VBA_getVar(posterior.SigmaPhi);
         muPhi = posterior.muPhi;
     else
-        V = getVar(posterior.SigmaPhi{end});
+        V = VBA_getVar(posterior.SigmaPhi{end});
         muPhi = posterior.muPhi(:,end);
     end
     plotUncertainTimeSeries(muPhi,V,[],hs);
@@ -84,7 +84,7 @@ if out.dim.n > 0
         hs = subplot(2,2,4,'parent',hres);
         xtick = 1:out.dim.n;
         set(hs,'xtick',xtick,'nextplot','add','xlim',[.2,out.dim.n+.8])
-        V = getVar(posterior.SigmaX0);
+        V = VBA_getVar(posterior.SigmaX0);
         plotUncertainTimeSeries(posterior.muX0,V,[],hs);
         title(hs,'initial conditions')
         plot(x0,'go')
@@ -99,7 +99,7 @@ if out.dim.n > 0
         if isempty(posterior.SigmaX)
             plot(hs,posterior.muX')
         else
-            V = getVar(posterior.SigmaX.current);
+            V = VBA_getVar(posterior.SigmaX.current);
             plotUncertainTimeSeries(posterior.muX,V,dTime,hs);
         end
         grid(hs,'on')

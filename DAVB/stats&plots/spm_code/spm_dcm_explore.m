@@ -106,20 +106,25 @@ try
 catch
     DCM = myspm_dcm_test(DCM);
 end
-ud.Pp = DCM.sdr;
+ud.Pp = DCM.sdr; % posterior proba for P=0 (using SD-ratios)
+try
+    ud.Pcorr = abs(spm_cov2corr(DCM.Cp)); % posterior correlation matrix
+catch
+    ud.Pcorr = abs(cov2corr(DCM.Cp));
+end
+for i=1:ud.dim.l
+    PSS(i)  = sum(DCM.y(:,i).^2);
+    RSS(i)  = sum(DCM.R(:,i).^2);
+    ud.R2.reg(i) = PSS(i)/(PSS(i) + RSS(i)); % coef of determination
+end
+ud.R2.tot =  sum(PSS)/sum(PSS+RSS);
 
 ud.Pcorr = spm_cov2corr(DCM.Cp);
 pos0 = get(0,'screenSize');
 pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
 [pathstr,filename,ext] = fileparts(DCM.filename);
 figname = ['Explore ',filename];
-hfp = figure(...
-    'position',pos,...
-    'color',[1 1 1],...
-    'name',figname,...
-    'tag','exploreDCM',...
-    'Renderer','OpenGL',...
-    'menu','none');
+hfp = figure('position',pos,'color',[1 1 1],'name',figname,'tag','exploreDCM','Renderer','OpenGL','menu','none');
 uimenu(hfp,'Label','Open new DCM file','Callback','spm_dcm_explore');
 if isfield(DCM,'VBA')
     uimenu(hfp,'Label','Diagnose VBA','Callback',@vba_display);
@@ -156,8 +161,7 @@ ud = get(hf,'userdata');
 delete(get(ud.tabs.handles.hp,'children'))
 labels = {'spec','ROIs','inputs','outputs'};
 callbacks = {@mySpec,@myROIs,@myI,@myO};
-[ud.tabs.handles2] = spm_uitab(ud.tabs.handles.hp,...
-    labels,callbacks,'exploreDCM0',1);
+[ud.tabs.handles2] = spm_uitab(ud.tabs.handles.hp,labels,callbacks,'exploreDCM0',1);
 set(ud.tabs.handles2.htab,'backgroundcolor',[1 1 1])
 set(ud.tabs.handles2.hh,'backgroundcolor',[1 1 1])
 set(ud.tabs.handles2.hp,'HighlightColor',0.8*[1 1 1])
@@ -183,8 +187,7 @@ else
     labels = {'A','B','C','D'};
     callbacks = {@myA,@myB,@myC,@myD};
 end
-[ud.tabs.handles2] = spm_uitab(ud.tabs.handles.hp,...
-    labels,callbacks,'exploreDCM0',1);
+[ud.tabs.handles2] = spm_uitab(ud.tabs.handles.hp,labels,callbacks,'exploreDCM0',1);
 set(ud.tabs.handles2.htab,'backgroundcolor',[1 1 1])
 set(ud.tabs.handles2.hh,'backgroundcolor',[1 1 1])
 set(ud.tabs.handles2.hp,'HighlightColor',0.8*[1 1 1])
@@ -204,14 +207,16 @@ delete(get(ud.tabs.handles.hp,'children'))
 DCM = ud.DCM;
 nu= size(DCM.U.u,1);
 if nu >= 1
-    ud.tabs.handles3(1) = uicontrol('style','popupmenu',...
+    ud.tabs.handles3(1) = uicontrol(...
+        'style','popupmenu',...
         'parent',ud.tabs.handles.hp,...
         'units','normalized',...
         'position',[0.85 0.9 0.12 0.02],...
         'fontsize',12,...
         'string',DCM.U.name,...
         'callback',@myKernel);
-    ud.tabs.handles3(2) = uicontrol('style','text',...
+    ud.tabs.handles3(2) = uicontrol(...
+        'style','text',...
         'parent',ud.tabs.handles.hp,...
         'BackgroundColor',get(hf,'color'),...
         'units','normalized',...
@@ -221,7 +226,8 @@ if nu >= 1
     set(hf,'userdata',ud)
     feval(@myKernel,ud.tabs.handles3(1),[])
 else
-    uicontrol('style','text',...
+    uicontrol(...
+        'style','text',...
         'parent',ud.tabs.handles.hp,...
         'BackgroundColor',get(hf,'color'),...
         'units','normalized',...
@@ -241,8 +247,7 @@ ud = get(hf,'userdata');
 delete(get(ud.tabs.handles.hp,'children'))
 labels = {'cov','residuals'};
 callbacks = {@myCov,@myResiduals};
-[ud.tabs.handles2] = spm_uitab(ud.tabs.handles.hp,...
-    labels,callbacks,'exploreDCM0',1);
+[ud.tabs.handles2] = spm_uitab(ud.tabs.handles.hp,labels,callbacks,'exploreDCM0',1);
 set(ud.tabs.handles2.htab,'backgroundcolor',[1 1 1])
 set(ud.tabs.handles2.hh,'backgroundcolor',[1 1 1])
 set(ud.tabs.handles2.hp,'HighlightColor',0.8*[1 1 1])
@@ -265,15 +270,12 @@ d     = 2 / DCM.M.dt;
 % input effects - neuronal
 %--------------------------------------------------------------
 y = DCM.K1(:,:,ind);
-ha = subplot(2,1,1,...
-    'parent',ud.tabs.handles.hp);
+ha = subplot(2,1,1,'parent',ud.tabs.handles.hp);
 plot(ha,x,y)
 set(ha,'XLim',[1 max(x)])
 pos = get(ha,'position');
 set(ha,'position',[0.2 pos(2) 0.6 pos(4)])
-title(ha,...
-    ['neuronal impulse responses to input ''' DCM.U.name{ind} ''''],...
-    'fontsize',12)
+title(ha,['neuronal impulse responses to input ''' DCM.U.name{ind} ''''],'fontsize',12)
 grid(ha,'on')
 xlabel(ha,'time (seconds)')
 legend(ha,DCM.Y.name)
@@ -282,17 +284,13 @@ legend(ha,DCM.Y.name)
 %--------------------------------------------------------------
 y = DCM.K1(:,:,ind);
 k = DCM.H1(:,:,ind);
-ha = subplot(2,1,2,...
-    'parent',ud.tabs.handles.hp,...
-    'nextplot','add');
+ha = subplot(2,1,2,'parent',ud.tabs.handles.hp,'nextplot','add');
 pos = get(ha,'position');
 set(ha,'position',[0.2 pos(2) 0.6 pos(4)])
 plot(ha,x,k)
 plot(ha,x,y,':')
 set(ha,'XLim',[1 max(x)])
-title(ha,...
-    ['hemodynamic impulse responses to input ''' DCM.U.name{ind} ''''],...
-    'fontsize',12)
+title(ha,['hemodynamic impulse responses to input ''' DCM.U.name{ind} ''''],'fontsize',12)
 grid(ha,'on')
 xlabel(ha,'time (seconds)')
 legend(ha,DCM.Y.name)
@@ -322,7 +320,8 @@ try
 catch
     str{2} = '';
 end
-str{3} = sprintf(['Dimensions of the model:','\n ',...
+str{3} = sprintf([...
+    'Dimensions of the model:','\n ',...
     '    - data: p=',num2str(DCM.M.l),'\n ',...
     '    - time samples: t=',num2str(size(DCM.y,1)),'\n ',...
     '    - hidden states: n=',num2str(DCM.M.n),'\n ',...
@@ -345,7 +344,8 @@ if ud.estimated
     gfn = DCM.M.g;
     ffn = DCM.M.f;
     ifn = DCM.M.IS;
-    str{6} = sprintf(['    - observation function: ',gfn,'\n',...
+    str{6} = sprintf([...
+        '    - observation function: ',gfn,'\n',...
         '    - evolution function: ',ffn,'\n',...
         '    - integration function: ',ifn,'\n ']);
 else
@@ -355,20 +355,20 @@ na = sum(DCM.a(:)) - sum(diag(DCM.a));
 nb = sum(DCM.b(:));
 nc = sum(DCM.c(:));
 nd = sum(DCM.d(:));
-str{7} = sprintf(['DCM structure:','\n ',...
-    '    - number of connections: ',num2str(na),...
-    ' (+',num2str(DCM.M.l),' inhibitory self-connections)','\n ',...
+str{7} = sprintf([...
+    'DCM structure:','\n ',...
+    '    - number of connections: ',num2str(na),' (+',num2str(DCM.M.l),' inhibitory self-connections)','\n ',...
     '    - number of modulatory effects: ',num2str(nb),'\n ',...
     '    - number of input-state couplings: ',num2str(nc),'\n ',...
     '    - number of (nonlinear) gating effects: ',num2str(nd),'\n ']);
-
+str{8} = ['Variance explained:  R2=',num2str(100*ud.R2.tot,'%4.1f'),'%'];
 if isnumeric(DCM.F)
-    str{8} = ['Log model evidence: log p(y|m) > ',num2str(DCM.F,'%4.3e')];
+    str{9} = ['Log model evidence: log p(y|m) > ',num2str(DCM.F,'%4.3e')];
 else
     try
-        str{8} = ['Warning: ',DCM.F];
+        str{9} = ['Warning: ',DCM.F];
     catch
-        str{8} = ' ';
+        str{9} = ' ';
     end
 end
 uicontrol(...
@@ -396,11 +396,7 @@ if isfield(DCM,'xY')
         'parent',ud.tabs.handles2.hp,...
         'visible','off');
     set(ha,'position',get(ha,'position')+[0 -0.1 0 0.1])
-    try
-        h = spm_dcm_graph(DCM.xY,ud.Ep.A,ha);
-    catch
-        h = myspm_dcm_graph(DCM.xY,ud.Ep.A,ha);
-    end
+    h = myspm_dcm_graph(DCM.xY,ud.Ep.A,ha);
     try; set(hf,'renderer','opengl'); end
     try
         set(h.handles.BUTTONS.transp,...
@@ -455,7 +451,8 @@ if isfield(DCM,'xY')
     axis(ha(2),'off')
     try;getSubplots; end
 else
-    ht = uicontrol('style','text',...
+    ht = uicontrol(...
+        'style','text',...
         'parent',ud.tabs.handles2.hp,...
         'BackgroundColor',get(hf,'color'),...
         'units','normalized',...
@@ -554,7 +551,7 @@ else
 end
 set(ha,'xlim',[x(1),x(end)])
 grid(ha,'on')
-box(ha,'on')
+box(ha,'off')
 ylabel(ha,'signal change (A.U.)')
 xlabel(ha,'time (seconds)');
 
@@ -572,9 +569,12 @@ if ud.estimated
     title(ha,['ROI ',DCM.Y.name{i},': response versus prediction' ],...
         'FontSize',12);
     grid(ha,'on')
-    box(ha,'on')
+    box(ha,'off')
     ylabel(ha,'observed')
     xlabel(ha,'predicted');
+    str = ['Variance explained: ',num2str(100*ud.R2.reg(i),'%4.2f'),'%'];
+    d = ma-mi;
+    ht = text(mi+0.05*d,ma-0.05*d,str,'parent',ha,'color','r','FontSize',12);
 end
 
 try;getSubplots; end
@@ -627,7 +627,8 @@ if size(DCM.U.u,1) >= 1
     set(hf,'userdata',ud)
     feval(@myBi,ud.tabs.handles3(1),[])
 else
-    ht = uicontrol('style','text',...
+    ht = uicontrol(...
+        'style','text',...
         'parent',ud.tabs.handles2.hp,...
         'BackgroundColor',get(hf,'color'),...
         'units','normalized',...
@@ -646,7 +647,8 @@ delete(setdiff(get(ud.tabs.handles2.hp,'children'),ud.tabs.handles3))
 DCM = ud.DCM;
 Ep = ud.Ep;
 if isequal(unique(DCM.b(:,:,ind)),0)
-    ht = uicontrol('style','text',...
+    ht = uicontrol(...
+    'style','text',...
         'parent',ud.tabs.handles2.hp,...
         'BackgroundColor',get(hf,'color'),...
         'units','normalized',...
@@ -674,7 +676,8 @@ delete(get(ud.tabs.handles2.hp,'children'))
 DCM = ud.DCM;
 Ep = ud.Ep;
 if isempty(DCM.c) || isequal(unique(DCM.c(:)),0)
-    ht = uicontrol('style','text',...
+    ht = uicontrol(...
+        'style','text',...
         'parent',ud.tabs.handles2.hp,...
         'BackgroundColor',get(hf,'color'),...
         'units','normalized',...
@@ -697,14 +700,16 @@ end
 ud = get(hf,'userdata');
 delete(get(ud.tabs.handles2.hp,'children'))
 DCM = ud.DCM;
-ud.tabs.handles3(1) = uicontrol('style','popupmenu',...
+ud.tabs.handles3(1) = uicontrol(...
+    'style','popupmenu',...
     'parent',ud.tabs.handles2.hp,...
     'units','normalized',...
     'fontsize',12,...
     'string',DCM.Y.name,...
     'callback',@myDi);
 set(ud.tabs.handles3(1),'position',[0.85 0.9 0.12 0.02])
-ud.tabs.handles3(2) = uicontrol('style','text',...
+ud.tabs.handles3(2) = uicontrol(...
+    'style','text',...
     'parent',ud.tabs.handles2.hp,...
     'BackgroundColor',get(hf,'color'),...
     'units','normalized',...
@@ -724,7 +729,8 @@ delete(setdiff(get(ud.tabs.handles2.hp,'children'),ud.tabs.handles3))
 DCM = ud.DCM;
 Ep = ud.Ep;
 if isempty(DCM.d) || isequal(unique(DCM.d(:,:,ind)),0)
-    ht = uicontrol('style','text',...
+    ht = uicontrol(...
+        'style','text',...
         'parent',ud.tabs.handles2.hp,...
         'BackgroundColor',get(hf,'color'),...
         'units','normalized',...
@@ -798,8 +804,7 @@ try
 end
 grid(ha,'off')
 axis(ha,'square')
-title(ha,...
-    'Parameters posterior correlation matrix','FontSize',12)
+title(ha,'Parameters posterior correlation matrix','FontSize',12)
 set(ha,'clim',[-34/32 1]);
 col = colormap('jet');
 col(1,:) = 0.5*ones(1,3);
@@ -967,7 +972,10 @@ for i=1:n
             end
         else
             dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
-        end
+            if isempty(dF)
+                dF = NaN;
+            end
+        end 
         sdr.A(i,j) = 1./(1+exp(dF));
     end
 end
@@ -991,6 +999,9 @@ for i=1:n
                 end
             else
                 dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
+                if isempty(dF)
+                    dF = NaN;
+                end
             end
             sdr.B(i,j,k) = 1./(1+exp(dF));
         end
@@ -1015,6 +1026,9 @@ for i=1:n
             end
         else
             dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
+            if isempty(dF)
+                dF = NaN;
+            end
         end
         sdr.C(i,j) = 1./(1+exp(dF));
     end
@@ -1040,6 +1054,9 @@ if nD > 0
                     end
                 else
                     dF = spm_log_evidence(E,V,E0,V0,E0r,V0r);
+                    if isempty(dF)
+                        dF = NaN;
+                    end
                 end
                 sdr.D(i,j,k) = 1./(1+exp(dF));
             end
@@ -1070,15 +1087,15 @@ if isempty(ha)
     ha(2) = 0;
 end
 cla(ha(1));
-meshsurf = fullfile(spm('Dir'),'canonical','cortex_20484.surf.gii');
-% meshsurf = fullfile(spm('Dir'),'canonical','cortex_8196.surf.gii');
+% meshsurf = fullfile(spm('Dir'),'canonical','cortex_20484.surf.gii');
+meshsurf = fullfile(spm('Dir'),'canonical','cortex_8196.surf.gii');
 H = spm_mesh_render('Disp',meshsurf,struct('parent',ha(1)));
 options.query = 'dummy';
 options.hfig  = H.figure;
 options.ParentAxes = H.axis;
 options.handles.ParentAxes = H.axis;
 options.markersize = 32;
-h  = spm_eeg_displayECD(L,[],8,name,options);
+h = spm_eeg_displayECD(L,[],8,name,options);
 grid(H.axis,'on')
 h.handles.hfig = H.figure;
 h.handles.ParentAxes  = H.axis;
@@ -1106,3 +1123,22 @@ for i = 1:length(A)
         end
     end
 end
+
+
+function DCM = fillinDcm(DCM)
+% fill in missing entries in DCM structure for review
+DCM.M.m = size(DCM.c,2); % number of inputs
+DCM.M.n = 5*size(DCM.Y.y,2); % number of hidden states
+DCM.M.l = size(DCM.Y.y,2); % number of regions
+DCM.y = zeros(size(DCM.Y.y)); % predicted data
+DCM.R = DCM.Y.y; % residuals of the model
+DCM.F = 'this model has not been estimated yet.';
+DCM.Cp = zeros(DCM.M.l^2*(1+DCM.M.m+DCM.M.l)+DCM.M.l*(DCM.M.m+5));
+DCM.Ep.A = DCM.a;
+DCM.Ep.B = DCM.b;
+DCM.Ep.C = DCM.c;
+DCM.Ep.D = DCM.d;
+DCM.Pp.A = 0.5*ones(size(DCM.a));
+DCM.Pp.B = 0.5*ones(size(DCM.b));
+DCM.Pp.C = 0.5*ones(size(DCM.c));
+DCM.Pp.D = 0.5*ones(size(DCM.d));

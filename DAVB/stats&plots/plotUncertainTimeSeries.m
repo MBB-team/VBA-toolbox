@@ -44,14 +44,9 @@ catch
     end
     % Preset axes limits
     if indEnd > 1
-        set(haf,...
-            'xlim',[dTime(1),dTime(end)],...
-            'nextplot','add');
+        set(haf,'xlim',[dTime(1),dTime(end)],'nextplot','add');
     else
-        set(haf,...
-            'xlim',[0.2,n+0.8],...
-            'xtick',1:n,...
-            'nextplot','add');
+        set(haf,'xlim',[0.2,n+0.8],'xtick',1:n,'nextplot','add');
     end
 end
 
@@ -61,7 +56,7 @@ if ~exist('ind','var') || isempty(ind)
 else
     n = length(ind);
 end
-
+sc = 1;
 % Display uncertain time series
 if indEnd > 1
     % Plot first moment
@@ -70,26 +65,18 @@ if indEnd > 1
     if sum(SX(:)) ~= 0
         set(haf,'nextplot','add')
         for i = 1:n
-            yp = [muX(ind(i),1:indEnd)+sqrt(SX(ind(i),1:indEnd)),...
-                fliplr(muX(ind(i),1:indEnd)-sqrt(SX(ind(i),1:indEnd)))];
+            yp = [muX(ind(i),1:indEnd)+sc*sqrt(SX(ind(i),1:indEnd)),fliplr(muX(ind(i),1:indEnd)-sc*sqrt(SX(ind(i),1:indEnd)))];
             xp = [dTime,fliplr(dTime)];
             col = get(hp(i),'color');
-            hf(i) = fill(xp,yp,'r',...
-                'parent',haf,...
-                'facecolor',col,...
-                'edgealpha',0,...
-                'facealpha',0.25);
+            hf(i) = fill(xp,yp,'r','parent',haf,'facecolor',col,'edgealpha',0,'facealpha',0.25);
         end
     end
     set(haf,'ygrid','on')
     axis(haf,'tight')
 else
-    hp = bar(dTime:dTime+n-1,muX(ind),...
-        'facecolor',[.8 .8 .8],...
-        'parent',haf);
+    hp = bar(dTime:dTime+n-1,muX(ind),'facecolor',[.8 .8 .8],'parent',haf);
     set(haf,'nextplot','add')
-    hf = errorbar(dTime:dTime+n-1,muX(ind),sqrt(SX(ind)),'r.',...
-        'parent',haf);
+    hf = errorbar(dTime:dTime+n-1,muX(ind),sc*sqrt(SX(ind)),'r.','parent',haf);
 end
 
 % Add confidence intervals scaling control
@@ -99,19 +86,11 @@ try % only when no parent handle has been specified
     ud.var = SX;
     ud.hf = hf;
     ud.ind = ind;
-    hh(1) = uicontrol('style','edit',...
-        'callback',@dox,...
-        'userdata',ud,...
-        'string','1',...
-        'tooltipstring','X times posterior standard deviation...');
+    hh(1) = uicontrol('style','edit','callback',@dox,'userdata',ud,'string','1','tooltipstring','X times posterior standard deviation...');
     set(hh(1),'units','normalized')
     pos = get(hh(1),'position');
     set(hh(1),'position',[0.4 0.02 pos(3:4)])
-    hh(2) = uicontrol('style','text',...
-        'string','Change error bars',...
-        'units','normalized',...
-        'position',[0.5 0.02 0.2 0.0476],...
-        'backgroundcolor',ones(1,3));
+    hh(2) = uicontrol('style','text','string','Change error bars','units','normalized','position',[0.5 0.02 0.2 0.0476],'backgroundcolor',ones(1,3));
 end
 
 
@@ -125,12 +104,9 @@ ind = ud.ind;
 [n,indEnd] = size(mu);
 if indEnd > 1
     for i = ind
-        yp = [mu(ind(i),:)+scale.*sqrt(SX(ind(i),:)),...
-            fliplr(mu(ind(i),:)-scale.*sqrt(SX(ind(i),:)))];
+        yp = [mu(ind(i),:)+scale.*sqrt(SX(ind(i),:)),fliplr(mu(ind(i),:)-scale.*sqrt(SX(ind(i),:)))];
         set(ud.hf(i),'ydata',yp)
     end
 else
-    set(ud.hf,...
-        'LData',scale.*sqrt(SX),...
-        'UData',scale.*sqrt(SX))
+    set(ud.hf,'LData',scale.*sqrt(SX),'UData',scale.*sqrt(SX))
 end

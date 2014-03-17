@@ -8,7 +8,8 @@ function [y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,u,alph
 %   y_t = g(x_t,Phi,u_t) + e_t
 % where f and g are the evolution and observation, respectively and the
 % system's input u_t is augmented with its previous output y_t-1 and a
-% potential feedback h(y_t-1)
+% potential feedback h(y_t-1), were h is some predefined (potentially
+% stochastic) transformation of the system's output.
 % IN:
 %   - n_t: the number of time bins for the time series of hidden-states and
 %   observations, i.e. the time indices satisfy: 1<= t < n_t
@@ -54,14 +55,12 @@ catch
     return
 end
 
-% system's dimensions
 try
     dim = options.dim;
 catch
     dim.n_theta = length(theta);
     dim.n_phi = length(phi);
     dim.n_t = n_t;
-    dim.p = length(fb.indy);
     try
         dim.n = size(x0,1);
     catch
@@ -72,6 +71,12 @@ catch
     catch
         options.inG = [];
     end
+    try
+        U = u(:,1);
+    catch
+        U = [];
+    end
+    dim.p = size(feval(g_fname,zeros(dim.n,1),phi,U,options.inG),1);
 end
 
 % fill in options structure with defaults
@@ -102,7 +107,7 @@ if dim.n > 0
         x0;
     catch
         x0 = options.priors.muX0;
-        sQ0 = getISqrtMat(options.priors.SigmaX0,0);
+        sQ0 = VBA_getISqrtMat(options.priors.SigmaX0,0);
         x0 = x0 + sQ0*randn(dim.n,1);
         clear sQ0
     end
@@ -114,7 +119,7 @@ end
 if dim.n > 0
     x(:,1) = VBA_evalFun('f',x0,theta,u(:,1),options,dim,1);
     if ~isinf(alpha)
-        C = getISqrtMat(iQx{1});
+        C = VBA_getISqrtMat(iQx{1});
         eta(:,1) = (1./sqrt(alpha))*C*randn(dim.n,1);
         x(:,1) = x(:,1) + eta(:,1);
     end
@@ -124,7 +129,7 @@ end
 gt = VBA_evalFun('g',x(:,1),phi,u(:,1),options,dim,1);
 if ~options.binomial
     if ~isinf(sigma)
-        C = getISqrtMat(iQy{1});
+        C = VBA_getISqrtMat(iQy{1});
         e(:,1) = (1./sqrt(sigma))*C*randn(dim.p,1);
     end
     y(:,1) = gt + e(:,1);
@@ -133,7 +138,7 @@ else
         if isbinary(gt(i))
             y(i,1) = gt(i);
         else
-            y(i,1) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0],1);
+            y(i,1) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0]',1);
         end
     end
     e(:,1) = y(:,1) - gt;
@@ -146,17 +151,6 @@ end
 % fill in next input with output and feedback
 u(fb.indy,2) = y(:,1);
 
-% t = 1
-% disp('g')
-% if y(:,t) == 1
-%     ac = u(1,t)
-%     au = u(2,t)
-% else
-%     ac = u(2,t)
-%     au = u(1,t)
-% end
-% pause
-    
 
 %-- Loop over time points
 
@@ -171,7 +165,7 @@ for t = 2:dim.n_t
     % Evaluate evolution function at past hidden state
     if dim.n > 0
         if ~isinf(alpha)
-            Cx = getISqrtMat(iQx{t});
+            Cx = VBA_getISqrtMat(iQx{t});
             eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);
         end
         x(:,t) = VBA_evalFun('f',x(:,t-1),theta,u(:,t),options,dim,t) + eta(:,t);
@@ -181,7 +175,7 @@ for t = 2:dim.n_t
     gt = VBA_evalFun('g',x(:,t),phi,u(:,t),options,dim,t);
     if ~options.binomial
         if ~isinf(sigma)
-            Cy = getISqrtMat(iQy{t});
+            Cy = VBA_getISqrtMat(iQy{t});
             e(:,t) = (1./sqrt(sigma))*Cy*randn(dim.p,1);
         end
         y(:,t) = gt + e(:,t);
@@ -190,7 +184,7 @@ for t = 2:dim.n_t
             if isbinary(gt(i))
                 y(i,t) = gt(i);
             else
-                y(i,t) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0],1);
+                y(i,t) = sampleFromArbitraryP([gt(i),1-gt(i)],[1,0]',1);
             end
         end
         e(:,t) = y(:,t) - gt;
@@ -203,18 +197,7 @@ for t = 2:dim.n_t
             u(fb.indfb,t+1) = feval(fb.h_fname,y(:,t),t,fb.inH);
         end
         u(fb.indy,t+1) = y(:,t);
-    end
-    
-%     disp('g')
-%     if y(:,t) == 1
-%         ac = u(1,t)
-%         au = u(2,t)
-%     else
-%         ac = u(2,t)
-%         au = u(1,t)
-%     end
-%     pause
-    
+    end   
     
     % Display progress
     if mod(100*t/dim.n_t,10) <1 && options.verbose

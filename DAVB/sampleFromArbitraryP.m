@@ -1,8 +1,7 @@
 function [X] = sampleFromArbitraryP(p,gridX,N)
 % inverse transform sampling scheme
-
+% function [X] = sampleFromArbitraryP(p,gridX,N)
 % This function samples from an arbitrary 1D probability distribution
-% function [X] = sampleFromArbitraryP(p,grid,N)
 % IN:
 %   - p: pX1 vector (the density evaluated along the grid)
 %   - gridX: pX1 vector (the grid over which the density is evaluated)

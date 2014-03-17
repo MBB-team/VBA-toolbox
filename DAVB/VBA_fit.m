@@ -6,10 +6,11 @@ function fit = VBA_fit(posterior,out)
 % OUT:
 %   - fit: structure, containing the following fields:
 %       .LL: log-likelihood of the model
-%       .R2: coefficient of determination (the fraction of variance
-%       unexplained is 1-R2)
 %       .AIC: Akaike Information Criterion
 %       .BIC: Bayesian Informaion Criterion
+%       .R2: if data is continuous, R2 = coefficient of determination
+%       (fraction of explained variance). If data is binary, R2 = balanced
+%       classification accuracy (fraction of correctly predicted outcomes).
 
 suffStat = out.suffStat;
 
