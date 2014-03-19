@@ -1,7 +1,7 @@
 % this demo replicates the exemple in the 'dynamical system theory' part
 % of the 'principles of DCM' talk (SPM course, may 2013).
 
-clear all
+% clear all
 close all
 
 nt = 1e3;
@@ -27,7 +27,7 @@ dim.n               = 2;
 
 
 % Build time series of hidden states and observations
-[y,x,x0,eta,e] = simulateNLSS(nt,f_fname,g_fname,theta,phi,u,Inf,[],options,x0);
+[y,x,x0,eta,e] = simulateNLSS(nt,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
 
 
 

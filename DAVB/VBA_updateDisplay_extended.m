@@ -59,7 +59,7 @@ end
 if options.dim.n > 0
     mux = posterior.muX(:,dTime);
     try
-        vx = getVar(posterior.SigmaX.current,indEnd);
+        vx = VBA_getVar(posterior.SigmaX.current,indEnd);
     catch
         vx = zeros(size(mux));
     end
@@ -75,7 +75,7 @@ if options.dim.n > 0
         alphaHat = Inf;
         var_alpha = 0;
     end
-    vx0 = getVar(posterior.SigmaX0);
+    vx0 = VBA_getVar(posterior.SigmaX0);
     if options.updateX0
         dx0 = suffStat.dx0;
     else
@@ -88,7 +88,7 @@ if options.dim.n_theta > 0
     else
         dtheta = suffStat.dtheta;
     end
-    vtheta = getVar(posterior.SigmaTheta,indEnd);
+    vtheta = VBA_getVar(posterior.SigmaTheta,indEnd);
 end
 if options.dim.n_phi > 0
     if options.OnLine
@@ -96,7 +96,7 @@ if options.dim.n_phi > 0
     else
         dphi = suffStat.dphi;
     end
-    vphi = getVar(posterior.SigmaPhi,indEnd);
+    vphi = VBA_getVar(posterior.SigmaPhi,indEnd);
 end
 
 % check time dimension

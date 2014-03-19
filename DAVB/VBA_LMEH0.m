@@ -12,7 +12,7 @@ function [LLH0] = VBA_LMEH0(y,options)
 % OUT:
 %   - LLH0: the log evidence of the null model
 
-if options.extended
+if isfield(options,'extended') && options.extended
     LLH0=VBA_LMEH0_extended(y,options);
     return;
 end

@@ -26,7 +26,7 @@ catch
     dim.p = size(y,1);
 end
 if isempty(u)
-    u = zeros(0,dim.n_t);
+    u = zeros(1,dim.n_t);
 else
     u = full(u);
 end
