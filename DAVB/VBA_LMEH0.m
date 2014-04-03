@@ -12,7 +12,7 @@ function [LLH0] = VBA_LMEH0(y,options)
 % OUT:
 %   - LLH0: the log evidence of the null model
 
-if options.extended
+if isfield(options,'extended') && options.extended
     LLH0=VBA_LMEH0_extended(y,options);
     return;
 end
@@ -23,8 +23,8 @@ end
 n = numel(y);
 if ~isbinary(y)
     try
-        a0 = priors.a_sigma;
-        b0 = priors.b_sigma;
+        a0 = options.priors.a_sigma;
+        b0 = options.priors.b_sigma;
     catch
         a0 = 1;
         b0 = 1;

@@ -42,7 +42,7 @@ if ~options.binomial
     E0 = priors.a_sigma./priors.b_sigma;
     V0 = priors.a_sigma./priors.b_sigma^2;
     SSE = E*suffStat.dy2;
-    dF = -VB_KL(E,V,E0,V0,'Gamma');
+    dF = -VBA_KL(E,V,E0,V0,'Gamma');
     ElogS = psi(posterior.a_sigma) - log(posterior.b_sigma);
 else
     SSE = -2*suffStat.logL;
@@ -58,7 +58,7 @@ if dim.n > 0 && ~isinf(priors.a_alpha) && ~isequal(priors.b_alpha,0)
     E0 = priors.a_alpha./priors.b_alpha;
     V0 = priors.a_alpha./priors.b_alpha^2;
     ElogA = psi(posterior.a_alpha) - log(posterior.b_alpha);
-    dF = dF - VB_KL(E,V,E0,V0,'Gamma');
+    dF = dF - VBA_KL(E,V,E0,V0,'Gamma');
     SSE = SSE + E*suffStat.dx2;
     S = S + suffStat.SX;
 end
@@ -87,7 +87,7 @@ if dim.n_phi > 0
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaPhi(indIn,indIn);
-        iQ = VB_inv(Q,[]);
+        iQ = VBA_inv(Q,[]);
         SSE = SSE + suffStat.dphi(indIn)'*iQ*suffStat.dphi(indIn);
         ldQ = ldQ - VBA_logDet(Q,[]);
         S = S + suffStat.Sphi - 0.5*length(indIn);
@@ -100,7 +100,7 @@ if dim.n_theta > 0
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaTheta(indIn,indIn);
-        iQ = VB_inv(Q,[]);
+        iQ = VBA_inv(Q,[]);
         SSE = SSE + suffStat.dtheta(indIn)'*iQ*suffStat.dtheta(indIn);
         ldQ = ldQ - VBA_logDet(Q,[]);
         S = S + suffStat.Stheta - 0.5*length(indIn);
@@ -113,7 +113,7 @@ if dim.n > 0
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaX0(indIn,indIn);
-        iQ = VB_inv(Q,[]);
+        iQ = VBA_inv(Q,[]);
         SSE = SSE + suffStat.dx0(indIn)'*iQ*suffStat.dx0(indIn);
         ldQ = ldQ - VBA_logDet(Q,[]);
         S = S + suffStat.SX0 - 0.5*length(indIn);

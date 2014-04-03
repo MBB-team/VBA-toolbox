@@ -9,7 +9,7 @@ dy = y - gx;
 switch type
     
     case 0 %--- normal
-        vy=(1./sigmaHat).*diag(VB_inv(Qy,[]));
+        vy=(1./sigmaHat).*diag(VBA_inv(Qy,[]));
         ddydphi = sigmaHat.*(dG_dPhi*Qy*dy);
         d2gdx2 = sigmaHat.*(dG_dPhi*Qy*dG_dPhi');
         dy2=dy'*Qy*dy ;

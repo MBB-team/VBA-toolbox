@@ -22,8 +22,8 @@ function [fx] = f_VBvolatile0(x,P,u,in)
 %   as well as book keeping of the current belief (c.f. response model).
 
 % transform and define states and parameters
-x(3) = exp(x(3));
-x(5) = exp(x(5));
+x(3) = exp(x(3)); % variance on second-level states is in log-space
+x(5) = exp(x(5)); % variance on third-level states is in log-space
 ka = in.lev2*sgm(P(1),in.kaub);
 om = P(2);
 th = sgm(P(3),in.thub);
@@ -32,7 +32,7 @@ rf = in.rf;
 fx = zeros(size(x));
 
 % 1st level
-fx(1) = u(1); % trivial
+fx(1) = u(1); % trivial first-level states
 
 % 2nd level
 s1h = sgm(x(2),1)*(1-sgm(x(2),1)); % likelihood precision
@@ -55,7 +55,7 @@ if fx(5) <= 0
         fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
     end
 else
-        fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
+    fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
 end
 
 % retransform states

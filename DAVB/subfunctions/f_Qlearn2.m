@@ -6,7 +6,7 @@ function  [fx,dfdx,dfdP] = f_Qlearn2(x,P,u,in)
 % IN:
 %   - x_t : q-values (2x1)
 %   - P : (inverse-sigmoid) learning-rate
-%   - u : u(1)=previous action, u(2)=feedback
+%   - u : u(1)=previous action (1 or 0), u(2)=feedback
 %   - in : [useless]
 % OUT:
 %   - fx: evolved q-values (2x1)
@@ -14,23 +14,17 @@ function  [fx,dfdx,dfdP] = f_Qlearn2(x,P,u,in)
 %   and evolution parameter, respectively.
 
 alpha = 1./(1+exp(-P)); % learning rate is bounded between 0 and 1.
-r = u(2);
-fx = x;
-
-% index of Qvalue to update
+fx = zeros(2,1);
+pe = u(2)-x; % prediction error
+fx(1) = x(1) + alpha*pe(1)*u(1);
+fx(2) = x(2) + alpha*pe(2)*(1-u(1));
+% gradients' derivation
 if u(1)==1
-    a = 1;
-else
-    a = 2;
-end
-fx(a) = x(a) + alpha*(r-x(a));
-
-if a == 1
     dfdx = [1-alpha, 0;
-        0, 1];
-    dfdP = [alpha*(1-alpha)*(r-x(a)),0];
-elseif a == 2
+            0, 1];
+    dfdP = [alpha*(1-alpha)*pe(1),0];
+else
     dfdx = [1, 0;
-        0, 1-alpha];
-    dfdP = [0,alpha*(1-alpha)*(r-x(a))];
+            0, 1-alpha];
+    dfdP = [0,alpha*(1-alpha)*pe(2)];
 end

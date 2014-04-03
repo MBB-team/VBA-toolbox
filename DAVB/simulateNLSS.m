@@ -56,8 +56,7 @@ catch
     catch
         U = [];
     end
-     dim.p = size(feval(g_fname,zeros(dim.n,1),phi,U,options.inG),1);
-
+    dim.p = size(feval(g_fname,zeros(dim.n,1),phi,U,options.inG),1);
 end
 
 try
@@ -90,9 +89,9 @@ if dim.n > 0
         x0;
     catch
         x0 = options.priors.muX0;
-        sQ0 = getISqrtMat(options.priors.SigmaX0,0);
+        sQ0 = VBA_getISqrtMat(options.priors.SigmaX0,0);
         x0 = x0 + sQ0*randn(dim.n,1);
-        clear sQ0        
+        clear sQ0
     end
 else
     x0 = [];
@@ -102,7 +101,7 @@ end
 if dim.n > 0
     x(:,1) = VBA_evalFun('f',x0,theta,u(:,1),options,dim,1);
     if ~isinf(alpha)
-        C = getISqrtMat(iQx{1});
+        C = VBA_getISqrtMat(iQx{1});
         eta(:,1) = (1./sqrt(alpha))*C*randn(dim.n,1);
         x(:,1) = x(:,1) + eta(:,1);
     end
@@ -117,7 +116,7 @@ for i=1:n_sources
     if options.sources(i).type == 0 % gaussian
         sigma_i = sigma(find(sgi==i)) ;
         if ~isinf(sigma_i)
-            C = getISqrtMat(iQy{1,find(sgi==i)});
+            C = VBA_getISqrtMat(iQy{1,find(sgi==i)});
             e(s_idx,1) = (1./sqrt(sigma_i))*C*randn(length(s_idx),1);
         end
         y(s_idx,1) = gt(s_idx) ;
@@ -135,9 +134,8 @@ for i=1:n_sources
             e(s_idx,1) = y(s_idx,1) - gt(s_idx);
         
     end
+    e(:,1) = y(:,1) - gt(:,1);
 end
-
-          
 
 %-- Loop over time points
 
@@ -152,7 +150,7 @@ for t = 2:dim.n_t
     % Evaluate evolution function at past hidden state
     if dim.n > 0
         if ~isinf(alpha)
-            Cx = getISqrtMat(iQx{t});
+            Cx = VBA_getISqrtMat(iQx{t});
             eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);
         end
         x(:,t) = VBA_evalFun('f',x(:,t-1),theta,u(:,t),options,dim,t) + eta(:,t);
@@ -167,15 +165,15 @@ for i=1:n_sources
     if options.sources(i).type == 0 % gaussian
          sigma_i = sigma(find(sgi==i)) ;
         if ~isinf(sigma_i)
-            C = getISqrtMat(iQy{t,find(sgi==i)});
+            C = VBA_getISqrtMat(iQy{t,find(sgi==i)});
             e(s_idx,t) = (1./sqrt(sigma_i))*C*randn(length(s_idx),1);
         end
         y(s_idx,t) = gt(s_idx) ;
         y(s_idx,t) = y(s_idx,t) + e(s_idx,t);
     else % binary
         if length(s_idx) == 1 % true binomial
-%             y(s_idx,t) = sampleFromArbitraryP([gt(s_idx),1-gt(s_idx)],[1,0],1);
-            y(s_idx,t) = binomial_sample(gt(s_idx));
+            y(s_idx,t) = sampleFromArbitraryP([gt(s_idx),1-gt(s_idx)],[1,0],1);
+%             y(s_idx,t) = binomial_sample(gt(s_idx));
         else % multinomial
             resp = zeros(length(s_idx),1) ;
             try

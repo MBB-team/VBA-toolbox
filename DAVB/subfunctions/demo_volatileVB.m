@@ -1,5 +1,7 @@
-% demo operant learning with VB volatile observer (adapted from Mathys, Daunizeau et al. 2010)
-
+% demo operant learning with VB volatile observer (adapted from Mathys,
+% Daunizeau et al. 2010)
+% This demo simulates a "volatile learner" experiencing feedback to her
+% chosen actions in a 2-armed bandit task. VBA estimation then proceeds.
 
 close all
 clear variables
@@ -14,38 +16,24 @@ h_fname = @h_truefalse;
 
 
 % allocate feedback struture for simulations
-u0 = [ones(1,50)]; % possible feedbacks
+u0 = [randn(1,50)>-0.5]; % possible feedbacks
 fb.inH.u0 = repmat([u0,1-u0],1,4); % with reversals
 fb.h_fname = h_fname;
 fb.indy = 1;
 fb.indfb = 2;
 
 
-% simulation parameters
-theta = [1;-3;-1];
-inF.lev2 = 1; % remove 3rd level (volatility learning)
+% simulate VB volatile learner in a 2-armed bandit task
+theta = [0;-2;0]; % [1;-3;-1];
+phi = [3;0]; % inverse temperature & bias
+inF.lev2 = 1; % 3rd level (volatility learning)
 inF.kaub = 1.4;
 inF.thub = 1;
-inF.rf = -1;
-phi = [1;0]; % inverse temperature & bias towards
+inF.rf = 1;
 inG.respmod = 'taylor';
-
-% choose initial conditions
-x0 = repmat([0.5;0;0;1;log(4)],2,1);
+% x0 = repmat([0.5;0;0;1;log(4)],2,1);
+x0 = repmat([0;0;0;0;0],2,1);
 u = zeros(2,size(fb.inH.u0,2)+1);
-
-dim = struct('n',2*5,'n_theta',3,'n_phi',2);
-
-priors.muPhi = zeros(dim.n_phi,1);
-priors.muTheta = [0;-2;0];
-priors.muX0 = x0;
-priors.SigmaPhi = 1e0*eye(dim.n_phi);
-priors.SigmaTheta = 1e0*eye(dim.n_theta);
-priors.SigmaX0 = 0e0*eye(dim.n);
-priors.a_alpha = Inf;
-priors.b_alpha = 0;
-
-options.priors = priors;
 options.binomial = 1;
 options.inF = inF;
 options.inG = inG;
@@ -62,13 +50,23 @@ legend({'p(y=1|theta,phi,m)','binomial data samples'})
 getSubplots
 % pause
 
-[ha,hf] = unwrapVBvolatileOTO(struct('muX',x),[]);
+dummy.options = options;
+[ha,hf] = unwrapVBvolatileOTO(struct('muX',x,'muTheta',theta),dummy);
 set(hf,'name','simulated volatile VB learner')
-% return
 
-% options.isYout = zeros(1,size(y,2));
-% options.isYout(75:125) = 1;
+return
 
+% identify VB volatile learner
+dim = struct('n',2*5,'n_theta',3,'n_phi',2);
+priors.muPhi = zeros(dim.n_phi,1);
+priors.muTheta = [0;-2;0];
+priors.muX0 = x0;
+priors.SigmaPhi = 1e0*eye(dim.n_phi);
+priors.SigmaTheta = 1e0*eye(dim.n_theta);
+priors.SigmaX0 = 0e0*eye(dim.n);
+priors.a_alpha = Inf;
+priors.b_alpha = 0;
+options.priors = priors;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)

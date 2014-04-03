@@ -51,7 +51,7 @@ S0 = kron(eye(lag),posterior.SigmaX0);
 [gx(:,1),dG_dX{1},dG_dPhi{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim,1);
 
 % check infinite precision transition pdf
-iQ = VB_inv(iQx{1},indIn{1},'replace');
+iQ = VBA_inv(iQx{1},indIn{1},'replace');
 
 % error terms
 dx(:,1) = X(:,1) - fx0;
@@ -64,11 +64,11 @@ GC = dG_dX{1}'*options.lagOp.C;
 FD = dF_dX0'*options.lagOp.D;
 FDC = FD - options.lagOp.C;
 EuSEu = options.lagOp.Eu*S0*options.lagOp.Eu';
-iEuSEu = VB_inv(EuSEu);
+iEuSEu = VBA_inv(EuSEu);
 EiEuSEuEu =  options.lagOp.E'*iEuSEu*options.lagOp.Eu;
 EiEuSEuE = options.lagOp.E'*iEuSEu*options.lagOp.E;
 iSt = sigmaHat*GC'*iQy{1}*GC + alphaHat*FDC'*iQ*FDC + EiEuSEuE;
-St = VB_inv(iSt);
+St = VBA_inv(iSt);
 e1 = FD*m0 - fx0;
 e2 = GC*m0 - gx(:,1);
 mt = St*( sigmaHat*GC'*iQy{1}*(y(:,1)+e2) + alphaHat*FDC'*iQ*e1 + EiEuSEuEu*m0 );
@@ -77,7 +77,7 @@ mt = St*( sigmaHat*GC'*iQy{1}*(y(:,1)+e2) + alphaHat*FDC'*iQ*e1 + EiEuSEuEu*m0 )
 for t = 2:dim.n_t
     
     % check infinite precision transition pdf
-    iQ = VB_inv(iQx{t},indIn{t},'replace');
+    iQ = VBA_inv(iQx{t},indIn{t},'replace');
     
     % evaluate evolution function at current mode
     [fx(:,t-1),dF_dX{t-1}] = VBA_evalFun('f',X(:,t-1),posterior.muTheta,u(:,t),options,dim,t);
@@ -96,11 +96,11 @@ for t = 2:dim.n_t
     FD = dF_dX{t-1}'*options.lagOp.D;
     FDC = FD - options.lagOp.C;
     EuSEu = options.lagOp.Eu*St*options.lagOp.Eu';
-    iEuSEu = VB_inv(EuSEu);
+    iEuSEu = VBA_inv(EuSEu);
     EiEuSEuEu =  options.lagOp.E'*iEuSEu*options.lagOp.Eu;
     EiEuSEuE = options.lagOp.E'*iEuSEu*options.lagOp.E;
     iSt = sigmaHat*GC'*iQy{t}*GC + alphaHat*FDC'*iQ*FDC + EiEuSEuE;
-    St = VB_inv(iSt);
+    St = VBA_inv(iSt);
     e1 = dF_dX{t-1}'*X(:,t-1) - fx(:,t-1);
     e2 = dG_dX{t}'*X(:,t) - gx(:,t);
     mt = St*( sigmaHat*GC'*iQy{t}*(y(:,t)+e2) + alphaHat*FDC'*iQ*e1 + EiEuSEuEu*mt );
@@ -113,7 +113,7 @@ for t = 2:dim.n_t
         SigmaX.inter{t-lag+1} = St(1:dim.n,dim.n+1:2*dim.n);
         
         % Predictive density (data space)
-        V = (1./sigmaHat).*VB_inv(iQy{t-lag+1},[]) + dG_dX{t-lag+1}'*SigmaX.current{t-lag+1}*dG_dX{t-lag+1};
+        V = (1./sigmaHat).*VBA_inv(iQy{t-lag+1},[]) + dG_dX{t-lag+1}'*SigmaX.current{t-lag+1}*dG_dX{t-lag+1};
         if dim.n_phi > 0
             V = V + dG_dPhi{t-lag+1}'*posterior.SigmaPhi*dG_dPhi{t-lag+1};
         end
@@ -146,7 +146,7 @@ for k = 2:lag
     muX(:,dim.n_t-(lag-k)) = mt(ik);
     
     % Predictive density (data space)
-    V = (1./sigmaHat).*VB_inv(iQy{dim.n_t-(lag-k)},[]) + dG_dX{dim.n_t-(lag-k)}'*SigmaX.current{dim.n_t-(lag-k)}*dG_dX{dim.n_t-(lag-k)};
+    V = (1./sigmaHat).*VBA_inv(iQy{dim.n_t-(lag-k)},[]) + dG_dX{dim.n_t-(lag-k)}'*SigmaX.current{dim.n_t-(lag-k)}*dG_dX{dim.n_t-(lag-k)};
     if dim.n_phi > 0
         V = V + dG_dPhi{dim.n_t-(lag-k)}'*posterior.SigmaPhi*dG_dPhi{dim.n_t-(lag-k)};
     end

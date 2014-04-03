@@ -18,12 +18,12 @@ X = randn(24,4);
 
 theta = 0;
 for j=1:length(Qp)
-    theta = theta + exp(mp(j))*getISqrtMat(Qp{j},0)*randn(4,1);
+    theta = theta + exp(mp(j))*VBA_getISqrtMat(Qp{j},0)*randn(4,1);
 end
 
 e = 0;
 for i=1:length(Qy)
-    e = e + exp(my(i))*getISqrtMat(Qy{i},0)*randn(24,1);
+    e = e + exp(my(i))*VBA_getISqrtMat(Qy{i},0)*randn(24,1);
 end
 
 y = X*theta + e;

@@ -2,7 +2,9 @@
 % Short bursts of depolarizing input current (u) are sent to a neuron that
 % responds according to Hodgkin-Huxley model. In brief, an AP is generated
 % if the membrane depolarization reaches a critical threshold. NB: an AP
-% approximately corresponds to a 80mV depolarization.
+% approximately corresponds to a 80mV depolarization. This script simulates
+% the response of such a neuron, and then inverts the model. Emphasis is
+% put on the identifiability of model parameters (e.g. K/Na conductances).
 
 clear variables
 close all

@@ -1,5 +1,5 @@
 function [options,u,dim] = VBA_checkExtended(varargin)
-% checks (and fills in default) optional inputs to VB_NLStateSpaceModel.m
+% checks (and fills in default) optional inputs to VBA_NLStateSpaceModel.m
 % function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options) or
 % function [options,u,dim] = VBA_check(y,r,u,f_fname,g_fname,h_fname,dim,options)
 % This function checks the consistency of the arguments to the

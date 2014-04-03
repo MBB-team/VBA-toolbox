@@ -1,5 +1,5 @@
 function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
-% checks (and fills in default) optional inputs to VB_NLStateSpaceModel.m
+% checks (and fills in default) optional inputs to VBA_NLStateSpaceModel.m
 % function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
 % This function checks the consistency of the arguments to the
 % VBA_NLStateSpaceModel.m function. Importantly, it fills in the missing
@@ -7,7 +7,7 @@ function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
 % NB: if the user-specified priors on the stochastic innovations precision
 % is a delta Dirac at infinity (priors.a_alpha = Inf and priors.b_alpha =
 % 0), the priors are modified to invert an ODE-like state-space model, i.e.
-% the equivalent deterministic DCM.
+% the equivalent deterministic system.
 
 
 % Fills in dim structure and default input if required
@@ -157,6 +157,10 @@ end
 if ~isfield(options,'skipf')
     options.skipf = zeros(1,dim.n_t);
 end
+if ~isfield(options,'kernelSize')
+    options.kernelSize = 16;
+end
+options.kernelSize = min([dim.n_t,options.kernelSize]);
 % split-Laplace VB?
 if ~isfield(options,'nmog')
     options.nmog = 1;
@@ -191,7 +195,7 @@ if isfield(options,'priors')
             VBA_disp(['      - ',fn0{ind(i)}],options);
             eval(['priors.',fn0{ind(i)},'=priors0.',fn0{ind(i)},';',])
         end
-        VBA_disp('---> Using default(non-informative) priors',options)
+        VBA_disp('---> Using default (non-informative) priors',options)
     end
     % check dimension and infinite precision priors
     if isfield(options.priors,'a_sigma')
@@ -389,7 +393,6 @@ if dim.n > 0
         options.priors = priors;
         options.dim = dim;
     else
-       
         % Derive marginalization operators for the lagged Kalman filter
         n = dim.n;
         lag = options.backwardLag + 1;

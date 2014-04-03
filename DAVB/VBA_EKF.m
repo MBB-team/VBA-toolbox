@@ -129,7 +129,7 @@ if flag>=1
     %--- Prediction
     [fx0,dF_dX0] = VBA_evalFun('f',X0,theta,u(:,1),options,dim,1);
     mStar(:,1) = fx0;
-    Rp = dF_dX0'*SigmaX0*dF_dX0 + 1./alpha.*VB_inv(iQx{1},[]);
+    Rp = dF_dX0'*SigmaX0*dF_dX0 + 1./alpha.*VBA_inv(iQx{1},[]);
     if flag == 1 % EKF update
         [gx(:,1),dG_dX] = VBA_evalFun('g',mStar(:,1),phi,u(:,1),options,dim,1);
         iRp = pinv(Rp);
@@ -167,7 +167,7 @@ for t = 1:dim.n_t-1
         %-- Prediction
         [fx,dF_dX] = VBA_evalFun('f',muX(:,t),theta,u(:,t+1),options,dim,t+1);
         mStar(:,t+1) = fx;
-        Rp = dF_dX'*SigmaX{t}*dF_dX + 1./alpha.*VB_inv(iQx{t+1},[]);
+        Rp = dF_dX'*SigmaX{t}*dF_dX + 1./alpha.*VBA_inv(iQx{t+1},[]);
         if flag == 1    % EKF update
             [gx(:,t+1),dG_dX] = VBA_evalFun('g',mStar(:,t+1),phi,u(:,t+1),options,dim,t+1);
             C =  dG_dX*iQy{t+1}*dG_dX';

@@ -18,7 +18,7 @@ end
 switch form
     
     case 'gaussian'
-        S = getISqrtMat(suffStat.Sigma,0);
+        S = VBA_getISqrtMat(suffStat.Sigma,0);
         n = size(suffStat.mu,1);
         y = repmat(suffStat.mu,1,N) + S*randn(n,N);
         

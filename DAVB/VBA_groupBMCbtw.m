@@ -10,7 +10,7 @@ function [ep,out] = VBA_groupBMCbtw(L,options,factors)
 %       .families: a cell array of size nf, which contains the indices of
 %       the models that belong to each of the nf families.
 %   - factors: n1Xn2X...Xnf factorial condition attribution matrix. Each
-%   cell contains the index of the corresponding condition. This is used in
+%   entry contains the index of the corresponding condition. This is used in
 %   case of a factorial design, to gather conditions into orthogonal
 %   factors.
 % OUT:
@@ -21,7 +21,7 @@ function [ep,out] = VBA_groupBMCbtw(L,options,factors)
 %       .dt: the algorithm execution time (in sec)
 %       .date: date vector, in matlab format (see clock.m)
 %       .families: a cell array of size 2Xnf, which contains the indices of
-%       the models that belong to each of the tuples' families 'equal' and
+%       the models that belong to each of the tuples families 'equal' and
 %       'not equal', for each dimension of the factorial design.
 %       .options: this is useful when using default options
 %       .C: ncXnt tuple label matrix (where the number of tuples is
@@ -84,6 +84,7 @@ else
 end
 
 
+VBA_disp(['Date: ',datestr(date)],options)
 try;factors;catch;factors=vec(1:nc);end
 sf = size(factors);
 sf(sf<=1) = [];
@@ -105,6 +106,10 @@ end
 nt = size(Ccon,2);
 fam = cell(2,nf);
 Lt = zeros(nt,ns);
+if options.verbose
+    fprintf(1,['Forming tuples families... ']);
+    fprintf(1,'%6.2f %%',0)
+end
 for i=1:nt
     Ci = Ccon(:,i);
     for j=1:nc
@@ -123,6 +128,15 @@ for i=1:nt
             fam{2,f} = [fam{2,f};i];
         end
     end
+    if options.verbose
+        fprintf(1,repmat('\b',1,8))
+        fprintf(1,'%6.2f %%',100*i/nt)
+    end
+end
+if options.verbose
+    fprintf(1,repmat('\b',1,8))
+    fprintf(' OK.')
+    fprintf('\n')
 end
 
 
@@ -145,7 +159,6 @@ for f=1:nf
     out.pep(f) = ep(f).*(1-out.VBA(f).out.bor) + 0.5*out.VBA(f).out.bor;
     
     if options.verbose
-        fprintf(['Date: ',datestr(out.VBA(f).out.date),'\n'])
         if floor(out.VBA(f).out.dt./60) == 0
             timeString = [num2str(floor(out.VBA(f).out.dt)),' sec'];
         else

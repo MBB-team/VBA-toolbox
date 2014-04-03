@@ -2,7 +2,8 @@ function [kernels] = VBA_VolterraKernels(posterior,out,nt)
 % Estimation of the system's 1st-order Volterra kernels
 % function [my,vy,mg,vg,mx,vx] = VBA_VolterraKernels(posterior,out)
 % IN:
-%   - posterior,out: the output of the VBA system inversion
+%   - posterior,out: the output of the VBA system inversion. Note that the
+%   Volterra kernels are estimated given the input stored in out.u.
 %   - nt: the maximul lag for the estimation of the Volterra kernel
 % OUT:
 %   - kernels: a structure, containing the fields .y, .g, .x, which refer
@@ -13,17 +14,17 @@ function [kernels] = VBA_VolterraKernels(posterior,out,nt)
 %   - v: the estimation variance of 1st-order Volterra kernels
 %   - R2: the percentage of variance explained, for each dimension
 
-nu = out.dim.u;
+nu = size(out.u,1);
 n = out.dim.n;
 p = out.dim.p;
-if isequal(out.dim.n_t,1) || nu < 1 || ~any(out.u(:)) || n <1 || isempty(out.options.f_fname)
-    % not a dynamical system
+if isequal(out.dim.n_t,1) || nu < 1 || ~any(out.u(:))
+    % no time series or no input
     kernels = [];
     return
 end
 if nargin <3
     try
-        nt = min([options.kernelSize,16]);
+        nt = out.options.kernelSize;
     catch
         nt = min([out.dim.n_t,16]);
     end
@@ -39,9 +40,21 @@ if out.options.microU && ~isequal(out.options.decim,1)
 else % do not change input
     u = out.u;
 end
+if isfield(out.options,'orthU') && out.options.orthU
+    u = VBA_orth(u',0)';
+end
 
 % configurate kernel estimation
 [opt.inG.dgdp] = VBA_conv2glm(u,nt); % build convolution matrices
+if isfield(out.options,'detrendU') && ~~out.options.detrendU
+    Trend = [];
+    for i=0:out.options.detrendU
+        Trend = [Trend,vec(1:out.dim.n_t).^i];
+    end
+    Trend = VBA_orth(Trend,1);
+    opt.inG.dgdp = [opt.inG.dgdp;Trend(:,2:out.options.detrendU+1)'];
+    np = np+out.options.detrendU;
+end
 opt.priors.muPhi = zeros(np,1);
 opt.priors.SigmaPhi = 1e1*eye(np);
 opt.verbose = 0;
@@ -125,6 +138,10 @@ for k = 1:p
 end
 
 % 3- Volterra kernels of hidden states
+if  n <1 || isempty(out.options.f_fname)
+    kernels.x = [];
+    return
+end
 g_fname = @g_conv0;
 kernels.x.m = zeros(p,nt,nu);
 kernels.x.v = zeros(p,nt,nu);

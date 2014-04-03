@@ -42,7 +42,7 @@ sigmaHat = posterior.a_sigma./posterior.b_sigma;
 % Preallocate intermediate variables
 iQy = options.priors.iQy;
 Q = options.priors.SigmaPhi(indIn,indIn);
-iQ = VB_inv(Q,[]);
+iQ = VBA_inv(Q,[]);
 muPhi0 = options.priors.muPhi;
 Phi = muPhi0;
 Phi(indIn) = phi;
@@ -55,7 +55,7 @@ d2gdx2 = 0;
 div = 0;
 
 % intermediary variables: MoG split
-sqrtS = getISqrtMat(posterior.SigmaPhi(indIn,indIn),0);
+sqrtS = VBA_getISqrtMat(posterior.SigmaPhi(indIn,indIn),0);
 split = options.split;
 nd = size(split.m,2);
 Mu0 = muPhi0;
@@ -99,7 +99,7 @@ for t=1:dim.n_t
         ddydphi = ddydphi + split.w(i).*dG_dPhi*iQy{t}*dyti;
         
         % Predictive density (data space)
-        Vy{i} = dG_dPhi'*Sigma0*dG_dPhi + (1./sigmaHat).*VB_inv(iQy{t},[]);
+        Vy{i} = dG_dPhi'*Sigma0*dG_dPhi + (1./sigmaHat).*VBA_inv(iQy{t},[]);
         if dim.n > 0
             Vy{i} = Vy{i} + dG_dX'*posterior.SigmaX.current{t}*dG_dX;
         end
@@ -156,7 +156,7 @@ end
 
 % posterior covariance matrix
 iSigmaPhi = iQ + sigmaHat.*d2gdx2(indIn,indIn);
-SigmaPhi = VB_inv(iSigmaPhi,[]);%./split.s(1);
+SigmaPhi = VBA_inv(iSigmaPhi,[]);%./split.s(1);
 
 % mode
 Mu0 = muPhi0;

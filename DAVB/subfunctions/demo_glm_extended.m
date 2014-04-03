@@ -1,4 +1,4 @@
-% function [posterior,out] = demo_glm_extended()
+function [posterior,out] = demo_glm_extended()
 %%% ----------------------------------------------------------------------
 %   Initialise the generative model, simulate data and inverse the model
 %   

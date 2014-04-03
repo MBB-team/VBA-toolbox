@@ -82,9 +82,14 @@ pX = zeros(n_t,np,dim.n);
 gX = zeros(np,dim.n);
 for i=1:dim.n
     Xi = squeeze(X(i,:,:));
-    m = mean(Xi(:));
-    sv = std(Xi(:));
-    nx = m-3*sv:6*sv/(np-1):m+3*sv;
+    if isempty(lx)
+        m = mean(Xi(:));
+        sv = std(Xi(:));
+        nx = m-3*sv:6*sv/(np-1):m+3*sv;
+    else
+        dx = lx(i,2)-lx(i,1);
+        nx = lx(i,1):dx/(np-1):lx(i,2);
+    end
     [ny,nx] = hist(Xi',nx);
     pX(:,:,i) = ny';
     gX(:,i) = nx;
@@ -102,9 +107,14 @@ pY = zeros(n_t,np,dim.p);
 gY = zeros(np,dim.p);
 for i=1:dim.p
     Yi = squeeze(Y(i,:,:));
-    m = mean(Yi(:));
-    sv = std(Yi(:));
-    nx = m-3*sv:6*sv/(np-1):m+3*sv;
+    if isempty(ly)
+        m = mean(Yi(:));
+        sv = std(Yi(:));
+        nx = m-3*sv:6*sv/(np-1):m+3*sv;
+    else
+        dy = ly(i,2)-ly(i,1);
+        nx = ly(i,1):dy/(np-1):ly(i,2);
+    end
     [ny,nx] = hist(Yi',nx);
     pY(:,:,i) = ny';
     gY(:,i) = nx;
@@ -123,7 +133,7 @@ priors = options.priors;
 
 if dim.n > 0
     if ~isequal(priors.SigmaX0,zeros(size(priors.SigmaX0)))
-        sV = getISqrtMat(priors.SigmaX0,0);
+        sV = VBA_getISqrtMat(priors.SigmaX0,0);
         x0 = priors.muX0 + sV*randn(dim.n,1);
     else
         x0 = priors.muX0;
@@ -134,7 +144,7 @@ end
 
 if dim.n_theta > 0
     if ~isequal(priors.SigmaTheta,zeros(size(priors.SigmaTheta)))
-        sV = getISqrtMat(priors.SigmaTheta,0);
+        sV = VBA_getISqrtMat(priors.SigmaTheta,0);
         theta = priors.muTheta + sV*randn(dim.n_theta,1);
     else
         theta = priors.muTheta;
@@ -145,7 +155,7 @@ end
 
 if dim.n_phi > 0
     if ~isequal(priors.SigmaPhi,zeros(size(priors.SigmaPhi)))
-        sV = getISqrtMat(priors.SigmaPhi,0);
+        sV = VBA_getISqrtMat(priors.SigmaPhi,0);
         phi = priors.muPhi + sV*randn(dim.n_phi,1);
     else
         phi = priors.muPhi;
@@ -157,7 +167,7 @@ end
 
 
 function flag = isInRange(x,lx)
-if isempty(lx)
+if isempty(x) || isempty(lx)
     flag = 1;
     return
 end

@@ -5,7 +5,7 @@ close all
 clear variables
 
 N = 32; % # subjects
-d = 16; % data dimension
+d = 64; % data dimension
 r = 4; % parameter dimension
 
 s = 1e0; % noise variance
@@ -36,7 +36,7 @@ c = c(1:2,:);
 [pv,stat,df,all] = GLM_contrast(X1,y2,c','F',1);
 set(gcf,'name','classical analysis of y|m2')
 
-% display empirical histogram of lo- Bayes factors
+% display empirical histogram of log- Bayes factors
 [n1,x1] = empiricalHist(lev1(:,1)-lev1(:,2));
 [n2,x2] = empiricalHist(lev2(:,1)-lev2(:,2));
 hf = figure('color',[1 1 1],'name','Monte-Carlo simulations: distribution of log Bayes factors');

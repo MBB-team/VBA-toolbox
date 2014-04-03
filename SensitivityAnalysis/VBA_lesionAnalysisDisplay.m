@@ -4,6 +4,22 @@ nx = numel(results.lesion);
 nObs = numel(results.normal.kernel) ;
 nu = numel(results.normal.kernel(1).landmarks);
 
+% 
+% for iu=1:2, 
+%     for i=1:6, 
+%         subplot(2,6,i+(iu-1)*6);
+%         kl=results.lesion(i).kernel(iu);
+%         kn=results.normal.kernel(iu); 
+%         beta = ([kl.landmarks.aMax]-[kn.landmarks.aMax])./[kn.landmarks.aMax] ;
+%         theta = zeros(1,results.out.dim.n_theta);
+%         connect  = grapher_connectivityPattern(results.out,theta);
+%         
+%         grapher_staticDcmDisplay(nodes,beta,connect,[]);     
+% 
+%     end; 
+% end
+% 
+% return
 
 if nargin > 1
 
@@ -16,14 +32,20 @@ for iObs = 1:nObs
         base = results.normal.kernel(iObs).landmarks(iInput).aMax;     
         for iNode = 1:nx
          effect(iNode) = results.lesion(iNode).kernel(iObs).landmarks(iInput).aMax;
+         
+         
         end
         beta  = 1*(effect-base)/(base);
+
+        
+       
+        
         
         theta = zeros(1,results.out.dim.n_theta);
         connect  = grapher_connectivityPattern(results.out,theta);
         
-        grapher_staticDcmDisplay(nodes,beta,connect,[]);        
-        
+%         grapher_staticDcmDisplay(nodes,beta,connect,[]);        
+        bar(beta);
         cpt = cpt+1;
     end  
 end
@@ -34,12 +56,13 @@ for iRegion = 1:nx
     for iObs = 1:nObs
         subplot(nx,nObs,cpt);
         hold on
-        effects = [[results.normal.kernel(iObs).landmarks.aMax]' [results.lesion(iRegion).kernel(iObs).landmarks.aMax]'];
-        effects_sd = sqrt([[results.normal.kernel(iObs).sigma.landmarks]' [results.lesion(iRegion).kernel(iObs).sigma.landmarks]']);
+%         effects = [[results.normal.kernel(iObs).landmarks.aMax]' [results.lesion(iRegion).kernel(iObs).landmarks.aMax]'];
+        effects = [ [results.normal.kernel(iObs).landmarks.aMax]' [results.lesion(iRegion).kernel(iObs).landmarks.aMax]'  ] ./ repmat([results.normal.kernel(iObs).landmarks.aMax]',1,2);
+%         effects_sd = sqrt([[results.normal.kernel(iObs).sigma.landmarks]' [results.lesion(iRegion).kernel(iObs).sigma.landmarks]']);
         h=bar(effects);
-        errorbar(get_xBars(h),effects(:),effects_sd(:),'LineStyle','none','Color','k');
+%         errorbar(get_xBars(h),effects(:),effects_sd(:),'LineStyle','none','Color','k');
         set(h(1),'FaceColor',[32 56 84]/255);
-        set(h(2),'FaceColor',[74 126 187]/255);
+%         set(h(2),'FaceColor',[74 126 187]/255);
         for i=1:nu, labels{i} = sprintf('u_%d',i); end
         set(gca,'Xtick',1:nu,'XTickLabel',labels);
         xlabel('kernel')

@@ -23,13 +23,13 @@ if size(Xt,1) >1
     
 else
     % choice
-    ex = exp(-beta*Xt);
-    gx=1/(1+ex);
+    ex = exp(-beta.*Xt);
+    gx=1./(1+ex);
     
     % derivative wrt state
-    dgdx(:,:)=beta*ex /(ex+1)^2; 
+    dgdx(:,:)=beta.*ex ./(ex+1).^2; 
     
     %derivative wrt parameters
-    dgdp(in.indr,:) = Xt*beta*ex/(ex+1)^2;   
+    dgdp(in.indr,:) = Xt.*beta.*ex./(ex+1).^2;   
 
 end

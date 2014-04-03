@@ -1,9 +1,17 @@
-function [hfp] = VBA_ReDisplay(posterior,out,newFig,fromPause)
+function [hfp,out] = VBA_ReDisplay(posterior,out,newFig,fromPause)
 % re-creates the graphical output of the VBA inversion + diagnostics
-% function [hfp] = VBA_ReDisplay(posterior,out)
-% NB: hfp is the figure handle. Note that VBA_ReDisplay first looks for a
-% figure with a tag 'VBNLSS', i.e. a figure that was already opened to
-% review a model inversion, and clears it if it finds it.
+% function [hfp] = VBA_ReDisplay(posterior,out,newFig)
+% VBA_ReDisplay first looks for a figure with a tag 'VBNLSS', i.e. a figure
+% that was already opened to review a model inversion, and clears it if it
+% finds it (except if newFig=1).
+% IN:
+%   - posterior/out: standard output of VBA_NLStateSpaceModel.m
+%   - newFig: a flag for creating a new VBA display figure.
+% OUT:
+%   - hfp: handle of the display figure
+%   - out: standard output of VBA_NLStateSpaceModel.m, augmented with
+%   diagnostics, if those were not included in the out structure before the
+%   call to VBA_ReDisplay.m.
 
 
 try; newFig; catch; newFig = 0; end
@@ -15,7 +23,7 @@ hfp = findobj('tag','VBNLSS');
 if isempty(hfp) || newFig
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
-    hfp = figure('position',pos,'color',[1 1 1],'name','VB-Laplace approximate Bayesian inference','menubar','none','tag','VBNLSS','Renderer','OpenGL');
+    hfp = figure('position',pos,'color',[1 1 1],'name',options.figName,'menubar','none','tag','VBNLSS','Renderer','OpenGL');
 else
     hfp = hfp(1);
     clf(hfp)
@@ -33,17 +41,38 @@ ud.out = out;
 
 set(hfp,'userdata',ud);
 if ~isempty(out.diagnostics.kernels)
-    if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
-        labels = {'summary','VB inversion','diagnostics','kernels','conv','priors','deterministic'};
-        callbacks = {@mySummary,@myVB,@myDiagnostics,@myKernels,@myConv,@myPriors,@myDeterministic};
-    else
-        labels = {'summary','VB inversion','diagnostics','kernels','conv','priors'};
-        callbacks = {@mySummary,@myVB,@myDiagnostics,@myKernels,@myConv,@myPriors};
-    end
+    labels = {'summary','VB inversion','diagnostics','kernels','conv','priors'};
+    callbacks = {@mySummary,@myVB,@myDiagnostics,@myKernels,@myConv,@myPriors};
 else
     labels = {'summary','VB inversion','diagnostics','conv','priors'};
     callbacks = {@mySummary,@myVB,@myDiagnostics,@myConv,@myPriors};
 end
+if out.dim.n > 0 && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
+    labels{end+1} = 'deterministic';
+    callbacks{end+1} = @myDeterministic;
+end
+% if out.dim.n > 0
+%     if ~isempty(out.diagnostics.kernels)
+%         if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
+%             labels = {'summary','VB inversion','diagnostics','kernels','conv','priors','deterministic'};
+%             callbacks = {@mySummary,@myVB,@myDiagnostics,@myKernels,@myConv,@myPriors,@myDeterministic};
+%         else
+%             labels = {'summary','VB inversion','diagnostics','kernels','conv','priors'};
+%             callbacks = {@mySummary,@myVB,@myDiagnostics,@myKernels,@myConv,@myPriors};
+%         end
+%     else
+%         if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
+%             labels = {'summary','VB inversion','diagnostics','conv','priors','deterministic'};
+%             callbacks = {@mySummary,@myVB,@myDiagnostics,@myConv,@myPriors,@myDeterministic};
+%         else
+%             labels = {'summary','VB inversion','diagnostics','conv','priors'};
+%             callbacks = {@mySummary,@myVB,@myDiagnostics,@myConv,@myPriors};
+%         end
+%     end
+% else
+%     labels = {'summary','VB inversion','diagnostics','conv','priors'};
+%     callbacks = {@mySummary,@myVB,@myDiagnostics,@myConv,@myPriors};
+% end
 if fromPause
     active = 2;
 else
@@ -58,20 +87,32 @@ set(handles.htab(1),'tooltipstring','summary description of the VB inversion')
 set(handles.htab(2),'tooltipstring','results of the VB inversion (posterior pdfs)')
 set(handles.htab(3),'tooltipstring','VB inversion diagnostics (residuals and parameters covariance matrices)')
 if ~isempty(out.diagnostics.kernels)
-    if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
-        set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
-        set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
-        set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
-        set(handles.htab(7),'tooltipstring','results of the VB inversion of the deterministic system')
-    else
-        set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
-        set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
-        set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
-    end
+    ind = 4;
+    set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
 else
-    set(handles.htab(4),'tooltipstring','history of free energy values along VB optimization')
-    set(handles.htab(5),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
+    ind = 3;
 end
+set(handles.htab(ind+1),'tooltipstring','history of free energy values along VB optimization')
+set(handles.htab(ind+2),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
+if out.dim.n > 0 && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
+    set(handles.htab(ind+3),'tooltipstring','results of the VB inversion of the deterministic system')
+end
+% 
+% if ~isempty(out.diagnostics.kernels)
+%     if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
+%         set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
+%         set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
+%         set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
+%         set(handles.htab(7),'tooltipstring','results of the VB inversion of the deterministic system')
+%     else
+%         set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
+%         set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
+%         set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
+%     end
+% else
+%     set(handles.htab(4),'tooltipstring','history of free energy values along VB optimization')
+%     set(handles.htab(5),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
+% end
 if fromPause
     feval(@myVB,hfp)
 else
@@ -354,9 +395,10 @@ if ~isempty(hc)
     delete(hc)
 end
 ud = get(hf,'userdata');
-dim = ud.out.options.dim;
-unames = cell(dim.u,1);
-for i=1:dim.u
+du = size(ud.out.diagnostics.kernels.y.m,3);
+% dim = ud.out.options.dim;
+unames = cell(du,1);
+for i=1:du %dim u
     unames{i} = ['#',num2str(i)];
 end
 handles(1) = uicontrol('style','popupmenu','parent',hf,'tag','VBLaplace','units','normalized','position',[0.85 0.9 0.10 0.02],'fontsize',12,'string',unames,'callback',@myKerneli);
@@ -370,24 +412,24 @@ hf = get(hObject,'parent');
 ind = get(hObject,'Value');
 ud = get(hf,'userdata');
 try
-    if isequal(get(ud.handles.hkernels,'parent'),hf)
+    if isequal(get(ud.handles.hkernels(2),'parent'),hf)
         delete(ud.handles.hkernels)
     end
 end
 out = ud.out;
 kernels = out.diagnostics.kernels;
-
-% input effects - hidden states
-handles.hkernels(1) = subplot(2,1,1,'parent',hf,'nextplot','add','ygrid','on','tag','VBLaplace');
-pos = get(handles.hkernels(1),'position');
-set(handles.hkernels(1),'position',[0.2 pos(2) 0.6 pos(4)]);
-[t1,t2,hp] = plotUncertainTimeSeries(kernels.x.m(:,:,ind),kernels.x.v(:,:,ind),[],handles.hkernels(1));
-set(hp,'marker','.')
-set(handles.hkernels(1),'XLim',[0.5 size(kernels.x.m,2)+0.5],'xtick',[1:size(kernels.x.m,2)],'xticklabel',[0:size(kernels.x.m,2)-1])
-title(handles.hkernels(1),['states'' Volterra kernels: input #',num2str(ind),' (R2=',num2str(mean(kernels.x.R2),'%4.2f'),')'],'fontsize',12)
-ylabel(handles.hkernels(1),'(lagged) input weight')
-xlabel(handles.hkernels(1),'time lag')
-
+if ~isempty(kernels.x)
+    % input effects - hidden states
+    handles.hkernels(1) = subplot(2,1,1,'parent',hf,'nextplot','add','ygrid','on','tag','VBLaplace');
+    pos = get(handles.hkernels(1),'position');
+    set(handles.hkernels(1),'position',[0.2 pos(2) 0.6 pos(4)]);
+    [t1,t2,hp] = plotUncertainTimeSeries(kernels.x.m(:,:,ind),kernels.x.v(:,:,ind),[],handles.hkernels(1));
+    set(hp,'marker','.')
+    set(handles.hkernels(1),'XLim',[0.5 size(kernels.x.m,2)+0.5],'xtick',[1:size(kernels.x.m,2)],'xticklabel',[0:size(kernels.x.m,2)-1])
+    title(handles.hkernels(1),['states'' Volterra kernels: input #',num2str(ind),' (R2=',num2str(mean(kernels.x.R2),'%4.2f'),')'],'fontsize',12)
+    ylabel(handles.hkernels(1),'(lagged) input weight')
+    xlabel(handles.hkernels(1),'time lag')
+end
 % input effects - observables
 handles.hkernels(2) = subplot(2,1,2,'parent',hf,'nextplot','add','ygrid','on','tag','VBLaplace');
 pos = get(handles.hkernels(2),'position');
@@ -472,7 +514,7 @@ else
     end
 end
 display.ha(7) = subplot(4,2,3,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
-plot(display.ha(7),gri,out.suffStat.dy')
+plot(display.ha(7),gri,out.suffStat.dy','marker','.')
 axis(display.ha(7),'tight')
 title(display.ha(7),'residuals time series','fontsize',11)
 xlabel(display.ha(7),ti,'fontsize',8)
@@ -504,13 +546,11 @@ if ~isempty(diagnostics.dx.dx)
     plot(display.ha(4),diagnostics.dx.grid,diagnostics.dx.pg,'r')
     plot(display.ha(4),diagnostics.dx.grid,diagnostics.dx.pg2,'g')
     legend(display.ha(4),{'empirical histogram','Gaussian approx','posterior approx'})
-    
     display.ha(8) = subplot(4,2,4,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
     try
         plotUncertainTimeSeries(out.suffStat.dx,out.suffStat.vdx,diagnostics.microTime(diagnostics.sampleInd),display.ha(8));
-        
     catch
-        plot(display.ha(8),diagnostics.microTime(diagnostics.sampleInd),out.suffStat.dx')
+        plot(display.ha(8),diagnostics.microTime(diagnostics.sampleInd),out.suffStat.dx','marker','.')
     end
     axis(display.ha(8),'tight')
     title(display.ha(8),'state noise time series','fontsize',11)
@@ -524,14 +564,7 @@ end
 display.ha(6) = subplot(4,2,8,'parent',hf);
 imagesc(diagnostics.C,'parent',display.ha(6))
 title(display.ha(6),'parameters posterior correlation matrix','fontsize',11)
-set(display.ha(6),...
-    'tag','VBLaplace',...
-    'xtick',diagnostics.ltick,...
-    'ytick',diagnostics.ltick,...
-    'xticklabel',diagnostics.ticklabel,...
-    'yticklabel',diagnostics.ticklabel,...
-    'box','off',...
-    'nextplot','add');
+set(display.ha(6),'tag','VBLaplace','xtick',diagnostics.ltick,'ytick',diagnostics.ltick,'xticklabel',diagnostics.ticklabel,'yticklabel',diagnostics.ticklabel,'box','off','nextplot','add');
 for i=1:length(diagnostics.tick)
     plot(display.ha(6),[0.5 size(diagnostics.C,1)+0.5],[diagnostics.tick(i) diagnostics.tick(i)],'color',[1 1 1])
     plot(display.ha(6),[diagnostics.tick(i) diagnostics.tick(i)],[0.5 size(diagnostics.C,1)+0.5],'color',[1 1 1])

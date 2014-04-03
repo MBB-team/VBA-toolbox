@@ -24,7 +24,7 @@ indIn = options.params2update.phi;
 % Preallocate intermediate variables
 iQy = options.priors.iQy;
 Q = options.priors.SigmaPhi(indIn,indIn);
-iQ = VB_inv(Q,[]);
+iQ = VBA_inv(Q,[]);
 muPhi0 = options.priors.muPhi;
 Phi = muPhi0;
 Phi(indIn) = phi;
@@ -46,7 +46,7 @@ if isequal(options.g_fname,@VBA_odeLim)
 end
 div = 0;
 
-isTout = sum(options.isYout)==size(options.isYout,1);
+isTout = sum(options.isYout,1)==size(options.isYout,1);
 
 %--- Loop over time series ---%
 for t=1:dim.n_t
@@ -135,7 +135,7 @@ end
 % posterior covariance matrix
 
 iSigmaPhi = iQ + d2gdx2(indIn,indIn);
-SigmaPhi = VB_inv(iSigmaPhi,[]);
+SigmaPhi = VBA_inv(iSigmaPhi,[]);
 
 % mode
 tmp = iQ*dphi0(indIn) + ddydphi(indIn);

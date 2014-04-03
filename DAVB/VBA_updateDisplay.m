@@ -50,8 +50,13 @@ end
 
 % Get sufficient statistics to be displayed
 dTime = [1:size(y,2)];
-gx = suffStat.gx(:,dTime);
-vy = suffStat.vy(:,dTime);
+try
+    gx = suffStat.gx(:,dTime);
+    vy = suffStat.vy(:,dTime);
+catch
+    gx = [];
+    vy = [];
+end
 indEnd = length(dTime);
 if  ~options.binomial
     if options.OnLine
@@ -62,13 +67,15 @@ if  ~options.binomial
         var_sigma = sigmaHat./posterior.b_sigma;
     end
 else
-    [stackyin,stdyin,gridgin] = VBA_Bin2Cont(gx(~options.isYout),y(~options.isYout));
-    [stackyout,stdyout,gridgout] = VBA_Bin2Cont(gx(~~options.isYout),y(~~options.isYout));
+    try
+        [stackyin,stdyin,gridgin] = VBA_Bin2Cont(gx(~options.isYout),y(~options.isYout));
+        [stackyout,stdyout,gridgout] = VBA_Bin2Cont(gx(~~options.isYout),y(~~options.isYout));
+    end
 end
 if options.dim.n > 0
     mux = posterior.muX(:,dTime);
     try
-        vx = getVar(posterior.SigmaX.current,indEnd);
+        vx = VBA_getVar(posterior.SigmaX.current,indEnd);
     catch
         vx = zeros(size(mux));
     end
@@ -84,7 +91,7 @@ if options.dim.n > 0
         alphaHat = Inf;
         var_alpha = 0;
     end
-    vx0 = getVar(posterior.SigmaX0);
+    vx0 = VBA_getVar(posterior.SigmaX0);
     if options.updateX0
         dx0 = suffStat.dx0;
     else
@@ -97,7 +104,7 @@ if options.dim.n_theta > 0
     else
         dtheta = suffStat.dtheta;
     end
-    vtheta = getVar(posterior.SigmaTheta,indEnd);
+    vtheta = VBA_getVar(posterior.SigmaTheta,indEnd);
 end
 if options.dim.n_phi > 0
     if options.OnLine
@@ -105,7 +112,7 @@ if options.dim.n_phi > 0
     else
         dphi = suffStat.dphi;
     end
-    vphi = getVar(posterior.SigmaPhi,indEnd);
+    vphi = VBA_getVar(posterior.SigmaPhi,indEnd);
 end
 
 % check time dimension
@@ -130,48 +137,51 @@ switch flag % What piece of the model to display?
        
         % update top-left subplot: predictive density
         cla(display.ha(1))
-        plot(display.ha(1),dTime,y',':')
-        plot(display.ha(1),dTime,y','.')
-        plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
-        set(display.ha(1),'ygrid','on','xgrid','off')
-        axis(display.ha(1),'tight')
-       
+        if ~isempty(gx) && ~isempty(vy)
+            plot(display.ha(1),dTime,y','LineStyle',':','marker','.')
+            plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
+            set(display.ha(1),'ygrid','on','xgrid','off')
+            axis(display.ha(1),'tight')
+        end
+        
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
-        if  ~options.binomial
-            miy = min([gx(:);y(:)]);
-            may = max([gx(:);y(:)]);
-            plot(display.ha(2),[miy,may],[miy,may],'r')
-            gxout = gx(~~options.isYout);
-            yout = y(~~options.isYout);
-            gxin = gx(~options.isYout);
-            yin = y(~options.isYout);
-            plot(display.ha(2),gxout(:),yout(:),'r.')
-            plot(display.ha(2),gxin(:),yin(:),'k.')
-            if ~isempty(yout)
-                legend(display.ha(2),{'','excluded','fitted'})
+        if ~isempty(gx) && ~isempty(vy)
+            if  ~options.binomial
+                miy = min([gx(:);y(:)]);
+                may = max([gx(:);y(:)]);
+                plot(display.ha(2),[miy,may],[miy,may],'r')
+                gxout = gx(~~options.isYout);
+                yout = y(~~options.isYout);
+                gxin = gx(~options.isYout);
+                yin = y(~options.isYout);
+                plot(display.ha(2),gxout(:),yout(:),'r.')
+                plot(display.ha(2),gxin(:),yin(:),'k.')
+                if ~isempty(yout)
+                    legend(display.ha(2),{'','excluded','fitted'})
+                end
+            else
+                plot(display.ha(2),[0,1],[0,1],'r')
+                gridp = 0:1e-2:1;
+                plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
+                plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
+                errorbar(gridgout,stackyout,stdyout,'r.','parent',display.ha(2))
+                errorbar(gridgin,stackyin,stdyin,'k.','parent',display.ha(2))
+                if ~isempty(gridgout)
+                    legend(display.ha(2),{'','','','excluded','fitted'})
+                end
             end
-        else
-            plot(display.ha(2),[0,1],[0,1],'r')
-            gridp = 0:1e-2:1;
-            plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
-            plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout,stackyout,stdyout,'r.','parent',display.ha(2))
-            errorbar(gridgin,stackyin,stdyin,'k.','parent',display.ha(2))
-            if ~isempty(gridgout)
-                legend(display.ha(2),{'','','','excluded','fitted'})
-            end
+            grid(display.ha(2),'on')
+            axis(display.ha(2),'tight')
         end
-        grid(display.ha(2),'on')
-        axis(display.ha(2),'tight')
-       
+        
         % get display indices if delay embedding
         if sum(options.delays) > 0
             ind = 1:options.inF.dim.n;
         else
             ind = 1:size(mux,1);
         end
-       
+        
         % update middle-left subplot: hidden states
         try
             cla(display.ha(3))
@@ -182,7 +192,7 @@ switch flag % What piece of the model to display?
         end
         set(display.ha(3),'ygrid','on','xgrid','off')
         axis(display.ha(3),'tight')
-       
+        
         % update middle-right subplot: initial conditions
         if options.updateX0
             cla(display.ha(4))
@@ -192,49 +202,53 @@ switch flag % What piece of the model to display?
             plotUncertainTimeSeries(dx0,vx0,1,display.ha(4));
             set(display.ha(4),'ygrid','on','xgrid','off')
         end
-       
+        
         displayDF(F,display)
-       
+        
     case 'phi' % Observation parameters
-       
-       
+        
+        
         % update top-left subplot: predictive density
         cla(display.ha(1))
         plot(display.ha(1),dTime,y',':')
         plot(display.ha(1),dTime,y','.')
-        plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
+        if ~isempty(gx) && ~isempty(vy)
+            plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
+        end
         set(display.ha(1),'ygrid','on','xgrid','off')
         axis(display.ha(1),'tight')
-       
+        
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
-        if  ~options.binomial
-            miy = min([gx(:);y(:)]);
-            may = max([gx(:);y(:)]);
-            plot(display.ha(2),[miy,may],[miy,may],'r')
-            gxout = gx(~~options.isYout);
-            yout = y(~~options.isYout);
-            gxin = gx(~options.isYout);
-            yin = y(~options.isYout);
-            plot(display.ha(2),gxout(:),yout(:),'r.')
-            plot(display.ha(2),gxin(:),yin(:),'k.')
-            if ~isempty(yout)
-                legend(display.ha(2),{'','excluded','fitted'})
+        if ~isempty(gx) && ~isempty(vy)
+            if  ~options.binomial
+                miy = min([gx(:);y(:)]);
+                may = max([gx(:);y(:)]);
+                plot(display.ha(2),[miy,may],[miy,may],'r')
+                gxout = gx(~~options.isYout);
+                yout = y(~~options.isYout);
+                gxin = gx(~options.isYout);
+                yin = y(~options.isYout);
+                plot(display.ha(2),gxout(:),yout(:),'r.')
+                plot(display.ha(2),gxin(:),yin(:),'k.')
+                if ~isempty(yout)
+                    legend(display.ha(2),{'','excluded','fitted'})
+                end
+            else
+                plot(display.ha(2),[0,1],[0,1],'r')
+                gridp = 0:1e-2:1;
+                plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
+                plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
+                errorbar(gridgout,stackyout,stdyout,'r.','parent',display.ha(2))
+                errorbar(gridgin,stackyin,stdyin,'k.','parent',display.ha(2))
+                if ~isempty(gridgout)
+                    legend(display.ha(2),{'','','','excluded','fitted'})
+                end
             end
-        else
-            plot(display.ha(2),[0,1],[0,1],'r')
-            gridp = 0:1e-2:1;
-            plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
-            plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout,stackyout,stdyout,'r.','parent',display.ha(2))
-            errorbar(gridgin,stackyin,stdyin,'k.','parent',display.ha(2))
-            if ~isempty(gridgout)
-                legend(display.ha(2),{'','','','excluded','fitted'})
-            end
+            grid(display.ha(2),'on')
+            axis(display.ha(2),'tight')
         end
-        grid(display.ha(2),'on')
-        axis(display.ha(2),'tight')
-       
+        
         % update bottom-left subplot: observation parameters
         if size(dphi,2) == 1 % for on-line wrapper
             dTime = 1;
@@ -242,36 +256,38 @@ switch flag % What piece of the model to display?
         cla(display.ha(5))
         plotUncertainTimeSeries(-dphi,vphi,dTime,display.ha(5));
         set(display.ha(5),'ygrid','on','xgrid','off')
-       
+        
         displayDF(F,display)
-       
-       
-       
+        
+        
+        
     case 'theta' % Evolution parameters
-       
+        
         % update bottom-right subplot: observation parameters
-       
+        
         if size(dtheta,2) == 1 % for on-line wrapper
             dTime = 1;
         end
         cla(display.ha(7))
         plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
         set(display.ha(7),'ygrid','on','xgrid','off')
-       
+        
         displayDF(F,display)
-       
-       
+        
+        
     case 'precisions' % Precision hyperparameters
-       
+        
         % update top-left subplot: predictive density
         cla(display.ha(1))
         plot(display.ha(1),dTime,y',':')
         plot(display.ha(1),dTime,y','.')
-        plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
-       
-       
+        if ~isempty(gx) && ~isempty(vy)
+            plotUncertainTimeSeries(gx,vy,dTime,display.ha(1));
+        end
+        
+        
         if options.updateHP || (isequal(it,0) && ~options.binomial)
-           
+            
             % update middle-left subplot: measurement noise
             if ~options.binomial
                 if size(sigmaHat,2) > 1  % for on-line wrapper
@@ -284,7 +300,7 @@ switch flag % What piece of the model to display?
                 plotUncertainTimeSeries(log(sigmaHat),logCI.^2,dTime,display.ha(6));
                 set(display.ha(6),'ygrid','on','xgrid','off')
             end
-           
+            
             % update middle-right subplot: state noise
             if options.dim.n > 0 && ~any(isinf(alphaHat))
                 if size(alphaHat,2) > 1  % for on-line wrapper
@@ -297,23 +313,20 @@ switch flag % What piece of the model to display?
                 plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
                 set(display.ha(8),'ygrid','on','xgrid','off')
             end
-           
+            
             displayDF(F,display)
-           
+            
         end
-       
+        
     case 'F' % Free energy
-       
+        
         % Output in main matlab window
         dF = diff(F);
         if it > 0 && options.verbose
-            fprintf(['VB iteration #',...
-                num2str(it),...
-                '         F=','%e',...
-                '         ... dF=','%4.3e'],F(end),dF(end))
+            fprintf(['VB iteration #',num2str(it),'         F=','%e','         ... dF=','%4.3e'],F(end),dF(end))
             fprintf('\n')
         end
-       
+        
 end
 
 drawnow

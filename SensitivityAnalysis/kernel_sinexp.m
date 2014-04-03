@@ -1,13 +1,13 @@
 function [k,dkdp,landmarks,dadp]=kernel_sinexp(A,phi,beta,tList)
 
 
-base = beta*sin(phi*pi*tList).*exp(-beta*tList);
-k=A.*base;
+timeline = phi*pi*tList;
+k = A*log(1+beta)*sin(timeline).*exp(-beta*timeline);
 
 
-dkdp = [ base;
-         beta*A*pi*tList.*exp(-beta*tList).*cos(phi*pi*tList);
-         -(beta*tList-1).*exp(-beta*tList).*sin(phi*pi*tList)*A ];
+dkdp = [ log(1+beta)*sin(timeline).*exp(-beta*timeline) ;
+         k.*pi.*tList.*(1./tan(timeline+eps)-beta);
+         k.*(1./((beta+1)*log(beta+1))- timeline) ];
 
 if nargout > 2
     % time to peak: alpha/beta

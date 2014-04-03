@@ -29,14 +29,14 @@ for si=1:length(gsi)
         iQyt=options.priors.iQy{1,si};
     	ny = length(find(diag(iQyt)~=0));
         dy = y(s_out,1) - gx(s_out);
-        dy2 = dy'*iQyt*dy; 
+        dy2 = dy'*iQyt(s_out,s_out)*dy; 
         posterior.a_sigma(si) = options.priors.a_sigma(si) + 0.5*ny;
         posterior.b_sigma(si) = options.priors.b_sigma(si) + 0.5*dy2 ; 
         if dim.n > 0
-            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt*dG_dX(:,s_out)'*posterior.SigmaX.current{1});
+            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt(s_out,s_out)*dG_dX(:,s_out)'*posterior.SigmaX.current{1});
         end
         if dim.n_phi > 0
-            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
+            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt(s_out,s_out)*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
         end
     end
   
@@ -46,7 +46,7 @@ end
 if dim.n >0
     a0 = posterior.a_alpha;
     b0 = posterior.b_alpha;
-    iQx = VB_inv(options.priors.iQx{1},options.params2update.x{1},'replace');
+    iQx = VBA_inv(options.priors.iQx{1},options.params2update.x{1},'replace');
     nx = length(options.params2update.x{1});
     [fx,dF_dX,dF_dTheta] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
     dx = posterior.muX(:,1) - fx;
@@ -88,7 +88,7 @@ end
     
     %- State noise precision
     if dim.n>0 && t<dim.n_t
-        iQx = VB_inv(options.priors.iQx{t},options.params2update.x{t},'replace');
+        iQx = VBA_inv(options.priors.iQx{t},options.params2update.x{t},'replace');
         nx = length(options.params2update.x{t});
         [fx,dF_dX,dF_dTheta] = VBA_evalFun('f',posterior.muX(:,t-1),posterior.muTheta,u(:,t),options,dim,t);
         dx = posterior.muX(:,t) - fx;

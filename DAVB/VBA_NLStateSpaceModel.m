@@ -25,7 +25,7 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %   - y: pxn_t mesurements matrix
 %   - u: mxn_t known input matrix (which is required as an argument in
 %   the obvservation/evolution functions, default is empty [])
-%   - f_fname (resp. g_fname): name/handle of the function that outputs the
+%   - f_fname (resp. g_fname): name/handle of the function that returns the
 %   evolution (resp. observation) of the hidden states.
 %       ! NB: The generic i/o form of these functions has to conform to the
 %       following:
@@ -86,7 +86,7 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       should be updated ({1}:yes, 0:no).
 %       .updateHP: a similar flag for the (precision) hyperparameters {1}
 %       .backwardLag: a positive integer that defines the size of the
-%       short-sighted backward pass for the hidden states VB upodate {1}.
+%       short-sighted backward pass for the hidden states VB update {1}.
 %       NB: if 0, there is no backward pass.
 %       .MaxIter: maximum number of VB iterations {32}
 %       .MinIter: minimum number of VB iterations {1}
@@ -120,9 +120,9 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       .out: the additional output structure of this routine (see above)
 %
 % OUT:
-%   - posterior: a structure variable whose fields contains the sufficient
+%   - posterior: a structure variable whose fields contain the sufficient
 %   statistics (typically first and second order moments) of the
-%   variational approximations of the posterior pdfs over the
+%   variational approximations to the posterior pdfs over the
 %   observation/evolution/precision parameters and hidden-states time
 %   series. Its fields are:
 %   	.muX: posterior mean of the hidden states X (nxn_t matrix)
@@ -157,6 +157,12 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       the convergence criteria
 %       .suffStat: a structure containing internal variables that act as
 %       sufficient statistics for the VB updates (e.g. predicted data ...)
+%       .fit: structure, containing the following fields:
+%           .LL: log-likelihood of the model
+%           .R2: coefficient of determination (the fraction of variance
+%           unexplained is 1-R2)
+%           .AIC: Akaike Information Criterion
+%           .BIC: Bayesian Informaion Criterion
 
 
 % JD, 26/02/2007

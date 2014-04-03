@@ -37,7 +37,7 @@ switch flag
         end
         indIn = options.params2update.x;
         PreviousMu = posterior.muX;
-        if ~options.binomial 
+        if ~options.binomial
             fname = @VBA_IX_lagged;
         else
             fname = @VBA_IX_lagged_binomial;
