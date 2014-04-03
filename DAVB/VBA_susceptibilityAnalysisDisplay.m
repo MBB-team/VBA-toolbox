@@ -16,18 +16,23 @@ for iObs = 1:nResps
         betas_obs = results.contributions_w{iObs};
         betas_obs=betas_obs/(2*mean(betas_obs(:)));
     elseif strcmp(norm,'output')
-        betas_obs = results.contributions_normoutput{iObs};
+%         betas_obs = results.contributions_normoutput{iObs};
+        betas_obs = results.contributions_w{iObs};      
 %         betas_obs = max(results.contributions_w{iObs},0);      
-%         betas_obs = betas_obs./repmat(sum(betas_obs),numel(idxTheta),1);
-        betas_obs = betas_obs/(max(betas_obs(:)));
+        betas_obs = betas_obs./repmat(sum(betas_obs),numel(idxTheta),1);
+%         betas_obs = betas_obs/(max(betas_obs(:)));
     elseif strcmp(norm,'param')
-        betas_obs = results.contributions_normparam{iObs};
-        
+%         betas_obs = results.contributions_normparam{iObs};
+%         
+        betas_obs = results.contributions_w{iObs}; 
+        betas_obs = max(results.contributions_w{iObs},0);      
+        betas_obs = betas_obs./repmat(sum(betas_obs,2),1,n_u);
+
 %         betas_obs = max(results.contributions_w{iObs},0);   
 %                 betas_obs = (betas_obs).^2;
 
 %         betas_obs = betas_obs./repmat(sum(betas_obs,2),1,n_u);
-%         betas_obs = betas_obs/(max(betas_obs(:)));
+        betas_obs = betas_obs/(max(betas_obs(:)));
     else
         error('norm should be {''none'',''output'',''param''}');
     end
@@ -58,18 +63,22 @@ for iObs = 1:nResps
         theta = zeros(1,results.out.dim.n_theta);
         theta(idxTheta) = betas;
         theta(theta<0) = 0;
-        connect  = grapher_connectivityPattern(results.out,theta);
-%         connect = connect/max(connect(:));
+        theta = theta/max(theta);
+        boltz = @(x, beta) exp(x/beta) / nansum(exp(x(:)/beta));
+%         connect  = 30*grapher_connectivityPattern(results.out,theta,'mean').^2;
+        connect  = grapher_connectivityPattern(results.out,theta,'mean');
+        connect = boltz(connect,.2);
+        connect = connect/max(connect(:));
         dummy_act = ones(numel(nodes),1)*min(connect)-10*eps;
         grapher_staticDcmDisplay(nodes,[],connect,f)
-        set(f,'CLim',[0 cmax])
+        set(f,'CLim',[0 1])
         
         
         
         if strcmp(norm,'param')
-            colormap([.99*[1 1 1]; cbrewer('seq','YlOrRd',100).^1.3]);
+            colormap([.99*[1 1 1]; cbrewer('seq','YlOrRd',100).^.7]);
         elseif strcmp(norm,'output')
-            cm = [.99*[1 1 1]; (cbrewer('seq','YlGnBu',100)).^1.5];
+            cm = [.99*[1 1 1]; (cbrewer('seq','YlGnBu',100)).^1];
             colormap(cm);
         else
             colormap(flipud(colormap('bone')));

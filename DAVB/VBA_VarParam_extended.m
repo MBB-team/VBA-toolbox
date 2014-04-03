@@ -29,14 +29,14 @@ for si=1:length(gsi)
         iQyt=options.priors.iQy{1,si};
     	ny = length(find(diag(iQyt)~=0));
         dy = y(s_out,1) - gx(s_out);
-        dy2 = dy'*iQyt*dy; 
+        dy2 = dy'*iQyt(s_out,s_out)*dy; 
         posterior.a_sigma(si) = options.priors.a_sigma(si) + 0.5*ny;
         posterior.b_sigma(si) = options.priors.b_sigma(si) + 0.5*dy2 ; 
         if dim.n > 0
-            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt*dG_dX(:,s_out)'*posterior.SigmaX.current{1});
+            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dX(:,s_out)*iQyt(s_out,s_out)*dG_dX(:,s_out)'*posterior.SigmaX.current{1});
         end
         if dim.n_phi > 0
-            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
+            posterior.b_sigma(si) = posterior.b_sigma(si) + 0.5*trace(dG_dPhi(:,s_out)*iQyt(s_out,s_out)*dG_dPhi(:,s_out)'*posterior.SigmaPhi);
         end
     end
   
