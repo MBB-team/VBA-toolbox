@@ -35,7 +35,7 @@ np = nt*nu +1;
 if out.options.microU && ~isequal(out.options.decim,1)
     u = zeros(nu,out.dim.n_t);
     for t=1:out.dim.n_t
-        u(:,t) = mode(out.u(:,(t-1)*out.options.decim+1:t*out.options.decim),2);
+        u(:,t) = sum(out.u(:,(t-1)*out.options.decim+1:t*out.options.decim),2);
     end
 else % do not change input
     u = out.u;
