@@ -33,11 +33,19 @@ for i=1:length(gsi)
     
     % coefficient of determination
 %     if isfield(out.options,'sources')
+
         idx = out.options.sources(si).out;
-        SS_tot = sum((vec(out.y(idx,:))-mean(vec(out.y(idx,:)))).^2);
-        SS_err = sum((vec(out.y(idx,:))-vec(suffStat.gx(idx,:))).^2);
-        fit.R2(si) = 1-(SS_err/SS_tot);
+        y_temp = out.y(idx,:);
+        y_temp = y_temp(out.options.isYout(idx,:) == 0);
+        
+        gx_temp = suffStat.gx(idx,:);
+        gx_temp = gx_temp(out.options.isYout(idx,:) == 0);
+        
+        SS_tot = sum((vec(y_temp)-mean(vec(y_temp))).^2);
+        SS_err = sum((vec(y_temp)-vec(gx_temp)).^2);
+        fit.R2(si) = 1-(SS_err/SS_tot);    
 %     end
+        fit.acc(si) = NaN;
 end
 
 
@@ -51,11 +59,17 @@ for i=1:length(bsi)
     % balanced accuracy
 %     if isfield(out.options,'sources')
         idx = out.options.sources(si).out;
-        bg = out.suffStat.gx(idx,:)>.5; % binarized model predictions
-        tp = sum(vec(out.y(idx,:)).*vec(bg)); % true positives
-        fp = sum(vec(1-out.y(idx,:)).*vec(bg)); % false positives
-        fn = sum(vec(out.y(idx,:)).*vec(1-bg)); % false positives
-        tn = sum(vec(1-out.y(idx,:)).*vec(1-bg)); %true negatives
+        y_temp = out.y(idx,:);
+        y_temp = y_temp(out.options.isYout(idx,:) == 0);
+        
+        gx_temp = suffStat.gx(idx,:);
+        gx_temp = gx_temp(out.options.isYout(idx,:) == 0);
+        
+        bg = gx_temp>.5; % binarized model predictions
+        tp = sum(vec(y_temp).*vec(bg)); % true positives
+        fp = sum(vec(1-y_temp).*vec(bg)); % false positives
+        fn = sum(vec(y_temp).*vec(1-bg)); % false positives
+        tn = sum(vec(1-y_temp).*vec(1-bg)); %true negatives
         P = tp + fn;
         N = tn + fp;
         fit.R2(si) = 0.5*(tp./P + tn./N);
@@ -102,7 +116,7 @@ if out.dim.n > 0  && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.
         fit.ntot = fit.ntot + length(indIn);
     end
 end
-fit.AIC = fit.LL - fit.ntot;
-fit.BIC = fit.LL - 0.5*fit.ntot.*log(fit.ny);
+fit.AIC = sum(fit.LL) - fit.ntot;
+fit.BIC = sum(fit.LL) - 0.5*fit.ntot.*log(sum(fit.ny));
 
 
