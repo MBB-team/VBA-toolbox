@@ -336,6 +336,5 @@ end
 
 suffStat = VBA_Hpost(posterior,suffStat,options);
 [posterior,out] = VBA_wrapup(posterior,options,dim,suffStat,u,y,it);
-posterior = VBA_multisession_factor(posterior,out) ;
 
 
