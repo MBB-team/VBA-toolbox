@@ -94,26 +94,19 @@ end
 if numel(out.fit.R2) > 1
     R2str={'',''};
     LLstr={'',''};
-    AICstr={'',''};
-    BICstr={'',''};
     gsi = find([out.options.sources.type]==0);
     if ~isempty(gsi)
         R2str{1} = ['    - coefficient of determination (R2): ',catnum2str(out.fit.R2,gsi)];
         LLstr{1} = ['    - log-likelihood: ',catnum2str(out.fit.LL,gsi)];
-        AICstr{1} =['    - AIC: ',catnum2str(out.fit.AIC,gsi)];
-        BICstr{1} =['    - BIC: ',catnum2str(out.fit.BIC,gsi)];
     end
     bsi = find([out.options.sources.type]~=0);
     if ~isempty(bsi)
         R2str{2} = ['     - balanced classification accuracy: ',catnum2str(out.fit.R2,bsi)];
         LLstr{2} = ['     - log-likelihood: ',catnum2str(out.fit.LL,bsi)];
-        AICstr{2} =['     - AIC: ',catnum2str(out.fit.AIC,bsi)];
-        BICstr{2} =['     - BIC: ',catnum2str(out.fit.BIC,bsi)];
+        
     end
     R2str = [R2str{1},'\n',R2str{2},'\n'];
     LLstr = [LLstr{1},'\n',LLstr{2},'\n'];
-    AICstr = [AICstr{1},'\n',AICstr{2},'\n'];
-    BICstr = [BICstr{1},'\n',BICstr{2},'\n'];
 else
     if ~out.options.binomial
         R2str = 'coefficient of determination (R2)';
@@ -122,10 +115,12 @@ else
     end
     R2str = ['     - ',R2str,': ',num2str(out.fit.R2,'%4.3f'),'\n'];
     LLstr = ['     - log-likelihood: ',num2str(out.fit.LL,'%4.3e'),'\n'];
-    AICstr = ['     - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n'];
-    BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e')];
+   
 end
 
+AICstr = ['     - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n'];
+BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e')];
+    
 str{6} = sprintf(['Classical fit accuracy metrics:','\n',...
     R2str,...
     LLstr,...
