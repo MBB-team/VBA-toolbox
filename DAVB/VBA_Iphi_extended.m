@@ -142,6 +142,11 @@ tmp = iQ*dphi0(indIn) + ddydphi(indIn);
 deltaMuPhi = SigmaPhi*tmp;
 
 % variational energy
+[~, indKeepPhi, ~] = VBA_multisessionUnique(options);
+indIn = intersect(options.params2update.phi,indKeepPhi);
+Q = options.priors.SigmaPhi(indIn,indIn);
+iQ = VBA_inv(Q,[]);
+
 Iphi = -0.5.*dphi0(indIn)'*iQ*dphi0(indIn) + sum(logL);
 if isweird({Iphi,SigmaPhi}) || div
     Iphi = -Inf;

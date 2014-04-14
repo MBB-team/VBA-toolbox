@@ -87,6 +87,11 @@ tmp = iQ*dtheta0(indIn) + alphaHat.*ddxdtheta(indIn);
 deltaMuTheta = SigmaTheta*tmp;
 
 % variational energy
+[~, ~,indKeepTheta] = VBA_multisessionUnique(options);
+indIn = intersect(options.params2update.theta,indKeepTheta);
+Q = options.priors.SigmaTheta(indIn,indIn);
+iQ = VBA_inv(Q,[]);
+
 Itheta = -0.5.*dtheta0(indIn)'*iQ*dtheta0(indIn) -0.5*alphaHat.*dx2;
 if isweird({Itheta,SigmaTheta}) || div
     Itheta = -Inf;

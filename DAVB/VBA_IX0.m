@@ -1,3 +1,4 @@
+
 function [IX0,SigmaX0,deltaMuX0,suffStat] = VBA_IX0(X0,y,posterior,suffStat,dim,u,options)
 % Gauss-Newton update of initial conditions
 
@@ -43,7 +44,13 @@ tmp = iQ*dx0(indIn) + alphaHat.*dF_dX0(indIn,:)*iQx0(indIn,indIn)*dx;
 deltaMuX0 = SigmaX0*tmp;
 
 % variational energy
-IX0 = -0.5.*dx0'*iQ*dx0 - 0.5*alphaHat.*dx2;
+
+[indKeepX0,~,~] = VBA_multisessionUnique(options);
+indIn = intersect(options.params2update.X0,indKeepX0);
+Q = options.priors.SigmaX0(indIn,indIn);
+iQ = VBA_inv(Q,[]);
+
+IX0 = -0.5.*dx0(indIn)'*iQ*dx0(indIn) - 0.5*alphaHat.*dx2;
 if isweird(IX0)
     div = 1;
     IX0 = -Inf;

@@ -21,6 +21,8 @@ if isfield(options,'extended') && options.extended
     return
 end
 
+[indKeepX0, indKeepPhi, indKeepTheta] = VBA_multisessionUnique(options);
+
 if options.DisplayWin % Display progress
     try
         set(options.display.hm(1),'string','Calculating Free Energy... ');
@@ -71,7 +73,7 @@ for t=1:dim.n_t
         ntot = ntot + ny;
     end
     if dim.n > 0  && ~isinf(priors.a_alpha) && ~isequal(priors.b_alpha,0)
-        indIn = options.params2update.x{t};
+        indIn =options.params2update.x{t};
         nx = length(indIn);
         ldQ = ldQ + VBA_logDet(options.priors.iQx{t},indIn);
         dF = dF + 0.5*nx*ElogA;
@@ -83,7 +85,7 @@ end
 
 % observation parameters
 if dim.n_phi > 0
-    indIn = options.params2update.phi;
+    indIn = intersect(options.params2update.phi,indKeepPhi);
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaPhi(indIn,indIn);
@@ -96,7 +98,7 @@ end
 
 % evolution parameters
 if dim.n_theta > 0
-    indIn = options.params2update.theta;
+    indIn = intersect(options.params2update.theta,indKeepTheta);
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaTheta(indIn,indIn);
@@ -109,7 +111,7 @@ end
 
 % initial conditions
 if dim.n > 0
-    indIn = options.params2update.x0;
+    indIn =  intersect(options.params2update.x0,indKeepX0);
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaX0(indIn,indIn);

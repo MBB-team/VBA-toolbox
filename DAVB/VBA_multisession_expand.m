@@ -198,7 +198,7 @@ sigma_multi = kron(eye(n_session),sigma);
 
 for i=fixed
         icor = i + (0:n_session-1)*n;
-        sigma_multi(icor,icor) = sigma(i,i);%-10*eps;
+        sigma_multi(icor,icor) = sigma(i,i);
 end          
                     
 end
