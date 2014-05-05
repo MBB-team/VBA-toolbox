@@ -1,4 +1,4 @@
-function results = VBA_susceptibilityAnalysis_par(posterior,out,tapsOff,constraints)
+function results = VBA_susceptibilityAnalysis(posterior,out,tapsOff,constraints)
 
 
 

@@ -69,7 +69,7 @@ priors.SigmaTheta(options.inF.indself,options.inF.indself) = 1e-1;
 %- extension
 if extended
     idx = options.inF.indself+1:options.inF.indhself-1;
-    priors.SigmaTheta(idx,idx) =   5e0*eye(numel(idx));
+    priors.SigmaTheta(idx,idx) =   1e0*eye(numel(idx));
     % fixed Dirac kernel
     priors.muTheta(options.inF.indhself) = log(.5/options.inF.deltat); 
     priors.SigmaTheta(options.inF.indhself,options.inF.indhself) = .1*eye(dim.n_r); 

@@ -1,14 +1,13 @@
-function hc=VBA_susceptibilityAnalysisDisplay(results,norm,nodes)
+function h=VBA_susceptibilityAnalysisDisplay(results,norm,nodes,temperature)
 
 
 nResps = numel(results.contributions_w);
-% n_u = 3;
 n_u = results.out.dim.u;
 
 idxTheta = results.theta.idx;
 
 cpt = 1;
-figure('Position',[50,50, 200*n_u, 200*nResps])
+h=figure('Position',[50,50, 200*n_u, 200*nResps]);
 
 
 for iObs = 1:nResps
@@ -18,20 +17,14 @@ for iObs = 1:nResps
     elseif strcmp(norm,'output')
 %         betas_obs = results.contributions_normoutput{iObs};
         betas_obs = results.contributions_w{iObs};      
-%         betas_obs = max(results.contributions_w{iObs},0);      
+        betas_obs = max(results.contributions_w{iObs},0);      
         betas_obs = betas_obs./repmat(sum(betas_obs),numel(idxTheta),1);
-%         betas_obs = betas_obs/(max(betas_obs(:)));
+        betas_obs = betas_obs/(max(betas_obs(:)));
     elseif strcmp(norm,'param')
-%         betas_obs = results.contributions_normparam{iObs};
-%         
+%         betas_obs = results.contributions_normparam{iObs}; 
         betas_obs = results.contributions_w{iObs}; 
         betas_obs = max(results.contributions_w{iObs},0);      
         betas_obs = betas_obs./repmat(sum(betas_obs,2),1,n_u);
-
-%         betas_obs = max(results.contributions_w{iObs},0);   
-%                 betas_obs = (betas_obs).^2;
-
-%         betas_obs = betas_obs./repmat(sum(betas_obs,2),1,n_u);
         betas_obs = betas_obs/(max(betas_obs(:)));
     else
         error('norm should be {''none'',''output'',''param''}');
@@ -46,7 +39,7 @@ for iObs = 1:nResps
         betas = betas_obs(:,iu);
                 
 %         f=subplot(nResps,n_u,cpt);
-        f=subplot('Position',[(iu-1)/n_u (nResps-iObs)/nResps .95/n_u .95/nResps]);
+        f=subplot('Position',[(iu-1)/n_u (nResps-iObs)/nResps 1/n_u 1/nResps]);
         
         if nargin == 1 
         %% simple bar graph
@@ -66,11 +59,13 @@ for iObs = 1:nResps
         theta = theta/max(theta);
         boltz = @(x, beta) exp(x/beta) / nansum(exp(x(:)/beta));
 %         connect  = 30*grapher_connectivityPattern(results.out,theta,'mean').^2;
-        connect  = grapher_connectivityPattern(results.out,theta,'mean');
-        connect = boltz(connect,.2);
+        connect  = grapher_connectivityPattern2(results.out,theta);
         connect = connect/max(connect(:));
-        dummy_act = ones(numel(nodes),1)*min(connect)-10*eps;
-        grapher_staticDcmDisplay(nodes,[],connect,f)
+
+        connect = boltz(connect,temperature);
+        connect = connect/max(connect(:));
+
+        grapher_staticDcmDisplay(nodes,[],connect,f);
         set(f,'CLim',[0 1])
         
         
@@ -99,7 +94,7 @@ hc = colorbar();
 set(hc,'Location','East');
 set(hc,'Ytick',[])
 pPlot = get(gca,'Position');
-set(hc,'Position',[pPlot(1)+.99*pPlot(3) .8*pPlot(4) .02*pPlot(3) .4*pPlot(4)])
+set(hc,'Position',[pPlot(1)+.99*pPlot(3) .3*pPlot(4) .02*pPlot(3) .4*pPlot(4)])
 
 end
 
