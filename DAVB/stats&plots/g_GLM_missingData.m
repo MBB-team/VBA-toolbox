@@ -1,0 +1,14 @@
+function [g,dgdx,dgdp] = g_GLM_missingData(x,P,u,in)
+X = in.X;
+md = P(in.md);
+b = P(in.b);
+X(in.xmd) = md;
+g = X*b;
+n = length(g);
+dgdx = [];
+dgdp = zeros(length(P),n);
+dgdp(in.b,:) = X';
+nmd = length(in.md);
+A = zeros(n,nmd);
+A([0:nmd-1].*n+mod(in.xmd,n)) = b(ceil(in.xmd./n));
+dgdp(in.md,:) = A';
