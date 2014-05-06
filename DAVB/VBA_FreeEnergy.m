@@ -21,8 +21,6 @@ if isfield(options,'extended') && options.extended
     return
 end
 
-[indKeepX0, indKeepPhi, indKeepTheta] = VBA_multisessionUnique(options);
-
 if options.DisplayWin % Display progress
     try
         set(options.display.hm(1),'string','Calculating Free Energy... ');
@@ -85,7 +83,7 @@ end
 
 % observation parameters
 if dim.n_phi > 0
-    indIn = intersect(options.params2update.phi,indKeepPhi);
+    indIn = options.params2update.phi;
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaPhi(indIn,indIn);
@@ -98,7 +96,7 @@ end
 
 % evolution parameters
 if dim.n_theta > 0
-    indIn = intersect(options.params2update.theta,indKeepTheta);
+    indIn = options.params2update.theta;
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaTheta(indIn,indIn);
@@ -111,7 +109,7 @@ end
 
 % initial conditions
 if dim.n > 0
-    indIn =  intersect(options.params2update.x0,indKeepX0);
+    indIn =  options.params2update.x0;
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaX0(indIn,indIn);

@@ -14,11 +14,9 @@ function suffStat = VBA_Hpost(posterior,suffStat,options)
 % OUT:
 %   - suffStat: the free energy under the local Laplace approximation
 
-[indKeepX0, indKeepPhi, indKeepTheta] = VBA_multisessionUnique(options);
-
 if options.dim.n > 0
     % initial conditions
-    indIn = intersect(options.params2update.x0,indKeepX0);
+    indIn = options.params2update.x0;
     suffStat.SX0 = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaX0,indIn);
     % hidden states
     indIn = options.params2update.x;
@@ -49,12 +47,12 @@ if options.dim.n > 0
 end
 
 if options.dim.n_theta > 0
-    indIn = intersect(options.params2update.theta,indKeepTheta);
+    indIn = options.params2update.theta;
     suffStat.Stheta = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaTheta,indIn);
 end
 
 if options.dim.n_phi > 0
-    indIn = intersect(options.params2update.phi,indKeepPhi);
+    indIn = options.params2update.phi;
     suffStat.Sphi = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaPhi,indIn);
 end
 

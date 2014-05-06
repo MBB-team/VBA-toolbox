@@ -95,7 +95,6 @@ if options.DisplayWin
 end
 
 
-%
 
 % posterior covariance matrix
 iSigmaPhi = iQ + sigmaHat.*d2gdx2(indIn,indIn);
@@ -106,11 +105,6 @@ tmp = iQ*dphi0(indIn) + sigmaHat.*ddydphi(indIn);
 deltaMuPhi = SigmaPhi*tmp;
 
 % variational energy
-[indKeepX0, indKeepPhi, indKeepTheta] = VBA_multisessionUnique(options);
-indIn = intersect(options.params2update.phi,indKeepPhi);
-Q = options.priors.SigmaPhi(indIn,indIn);
-iQ = VBA_inv(Q,[]);
-
 Iphi = -0.5.*dphi0(indIn)'*iQ*dphi0(indIn) -0.5*sigmaHat.*dy2;
 if isweird({Iphi,SigmaPhi}) || div
     Iphi = -Inf;
