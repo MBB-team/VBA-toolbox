@@ -10,7 +10,7 @@ if out.dim.n_t>1 % && out.dim.u >= 1 && ~isempty(out.options.f_fname)
 %     if isequal(out.options.f_fname,@f_DCMwHRF) && isequal(out.options.g_fname,@g_HRF3)
 %         [out.options] = VBA_check4DCM(out.options);
 %     end
-    kernels = [];%VBA_VolterraKernels(posterior,out);
+    kernels = VBA_VolterraKernels(posterior,out);
 else
     kernels = [];
 end
