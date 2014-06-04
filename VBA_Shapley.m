@@ -149,12 +149,13 @@ for ii = 1:numel(k)
     end
 end
 
-% compute interactiosn if necessary
+% compute interactions if necessary
 sv = v{1};
 if strcmp(options.coalitions,'interactions')
     for iu=1:nu
         svi{iu} = (v{1}-v{iu+1})./v{1};
     end
+    % shapley value of inputs
     svu = v{nu+2};
 else
     svi={};
