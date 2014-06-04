@@ -27,10 +27,11 @@ catch
 end
 if isempty(u)
     u = zeros(1,dim.n_t);
+    dim.u=0;
 else
     u = full(u);
+    dim.u = size(u,1);
 end
-dim.u = size(u,1);
 
 
 

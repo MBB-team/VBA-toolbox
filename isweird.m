@@ -7,11 +7,12 @@ function [flag] = isweird(X)
 %   - flag: 1 id X is weird, 0 if not, -1 if not numeric (e.g. string)
 
 if iscell(X)
-    ok = 1;
-    for i=1:numel(X)
-        ok = ok & ~isweird(X{i});
-    end
-    flag = ~ok;
+%     ok = 1;
+%     for i=1:numel(X)
+%         ok = ok & ~isweird(X{i});
+%     end
+%     flag = ~ok;
+    flag = any(cellfun(@isweird,X));
 elseif isstruct(X)
     ok = 1;
     fn = fieldnames(X);
@@ -21,7 +22,7 @@ elseif isstruct(X)
     flag = ~ok;
 elseif isnumeric(X) || islogical(X)
     flag = 0;
-    if any(isinf(X(:))) || any(isnan(X(:))) || any(~isreal(X(:)))
+    if any(isinf(X(:)) | isnan(X(:)) | ~isreal(X(:)))
         flag = 1;
     end
 else

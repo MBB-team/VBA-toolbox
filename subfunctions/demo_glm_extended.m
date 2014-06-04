@@ -2,8 +2,6 @@ function [posterior,out] = demo_glm_extended()
 %%% ----------------------------------------------------------------------
 %   Initialise the generative model, simulate data and inverse the model
 %   
-%   IN:     - b ; idyosincratic value of connectivity
-%   OUT: classical structure from the DCM toolbox
 %%% ----------------------------------------------------------------------
 
 close all
@@ -29,7 +27,7 @@ sigma = Inf;                  % measurement noise precision
 % === Input ================================================
 
 
-u = zeros(1,20);
+u = zeros(1,30);
 cpt_0=0;
 cpt_1=0;
 
