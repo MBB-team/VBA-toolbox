@@ -23,43 +23,61 @@ switch form
         y = repmat(suffStat.mu,1,N) + S*randn(n,N);
         
     case 'gamma'
-        y = zeros(1,N);
-        for i=1:N
-            y(i) = spm_gamrnd(suffStat.a,suffStat.b);
-            if mod(i,N./20) < 1 && verbose
-                fprintf(1,repmat('\b',1,8))
-                fprintf(1,'%6.2f %%',100*i/N)
+        try
+            y=gamrnd(suffStat.a,suffStat.b,1,N);
+        catch
+            y = zeros(1,N);
+            for i=1:N
+                y(i) = spm_gamrnd(suffStat.a,suffStat.b);
+                if mod(i,N./20) < 1 && verbose
+                    fprintf(1,repmat('\b',1,8))
+                    fprintf(1,'%6.2f %%',100*i/N)
+                end
             end
         end
         
     case 'dirichlet'
         K = size(suffStat.d,1);
-        y = zeros(K,N);
-        r = zeros(K,1);
-        for i=1:N
-            for k = 1:K
-                r(k) = spm_gamrnd(suffStat.d(k),1);
-            end
-            y(:,i) = r./sum(r);
-            if mod(i,N./20) < 1 && verbose
-                fprintf(1,repmat('\b',1,8))
-                fprintf(1,'%6.2f %%',100*i/N)
+        try
+            r = gamrnd(repmat(vec(suffStat.d),1,N),1,K,N);
+            y = r ./ repmat(sum(r,1),K,1);
+        catch
+            y = zeros(K,N);
+            r = zeros(K,1);
+            for i=1:N
+                for k = 1:K
+                    r(k) = spm_gamrnd(suffStat.d(k),1);
+                end
+                y(:,i) = r./sum(r);
+                if mod(i,N./20) < 1 && verbose
+                    fprintf(1,repmat('\b',1,8))
+                    fprintf(1,'%6.2f %%',100*i/N)
+                end
             end
         end
         
     case 'multinomial'
-        K = size(suffStat.p,1);
-        y = zeros(K,N);
-        for i=1:suffStat.n
-            y = y + sampleFromArbitraryP(suffStat.p,eye(K),N);
-            fprintf(1,repmat('\b',1,8))
-            fprintf(1,'%6.2f %%',100*i/suffStat.n)
+        try
+            y = mnrnd(suffStat.n,suffStat.p,N)';
+        catch
+            K = size(suffStat.p,1);
+            y = zeros(K,N);
+            for i=1:suffStat.n
+                y = y + sampleFromArbitraryP(suffStat.p,eye(K),N);
+                fprintf(1,repmat('\b',1,8))
+                fprintf(1,'%6.2f %%',100*i/suffStat.n)
+            end
         end
-
+        
 end
 if verbose
     fprintf(1,repmat('\b',1,8))
     fprintf(' OK.')
     fprintf('\n')
 end
+
+function r = drchrnd(a,n)
+p = length(a);
+r = gamrnd(repmat(a,n,1),1,n,p);
+r = r ./ repmat(sum(r,2),1,p);
 

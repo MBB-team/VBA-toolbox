@@ -84,7 +84,6 @@ else
 end
 
 
-VBA_disp(['Date: ',datestr(date)],options)
 try;factors;catch;factors=vec(1:nc);end
 sf = size(factors);
 sf(sf<=1) = [];
@@ -139,45 +138,55 @@ if options.verbose
     fprintf('\n')
 end
 
+% perform per-condition BMS
+for i=1:nc
+    VBA_disp({'---',['[per-condition BMS: condition #',num2str(i),']']},options)
+    [out.VBA.cond(i).posterior,out.VBA.cond(i).out] = VBA_groupBMC(L(:,:,i),options);
+end
 
+% perform btw-condition BMS
 opt.verbose = 0;
 opt.DisplayWin = options.DisplayWin;
-% opt.priors.a = ones(nt,1);
 ep = zeros(nf,1);
 out.pep = zeros(nf,1);
 for f=1:nf
-    if options.verbose && nf >1
-        disp('---')
-        disp(['[factorial design: dimension #',num2str(f),' (',num2str(size(factors,f)),' levels)]'])
-        disp('---')
+    if nf >1
+        VBA_disp({'---',['[factorial design: dimension #',num2str(f),' (',num2str(size(factors,f)),' levels)]'],'---'},options)
+    else
+        VBA_disp({'---',['[btw-condition stability assessment]'],'---'},options)
     end
     opt.families = fam(:,f);
-    [out.VBA(f).posterior,out.VBA(f).out] = VBA_groupBMC(Lt,opt);
+    [out.VBA.btw(f).posterior,out.VBA.btw(f).out] = VBA_groupBMC(Lt,opt);
     
     %-- display summary statistics
-    ep(f) = out.VBA(f).out.families.ep(1);
-    out.pep(f) = ep(f).*(1-out.VBA(f).out.bor) + 0.5*out.VBA(f).out.bor;
+    ep(f) = out.VBA.btw(f).out.families.ep(1);
+    out.pep(f) = ep(f).*(1-out.VBA.btw(f).out.bor) + 0.5*out.VBA.btw(f).out.bor;
     
     if options.verbose
-        if floor(out.VBA(f).out.dt./60) == 0
-            timeString = [num2str(floor(out.VBA(f).out.dt)),' sec'];
+        if floor(out.VBA.btw(f).out.dt./60) == 0
+            timeString = [num2str(floor(out.VBA.btw(f).out.dt)),' sec'];
         else
-            timeString = [num2str(floor(out.VBA(f).out.dt./60)),' min'];
+            timeString = [num2str(floor(out.VBA.btw(f).out.dt./60)),' min'];
         end
-        fprintf(['VB converged in ',num2str(length(out.VBA(f).out.F)),' iterations (took ~',timeString,').','\n'])
+        n1 = length(opt.families{1});
+        n2 = length(opt.families{2});
+        fprintf(['VB converged in ',num2str(length(out.VBA.btw(f).out.F)),' iterations (took ~',timeString,').','\n'])
         fprintf(['Dimensions:','\n'])
         fprintf(['     - subjects: n=',num2str(ns),'\n'])
         fprintf(['     - conditions: c=',num2str(nc),'\n'])
         fprintf(['     - models: K=',num2str(nm),'\n'])
-        fprintf(['     - ',num2str(nc),'-tuples: t=',num2str(nt),'\n'])
+        fprintf(['     - ',num2str(nc),'-tuples: t=',num2str(nt),' (',num2str(n1),'+',num2str(n2),')','\n'])
         fprintf(['Posterior probabilities:','\n'])
-        fprintf(['     - RFX: p(H1|y)= ','%4.3f','\n'],1-out.VBA(f).out.bor)
-        fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],out.VBA(f).out.bor)
+        fprintf(['     - RFX: p(H1|y)= ','%4.3f','\n'],1-out.VBA.btw(f).out.bor)
+        fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],out.VBA.btw(f).out.bor)
         fprintf(['Assessment of model stability across conditions:','\n'])
         fprintf(['     - exc. prob.: ','%4.3f','\n'],ep(f))
         fprintf(['     - protected exc. prob.: ','%4.3f','\n'],out.pep(f))
         fprintf('\n')
     end
+end
+if options.DisplayWin
+    VBA_displayGroupBMCbtw(ep,out)
 end
 
 % wrap-up
@@ -185,7 +194,9 @@ out.dt = toc(options.tStart);
 out.date = clock;
 out.options = options;
 out.families = fam;
+out.factors = factors;
 out.Ccon = Ccon;
+out.L = L;
 
 
 
