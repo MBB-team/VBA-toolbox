@@ -12,14 +12,14 @@ if iscell(X)
 %         ok = ok & ~isweird(X{i});
 %     end
 %     flag = ~ok;
-    flag = any(cellfun(@isweird,X));
+    flag = any(cell2mat(cellfun(@isweird,X,'UniformOutput',false)));
 elseif isstruct(X)
     ok = 1;
     fn = fieldnames(X);
     for i=1:length(fn)
         ok = ok & ~isweird(getfield(X,fn{i}));
     end
-    flag = ~ok;
+    flag = 1*(~ok);
 elseif isnumeric(X) || islogical(X)
     flag = 0;
     if any(isinf(X(:)) | isnan(X(:)) | ~isreal(X(:)))
