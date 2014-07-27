@@ -15,6 +15,9 @@ end
 
     
 %% extract sessions
+% ensure horizontal vector for looping...
+options.multisession.split = options.multisession.split(:)';
+
 if sum(options.multisession.split) ~= dim.n_t
     error('*** Multisession: partition covers %d datapoints but data has %d.',sum(options.multisession.split),dim.n_t);
 end
