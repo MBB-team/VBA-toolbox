@@ -35,10 +35,10 @@ np = nt*nu +1;
 if out.options.microU && ~isequal(out.options.decim,1)
     u = zeros(nu,out.dim.n_t);
     for t=1:out.dim.n_t
-        u(:,t) = sum(out.u(:,(t-1)*out.options.decim+1:t*out.options.decim),2);
+        u(:,t) = mean(out.u(:,(t-1)*out.options.decim+1:t*out.options.decim),2);
     end
 else % do not change input
-    u = out.u;
+    u = out.u(:,1:out.dim.n_t);
 end
 if isfield(out.options,'orthU') && out.options.orthU
     u = VBA_orth(u',0)';
@@ -140,6 +140,11 @@ end
 % 3- Volterra kernels of hidden states
 if  n <1 || isempty(out.options.f_fname)
     kernels.x = [];
+    if out.options.verbose                                              
+      fprintf(1,repmat('\b',1,8))                                              133
+      fprintf(' OK.')                                                          134
+      fprintf('\n')                                                            135
+    end    
     return
 end
 g_fname = @g_conv0;

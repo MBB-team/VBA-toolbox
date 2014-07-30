@@ -21,6 +21,7 @@ function [sg,dsdx,dsdp] = g_convSig(x,P,u,in)
 % SEE ALSO: g_conv0
 
 [g,dgdx,dgdp] = g_conv0(x,P,u,in);
-sg = sigm(g,struct('mat',1));
+%sg = sigm(g,struct('mat',1));
+sg = sig(g);
 dsdx = [];
 dsdp = dgdp*diag(sg.*(1-sg));
