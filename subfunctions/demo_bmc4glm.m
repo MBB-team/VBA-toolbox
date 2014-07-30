@@ -41,11 +41,11 @@ set(gcf,'name','classical analysis of y|m2')
 [n2,x2] = empiricalHist(lev2(:,1)-lev2(:,2));
 hf = figure('color',[1 1 1],'name','Monte-Carlo simulations: distribution of log Bayes factors');
 ha = axes('parent',hf,'nextplot','add');
-plot(ha,x1,n1,'color','r');
-plot(ha,x2,n2,'color','b');
+plot(ha,x1,100*n1,'color','r');
+plot(ha,x2,100*n2,'color','b');
 legend(ha,{'true = model 1','true = model 2'})
 xlabel(ha,'log p(y|m1) - log(y|m2)')
-ylabel(ha,'# simulations')
+ylabel(ha,'%age of simulations')
 
 % perform group-BMS on data generated under model 1
 L1 = lev1';

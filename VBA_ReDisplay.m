@@ -97,22 +97,7 @@ set(handles.htab(ind+2),'tooltipstring','priors and associated predictive densit
 if out.dim.n > 0 && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
     set(handles.htab(ind+3),'tooltipstring','results of the VB inversion of the deterministic system')
 end
-% 
-% if ~isempty(out.diagnostics.kernels)
-%     if ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0) && ~out.options.OnLine
-%         set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
-%         set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
-%         set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
-%         set(handles.htab(7),'tooltipstring','results of the VB inversion of the deterministic system')
-%     else
-%         set(handles.htab(4),'tooltipstring','system''s 1st-order Volterra kernels')
-%         set(handles.htab(5),'tooltipstring','history of free energy values along VB optimization')
-%         set(handles.htab(6),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
-%     end
-% else
-%     set(handles.htab(4),'tooltipstring','history of free energy values along VB optimization')
-%     set(handles.htab(5),'tooltipstring','priors and associated predictive densities (under the Laplace assumption)')
-% end
+
 if fromPause
     feval(@myVB,hfp)
 else

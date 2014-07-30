@@ -1,8 +1,8 @@
-function [gx] = g_discounting(x,P,u,in)
+function [v] = v_discounting(x,P,u,in)
 % delay discounting 2AFC observation function
 
-t = u(in.ind.t);
-R = u(in.ind.R);
+t = u(1);
+R = u(2);
 
 switch in.model
     case 'hyperbolic'
@@ -15,12 +15,8 @@ switch in.model
         k = P(in.ind.logk);
         v = R - k*t;
     case 'basis'
-        for i=1:2
-            [tmp,i1(i)] = min((in.grid1-t(i)).^2);
-            [tmp,i2(i)] = min((in.grid2-R(i)).^2);
-            v(i) = vec(in.bf(i1(i),i2(i),:))'*P;
-        end
+        [tmp,i1] = min((in.gx-t).^2);
+        [tmp,i2] = min((in.gy-R).^2);
+        v = vec(in.bf(i1,i2,:))'*P;
 end
-dv = v(1) - v(2);
-b = exp(-P(in.ind.logb));
-gx = sigm(b.*dv);
+

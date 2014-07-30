@@ -3,8 +3,8 @@
 close all
 
 
-path_sampling = [fileparts(mfilename('fullpath')),filesep,'..',filesep,'sampling'];
-addpath(path_sampling)
+% path_sampling = [fileparts(mfilename('fullpath')),filesep,'..',filesep,'sampling'];
+% addpath(path_sampling)
 
 % class frequencies:
 alpha = ones(3,1);
@@ -32,7 +32,7 @@ ylabel('data dimensions')
 % classify data samples using VB inversion of BMM
 
 % number of classes:
-K = 3;
+K = 20;
 % set priors:
 % options.c = 1e0*ones(2,1);
 % options.b = 1e0*ones(K,1);

@@ -121,6 +121,11 @@ priors.r = repmat(f0,1,n);
 posterior = priors;
 F = FE(L,posterior,priors);
 
+if options.DisplayWin
+    out = wrapUp(L,posterior,priors,F,options);
+    options.handles = VBA_displayGroupBMC(posterior,out);
+    drawnow;
+end     
 %-- enter VB iterative algorithm
 stop = 0;
 it = 1;
@@ -160,6 +165,7 @@ catch
     end
 end
 out.date = clock;
+out.dt = toc(options.tStart);
 if options.DisplayWin
     VBA_displayGroupBMC(posterior,out);
 end

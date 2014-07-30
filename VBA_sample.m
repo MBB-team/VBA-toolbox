@@ -10,6 +10,13 @@ function y = VBA_sample(form,suffStat,N,verbose)
 %       -> if form='dirichlet', suffStat.d = Dirichlet counts
 %       -> if form='multinomial', suffStat.p = multinomial probabilities
 %       and suffstat.n = number of independent trials
+%   - N: number of samples
+%   - verbose: verbose mode
+% OUT:
+%   - y: KXN array of vector-valued samples (where K is the dimension of
+%   the sampled data).
+% NOTE: by default, this function tries to use Matlab pseudo-random
+% samplers. It reverts to SPM in case these functions cannot be called.
 
 if verbose
     fprintf(1,['Sampling from ',form,' distribution... ']);

@@ -22,6 +22,7 @@ L0(:,:,2) = -L0(:,:,1);
 L0 = L0 + 1e-1*randn(size(L0));
 
 for j=1:length(dr)
+    j./length(dr)
     for ii=1:Nmcmc
         % sample 2-tuple families (homogeneous vs heterogeneous conditions)
         [f] = sampleFromArbitraryP(r0+[dr(j);-dr(j)],[1;2],N);
@@ -41,7 +42,7 @@ for j=1:length(dr)
                 L(:,i,2) = L0(:,i2,3-m);
             end
         end
-        [ep(ii,j),out] = VBA_groupBMCbtw(L);
+        [ep(ii,j),out] = VBA_groupBMCbtw(L,struct('verbose',0));
         pep(ii,j) = out.pep;
         bor(ii,j) = out.VBA.out.bor;        
     end
@@ -136,6 +137,8 @@ errorbar(ha,nx,mtp(:,1),1.96*stp(:,1),'r')
 errorbar(ha,nx,mtp(:,2),1.96*stp(:,2),'g')
 legend(ha,{'EP','protected EP'})
 plot(ha,[0,1],[0,1],'k--')
-
+set(ha,'xlim',[0,1],'ylim',[0,1])
+xlabel(ha,'sampled P(r1>r0)')
+ylabel(ha,'evaluated P(r1>r0|y)')
 getSubplots
 

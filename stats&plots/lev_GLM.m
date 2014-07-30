@@ -7,6 +7,8 @@ function [lev] = lev_GLM(y,X)
 % OUT:
 %   - lev: nX1 log-evidence array
 
+try;X;catch;X=ones(size(y,1),1);end % default = mean
+
 [d,r] = size(X);
 XtX = X'*X;
 ldx = VBA_logDet(XtX);

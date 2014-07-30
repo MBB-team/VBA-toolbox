@@ -39,7 +39,6 @@ options.inF = inF;
 options.inG = inG;
 options.skipf = zeros(1,length(u));
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
-
 [y,x,x0,eta,e,u] = simulateNLSS_fb(length(u),f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0,fb);
 
 figure
@@ -54,7 +53,7 @@ dummy.options = options;
 [ha,hf] = unwrapVBvolatileOTO(struct('muX',x,'muTheta',theta),dummy);
 set(hf,'name','simulated volatile VB learner')
 
-return
+% return
 
 % identify VB volatile learner
 dim = struct('n',2*5,'n_theta',3,'n_phi',2);
@@ -74,6 +73,7 @@ displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)
 
 [ha,hf] = unwrapVBvolatileOTO(posterior,out);
 set(hf,'name','estimated volatile VB learner')
+
 
 
 

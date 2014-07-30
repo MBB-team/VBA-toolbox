@@ -1,4 +1,4 @@
-% demo for binomial data inversion with adaptation (learning) effect
+% demo for stochastic system inversion given binomial data
 
 clear variables
 close all
@@ -17,9 +17,7 @@ options.inG.x = 1;
 [sx,x,x0,eta,e] = simulateNLSS(p,f_fname,g_fname,theta,[],u(:)',Inf,Inf,options,x0);
 
 % sample binomial data
-addpath('../sampling')
 y = zeros(p,1);
-seed = 1e4*rand;
 for t=1:p
     [y(t)] = sampleFromArbitraryP([sx(t),1-sx(t)]',[1,0]',1);
 end
@@ -43,35 +41,17 @@ dim.n=2;                        % nb of hidden states
 
 % Call inversion routine
 options.binomial = 1;
-% options.gradF = 1;
-priors.muTheta = zeros(dim.n_theta,1);
-priors.SigmaTheta = 1e4*eye(dim.n_theta);
-priors.SigmaX0 = 1e4*eye(dim.n);
-priors.a_alpha = 1;
-priors.b_alpha = 1;
+priors.muTheta = 0.*ones(dim.n_theta,1);
+priors.SigmaTheta = 1e2*eye(dim.n_theta);
+priors.SigmaX0 = 1e2*eye(dim.n);
+% priors.a_alpha = 1;
+% priors.b_alpha = 1;
 options.priors = priors;
 options.DisplayWin = 1;
 options.GnFigs = 0;
+options.backwardLag = 16;
+options.checkGrads = 0;
 
+[posterior,out] = VBA_NLStateSpaceModel(y(:)',0.*u(:)',f_fname,g_fname,dim,options);
 
-[posterior,out] = VBA_NLStateSpaceModel(y(:)',u(:)',f_fname,g_fname,dim,options);
-
-
-% mu = zeros(dim.n_phi,p);
-% va = zeros(dim.n_phi,p);
-% hf = figure;
-% ha = gca(hf);
-% set(ha,'nextplot','add')
-% for t=1:p
-%     [posterior,out] = VBA_NLStateSpaceModel(y(1:t),u(1:t),[],g_fname,dim,options);
-%     mu(:,t) = posterior.muPhi;
-%     va(:,t) = diag(posterior.SigmaPhi);
-%     if t > 1
-%         cla(ha)
-%         [haf,hf] = plotUncertainTimeSeries(mu(:,1:t),sqrt(va(:,1:t)),1:t,ha,1:2);
-%     end
-% end
-
-
-%---- Display results ----%
 displayResults(posterior,out,y,x,x0,theta,[],[],[]);

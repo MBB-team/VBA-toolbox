@@ -138,7 +138,7 @@ if ~isempty(out.options.families)
 end
 
 % display free energy update
-if ~isfield(out,'date')
+if ~isfield(out,'date') && length(out.F) > 1
     dF = diff(out.F);
     set(handles.ho,'string',['RFX evidence: log p(y|H1) >= ',num2str(out.F(end),'%1.3e'),' , dF= ',num2str(dF(end),'%4.3e')])
 else

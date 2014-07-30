@@ -44,7 +44,7 @@ options.DisplayWin = 0;
 options.verbose = 0;
 
 try
-    [e] = VBA_designEfficiency([],g_fname,dim,options,u,'parameters');
+    [e] = designEfficiency([],g_fname,dim,options,u,'parameters');
     disp(['Design efficiency: ',num2str(e)])
 catch
     disp('Warning: could not estimate design efficiency!')
@@ -58,8 +58,7 @@ ha = gca(hf);
 set(ha,'nextplot','add')
 for t=1:p
     dim.p = t;
-    [posterior,out] = VBA_NLStateSpaceModel(...
-        y(1:t),u(1:t),[],g_fname,dim,options);
+    [posterior,out] = VBA_NLStateSpaceModel(y(1:t),u(1:t),[],g_fname,dim,options);
     mu(:,t) = posterior.muPhi;
     va(:,t) = diag(posterior.SigmaPhi);
     if t > 1
@@ -68,6 +67,7 @@ for t=1:p
     end
 end
 
+VBA_ReDisplay(posterior,out,1)
 
 %---- Display results ----%
 displayResults(posterior,out,y,[],[],[],phi,[],[])
