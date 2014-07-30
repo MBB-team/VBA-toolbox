@@ -61,13 +61,13 @@ if dim.n > 0
     % prior Gaussian pdf of the hidden states
     priors.muX0 = zeros(dim.n,1);
     priors.SigmaX0 = eye(dim.n);
-    % prior Gamma pdf of the state noise (Jeffrey)
-    priors.a_alpha = 1e0;
-    priors.b_alpha = 1e0;
+    % singular prior Gamma pdf of the state noise (deterministic system)
+    priors.a_alpha = Inf; %1e0;
+    priors.b_alpha = 0;   %1e0;
     % Covariance structure: state noise precision matrices
     priors.iQx = cell(dim.n_t,1);
     for t=1:dim.n_t
-        priors.iQx{t} = eye(dim.n);
+        priors.iQx{t} = speye(dim.n);
     end
 else
     priors.muX0 = [];

@@ -81,11 +81,17 @@ end
 
 % fill in options structure with defaults
 try
-    if isinf(options.priors.a_alpha) && isequal(options.priors.b_alpha,0)
-        options.priors.a_alpha = 1;
-        options.priors.b_alpha = 1;
-    end
+    options.priors.a_alpha;
+    options.priors.b_alpha;
+catch
+    options.priors.a_alpha = 1;
+    options.priors.b_alpha = 1;
 end
+if isinf(options.priors.a_alpha) && isequal(options.priors.b_alpha,0)
+   options.priors.a_alpha = 1;
+   options.priors.b_alpha = 1;
+end
+
 [options,u,dim] = VBA_check(zeros(dim.p,dim.n_t),u,f_fname,g_fname,dim,options);
 
 % Get covariance structure
