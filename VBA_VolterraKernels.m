@@ -140,10 +140,10 @@ end
 % 3- Volterra kernels of hidden states
 if  n <1 || isempty(out.options.f_fname)
     kernels.x = [];
-    if out.options.verbose                                              
-      fprintf(1,repmat('\b',1,8))                                              133
-      fprintf(' OK.')                                                          134
-      fprintf('\n')                                                            135
+    if out.options.verbose
+      fprintf(1,repmat('\b',1,8))
+      fprintf(' OK.')
+      fprintf('\n')
     end    
     return
 end
