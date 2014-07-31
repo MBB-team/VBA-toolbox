@@ -25,8 +25,10 @@ function [out] = mediationAnalysis0(Y,X,M,options)
 % 2- regress M on X
 % 3- regress Y on both X and M
 % Then, it performs the Sobel test, i.e. it asks whether the relationship
-% between X and Y is significantly reduced when including M. Note: this
-% reduction is due to the indirect pathway.
+% between X and Y is significantly reduced when including M. This reduction
+% is due to the indirect pathway.
+% NB: all effect sizes are reported in terms of adjusted percentage of
+% variance explained!
 
 n = size(Y,1);
 if size(X,1)~= n || size(M,1)~= n
@@ -39,10 +41,10 @@ try;alpha=options.alpha;catch;alpha=0.05;end
 try;verbose=options.verbose;catch;verbose=1;end
 try;display=options.display;catch;display=1;end
 
-% normalize the variables
-Y = normalize(Y);
-X = normalize(X);
-M = normalize(M);
+% % normalize the variables
+% Y = normalize(Y);
+% X = normalize(X);
+% M = normalize(M);
 
 % regress Y on X
 [p1,stat1,df1,a1] = GLM_contrast([ones(n,1),X],Y,[0;1],'F',0);
@@ -135,7 +137,7 @@ if display
         col = 'g';
     end
     hq(1) = quiver(-1,0.5,5.5,0,'parent',ha,'color',col);
-    ht(4) = text(1.5,0.65,['R2=',num2str(round(100*out.b(1,1).^2)),'% (p=',num2str(out.p(1,1)),')'],'parent',ha,'HorizontalAlignment','Center');
+    ht(4) = text(1.5,0.65,['R2=',num2str(round(100*a1.R2_a)),'% (p=',num2str(out.p(1,1)),')'],'parent',ha,'HorizontalAlignment','Center');
     axis(ha,'equal')
     axis(ha,'off')
     
