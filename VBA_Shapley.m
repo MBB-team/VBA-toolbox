@@ -138,14 +138,14 @@ end
 for ii = 1:numel(k)
     n = size(k{ii},2);
     nn = factorial(n);
-    v{ii} = nan(n,1);
+%     v{ii} = nan(n,nResps);
     for m=1:n % loop over players
         % Shapley coeficients
         i = k{ii}(:,m);
         z = sum(k{ii},2);
         coef = (2*i-1).*factorial(z-i).*factorial(n-z-(1-i))/nn;
         % compute shapley values per se
-        v{ii}(m) =  coef'*ve{ii};
+        v{ii}(m,:) =  coef'*ve{ii};
     end
 end
 
@@ -189,7 +189,7 @@ function v=explainedVar(posterior,out,options,u_switch,w_switch)
     % prevent unecessary bells and whistles
     out.options.verbose = 0;
     out.options.DisplayWin = 0;
-    out.options.inF.fast = true;
+    out.options.inF{1}.fast = true;
 
     % prepare degraded model
     % .....................................................................   
@@ -216,7 +216,7 @@ function v=explainedVar(posterior,out,options,u_switch,w_switch)
         case 'phi'
             posterior.muPhi(paramIdx) = 0*posterior.muPhi(paramIdx);
         case 'theta'
-            posterior.muTheta(paramIdx) = 0*posterior.muPhi(paramIdx);
+            posterior.muTheta(paramIdx) = 0*posterior.muTheta(paramIdx);
     end
 
     % predict data

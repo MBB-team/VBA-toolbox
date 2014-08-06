@@ -1,14 +1,18 @@
-function results = VBA_susceptibilityAnalysis(posterior,out,tapsOff,constraints)
-
+function results = VBA_susceptibilityAnalysis(posterior,out,tapsOff)
 
 
 % select only connexion of interest
 % -------------------------------------------------------------------------
-inF= out.options.inF;
+try 
+    inF = out.options.inF{1};
+catch
+    inF = out.options.inF;
+end
+
 Aself = inF.A;
 Aself(Aself==1) = inF.indA;
 true_As = setdiff(inF.indA,diag(Aself));
-idxTheta=[true_As inF.indB{:} inF.indD{:}]; %inF.indC
+idxTheta=[true_As inF.indB{:}  inF.indD{:}]; %inF.indC
 
 thetas_lbl={};
 for i=1:length(true_As)
@@ -19,6 +23,9 @@ for k=1:length(inF.indB)
     thetas_lbl{end+1} = sprintf('B^%d_%d',k,i);
     end
 end
+% for i=1:length(inF.indC)
+%     thetas_lbl{end+1} = sprintf('C_%d',i);
+% end
 for k=1:length(inF.indD)
     for i=1:length(inF.indD{k})
     thetas_lbl{end+1} = sprintf('D^%d_%d',k,i);
@@ -28,7 +35,8 @@ end
 %% dimensions of interests
 resp_idx = [out.options.sources(2:end).out];
 nResps = numel(resp_idx);
-nu = out.dim.u;
+u_idx = [1 2 5 6]; %1:size(out.u,1);% %  % % % %
+nu = numel(u_idx);
 nw = numel(idxTheta);
 
 %% flags
@@ -46,10 +54,10 @@ end
 out_temp = out;
 
 % full model
-ve1 = explainedVar(posterior,out,resp_idx,ones(nu,1),[]) ;
+ve1 = explainedVar(posterior,out,resp_idx,[],[]) ;
 
 % random
-ve0 = explainedVar(posterior,out,resp_idx,zeros(nu,1),[]) ;
+ve0 = explainedVar(posterior,out,resp_idx,u_idx,[]) ;
 
 
 % inputs
@@ -64,7 +72,7 @@ elseif strcmp(tapsOff,'factorial')
 end
 
 parfor iu = 1:size(u_perms,1)
-    v_u(iu,:) = explainedVar(posterior,out,resp_idx,u_perms(iu,:),[]) ;
+    v_u(iu,:) = explainedVar(posterior,out,resp_idx,u_idx(u_perms(iu,:)==0),[]) ;
 end
 
 % interactions
@@ -72,7 +80,7 @@ v_inter = [];
 k_inter = [];
 for iu = 1:size(u_perms,1)  
     parfor iw = 1:nw
-        v_inter_iu(iw,:) = explainedVar(posterior,out,resp_idx,u_perms(iu,:),idxTheta(iw)) ; 
+        v_inter_iu(iw,:) = explainedVar(posterior,out,resp_idx,u_idx(u_perms(iu,:)==0),idxTheta(iw)) ; 
         k_temp = (1-k_w(iw,:))  .* (1-sum((1-k_u).*repmat((u_perms(iu,:)==0)',1,nu*nw)));
         k_inter_iu(iw,:) =  [k_temp (1-u_perms(iu,:))] ;
         
@@ -83,7 +91,7 @@ end
 
 % % parameters 
 parfor iw = 1:nw
-   v_w(iw,:) = explainedVar(posterior,out,resp_idx,ones(nu,1),idxTheta(iw)) ; 
+   v_w(iw,:) = explainedVar(posterior,out,resp_idx,[],idxTheta(iw)) ; 
 end
 
 %% inverting
@@ -96,15 +104,9 @@ f(end+(1:size(u_perms,1)),nw*nu+(1:nu)) = 1-u_perms;
 
 for i=1:nResps
     v_tot = ([v_inter(:,i); v_w(:,i); v_u(:,i)] - ve1(i) )/(ve0(i)-ve1(i)) ; %
-%     v_tot = sqrt(v_tot);
-    
-    if constraints
-        x_bar = fminsearch( @(x) norm(f*(x(:).^2) - v_tot), sqrt(ones(nw*nu+nu,1)/numel(nw*nu+nu)));
-        x=x_bar(:).^2;
-    else
-        x = f\v_tot;
-    end
-    
+
+    x = f\v_tot;
+        
     results.ev(:,i) = v_tot;
     results.ev_bar(:,i) = f*x;
 
@@ -112,7 +114,7 @@ for i=1:nResps
 
     contributions_w{i} = reshape(x(1:nw*nu),nw,nu);
     contributions_u{i} = x(nw*nu+(1:nu))';
-    contributions_normoutput{i} = contributions_w{i} ./ repmat(sum(contributions_w{i}),nw,1) ;
+    contributions_normoutput{i} = contributions_w{i} ./ repmat(sum(abs(contributions_w{i})),nw,1) ;
     contributions_normoutput2{i} = contributions_w{i} ./ repmat(contributions_u{i},nw,1) ;
 
     contributions_normparam{i} = contributions_w{i} ./repmat(sum(contributions_w{i},2),1,nu) ;
@@ -150,14 +152,12 @@ results.f=f;
 end
 
 function v=explainedVar(posterior,out,resp_idx,u_switch,w_switch)
-% v=0;
-% return;
 
 out.options.verbose = 0;
 out.options.DisplayWin = 0;
-out.options.inF.fast = true;
+inF.fast = true;
 
-out.u = out.u .* repmat(u_switch(:),1,size(out.u,2));  
+out.u(u_switch,:) = 0; 
 posterior.muTheta(w_switch) = 0;
 
 % predict data
@@ -173,14 +173,17 @@ posterior.muTheta(w_switch) = 0;
     out.options,...
     posterior.muX0);
 
-g = yp-er;
-y = out.y;% out.suffStat.gx; %
+g = yp-er; % predicted data under perturbation scheme
+y = out.suffStat.gx; % original predicted data
 
 v = zeros(1,numel(resp_idx));
 for i=1:numel(resp_idx)
     iY =resp_idx(i);
-    in_idx = out.options.isYout(iY,:) == 0;
-    v(i) = (var(y(iY,in_idx)-g(iY,in_idx)) / var(y(iY,in_idx) ))  ; 
+    in_idx = find(out.options.isYout(iY,:) == 0);
+%     v(i) = sqrt((var(y(iY,in_idx)-g(iY,in_idx)) / var(y(iY,in_idx) )))  ;
+%       v(i) = mean(abs(y(iY,in_idx) - g(iY,in_idx))) /  mean(abs(y(iY,in_idx)));
+      v(i) = mean(abs(y(iY,in_idx) - g(iY,in_idx))) ;
+%       v(i) = std(y(iY,in_idx) - g(iY,in_idx)) / std(y(iY,in_idx));
 end
 
 end
