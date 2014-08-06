@@ -1,8 +1,9 @@
-function [k,dkdp,landmarks,dadp]=kernel_sinexp(A,phi,beta,tList)
+function [k,dkdp,landmarks,dadp]=kernel_sinexp(A,phi,beta,tList) % 
 
 
 base = beta*sin(phi*pi*tList).*exp(-beta*tList);
 k=A.*base;
+
 
 
 dkdp = [ base;

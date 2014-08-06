@@ -1,4 +1,4 @@
-function [sg,dsdx,dsdp] = g_convSig_approx(x,P,u,in)
+function [sg] = g_convSig_approx(x,P,u,in)
 % this function evaluates a logistic convolution of the inputs
 % function [gx,dgdx,dgdp] = g_convSig(x,P,u,in)
 % This function evaluates the following multiple convolution model:
@@ -20,7 +20,8 @@ function [sg,dsdx,dsdp] = g_convSig_approx(x,P,u,in)
 %   - dsdp: the gradient of the system's output w.r.t. kernel parameters
 % SEE ALSO: g_conv0
 
-[g,~,dgdp] = g_conv_approx(x,P,u,in);
+% [g,~,dgdp] = g_conv_approx(x,P,u,in);
+g = g_conv_approx(x,P,u,in);
 sg = sigm(g,struct('mat',1));
-dsdx = [];
-dsdp = dgdp*diag(sg.*(1-sg));
+% dsdx = [];
+% dsdp = dgdp*diag(sg.*(1-sg));

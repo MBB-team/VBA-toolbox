@@ -2,7 +2,9 @@ function [gx,dgdx,dgdp] = g_softmax4decoding(Xt,P,ut,in)
 
 
 eta=P(in.indr);
-beta=100*exp(eta);
+Xt = Xt+eta;
+% beta=100*exp(eta);
+beta=100;
 
 sx = length(Xt);
 dgdx=zeros(sx,length(Xt));
