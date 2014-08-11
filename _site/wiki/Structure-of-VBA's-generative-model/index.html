@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>VBA toolbox</title>
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="Write an awesome description for your new site here. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+        <link rel="canonical" href="/wiki/Structure-of-VBA's-generative-model//" />
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+        <!-- <link rel="stylesheet" href="/css/pygments_default.css">-->
+
+<!-- icon font -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="/js/jQuery.js"></script>
+<script type="text/javascript" src="/js/toc.js"></script>-->
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.toc').toc();
+});
+</script>
+
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+
+    </head>
+
+
+    <body>
+
+    <header class="site-header">
+
+  <div class="wrap">
+
+    <a class="site-title" href="/">VBA toolbox</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+           viewBox="0 0 18 15" enable-background="new 0 0 18 15" xml:space="preserve">
+          <path fill="#505050" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0
+            h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#505050" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484
+            h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#505050" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0
+            c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <div class="trigger">
+        <a class="page-link" href="/install"><i class="fa fa-download"></i> Install</a>
+        <a class="page-link" href="/wiki"><i class="fa fa-book"></i> Wiki</a>
+        <a class="page-link" href="/about"><i class="fa fa-mortar-board"></i> About</a>
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrap">
+      <div class="post">
+  <header class="post-header">
+  <h1 id="title"><a href="/wiki">WIKI</a>&nbsp;Structure of VBA's generative model</h1>
+ </header>
+
+  <article class="post-content">
+    <hr/>
+  <ul id="markdown-toc">
+  <li><a href="#example-q-learning-model">Example: Q-learning model</a></li>
+  <li><a href="#nonlinear-state-space-models">Nonlinear state-space models</a>    <ul>
+      <li><a href="#definitions--notations">Definitions &amp; Notations</a></li>
+      <li><a href="#evolution-and-observation-mappings">Evolution and observation mappings</a></li>
+      <li><a href="#prior-knowledge">Prior knowledge</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>This section exposes the structure of generative models that underpin VBA data analysis.</p>
+
+<h1 id="example-q-learning-model">Example: Q-learning model</h1>
+
+<p>Reinforcement learning models are typically used to interpret changes in behavioural responses that arise from subject’s exposure to reward and/or punishment. Among these, Q-learning models simply assume that subjects update the value of possible actions. In its simplest form, the Q-learning algorithm expresses the change in value <script type="math/tex">Q_{t+1}-Q_t</script> from trial <script type="math/tex">t</script> to trial <script type="math/tex">t+1</script> as being linearly proportional to the reward prediction error. This yields the following update rule:</p>
+
+<script type="math/tex; mode=display">Q_{t+1} = Q_t + \alpha (r_{t+1}-Q_t)</script>
+
+<p>where <script type="math/tex">r_t</script> is the reward delivered to the subject at trial <script type="math/tex">t</script>, and <script type="math/tex">\alpha</script> is the (unknown) learning rate of the subject.</p>
+
+<p>One usually complements Q-learning with a softmax decision rule, i.e. an equation that expresses the probability <script type="math/tex">P_t(a_i)</script> of the subject to choose action <script type="math/tex">a_{i}</script> at trial <script type="math/tex">t%.</script>:</p>
+
+<script type="math/tex; mode=display">P_t(a_i) = \frac{exp \beta Q_t(a_i)}{\sum_j exp \beta Q_t(a_j)}</script>
+
+<p>where <script type="math/tex">\beta</script> is the (unknown) inverse temperature.</p>
+
+<p>Given a series of experienced reward <script type="math/tex">r_{t}</script> at each trial, these equations can be used to predict the choices of the subject. Fitting the above Q-learning model to behavioural data means finding estimates of the learning rate <script type="math/tex">\alpha</script>, the inverse temperature <script type="math/tex">\beta</script>, and the initial values <script type="math/tex">Q_{0}</script> that best explains the observed choices (see <a href="/wiki/Fast-demo-Q-learning-model">this page</a> for a demonstration).</p>
+
+<p>In fact, although they are not general enough to capture the range of models that the toolbox can deal with, these equations convey the basic structure of models of learning and decision making. This is because:</p>
+
+<ul>
+  <li>any form of <strong>learning</strong> (including probabilistic - bayesian - belief update), can be written as an <strong>evolution equation</strong>, similar in form to the first equation above</li>
+  <li>any form of <strong>decision making</strong> can be understood as an <strong>action emission law</strong>, and thus written as an <strong>observation mapping</strong> (from internal states to actions), similar in form to the second equation above.</li>
+</ul>
+
+<p>More generally, most computational models for neurobiological and behavioural data share the above structure (evolution and/or observation mappings), which captures the response of relevant states (e.g. neural activity, beliefs and preferences, etc…) to experimentally controlled inputs.<br />
+We will now describe the general structure of these models in finer details.</p>
+
+<h1 id="nonlinear-state-space-models">Nonlinear state-space models</h1>
+
+<h2 id="definitions--notations">Definitions &amp; Notations</h2>
+
+<p>Let us first recall the notations that are used when experimentally observing the behaviour of a subject:</p>
+
+<ul>
+  <li><script type="math/tex">y</script>: experimentally measured <strong>data</strong>. These can be categorial or continuous. In the example above, data are composed of the observed choice at each trial.</li>
+  <li><script type="math/tex">x</script>: <strong>hidden states</strong> at time or trial <script type="math/tex">t</script>. These are time-dependent, and their motion is controlled by the <strong>evolution function</strong> (see below). In the example above, hidden states are the value of each accessible action.</li>
+  <li><script type="math/tex">\theta</script>: <strong>evolution parameters</strong>. These determine the evolution function of hidden states. In the example above, the only evolution parameter is the learning rate.</li>
+  <li><script type="math/tex">\phi</script>: <strong>observation parameters</strong>.  These determine the <strong>observation mapping</strong>. In the example above, the only observation parameter is the inverse temperature.</li>
+  <li><script type="math/tex">u</script>: experimentally controlled <strong>inputs</strong>. In the example above, the inputs are the reward delivered to the subject.</li>
+  <li><script type="math/tex">m</script>: so-called <strong>generative model</strong>. This encompasses all statistical assumptions that subtend the analysis. In the example above, the generative model includes both learning and decision making equations, as well as priors on model parameters (see below).</li>
+</ul>
+
+<p>The goal of the statistical analysis is to derive both the posterior density <script type="math/tex">p(x,\theta,\phi\mid y,m)</script> and the model evidence <script type="math/tex">p(y\mid m)</script>. The former quantifies the amount of information one possesses about unknown model parameters, and the latter is used for model comparison.</p>
+
+<h2 id="evolution-and-observation-mappings">Evolution and observation mappings</h2>
+
+<p>We consider so-called “state-space models”, which essentially consist of two mappings:</p>
+
+<ul>
+  <li>
+    <p>The evolution function <script type="math/tex">f</script> describes how hidden states change from one time sample to the next:<br />
+\[x_{t+1}=f(x_t,u_t,\theta)+\eta_t\]<br />
+where <script type="math/tex">\eta_t</script> is supposed to be iid Gaussian, with mean zero and precision (inverse variance) <script type="math/tex">\alpha</script>.  In the example above, the evolution function was given by the Q-learning equation, and the state noise precision was infinite (deterministic dynamics, i.e.: <script type="math/tex">\eta \rightarrow 0</script>).</p>
+  </li>
+  <li>
+    <p>The observation mapping <script type="math/tex">g</script> describes how observed data is generated from hidden states. When dealing with continuous data, the observation equation is given by:<br />
+\[y_t=g(x_t,u_t,\phi)+\epsilon_t\]<br />
+where <script type="math/tex">\epsilon_t</script> is iid Gaussian, with mean zero and precision <script type="math/tex">\sigma</script>. In any case, the observation mapping <script type="math/tex">g</script> specifies the likelihood data <script type="math/tex">p(y_t|x_t,u_t,\phi,m)</script>. In the example above, the likelihood of observed choices was given by the softmax mapping (categorical data).</p>
+  </li>
+</ul>
+
+<p>The following figure summarizes the model structure:</p>
+
+<p><img src="/images/wiki/graph_models.png" alt="" /></p>
+
+<p>The plate denotes repetitions over time or trials. Nodes represent variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.</p>
+
+<p>One may have to deal with deterministic systems (<script type="math/tex">\eta=0</script>). In this case, the trajectory of hidden states <script type="math/tex">x</script> through time is controlled by the inputs <script type="math/tex">u</script>, the evolution parameters <script type="math/tex">\theta</script> and the initial conditions <script type="math/tex">x_0</script>.</p>
+
+<p>Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters):</p>
+
+<p><img src="/images/wiki/graph_static_models.png" alt="" /></p>
+
+<p>This simpler structure is closer to decision making models, whereby subject do not engage in learning (e.g., inter-temporal choices).</p>
+
+<p>In fact, (nonlinear) state-space models with unknown evolution, observation and precision parameters is very general. This is because the form of the evolution and observation mappings is arbitrary (e.g., nonlinear). Their inversion grand-fathers most causal models of the statistical literature, with the exception of “switch” models, i.e. models that include unknown categorical variables.</p>
+
+<h2 id="prior-knowledge">Prior knowledge</h2>
+
+<p>Any data analysis relies upon prior knowledge. For example, the form of the evolution and/or observation mappings is a prior. Within a bayesian framework, the subjective aspect of the inference is made further explicit in the definition of a prior probability distribution <script type="math/tex">p(x,\theta,\phi,\alpha,\sigma\mid m)</script> over unknown model variables.</p>
+
+<p>Priors can vary in how informative they are. This is important because the more informative they are, the stronger the influence on the posterior they have. Here, the informativeness is related to how tight prior distribution are. For Gaussian densities, this relates to the covariance matrix (informative = low variance, uninformative = high variance). Note: whatever the priors, their contribution to the posterior tends to be null as the size of data tends to infinity.</p>
+
+<ul>
+  <li>
+    <p><script type="math/tex">p(x\mid \theta,\alpha,m)</script>: priors on hidden states are provided through the form of the evolution function, which induces a (gaussian) transition probability density <script type="math/tex">p(x_{t+1}\mid x_t,\theta,\alpha,m)</script> with mean <script type="math/tex">f(x_t,\theta,u_t)</script> and precision <script type="math/tex">\alpha</script></p>
+  </li>
+  <li>
+    <p><script type="math/tex">p(\theta\mid m)</script> and <script type="math/tex">p(\phi\mid m)</script>: priors on evolution and observation parameters are Gaussian distributions that are fully parameterized by their first two moments.</p>
+  </li>
+  <li>
+    <p><script type="math/tex">p(\alpha\mid m)</script> and <script type="math/tex">p(\sigma\mid m)</script>: priors on state and observation noise precisions are Gamma distributions that are fully parameterized by their scale (<script type="math/tex">a</script>) and shape (<script type="math/tex">b</script>) hyperparameters. For example, one can inform the VBA toolbox that the system is deterministic by assuming a priori that <script type="math/tex">\alpha</script> is 0 with infinite precision <script type="math/tex">(a_{\alpha}=0</script> and <script type="math/tex">b_{\alpha}\rightarrow  \infty)</script>.</p>
+  </li>
+</ul>
+
+<p>In brief, the generative model <script type="math/tex">m</script> includes the evolution and observation functions as well as the above priors on evolution, observation and precision parameters. All these are required to perform a bayesian analysis of experimental data.</p>
+
+ <hr/>
+  <div class='return_link'><a href="#title"><i class="fa fa-chevron-up"></i> back to top</a></div>
+  </article>
+
+
+</div>
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrap">
+
+
+    <div class="footer-col-1 column">
+        <h2 class="footer-heading">Participate to the VBA-toolbox!</h2>
+
+          <ul>
+        <li>
+           <i class="fa fa-github-square fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/fork">fork on Github</a>
+        </li>
+        <li>
+          <i class="fa fa-edit fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/issues">post a request</a>
+        </li>
+        </ul>
+
+    </div>
+
+    <div class="footer-col-2 column">
+     <ul>
+        <li>Jean DAUNIZEAU</li>
+        <li><a href="mailto:jean.daunizeau@gmail.com">jean.daunizeau[at]gmail.com</a></li>
+      </ul>
+      <ul>
+        <li>Lionel RIGOUX</li>
+        <li><a href="mailto:lionel.rigoux@gmail.com">lionel.rigoux[at]gmail.com</a></li>
+      </ul>
+
+     </div>
+
+    <div class="footer-col-3 column">
+<p>J. Daunizeau, V. Adam, L. Rigoux (2014), VBA: a probabilistic treatment of nonlinear models for neurobiological and behavioural data. PLoS Comp Biol 10(1): e1003441.</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+    </body>
+
+</html>

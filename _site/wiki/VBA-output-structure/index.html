@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>VBA toolbox</title>
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="Write an awesome description for your new site here. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+        <link rel="canonical" href="/wiki/VBA-output-structure//" />
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+        <!-- <link rel="stylesheet" href="/css/pygments_default.css">-->
+
+<!-- icon font -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="/js/jQuery.js"></script>
+<script type="text/javascript" src="/js/toc.js"></script>-->
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.toc').toc();
+});
+</script>
+
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+
+    </head>
+
+
+    <body>
+
+    <header class="site-header">
+
+  <div class="wrap">
+
+    <a class="site-title" href="/">VBA toolbox</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+           viewBox="0 0 18 15" enable-background="new 0 0 18 15" xml:space="preserve">
+          <path fill="#505050" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0
+            h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#505050" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484
+            h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#505050" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0
+            c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <div class="trigger">
+        <a class="page-link" href="/install"><i class="fa fa-download"></i> Install</a>
+        <a class="page-link" href="/wiki"><i class="fa fa-book"></i> Wiki</a>
+        <a class="page-link" href="/about"><i class="fa fa-mortar-board"></i> About</a>
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrap">
+      <div class="post">
+  <header class="post-header">
+  <h1 id="title"><a href="/wiki">WIKI</a>&nbsp;VBA output structure</h1>
+ </header>
+
+  <article class="post-content">
+    <hr/>
+  <ul id="markdown-toc">
+  <li><a href="#posterior-density-on-model-unknown-variables">Posterior density on model (unknown) variables</a></li>
+  <li><a href="#model-quality-metrics">Model quality metrics</a></li>
+  <li><a href="#inversion-diagnostics">Inversion diagnostics</a></li>
+</ul>
+
+<p>As can be seen on <a href="VBA-graphical-output.html">this page</a>, VBA provides users with many outputs, including inversion results (e.g. parameters’ estimates) and diagnostics (e.g., residuals auto-correlation function).</p>
+
+<p>Below, we describe in more details VBA’s main output arguments.</p>
+
+<h1 id="posterior-density-on-model-unknown-variables">Posterior density on model (unknown) variables</h1>
+
+<p>First of all, VBA derives an approximation to the posterior density over model variables (i.e.: evolution/observation parameters, hidden states, initial conditions and precision hyperparameters). When calling the main inversion function, e.g.:</p>
+
+<pre><code>[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+</code></pre>
+
+<p>moments of the approximate posterior density are stored in <code>posterior</code>, in a similar fashion than the <code>options.priors</code> input structure (see <a href="VBA-model-inversion-in-4-steps.html">this description</a>), i.e.:</p>
+
+<ul>
+  <li><strong>Observation parameters</strong>
+    <ul>
+      <li><code>posterior.muPhi</code></li>
+      <li><code>posterior.SigmaPhi</code></li>
+    </ul>
+  </li>
+  <li><strong>Evolution parameters</strong> (only for dynamical systems)
+    <ul>
+      <li><code>posterior.muTheta</code></li>
+      <li><code>posterior.SigmaTheta</code></li>
+    </ul>
+  </li>
+  <li><strong>Hidden states</strong> (only for dynamical systems)
+    <ul>
+      <li><code>posterior.muX</code></li>
+      <li><code>posterior.SigmaX.current</code> (a cell array of instantaneous states’ covariance matrices)</li>
+      <li><code>posterior.SigmaX.inter</code> (a cell array of lagged- covariance matrices)</li>
+    </ul>
+  </li>
+  <li><strong>Initial conditions</strong> (only for dynamical systems)
+    <ul>
+      <li><code>posterior.muX0</code></li>
+      <li><code>posterior.SigmaX0</code></li>
+    </ul>
+  </li>
+  <li><strong>Measurement noise precision</strong> (only for continuous data)
+    <ul>
+      <li><code>posterior.a_sigma</code></li>
+      <li><code>posterior.b_sigma</code></li>
+    </ul>
+  </li>
+  <li><strong>State noise precision</strong>  (only for dynamical systems)
+    <ul>
+      <li><code>posterior.a_alpha</code></li>
+      <li><code>posterior.b_alpha</code></li>
+    </ul>
+  </li>
+</ul>
+
+<p>All these can be eyeballed under the ‘VB inversion’ tab (see <a href="VBA-graphical-output.html">this page</a>).</p>
+
+<h1 id="model-quality-metrics">Model quality metrics</h1>
+
+<p>The above inversion call also returns the structure <code>out</code>, which can be queried for all sorts of diagnostics. Among these, VBA computes model quality metrics:</p>
+
+<ul>
+  <li><strong>Model’s log-evidence</strong>: <code>out.F</code>. This is the variational Bayesian approximation to the model’s marginal likelihood, which is required for model comparison. A dummy “Bayesian p-value” for the model can then be computed as follows:
+<code>
+dF = out.F - out.diagnostics.LLH0;
+bayesianP = 1./(1+exp(dF));
+</code><br />
+where <code>out.diagnostics.LLH0</code> is the evidence for the “null” (i.e. a model that assumes that data are random samples). The above “Bayesian p-value” is in fact the posterior probability of the null…</li>
+  <li><strong>Fit accuracy metrics</strong>:
+    <ul>
+      <li>percentage of variance explained: <code>out.fit.R2</code>. NB: when dealing with categorical (binary) data, <code>out.fit.R2</code> is the balanced classification accuracy, i.e. the percentage of correct classifications (based upon a 0.5 threshold).</li>
+      <li>log-likelihood: <code>out.fit.LL</code>.</li>
+      <li>AIC: <code>out.fit.AIC</code></li>
+      <li>BIC: <code>out.fit.BIC</code></li>
+    </ul>
+  </li>
+</ul>
+
+<blockquote>
+  <p><strong>TIP</strong>: here AIC and BIC scores are defined as the log-likelihood, minus a model complexity penalty term (typically related to the number of unknown model variables). This means that for all model quality metrics, the higher the score, the better the model.<br />
+All these are given under the ‘summary’ tab (see <a href="VBA-graphical-output.html">this page</a>).</p>
+</blockquote>
+
+<h1 id="inversion-diagnostics">Inversion diagnostics</h1>
+
+<p>Typically, three types of diagnostics can be eyeballed in a systematic manner:</p>
+
+<ul>
+  <li><strong>model parameters’ posterior correlation matrix</strong>: <code>out.diagnostics.C</code>. This matrix is useful for checking potential non-identifiability issues, which would express as non-zero posterior correlation between model parameters.</li>
+  <li><strong>residuals empirical auto-correlation</strong>: <code>out.diagnostics.dy.R</code>. This is useful for checking the absence of structure in model residuals, which would signal “underfitting”.</li>
+</ul>
+
+<p>Both these diagnostics can be eyeballed nuder the ‘diagnostics’ tab (see <a href="VBA-graphical-output.html">this page</a>).</p>
+
+<ul>
+  <li><strong>Volterra kernels</strong>: <code>out.diagnostics.kernels</code>. This diagnostic analysis allows one to identify the system’s states’ and observables’ impulse response to experimentally controlled inputs (even when the system is strongly nonlinear). Volterra kernels can be eyeballed under the ‘kernels’ tab (see <a href="VBA-graphical-output.html">this page</a>).</li>
+</ul>
+
+ <hr/>
+  <div class='return_link'><a href="#title"><i class="fa fa-chevron-up"></i> back to top</a></div>
+  </article>
+
+
+</div>
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrap">
+
+
+    <div class="footer-col-1 column">
+        <h2 class="footer-heading">Participate to the VBA-toolbox!</h2>
+
+          <ul>
+        <li>
+           <i class="fa fa-github-square fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/fork">fork on Github</a>
+        </li>
+        <li>
+          <i class="fa fa-edit fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/issues">post a request</a>
+        </li>
+        </ul>
+
+    </div>
+
+    <div class="footer-col-2 column">
+     <ul>
+        <li>Jean DAUNIZEAU</li>
+        <li><a href="mailto:jean.daunizeau@gmail.com">jean.daunizeau[at]gmail.com</a></li>
+      </ul>
+      <ul>
+        <li>Lionel RIGOUX</li>
+        <li><a href="mailto:lionel.rigoux@gmail.com">lionel.rigoux[at]gmail.com</a></li>
+      </ul>
+
+     </div>
+
+    <div class="footer-col-3 column">
+<p>J. Daunizeau, V. Adam, L. Rigoux (2014), VBA: a probabilistic treatment of nonlinear models for neurobiological and behavioural data. PLoS Comp Biol 10(1): e1003441.</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+    </body>
+
+</html>

@@ -1,0 +1,11 @@
+---
+layout: page
+title: 'WIKI'
+---
+<div id='wiki_toc'>
+  {% for wiki_page in site.wiki %}
+  {% if wiki_page.url == "/wiki/Home/" %}
+    {{ wiki_page.content | markdownify }}
+  {% endif %}
+  {% endfor %}
+</div>

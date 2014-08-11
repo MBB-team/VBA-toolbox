@@ -1,0 +1,32 @@
+name: VBA toolbox
+markdown: kramdown
+highlighter: pygments
+description: "Write an awesome description for your new site here. It will appear in your document head meta (for Google search results) and in your feed.xml site description."
+permalink: /posts/:title
+baseurl: "http://lionel-rigoux.github.io/tester"
+rdiscount:
+  extensions: [smart]
+exclude: [ Gemfile, Gemfile.lock, gems, bower_components ]
+
+collections:
+  wiki:
+    output: true
+    permalink: /wiki/:path/
+
+
+defaults:
+  -
+    scope:
+      path: ""
+      type: "wiki" # a collection in your site
+    values:
+      layout: "wiki"
+
+kramdown:
+  input: GFM
+  default_lang: matlab
+
+
+safe: true
+lsi: false
+

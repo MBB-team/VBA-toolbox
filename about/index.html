@@ -1,0 +1,40 @@
+---
+layout: page
+title: About
+
+text: "The VBA toolbox is a collaborative project. Please contact us if you want to participate. You can also fork the repo from Github and ask us to pull your contribution."
+
+collaborators:
+- name:   "Jean DAUNIZEAU"
+  status: "Principal Investigator at the Brain and Spine Institute."
+  email:  "jean.daunizeau@gmail.com"
+  avatar: "jean.jpg"
+- name:   "Lionel RIGOUX"
+  status: "Post-doctoral fellow at the Brain and Spine Institute."
+  email:  "lionel.rigoux@gmail.com"
+  avatar: "lionel.png"
+---
+
+<h2>Reference</h2>
+<p class="reference">
+J. Daunizeau, V. Adam, L. Rigoux (2014), VBA: a probabilistic treatment of nonlinear models for neurobiological and behavioural data. PLoS Comput Biol 10(1): e1003441.
+</p>
+
+<h2>Contact</h2>
+{{ page.text }}
+
+{% for collaborator in page.collaborators %}
+<section class="about-block">
+    <section class="author">
+        <header><img class="profile" src="{{ site.baseurl }}/images/about/{{ collaborator.avatar}}" alt="profile picture"></header>
+        <article>
+          <h4>{{ collaborator.name }}</h4>
+          <p>{{ collaborator.status }}</p>
+          <p class="share"><a href="mailto:{{ collaborator.email }}">{{  collaborator.email | replace: '@', '[at]'}}</a></p>
+        </article>
+     </section>
+</section>
+{% endfor %}
+
+<h2>Licence</h2>
+The toolbox is distributed under a GNU open-source licence. You are free to download and modify it, but you must aknowledge the original authors by citing the reference above.

@@ -1,0 +1,19 @@
+---
+layout: default
+---
+
+<div class="post">
+  <header class="post-header">
+  <h1 id="title"><a href="{{ site.baseurl }}/wiki">WIKI</a>&nbsp;{{ page.relative_path | remove: page.collection | remove: '_/' | remove: '.md' | replace: '-', ' ' }}</h1>
+ </header>
+
+  <article class="post-content">
+    <hr/>
+  {{ content }}
+ <hr/>
+  <div class='return_link'><a href="#title"><i class="fa fa-chevron-up"></i> back to top</a></div>
+  </article>
+
+
+</div>
+

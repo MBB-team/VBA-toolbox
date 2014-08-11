@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>VBA toolbox</title>
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="Write an awesome description for your new site here. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+        <link rel="canonical" href="/wiki/The-variational-Bayesian-approach//" />
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+        <!-- <link rel="stylesheet" href="/css/pygments_default.css">-->
+
+<!-- icon font -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="/js/jQuery.js"></script>
+<script type="text/javascript" src="/js/toc.js"></script>-->
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.toc').toc();
+});
+</script>
+
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+
+    </head>
+
+
+    <body>
+
+    <header class="site-header">
+
+  <div class="wrap">
+
+    <a class="site-title" href="/">VBA toolbox</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+           viewBox="0 0 18 15" enable-background="new 0 0 18 15" xml:space="preserve">
+          <path fill="#505050" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0
+            h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#505050" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484
+            h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#505050" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0
+            c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <div class="trigger">
+        <a class="page-link" href="/install"><i class="fa fa-download"></i> Install</a>
+        <a class="page-link" href="/wiki"><i class="fa fa-book"></i> Wiki</a>
+        <a class="page-link" href="/about"><i class="fa fa-mortar-board"></i> About</a>
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrap">
+      <div class="post">
+  <header class="post-header">
+  <h1 id="title"><a href="/wiki">WIKI</a>&nbsp;The variational Bayesian approach</h1>
+ </header>
+
+  <article class="post-content">
+    <hr/>
+  
+<p>Typically, the likelihood function contains high-order interaction terms between subsets of the unknown model parameters <script type="math/tex">\vartheta</script> (e.g., because of nonlinearities in the observation function <script type="math/tex">g</script>). This implies that the high-dimensional integrals required for Bayesian parameter estimation and model comparison cannot be evaluated analytically. Also, it might be computationally very costly to evaluate them using numerical brute force or Monte-Carlo sampling schemes. This motivates the use of <strong>variational approaches to approximate bayesian inference</strong> (Beal, 2003). In brief, <strong>variational Bayes</strong> (VB) is an iterative scheme that indirectly optimizes an approximation to both the model evidence <script type="math/tex">p(y\mid m)</script> and the posterior density <script type="math/tex">p(\vartheta\mid y,m)</script>. The key trick is to decompose the log model evidence into:</p>
+
+<script type="math/tex; mode=display">\ln p(y\mid m)=F(q)+D_{KL} (q(\vartheta);p(\vartheta\mid y,m))</script>
+
+<p>where <script type="math/tex">q(\theta)</script>  is any density over the model parameters, <script type="math/tex">D_{KL}</script> is the Kullback-Leibler divergence and the so-called <strong>free energy</strong> <script type="math/tex">F(q)</script>  is defined as:</p>
+
+<script type="math/tex; mode=display">F(q)=\langle \ln p(y\mid \vartheta,m) \rangle_q-D_{KL}(q(\vartheta);p(\vartheta\mid m))</script>
+
+<p>where the expectation <script type="math/tex">\langle\rangle_q</script> is taken under <script type="math/tex">q</script>. One can see that maximizing the functional <script type="math/tex">F(q)</script>  with respect to <script type="math/tex">q</script> indirectly minimizes the Kullback-Leibler divergence between <script type="math/tex">q(\vartheta)</script> and the exact posterior <script type="math/tex">p(\vartheta\mid y,m)</script>. The decomposition of the log evidence is complete in the sense that if <script type="math/tex">q(\vartheta)=p(\vartheta\mid y,m)</script>, then <script type="math/tex">F(q)=ln p(y\mid m)</script>.</p>
+
+<p>The iterative maximization of free energy is done under simplifying assumptions about the functional<br />
+form of <script type="math/tex">q</script>, rendering <script type="math/tex">q</script> an approximate posterior density over model parameters and <script type="math/tex">F(q)</script> an approximate log model evidence (actually, a lower bound). Typically, one first partitions the model parameters <script type="math/tex">\vartheta</script> into distinct subsets and then assumes that q factorizes into the product of the ensuing marginal densities. This assumption of <strong>“mean-field”</strong> separability effectively replaces stochastic dependencies between model variables by deterministic dependencies between the moments of their posterior distributions:</p>
+
+<script type="math/tex; mode=display">% <![CDATA[
+ \left.
+\begin{array}
+qq(\vartheta) & = q(\vartheta_1)q(\vartheta_2) \\
+\frac{\partial F}{\partial q} & = 0
+ \end{array}
+\right\}
+\implies q(\vartheta_1) \propto \exp\langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)} %]]></script>
+
+<p>where I have used a bi-partition of the parameter space (<script type="math/tex">\vartheta={\vartheta_1,\vartheta_2}</script>) and the right-hand term of Equation can be broken down into a weighted sum of the moments of the distribution <script type="math/tex">q(\vartheta_2)</script>. The equation above can be generalized to any arbitrary mean-field partition and captures the essence of the variational Bayesian approach. The resulting VB algorithm is amenable to analytical treatment (the free energy optimization is made with respect to the moments of the marginal densities), which makes it generic, quick and efficient.</p>
+
+<p><img src="/images/wiki/VBA/vb1.jpg" alt="" /></p>
+
+<p>In addition to the mean-field trick, VBA relies upon a further parametric approximation, which essentially consists in summarizing the marginal posterior by their two first-order moments (mean and variance). This effectively means performing a local gaussian approximation.</p>
+
+ <hr/>
+  <div class='return_link'><a href="#title"><i class="fa fa-chevron-up"></i> back to top</a></div>
+  </article>
+
+
+</div>
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrap">
+
+
+    <div class="footer-col-1 column">
+        <h2 class="footer-heading">Participate to the VBA-toolbox!</h2>
+
+          <ul>
+        <li>
+           <i class="fa fa-github-square fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/fork">fork on Github</a>
+        </li>
+        <li>
+          <i class="fa fa-edit fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/issues">post a request</a>
+        </li>
+        </ul>
+
+    </div>
+
+    <div class="footer-col-2 column">
+     <ul>
+        <li>Jean DAUNIZEAU</li>
+        <li><a href="mailto:jean.daunizeau@gmail.com">jean.daunizeau[at]gmail.com</a></li>
+      </ul>
+      <ul>
+        <li>Lionel RIGOUX</li>
+        <li><a href="mailto:lionel.rigoux@gmail.com">lionel.rigoux[at]gmail.com</a></li>
+      </ul>
+
+     </div>
+
+    <div class="footer-col-3 column">
+<p>J. Daunizeau, V. Adam, L. Rigoux (2014), VBA: a probabilistic treatment of nonlinear models for neurobiological and behavioural data. PLoS Comp Biol 10(1): e1003441.</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+    </body>
+
+</html>

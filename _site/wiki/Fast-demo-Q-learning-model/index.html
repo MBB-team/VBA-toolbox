@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+
+      <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>VBA toolbox</title>
+        <meta name="viewport" content="width=device-width">
+        <meta name="description" content="Write an awesome description for your new site here. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+        <link rel="canonical" href="/wiki/Fast-demo-Q-learning-model//" />
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="/css/main.css">
+        <!-- <link rel="stylesheet" href="/css/pygments_default.css">-->
+
+<!-- icon font -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="/js/jQuery.js"></script>
+<script type="text/javascript" src="/js/toc.js"></script>-->
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.toc').toc();
+});
+</script>
+
+<!--<script type="text/javascript" src="/js/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>-->
+
+    </head>
+
+
+    <body>
+
+    <header class="site-header">
+
+  <div class="wrap">
+
+    <a class="site-title" href="/">VBA toolbox</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+           viewBox="0 0 18 15" enable-background="new 0 0 18 15" xml:space="preserve">
+          <path fill="#505050" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0
+            h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#505050" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484
+            h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#505050" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0
+            c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+      <div class="trigger">
+        <a class="page-link" href="/install"><i class="fa fa-download"></i> Install</a>
+        <a class="page-link" href="/wiki"><i class="fa fa-book"></i> Wiki</a>
+        <a class="page-link" href="/about"><i class="fa fa-mortar-board"></i> About</a>
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrap">
+      <div class="post">
+  <header class="post-header">
+  <h1 id="title"><a href="/wiki">WIKI</a>&nbsp;Fast demo Q learning model</h1>
+ </header>
+
+  <article class="post-content">
+    <hr/>
+  
+<p>Below, we copied and pasted the content and graphical output of a demonstration script (<code>demo_Qlearning.m</code>) that replicates a typical learning study in behavioural economics and/or experimental psychology.<br />
+The task is the so-called two-armed bandit problem, which captures the essence of operant learning. The demo uses the so-called <a href="/wiki/Structure-of-VBA's-generative-model">Q-learning model</a> which predicts how people change their behavioural response according to the consequences of their actions (e.g., reward/punishment feedback).</p>
+
+<pre><code class="language-matlab">% Q-learning demo
+% In psychological terms, motivation can be defined as the set of processes
+% that generate goals and thus determine behaviour. A goal is nothing else
+% than a “state of affairs”, to which people attribute (subjective) value.
+% Empirically speaking, one can access these values by many means,
+% including subjective verbal report or decision making. These measures
+% have been used to demonstrate how value change as people learn a new
+% operant response. This is predicted by reinforcement learning theories,
+% which essentially relate behavioural response frequency to reward. In
+% this context, value is expected reward, and it changes in proportion to
+% the agent prediction error, i.e. the difference between actual and
+% expected reward.
+% This demo simulates a number of sequences of choices of a Q-learning
+% agent, which is a simple example of reinforcement learning algiorithms.
+% We then invert the model using VBA. Finally, we perform a Volterra
+% decomposition of hidden states dynamics onto a set of appropriately
+% chosen basis functions (here: the agent chosen action, and the winning
+% action). This diagnostic analysis allows one to identify the hidden
+% states impulse response to experimentally controlled inputs to the
+% system.
+
+close all
+clear variables
+clc
+
+
+f_fname = @f_Qlearn2; % evolution function (Q-learning)
+g_fname = @g_softmax; % observation function (softmax mapping)
+h_fname = @h_randOutcome; % feedback function (reward schedule)
+
+% allocate feedback struture for simulations
+fb.inH.er = 1;
+fb.inH.vr = 0;
+fb.h_fname = h_fname;
+fb.indy = 1;
+fb.indfb = 2;
+u0 = [randn(1,25)&gt;-0.25]; % possible feedbacks
+fb.inH.u0 = [u0,~u0,u0,~u0,u0,~u0]; % with reversals
+
+% simulation parameters
+theta = sigm(0.75,struct('INV',1)); % learning rate = 0.75
+phi = log(2); % inverse temperature = 2
+x0 = zeros(2,1);
+n_t = size(fb.inH.u0,2)+1; % number of trials
+options.binomial = 1;
+options.verbose = 0;
+options.skipf = zeros(1,n_t);
+options.skipf(1) = 1; % apply identity mapping from x0 to x1.
+
+% simulate Q-learner and plot choices
+[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
+hf = figure('color',[1 1 1]);
+ha = axes('parent',hf,'nextplot','add');
+plot(ha,y,'kx')
+plot(ha,y-e,'r')
+legend(ha,{'y: agent''s choices','p(y=1|theta,phi,m): behavioural tendency'})
+
+
+% VBA model inversion (given simulated choices)
+dim = struct('n',2,'n_theta',1,'n_phi',1);
+priors.a_alpha = Inf;
+priors.b_alpha = 0;
+options.priors = priors;
+[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+
+% compare simulated and estimated model variables
+displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf);
+
+
+% perform Volterra decomposition
+u1 = u(1,:); % own action
+u3 = u(2,:); % feedback
+u2 = zeros(size(u1)); % opponent action
+u2(u3&gt;0) = u1(u3&gt;0);
+u2(u3&lt;0) = 1-u1(u3&lt;0);
+uu = 2*[u1;u2]-1;
+o = out;
+o.u = uu;
+[kernels] = VBA_VolterraKernels(posterior,o,16);
+o.diagnostics.kernels = kernels;
+VBA_ReDisplay(posterior,o,1)
+
+getSubplots
+</code></pre>
+
+<p>Below are graphical outputs of the demonstration script. First, let us focus on the simulated behavioural tendency and agent’s choices:</p>
+
+<p><img src="/images/wiki/demo1/demo1_1.jpg" alt="" /></p>
+
+<p>On can see how the agent’s behavioural response changes according to the feedback he receives. In brief, the Q-learner is tracking the winning option (which effectively varies over time).</p>
+
+<p>Graphical outputs (parameter estimation, model accuracy, inversion diagnostics, convergence, etc…) of the VBA model inversion are described <a href="VBA-graphical-output.html">elsewhere</a> goes through all of them for this demo). Now let us check how accurate the model inversion was:</p>
+
+<p><img src="/images/wiki/demo1/demo1_2.jpg" alt="" /></p>
+
+<p>Recall the unknown parameters of the <a href="Structure-of-VBA's-generative-model">Q-learning model</a>: 1 evolution parameter (learning rate), 1 observation parameter (temperature) and 2 initial conditions (initial action values).<br />
+One can see that the posterior credible intervals (red errorbars) contain the simulated parameter values (green dots). In turn, estimated and simulated action values (as well as choices) dynamics tightly correlate with each other.</p>
+
+<p>Let us now eyeball the Volterra decomposition of action values and choices (w.r.t. winning action):</p>
+
+<p><img src="/images/wiki/demo1/demo1_2.jpg" alt="" /></p>
+
+<p>The ‘winning action’ basis function was encoded as follows: it was 1 when the winning action was the first action, and -1 otherwise. It follows that the first (resp. second) Q-learner’s action value exhibits a positive (resp. negative) exponentially decaying impulse response to the winning action. The decay rate of the Volterra kernel is simply controlled by the learning rate. Note that the choice is modelled as a binomial variable, whose log-odds is proportional to the difference between the first and second action values. This is why the observables’ Volterra kernel is a positive exponentially decaying function of past winning actions.</p>
+
+ <hr/>
+  <div class='return_link'><a href="#title"><i class="fa fa-chevron-up"></i> back to top</a></div>
+  </article>
+
+
+</div>
+
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrap">
+
+
+    <div class="footer-col-1 column">
+        <h2 class="footer-heading">Participate to the VBA-toolbox!</h2>
+
+          <ul>
+        <li>
+           <i class="fa fa-github-square fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/fork">fork on Github</a>
+        </li>
+        <li>
+          <i class="fa fa-edit fa-fw "></i>
+          <a href="https://github.com/MBB-team/VBA-toolbox/issues">post a request</a>
+        </li>
+        </ul>
+
+    </div>
+
+    <div class="footer-col-2 column">
+     <ul>
+        <li>Jean DAUNIZEAU</li>
+        <li><a href="mailto:jean.daunizeau@gmail.com">jean.daunizeau[at]gmail.com</a></li>
+      </ul>
+      <ul>
+        <li>Lionel RIGOUX</li>
+        <li><a href="mailto:lionel.rigoux@gmail.com">lionel.rigoux[at]gmail.com</a></li>
+      </ul>
+
+     </div>
+
+    <div class="footer-col-3 column">
+<p>J. Daunizeau, V. Adam, L. Rigoux (2014), VBA: a probabilistic treatment of nonlinear models for neurobiological and behavioural data. PLoS Comp Biol 10(1): e1003441.</p>
+    </div>
+
+  </div>
+
+</footer>
+
+
+    </body>
+
+</html>
