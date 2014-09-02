@@ -1,6 +1,6 @@
-function [ep,out] = VBA_groupBMCbtw(L,options,factors)
+function [ep,out] = VBA_groupBMC_btwConds(L,options,factors)
 % group-level between-condition Bayesian model comparison
-% function Ltilde = VBA_BTWgroup(L,options)
+% function Ltilde = VBA_groupBMC_btwConds(L,options,factors)
 % IN:
 %   - L: nmXnsxnc array of log-model evidences (nm models; ns subjects; nc
 %   conditions).
