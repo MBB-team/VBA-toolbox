@@ -212,7 +212,7 @@ if exist('in','var')
     end
     
 else
-    
+   
     % Check input arguments consistency (and fill in priors if necessary)
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     VBA_disp(' ',options)
@@ -259,7 +259,6 @@ end
 if dim.n_theta > 0
     VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
 end
-
 
 %------------------------------------------------------------%
 %----------------- Main VB learning scheme ------------------%
@@ -336,4 +335,4 @@ end
 
 suffStat = VBA_Hpost(posterior,suffStat,options);
 [posterior,out] = VBA_wrapup(posterior,options,dim,suffStat,u,y,it);
-posterior = VBA_multisession_factor(posterior,out) ;
+[posterior,out] = VBA_multisession_factor(posterior,out) ;
