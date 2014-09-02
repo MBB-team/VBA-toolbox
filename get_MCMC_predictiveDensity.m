@@ -31,10 +31,10 @@ function [pX,gX,pY,gY,X,Y] = get_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,op
 et0 = clock;
 
 % default sample size and histogram resolution
-try; N; catch N=1e3; end
-try; np; catch np = 50; end
-try; lx; catch lx = []; end
-try; ly; catch ly = []; end
+try, N ; catch, N  = 1e3 ; end
+try, np; catch, np = 50  ; end
+try, lx; catch, lx = []  ; end
+try, ly; catch, ly = []  ; end
 
 
 % fix precision parameters

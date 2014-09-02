@@ -15,8 +15,8 @@ function [p] = VBA_PPM(m,v,t,disp,form)
 % OUT:
 %   - p: the exceedance probability
 
-try, disp; catch disp=0; end
-try, form; catch form='gaussian'; end
+try, disp; catch, disp=0; end
+try, form; catch, form='gaussian'; end
 
 switch form
     case 'gaussian'

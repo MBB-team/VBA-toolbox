@@ -35,10 +35,10 @@ dim.u = max([fb.indy;fb.indfb]);
 et0 = clock;
 
 % default sample size and histogram resolution
-try; N; catch N=1e3; end
-try; np; catch np = 50; end
-try; lx; catch lx = []; end
-try; ly; catch ly = []; end
+try, N ; catch, N  = 1e3; end
+try, np; catch, np = 50; end
+try, lx; catch, lx = []; end
+try, ly; catch, ly = []; end
 
 % fix precision parameters & fill in missing optional fields
 if dim.n>0

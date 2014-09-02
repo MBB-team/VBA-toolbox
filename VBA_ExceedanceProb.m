@@ -10,8 +10,8 @@ function ep = VBA_ExceedanceProb(mu,Sigma,form,verbose)
 %   - ep: vector of exceedance probabilities, i.e. the probability, for
 %   each variable, to be greater than all the other ones.
 
-try, form; catch form='gaussian'; end
-try, verbose; catch verbose=0; end
+try, form; catch, form = 'gaussian'; end 
+try, verbose; catch, verbose=0; end
 
 K = size(mu,1);
 ep = ones(K,1);
