@@ -66,7 +66,7 @@ for t=2:dim.n_t
 %- Measurement noise precision         
 
 for si=1:length(gsi)
-   s_out = options.sources(gsi(si)).out ;
+    s_out = options.sources(gsi(si)).out ;
     is_s_out = find(options.isYout(s_out,t)==0);
     s_out = s_out(is_s_out);
     if ~isempty(s_out)
