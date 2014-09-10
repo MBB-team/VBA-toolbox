@@ -63,31 +63,34 @@ if dim1.n > 0
     po2.SigmaX0 = Sr;
     F2 = F2 +dF;
 end
+
 if isfield(po1,'a_sigma') && ~isempty(po1.a_sigma)
     mf = po1.a_sigma./po1.b_sigma;
-    Sf = po1.a_sigma./(po1.b_sigma^2);
+    Sf = po1.a_sigma./(po1.b_sigma.^2);
     mf0 = pr1.a_sigma./pr1.b_sigma;
-    Sf0 = pr1.a_sigma./(pr1.b_sigma^2);
+    Sf0 = pr1.a_sigma./(pr1.b_sigma.^2);
     mr0 = pr2.a_sigma./pr2.b_sigma;
-    Sr0 = pr2.a_sigma./(pr2.b_sigma^2);
-    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
-    po2.b_sigma = mr./Sr;
-    po2.a_sigma = po2.b_sigma.*mr;
-    F2 = F2 +dF;
+    Sr0 = pr2.a_sigma./(pr2.b_sigma.^2);
+    for iSource = 1:numel(po1.a_sigma)
+        [dF,mr,Sr] = spm_log_evidence(mf(iSource),Sf(iSource),mf0(iSource),Sf0(iSource),mr0(iSource),Sr0(iSource));
+        po2.b_sigma(iSource) = mr/Sr;
+        po2.a_sigma(iSource) = po2.b_sigma(iSource)*mr;
+        F2 = F2 +dF;
+    end
 end
+
 if isfield(po1,'a_alpha') && ~isempty(po1.a_alpha) && ~isinf(po1.a_alpha)
     mf = po1.a_alpha./po1.b_alpha;
     Sf = po1.a_alpha./(po1.b_alpha^2);
     mf0 = pr1.a_alpha./pr1.b_alpha;
     Sf0 = pr1.a_alpha./(pr1.b_alpha^2);
     mr0 = pr2.a_alpha./pr2.b_alpha;
-    Sr0 = pr2.a_alpha./(pr2.b_alpha^2);
-    for iSource = 1:numel(po1.a_alpha)
-        [dF,mr,Sr] = spm_log_evidence(mf(iSource),Sf(iSource),mf0(iSource),Sf0(iSource),mr0(iSource),Sr0(iSource));
-        po2.b_alpha(iSource) = mr/Sr;
-        po2.a_alpha(iSource) = po2.b_alpha(iSource)*mr;
-        F2 = F2 +dF;
-    end
+    Sr0 = pr2.a_alpha./(pr2.b_alpha^2);  
+    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    po2.b_alpha = mr./Sr;
+    po2.a_alpha = po2.b_alpha.*mr;
+    F2 = F2 +dF;
+
 end   
 
 function priors = checkPriors(priors,dim)
