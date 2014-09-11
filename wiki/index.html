@@ -4,6 +4,7 @@ title: 'WIKI'
 ---
 <div id='wiki_toc'>
   {% for wiki_page in site.wiki %}
+  {% wiki_page.url %}
   {% if wiki_page.url == "/wiki/Home/" %}
     {{ wiki_page.content | markdownify }}
   {% endif %}
