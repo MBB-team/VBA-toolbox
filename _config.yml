@@ -13,6 +13,8 @@ collections:
     output: true
     permalink: /wiki/:path/
 
+render:
+  - wiki
 
 defaults:
   -
