@@ -1,3 +1,6 @@
+---
+title: "home"
+---
 ## Getting Started
 
 - [A fast demo of the toolbox](Fast-demo-Q-learning-model)
