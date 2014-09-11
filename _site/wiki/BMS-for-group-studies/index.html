@@ -125,9 +125,12 @@ where <code>m</code> is the group’s label (it assigns the group to a given mod
 
 <p>In Stephan et al. (2009), we introduced the notion of exceedance probability (EP), which measures how likely it is that any given model is more frequent than all other models in the comparison set. Estimated model frequencies and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:</p>
 
-<pre><code class="language-matlab">f = out.Ef;
-EP = out.ep;
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>f = out.Ef;
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>EP = out.ep;
+</pre></div>
+</div>
+</div>
 
 <p>The graphical output of <code>VBA_groupBMC.m</code> is appended below (with random log-evidences, with <code>K=4</code> and <code>n=16</code>):</p>
 

@@ -23,6 +23,7 @@
 - [Large model spaces](Comparing-large-spaces-of-models)
 - [Group-level model selection](BMS-for-group-studies)
 - [Design Optimization](Optimizing-the-experimental-design)
+- [Volterra decomposition](Volterra-decomposition)
 
 ## References
 

@@ -98,13 +98,16 @@ $(document).ready(function() {
 
 <p>The general linear model (GLM) is a statistical linear model. The GLM incorporates a number of different statistical models: ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. It is a generalization of multiple linear regression model to the case of more than one dependent variable. The following script demonstrates VBA’s GLM classical test functionality:</p>
 
-<pre><code class="language-matlab">X = randn(32,4);
-b = [1;0;0;0];
-y = X*b;
-y = y + randn(size(y));
-c = [1;0;0;0];
-[pv] = GLM_contrast(X,y,c,type);
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>X = randn(32,4);
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>b = [1;0;0;0];
+<span class="line-numbers"><a href="#n3" name="n3">3</a></span>y = X*b;
+<span class="line-numbers"><a href="#n4" name="n4">4</a></span>y = y + randn(size(y));
+<span class="line-numbers"><a href="#n5" name="n5">5</a></span>c = [1;0;0;0];
+<span class="line-numbers"><a href="#n6" name="n6">6</a></span>[pv] = GLM_contrast(X,y,c,type);
+</pre></div>
+</div>
+</div>
 <p>where <code>X</code> is the design matrix, <code>y</code> is the data matrix, <code>c</code> is the contrast matrix, <code>type</code> is flag for the test (t-test or F-test) and <code>pv</code> is the p-value of the corresponding test.</p>
 
 <p>Let us eyeball the graphical output of the function <code>GLM_contrast.m</code>:</p>
@@ -123,14 +126,20 @@ c = [1;0;0;0];
 
 <p>Until recently, condition and group effects have been addressed by performing random effects BMS independently for the different conditions, and then checking anecdotally to see whether the results of random effects BMS were consistent. This approach is limited, because it does not test the hypothesis that the same model describes the two conditions. VBA provides the inference machinery to evaluate the evidence for a difference – in terms of models – between conditions. This is exemplified in the demosntration script <code>demo_groupbtw.m</code>. Note that the main call function for such analysis writes as follows:</p>
 
-<pre><code class="language-matlab">[ep,out] = VBA-groupBMCbtw(L)
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>[ep,out] = VBA-groupBMCbtw(L)
+</pre></div>
+</div>
+</div>
 <p>where <code>L</code> is the log-evidence ND-array, <code>ep</code> is the appropriate exceedance probability, and <code>out</code> gathers diagnostic metrics.</p>
 
 <p>Readers interested in standard group-BMS are encouraged to run the script <code>demo_bmc4glm.m</code>, which relies demonstrates random-effect group BMS in the context of nested models. NB: the model evidence is evaluated at the frequentist limit, using a dedicated function, as follows:</p>
 
-<pre><code class="language-matlab">[lev] = lev_GLM(y,X)
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>[lev] = lev_GLM(y,X)
+</pre></div>
+</div>
+</div>
 <p>where <code>y</code> is the data vector, <code>X</code> is the design matrix, and <code>lev</code> is the log-model evidence evaluated at the frequentist limit (flat priors).</p>
 
 <h2 id="kalman-filtersmoother">Kalman filter/smoother</h2>

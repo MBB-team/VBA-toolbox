@@ -94,8 +94,11 @@ $(document).ready(function() {
 
 <p>Generative models are defined in terms of <strong>evolution and observation functions</strong>. One may have to write these evolution/observation functions, in compliance with the following I/O:</p>
 
-<pre><code class="language-matlab">[ z ] = function_name( x_t,P,u_t,in )
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>[ z ] = function_name( x_t,P,u_t,in )
+</pre></div>
+</div>
+</div>
 
 <ul>
   <li><code>x_t</code> : the vector of hidden states at time <code>t</code></li>
@@ -123,10 +126,13 @@ For example, setting:</li>
   </li>
 </ul>
 
-<pre><code class="language-matlab">dim.n = 1
-dim.n_theta = 2
-dim.n_phi = 3
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>dim.n = 1
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>dim.n_theta = 2
+<span class="line-numbers"><a href="#n3" name="n3">3</a></span>dim.n_phi = 3
+</pre></div>
+</div>
+</div>
 <p>tells VBA that there are 1 hidden state, 2 evolution parameters and 3 observation parameters.</p>
 
 <blockquote>
@@ -138,12 +144,18 @@ dim.n_phi = 3
 Dealing with categorical (binary) data?</li>
 </ul>
 
-<pre><code class="language-matlab">options.binomial = 1
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>options.binomial = 1
+</pre></div>
+</div>
+</div>
 <p>Want to get rid of annoying graphical output figures?</p>
 
-<pre><code class="language-matlab">options.DisplayWin = 0
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>options.DisplayWin = 0
+</pre></div>
+</div>
+</div>
 <p>When dealing with missing data, fill in <code>options.isYout</code>, which is a vector of same size as the data matrix <code>y</code>, whose entries are 1 if the corresponding sample is to be left out. For example:
 <code>matlab
 options.isYout = zeros(size(y))
@@ -194,22 +206,31 @@ forces VBA to ignore the first time sample of the first dimension of <code>y</co
 
 <p>For example, setting:</p>
 
-<pre><code class="language-matlab">priors.muPhi = zeros(dim.n_phi,1)
-priors.SigmaPhi = eye(dim.n_phi)
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>priors.muPhi = zeros(dim.n_phi,1)
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>priors.SigmaPhi = eye(dim.n_phi)
+</pre></div>
+</div>
+</div>
 <p>effectively defines a N(0,I) i.i.d. (zero mean, unit variance) normal density on observation parameters.</p>
 
 <p>Note that when dealing with deterministic models, one has to specify the following prior for the state noise precision:</p>
 
-<pre><code class="language-matlab">priors.a_alpha = Inf
-priors.b_alpha = 0
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>priors.a_alpha = Inf
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>priors.b_alpha = 0
+</pre></div>
+</div>
+</div>
 
 <blockquote>
   <p><strong>TIP:</strong> one then fills in the <code>priors</code> field of the <code>options</code> structure, as follows:</p>
 
-  <pre><code class="language-matlab">options.priors = priors
-</code></pre>
+  <div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>options.priors = priors
+</pre></div>
+</div>
+  </div>
   <p>If left unspecified, this field is filled in with defaults (typically, i.i.d. zero-mean and unit variance Gaussian densities).</p>
 </blockquote>
 
@@ -217,8 +238,11 @@ priors.b_alpha = 0
 
 <p>Having completed steps 1 to 3, one simply calls the main <strong>VB model inversion</strong> routine, namely <code>VBA_NLStateSpaceModel.m</code>, as follows:</p>
 
-<pre><code class="language-matlab">[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options)
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options)
+</pre></div>
+</div>
+</div>
 <p>Its input arguments are:<br />
 - the data <code>y</code><br />
 - the input <code>u</code> (can be left empty)<br />

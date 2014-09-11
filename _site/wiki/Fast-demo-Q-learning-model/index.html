@@ -76,90 +76,93 @@ $(document).ready(function() {
 <p>Below, we copied and pasted the content and graphical output of a demonstration script (<code>demo_Qlearning.m</code>) that replicates a typical learning study in behavioural economics and/or experimental psychology.<br />
 The task is the so-called two-armed bandit problem, which captures the essence of operant learning. The demo uses the so-called <a href="/wiki/Structure-of-VBA's-generative-model">Q-learning model</a> which predicts how people change their behavioural response according to the consequences of their actions (e.g., reward/punishment feedback).</p>
 
-<pre><code class="language-matlab">% Q-learning demo
-% In psychological terms, motivation can be defined as the set of processes
-% that generate goals and thus determine behaviour. A goal is nothing else
-% than a “state of affairs”, to which people attribute (subjective) value.
-% Empirically speaking, one can access these values by many means,
-% including subjective verbal report or decision making. These measures
-% have been used to demonstrate how value change as people learn a new
-% operant response. This is predicted by reinforcement learning theories,
-% which essentially relate behavioural response frequency to reward. In
-% this context, value is expected reward, and it changes in proportion to
-% the agent prediction error, i.e. the difference between actual and
-% expected reward.
-% This demo simulates a number of sequences of choices of a Q-learning
-% agent, which is a simple example of reinforcement learning algiorithms.
-% We then invert the model using VBA. Finally, we perform a Volterra
-% decomposition of hidden states dynamics onto a set of appropriately
-% chosen basis functions (here: the agent chosen action, and the winning
-% action). This diagnostic analysis allows one to identify the hidden
-% states impulse response to experimentally controlled inputs to the
-% system.
-
-close all
-clear variables
-clc
-
-
-f_fname = @f_Qlearn2; % evolution function (Q-learning)
-g_fname = @g_softmax; % observation function (softmax mapping)
-h_fname = @h_randOutcome; % feedback function (reward schedule)
-
-% allocate feedback struture for simulations
-fb.inH.er = 1;
-fb.inH.vr = 0;
-fb.h_fname = h_fname;
-fb.indy = 1;
-fb.indfb = 2;
-u0 = [randn(1,25)&gt;-0.25]; % possible feedbacks
-fb.inH.u0 = [u0,~u0,u0,~u0,u0,~u0]; % with reversals
-
-% simulation parameters
-theta = sigm(0.75,struct('INV',1)); % learning rate = 0.75
-phi = log(2); % inverse temperature = 2
-x0 = zeros(2,1);
-n_t = size(fb.inH.u0,2)+1; % number of trials
-options.binomial = 1;
-options.verbose = 0;
-options.skipf = zeros(1,n_t);
-options.skipf(1) = 1; % apply identity mapping from x0 to x1.
-
-% simulate Q-learner and plot choices
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
-hf = figure('color',[1 1 1]);
-ha = axes('parent',hf,'nextplot','add');
-plot(ha,y,'kx')
-plot(ha,y-e,'r')
-legend(ha,{'y: agent''s choices','p(y=1|theta,phi,m): behavioural tendency'})
-
-
-% VBA model inversion (given simulated choices)
-dim = struct('n',2,'n_theta',1,'n_phi',1);
-priors.a_alpha = Inf;
-priors.b_alpha = 0;
-options.priors = priors;
-[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-
-% compare simulated and estimated model variables
-displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf);
-
-
-% perform Volterra decomposition
-u1 = u(1,:); % own action
-u3 = u(2,:); % feedback
-u2 = zeros(size(u1)); % opponent action
-u2(u3&gt;0) = u1(u3&gt;0);
-u2(u3&lt;0) = 1-u1(u3&lt;0);
-uu = 2*[u1;u2]-1;
-o = out;
-o.u = uu;
-[kernels] = VBA_VolterraKernels(posterior,o,16);
-o.diagnostics.kernels = kernels;
-VBA_ReDisplay(posterior,o,1)
-
-getSubplots
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"> <a href="#n1" name="n1">1</a></span>% Q-learning demo
+<span class="line-numbers"> <a href="#n2" name="n2">2</a></span>% In psychological terms, motivation can be defined as the set of processes
+<span class="line-numbers"> <a href="#n3" name="n3">3</a></span>% that generate goals and thus determine behaviour. A goal is nothing else
+<span class="line-numbers"> <a href="#n4" name="n4">4</a></span>% than a “state of affairs”, to which people attribute (subjective) value.
+<span class="line-numbers"> <a href="#n5" name="n5">5</a></span>% Empirically speaking, one can access these values by many means,
+<span class="line-numbers"> <a href="#n6" name="n6">6</a></span>% including subjective verbal report or decision making. These measures
+<span class="line-numbers"> <a href="#n7" name="n7">7</a></span>% have been used to demonstrate how value change as people learn a new
+<span class="line-numbers"> <a href="#n8" name="n8">8</a></span>% operant response. This is predicted by reinforcement learning theories,
+<span class="line-numbers"> <a href="#n9" name="n9">9</a></span>% which essentially relate behavioural response frequency to reward. In
+<span class="line-numbers"><strong><a href="#n10" name="n10">10</a></strong></span>% this context, value is expected reward, and it changes in proportion to
+<span class="line-numbers"><a href="#n11" name="n11">11</a></span>% the agent prediction error, i.e. the difference between actual and
+<span class="line-numbers"><a href="#n12" name="n12">12</a></span>% expected reward.
+<span class="line-numbers"><a href="#n13" name="n13">13</a></span>% This demo simulates a number of sequences of choices of a Q-learning
+<span class="line-numbers"><a href="#n14" name="n14">14</a></span>% agent, which is a simple example of reinforcement learning algiorithms.
+<span class="line-numbers"><a href="#n15" name="n15">15</a></span>% We then invert the model using VBA. Finally, we perform a Volterra
+<span class="line-numbers"><a href="#n16" name="n16">16</a></span>% decomposition of hidden states dynamics onto a set of appropriately
+<span class="line-numbers"><a href="#n17" name="n17">17</a></span>% chosen basis functions (here: the agent chosen action, and the winning
+<span class="line-numbers"><a href="#n18" name="n18">18</a></span>% action). This diagnostic analysis allows one to identify the hidden
+<span class="line-numbers"><a href="#n19" name="n19">19</a></span>% states impulse response to experimentally controlled inputs to the
+<span class="line-numbers"><strong><a href="#n20" name="n20">20</a></strong></span>% system.
+<span class="line-numbers"><a href="#n21" name="n21">21</a></span>
+<span class="line-numbers"><a href="#n22" name="n22">22</a></span>close all
+<span class="line-numbers"><a href="#n23" name="n23">23</a></span>clear variables
+<span class="line-numbers"><a href="#n24" name="n24">24</a></span>clc
+<span class="line-numbers"><a href="#n25" name="n25">25</a></span>
+<span class="line-numbers"><a href="#n26" name="n26">26</a></span>
+<span class="line-numbers"><a href="#n27" name="n27">27</a></span>f_fname = @f_Qlearn2; % evolution function (Q-learning)
+<span class="line-numbers"><a href="#n28" name="n28">28</a></span>g_fname = @g_softmax; % observation function (softmax mapping)
+<span class="line-numbers"><a href="#n29" name="n29">29</a></span>h_fname = @h_randOutcome; % feedback function (reward schedule)
+<span class="line-numbers"><strong><a href="#n30" name="n30">30</a></strong></span>
+<span class="line-numbers"><a href="#n31" name="n31">31</a></span>% allocate feedback struture for simulations
+<span class="line-numbers"><a href="#n32" name="n32">32</a></span>fb.inH.er = 1;
+<span class="line-numbers"><a href="#n33" name="n33">33</a></span>fb.inH.vr = 0;
+<span class="line-numbers"><a href="#n34" name="n34">34</a></span>fb.h_fname = h_fname;
+<span class="line-numbers"><a href="#n35" name="n35">35</a></span>fb.indy = 1;
+<span class="line-numbers"><a href="#n36" name="n36">36</a></span>fb.indfb = 2;
+<span class="line-numbers"><a href="#n37" name="n37">37</a></span>u0 = [randn(1,25)&gt;-0.25]; % possible feedbacks
+<span class="line-numbers"><a href="#n38" name="n38">38</a></span>fb.inH.u0 = [u0,~u0,u0,~u0,u0,~u0]; % with reversals
+<span class="line-numbers"><a href="#n39" name="n39">39</a></span>
+<span class="line-numbers"><strong><a href="#n40" name="n40">40</a></strong></span>% simulation parameters
+<span class="line-numbers"><a href="#n41" name="n41">41</a></span>theta = sigm(0.75,struct('INV',1)); % learning rate = 0.75
+<span class="line-numbers"><a href="#n42" name="n42">42</a></span>phi = log(2); % inverse temperature = 2
+<span class="line-numbers"><a href="#n43" name="n43">43</a></span>x0 = zeros(2,1);
+<span class="line-numbers"><a href="#n44" name="n44">44</a></span>n_t = size(fb.inH.u0,2)+1; % number of trials
+<span class="line-numbers"><a href="#n45" name="n45">45</a></span>options.binomial = 1;
+<span class="line-numbers"><a href="#n46" name="n46">46</a></span>options.verbose = 0;
+<span class="line-numbers"><a href="#n47" name="n47">47</a></span>options.skipf = zeros(1,n_t);
+<span class="line-numbers"><a href="#n48" name="n48">48</a></span>options.skipf(1) = 1; % apply identity mapping from x0 to x1.
+<span class="line-numbers"><a href="#n49" name="n49">49</a></span>
+<span class="line-numbers"><strong><a href="#n50" name="n50">50</a></strong></span>% simulate Q-learner and plot choices
+<span class="line-numbers"><a href="#n51" name="n51">51</a></span>[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
+<span class="line-numbers"><a href="#n52" name="n52">52</a></span>hf = figure('color',[1 1 1]);
+<span class="line-numbers"><a href="#n53" name="n53">53</a></span>ha = axes('parent',hf,'nextplot','add');
+<span class="line-numbers"><a href="#n54" name="n54">54</a></span>plot(ha,y,'kx')
+<span class="line-numbers"><a href="#n55" name="n55">55</a></span>plot(ha,y-e,'r')
+<span class="line-numbers"><a href="#n56" name="n56">56</a></span>legend(ha,{'y: agent''s choices','p(y=1|theta,phi,m): behavioural tendency'})
+<span class="line-numbers"><a href="#n57" name="n57">57</a></span>
+<span class="line-numbers"><a href="#n58" name="n58">58</a></span>
+<span class="line-numbers"><a href="#n59" name="n59">59</a></span>% VBA model inversion (given simulated choices)
+<span class="line-numbers"><strong><a href="#n60" name="n60">60</a></strong></span>dim = struct('n',2,'n_theta',1,'n_phi',1);
+<span class="line-numbers"><a href="#n61" name="n61">61</a></span>priors.a_alpha = Inf;
+<span class="line-numbers"><a href="#n62" name="n62">62</a></span>priors.b_alpha = 0;
+<span class="line-numbers"><a href="#n63" name="n63">63</a></span>options.priors = priors;
+<span class="line-numbers"><a href="#n64" name="n64">64</a></span>[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+<span class="line-numbers"><a href="#n65" name="n65">65</a></span>
+<span class="line-numbers"><a href="#n66" name="n66">66</a></span>% compare simulated and estimated model variables
+<span class="line-numbers"><a href="#n67" name="n67">67</a></span>displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf);
+<span class="line-numbers"><a href="#n68" name="n68">68</a></span>
+<span class="line-numbers"><a href="#n69" name="n69">69</a></span>
+<span class="line-numbers"><strong><a href="#n70" name="n70">70</a></strong></span>% perform Volterra decomposition
+<span class="line-numbers"><a href="#n71" name="n71">71</a></span>u1 = u(1,:); % own action
+<span class="line-numbers"><a href="#n72" name="n72">72</a></span>u3 = u(2,:); % feedback
+<span class="line-numbers"><a href="#n73" name="n73">73</a></span>u2 = zeros(size(u1)); % opponent action
+<span class="line-numbers"><a href="#n74" name="n74">74</a></span>u2(u3&gt;0) = u1(u3&gt;0);
+<span class="line-numbers"><a href="#n75" name="n75">75</a></span>u2(u3&lt;0) = 1-u1(u3&lt;0);
+<span class="line-numbers"><a href="#n76" name="n76">76</a></span>uu = 2*[u1;u2]-1;
+<span class="line-numbers"><a href="#n77" name="n77">77</a></span>o = out;
+<span class="line-numbers"><a href="#n78" name="n78">78</a></span>o.u = uu;
+<span class="line-numbers"><a href="#n79" name="n79">79</a></span>[kernels] = VBA_VolterraKernels(posterior,o,16);
+<span class="line-numbers"><strong><a href="#n80" name="n80">80</a></strong></span>o.diagnostics.kernels = kernels;
+<span class="line-numbers"><a href="#n81" name="n81">81</a></span>VBA_ReDisplay(posterior,o,1)
+<span class="line-numbers"><a href="#n82" name="n82">82</a></span>
+<span class="line-numbers"><a href="#n83" name="n83">83</a></span>getSubplots
+</pre></div>
+</div>
+</div>
 
 <p>Below are graphical outputs of the demonstration script. First, let us focus on the simulated behavioural tendency and agent’s choices:</p>
 

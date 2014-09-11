@@ -93,8 +93,11 @@ $(document).ready(function() {
 
 <p>In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called “A-optimality”), as follows:</p>
 
-<pre><code class="language-matlab">e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters');
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters');
+</pre></div>
+</div>
+</div>
 <p>where <code>u</code> is the time series of experimental control variables (inputs) that defines the design and <code>e</code> is minus the trace of the expected posterior covariance matrix.</p>
 
 <h2 id="model-selection">Model selection</h2>
@@ -109,8 +112,11 @@ $(document).ready(function() {
 
 <p>The numerical derivation of the design efficiency for model comparison can be done as follows:</p>
 
-<pre><code class="language-matlab">[e,out] = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'models')
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>[e,out] = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'models')
+</pre></div>
+</div>
+</div>
 <p>where <code>f_fname</code>, <code>g_fname</code>, <code>dim</code>, <code>options</code> are nx1 cell arrays (n models), <code>e</code> is minus the Chernoff risk and <code>out</code> is a structure containing diagnostic variables (e.g.: upper bound on selection error probability, 1st and 2nd order-moment of the Laplace approximation to the prior predictive density..).</p>
 
 <p>One can then either compare different designs on the basis of their efficiency (e.g. on a predefined set), or perform numerical optimization of the design efficiency w.r.t. <code>u</code> (or some parametric form of it).</p>

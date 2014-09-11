@@ -97,11 +97,14 @@ $(document).ready(function() {
 
 <p><a href="http://www.fil.ion.ucl.ac.uk/spm/">SPM</a> proposed the seminal software implementations of DCM. The following script allows one to invert an SPM-specified DCM model using VBA, and then eyeball inversion results and diagnostics:</p>
 
-<pre><code class="language-matlab">[y,u,f_fname,g_fname,dim,options] = dcm2vba(DCM);
-[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-DCM = vba2dcm(posterior,out,[],TR);
-spm_dcm_explore(DCM)
-</code></pre>
+<div><div class="CodeRay">
+  <div class="code"><pre><span class="line-numbers"><a href="#n1" name="n1">1</a></span>[y,u,f_fname,g_fname,dim,options] = dcm2vba(DCM);
+<span class="line-numbers"><a href="#n2" name="n2">2</a></span>[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+<span class="line-numbers"><a href="#n3" name="n3">3</a></span>DCM = vba2dcm(posterior,out,[],TR);
+<span class="line-numbers"><a href="#n4" name="n4">4</a></span>spm_dcm_explore(DCM)
+</pre></div>
+</div>
+</div>
 <p>where <code>DCM</code> is the variable saved in the SPM DCM-file and <code>TR</code> is the fMRI repetition time.</p>
 
 <p><img src="/images/wiki/tabs/dcm1.jpg" alt="" /></p>
