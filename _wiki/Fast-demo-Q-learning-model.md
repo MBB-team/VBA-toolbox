@@ -2,11 +2,11 @@
 {:toc}
 
 Below, we copied and pasted the content and graphical output of a demonstration script (`demo_Qlearning.m`) that replicates a typical learning study in behavioural economics and/or experimental psychology.
-The task is the so-called two-armed bandit problem, which captures the essence of operant learning. The demo uses the so-called [Q-learning model](/wiki/Structure-of-VBA's-generative-model) which predicts how people change their behavioural response according to the consequences of their actions (e.g., reward/punishment feedback).
+The task is the so-called two-armed bandit problem, which captures the essence of operant learning. The demo uses the so-called [Q-learning model]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model) which predicts how people change their behavioural response according to the consequences of their actions (e.g., reward/punishment feedback).
 
 
 
-```matlab
+```
 % Q-learning demo
 % In psychological terms, motivation can be defined as the set of processes
 % that generate goals and thus determine behaviour. A goal is nothing else
@@ -57,7 +57,8 @@ options.skipf = zeros(1,n_t);
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
 
 % simulate Q-learner and plot choices
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
+[y,x,x0,eta,e,u] = simulateNLSS_fb( ...
+    n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
 hf = figure('color',[1 1 1]);
 ha = axes('parent',hf,'nextplot','add');
 plot(ha,y,'kx')
