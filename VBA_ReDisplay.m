@@ -35,6 +35,7 @@ try
 catch
     [out.diagnostics,out] = VBA_getDiagnostics(posterior,out);
 end
+
 ud.posterior = posterior;
 ud.out = out;
 
@@ -469,55 +470,16 @@ if ~isempty(diagnostics.MT_x)
     axis(display.ha(2),'tight')
 end
 
-% display data noise
-xlim = [diagnostics.dy.nx(1)-diagnostics.dy.d,diagnostics.dy.nx(end)+diagnostics.dy.d];
-display.ha(3) = subplot(4,2,5,'parent',hf,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
-title(display.ha(3),'residuals empirical distribution','fontsize',11)
-xlabel(display.ha(3),'e(t) = y(t)-g(x(t))','fontsize',8)
-ylabel(display.ha(3),'p(e|y)','fontsize',8)
-bar(diagnostics.dy.nx,diagnostics.dy.ny,'facecolor',[.8 .8 .8],'parent',display.ha(3))
-plot(display.ha(3),diagnostics.dy.grid,diagnostics.dy.pg,'r')
-if ~out.options.binomial
-    plot(display.ha(3),diagnostics.dy.grid,diagnostics.dy.pg2,'g')
-end
-if ~out.options.binomial
-    legend(display.ha(3),{'empirical histogram','Gaussian approx','posterior approx'})
-else
-    legend(display.ha(3),{'empirical histogram','Gaussian approx'})
+
+ds = numel(ud.out.diagnostics.dy);
+snames = cell(ds,1);
+for i=1:ds %dim s
+    snames{i} = ['#',num2str(i)];
 end
 
-if out.options.dim.n > 0
-    gri = diagnostics.microTime(diagnostics.sampleInd);
-    ti = 'time';
-else
-    if out.options.dim.n_t>1
-        gri = 1:out.options.dim.n_t;
-        ti = 'time';
-    else
-        gri = 1:out.options.dim.p;
-        ti = 'data dimensions';
-    end
-end
-display.ha(7) = subplot(4,2,3,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
-plot(display.ha(7),gri,out.suffStat.dy','marker','.')
-axis(display.ha(7),'tight')
-title(display.ha(7),'residuals time series','fontsize',11)
-xlabel(display.ha(7),ti,'fontsize',8)
-ylabel(display.ha(7),'e(t) = y(t)-g(x(t))','fontsize',8)
-
-% display autocorrelation of residuals
-if ~isweird(diagnostics.dy.R) && out.dim.n_t > 1
-    display.ha(5) = subplot(4,2,7,'parent',hf);
-    plot(display.ha(5),[-out.options.dim.n_t:out.options.dim.n_t-1],fftshift(diagnostics.dy.R)')
-    axis(display.ha(5),'tight')
-    title(display.ha(5),'residuals empirical autocorrelation','fontsize',11)
-    xlabel(display.ha(5),'lag tau','fontsize',8)
-    ylabel(display.ha(5),'Corr[e(t),e(t+tau)]','fontsize',8)
-    set(display.ha(5),...
-        'tag','VBLaplace',...
-        'ygrid','on',...
-        'box','off');
-end
+handles(1) = uicontrol('style','popupmenu','parent',hf,'tag','VBLaplace','units','normalized','position',[0.55 0.5 0.10 0.02],'fontsize',12,'string',snames,'callback',@myDiagnosticsi);
+handles(2) = uicontrol('style','text','parent',hf,'tag','VBLaplace','BackgroundColor',get(hf,'color'),'units','normalized','position',[0.52 0.53 0.16 0.02],'fontsize',12,'string','display source...');
+feval(@myDiagnosticsi,handles(1),[])
 
 
 % display state noise
@@ -565,6 +527,77 @@ try display.hc(2) = colorbar('peer',display.ha(6)); end
 try
     getSubplots
 end
+
+function myDiagnosticsi(hObject,evt)
+
+hf = get(hObject,'parent');
+ind = get(hObject,'Value');
+ud = get(hf,'userdata');
+try
+    if isequal(get(ud.handles.hdiagnostics(1),'parent'),hf)
+        delete(ud.handles.hdiagnostics)
+    end
+end
+out = ud.out;
+dy = out.diagnostics.dy(ind);
+sourceType = out.options.sources(ind).type;
+sourceYidx = out.options.sources(ind).out;
+
+% 
+% % display data noise
+xlim = [dy.nx(1)-dy.d,dy.nx(end)+dy.d];
+handles.hdiagnostics(1) = subplot(4,2,5,'parent',hf,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
+title(handles.hdiagnostics(1),'residuals empirical distribution','fontsize',11)
+xlabel(handles.hdiagnostics(1),'e(t) = y(t)-g(x(t))','fontsize',8)
+ylabel(handles.hdiagnostics(1),'p(e|y)','fontsize',8)
+bar(dy.nx,dy.ny,'facecolor',[.8 .8 .8],'parent',handles.hdiagnostics(1))
+plot(handles.hdiagnostics(1),dy.grid,dy.pg,'r')
+
+if sourceType==0
+    plot(handles.hdiagnostics(1),dy.grid,dy.pg2,'g')
+end
+if sourceType==0
+    legend(handles.hdiagnostics(1),{'empirical histogram','Gaussian approx','posterior approx'})
+else
+    legend(handles.hdiagnostics(1),{'empirical histogram','Gaussian approx'})
+end
+% 
+if out.options.dim.n > 0
+    gri = diagnostics.microTime(diagnostics.sampleInd);
+    ti = 'time';
+else
+    if out.options.dim.n_t>1
+        gri = 1:out.options.dim.n_t;
+        ti = 'time';
+    else
+        gri = 1:out.options.dim.p;
+        ti = 'data dimensions';
+    end
+end
+handles.hdiagnostics(2) = subplot(4,2,3,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
+plot(handles.hdiagnostics(2),gri,out.suffStat.dy(sourceYidx,:)','marker','.')
+axis(handles.hdiagnostics(2),'tight')
+title(handles.hdiagnostics(2),'residuals time series','fontsize',11)
+xlabel(handles.hdiagnostics(2),ti,'fontsize',8)
+ylabel(handles.hdiagnostics(2),'e(t) = y(t)-g(x(t))','fontsize',8)
+
+% display autocorrelation of residuals
+if ~isweird(dy.R) && out.dim.n_t > 1
+    handles.hdiagnostics(3) = subplot(4,2,7,'parent',hf);
+    plot(handles.hdiagnostics(3),[-out.options.dim.n_t:out.options.dim.n_t-1],fftshift(dy.R)')
+    axis(handles.hdiagnostics(3),'tight')
+    title(handles.hdiagnostics(3),'residuals empirical autocorrelation','fontsize',11)
+    xlabel(handles.hdiagnostics(3),'lag tau','fontsize',8)
+    ylabel(handles.hdiagnostics(3),'Corr[e(t),e(t+tau)]','fontsize',8)
+    set(handles.hdiagnostics(3),...
+        'tag','VBLaplace',...
+        'ygrid','on',...
+        'box','off');
+end
+
+ud.handles = handles;
+set(hf,'userdata',ud);
+try getSubplots; end
 
 
 function myVB(hfig)

@@ -91,13 +91,13 @@ if ~out.options.OnLine && out.dim.n >= 1 && ~isinf(out.options.priors.a_alpha) &
         '    - deterministic variant: log p(y|m,eta=0) > ',num2str(Fd,'%4.3e')]);
 end
 
-if numel(out.fit.R2) > 1
+% if numel(out.fit.R2) > 1
     R2str={'',''};
     LLstr={'',''};
     gsi = find([out.options.sources.type]==0);
     if ~isempty(gsi)
-        R2str{1} = ['    - coefficient of determination (R2): ',catnum2str(out.fit.R2,gsi)];
-        LLstr{1} = ['    - log-likelihood: ',catnum2str(out.fit.LL,gsi)];
+        R2str{1} = ['     - coefficient of determination (R2):  ',catnum2str(out.fit.R2,gsi)];
+        LLstr{1} = ['     - log-likelihood: ',catnum2str(out.fit.LL,gsi)];
     end
     bsi = find([out.options.sources.type]~=0);
     if ~isempty(bsi)
@@ -107,16 +107,16 @@ if numel(out.fit.R2) > 1
     end
     R2str = [R2str{1},'\n',R2str{2},'\n'];
     LLstr = [LLstr{1},'\n',LLstr{2},'\n'];
-else
-    if ~out.options.binomial
-        R2str = 'coefficient of determination (R2)';
-    else
-        R2str = 'balanced classification accuracy';
-    end
-    R2str = ['     - ',R2str,': ',num2str(out.fit.R2,'%4.3f'),'\n'];
-    LLstr = ['     - log-likelihood: ',num2str(out.fit.LL,'%4.3e'),'\n'];
-   
-end
+% else
+%     if ~out.options.binomial
+%         R2str = 'coefficient of determination (R2)';
+%     else
+%         R2str = 'balanced classification accuracy';
+%     end
+%     R2str = ['     - ',R2str,': ',num2str(out.fit.R2,'%4.3f'),'\n'];
+%     LLstr = ['     - log-likelihood: ',num2str(out.fit.LL,'%4.3e'),'\n'];
+%    
+% end
 
 AICstr = ['     - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n'];
 BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e')];

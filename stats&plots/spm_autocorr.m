@@ -14,15 +14,23 @@ function R = spm_autocorr(y)
 [n,t] = size(y);
 R = zeros(n,t*2);
 % standardize y
-my = mean(y,2);
-sy = std(y,[],2);
+my = nanmean(y,2);
+sy = nanstd(y,[],2);
 sy(sy==0) = 1; % correct for identically constant time series
 y = y - repmat(my,1,t);
 y = diag(1./sy)*y;
 % compute auto-correlation using FFT
+hasNan = any(any(isnan(y)));
+if hasNan
+     disp('= Warning: Autocorrelation with missing data could yield unreliable results'); 
+end
 for i=1:n
-    fr = fft(y(i,:),t*2);
+    if hasNan
+        fr = nanfft(y(i,:),t*2);
+    else
+        fr = fft(y(i,:),t*2);
+    end
     tfr = fr';
     S = fr(:).*tfr(:);
-    R(i,:) = ifft(S)'/t;
+    R(i,:) = (S)'/t;
 end

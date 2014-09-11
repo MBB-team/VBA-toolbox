@@ -20,16 +20,19 @@ end
 [LLH0] = VBA_LMEH0(y,out.options);
 
 % Entropies and KL divergences
-if ~out.options.binomial
-    efficiency.sigma = -out.suffStat.Ssigma;
-    m0 = out.options.priors.a_sigma./out.options.priors.b_sigma;
-    v0 = out.options.priors.a_sigma./out.options.priors.b_sigma^2;
-    m = posterior.a_sigma(end)./posterior.b_sigma(end);
-    v = posterior.a_sigma(end)./posterior.b_sigma(end)^2;
-    DKL.sigma = VBA_KL(m0,v0,m,v,'Gamma');
-else
+gsi = find([out.options.sources.type]==0) ;
+if isempty(gsi)
     efficiency.sigma = NaN;
     DKL.sigma = NaN;
+else
+    for iG=1:numel(gsi)
+        efficiency.sigma(iG) = -out.suffStat.Ssigma(iG);
+        m0 = out.options.priors.a_sigma(iG)/out.options.priors.b_sigma(iG);
+        v0 = out.options.priors.a_sigma(iG)/out.options.priors.b_sigma(iG)^2;
+        m = posterior.a_sigma(iG)/posterior.b_sigma(iG);
+        v = posterior.a_sigma(iG)/posterior.b_sigma(iG)^2;
+        DKL.sigma(iG) = VBA_KL(m0,v0,m,v,'Gamma');
+    end
 end
 
 if out.dim.n > 0 % hidden states and initial conditions
@@ -128,25 +131,59 @@ catch
 end
 
 % get residuals: data noise
-dy.dy = out.suffStat.dy(:);
-dy.R = spm_autocorr(out.suffStat.dy);
-dy.m = mean(dy.dy);
-dy.v = var(dy.dy);
-[dy.ny,dy.nx] = hist(dy.dy,10);
-dy.ny = dy.ny./sum(dy.ny);
-d = diff(dy.nx);
-d = abs(d(1));
-dy.d = d;
-spgy = sum(exp(-0.5.*(dy.m-dy.nx).^2./dy.v));
-dy.grid = dy.nx(1):d*1e-2:dy.nx(end);
-dy.pg = exp(-0.5.*(dy.m-dy.grid).^2./dy.v);
-dy.pg = dy.pg./spgy;
-if  ~out.options.binomial
-    shat = posterior.a_sigma(end)./posterior.b_sigma(end);
-    spgy = sum(exp(-0.5.*shat.*dy.nx.^2));
-    dy.pg2 = exp(-0.5.*shat.*dy.grid.^2);
-    dy.pg2 = dy.pg2./spgy;
+for iS = 1:numel(out.options.sources)
+    % source wise
+    ySource = out.options.sources(iS).out ;
+    res = out.suffStat.dy(ySource,:);
+    % remove skipped
+    res(out.options.isYout(ySource,:)==1) = NaN ;    
+    dy(iS).dy = res(:);
+    dy(iS).R = spm_autocorr(res);
+    dy(iS).m = nanmean(dy(iS).dy);
+    dy(iS).v = nanvar(dy(iS).dy);
+    [dy(iS).ny,dy(iS).nx] = hist(dy(iS).dy,10);
+    dy(iS).ny = dy(iS).ny./sum(dy(iS).ny);
+    d = diff(dy(iS).nx);
+    d = abs(d(1));
+    dy(iS).d = d;
+    spgy = sum(exp(-0.5.*(dy(iS).m-dy(iS).nx).^2./dy(iS).v));
+    dy(iS).grid = dy(iS).nx(1):d*1e-2:dy(iS).nx(end);
+    dy(iS).pg = exp(-0.5.*(dy(iS).m-dy(iS).grid).^2./dy(iS).v);
+    dy(iS).pg = dy(iS).pg./spgy;
+
+    if  out.options.sources(iS).type==0
+        igs = sum([out.options.sources(1:iS).type]==0);
+        shat = posterior.a_sigma(igs)./posterior.b_sigma(igs);
+        spgy = sum(exp(-0.5.*shat.*dy(iS).nx.^2));
+        dy(iS).pg2 = exp(-0.5.*shat.*dy(iS).grid.^2);
+        dy(iS).pg2 = dy(iS).pg2./spgy;
+    end
 end
+    
+
+    
+% dy.dy = out.suffStat.dy(:);
+% dy.R = spm_autocorr(out.suffStat.dy);
+% dy.m = mean(dy.dy);
+% dy.v = var(dy.dy);
+% [dy.ny,dy.nx] = hist(dy.dy,10);
+% dy.ny = dy.ny./sum(dy.ny);
+% d = diff(dy.nx);
+% d = abs(d(1));
+% dy.d = d;
+% spgy = sum(exp(-0.5.*(dy.m-dy.nx).^2./dy.v));
+% dy.grid = dy.nx(1):d*1e-2:dy.nx(end);
+% dy.pg = exp(-0.5.*(dy.m-dy.grid).^2./dy.v);
+% dy.pg = dy.pg./spgy;
+% if  ~out.options.binomial
+%     shat = posterior.a_sigma(end)./posterior.b_sigma(end);
+%     spgy = sum(exp(-0.5.*shat.*dy.nx.^2));
+%     dy.pg2 = exp(-0.5.*shat.*dy.grid.^2);
+%     dy.pg2 = dy.pg2./spgy;
+% end
+
+        
+        
 
 % get residuals: state noise
 dx.dx = out.suffStat.dx(:);
