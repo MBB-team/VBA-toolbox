@@ -82,7 +82,6 @@ if extended
     inG.r = offset+(1:nresp);
 end
 
-
 %- prepare observation function parameters indices and matrices
 if ~homogeneous
     inG.ind1 = 1:2:2*nreg;
@@ -95,19 +94,6 @@ end
 if extended
     inG.indr = inG.ind2(end) + (1:nresp);
 end
-
-%= muxer
-%- gaussian fMRI
-% sources(1).type = 0;
-% sources(1).in = 1:offset;
-% sources(1).out = 1:dim.n;
-% if extended
-%     %- binomial behavior
-%     sources(2).type = 1;
-%     sources(2).in = [inF.n5, inF.r];
-%     sources(2).out = dim.n+(1:nresp);
-% end
-
 
 %- finalize options structure
 options.decim = max([1,ceil(TR./microDT)]);

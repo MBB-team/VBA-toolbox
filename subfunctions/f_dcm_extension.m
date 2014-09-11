@@ -27,8 +27,6 @@ idR =(1:nr) + n;
 % == self
 hself = - exp(Theta(inF.indhself(1))) * eye(nr) ;
 
-% hself = - diag(exp(Theta(inF.indhself))) ;
-
 xI = easykron(Xt(1:n),n,nr);
 
 %%
