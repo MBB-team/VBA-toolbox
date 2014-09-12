@@ -102,11 +102,11 @@ Below are graphical outputs of the demonstration script. First, let us focus on 
 
 On can see how the agent's behavioural response changes according to the feedback he receives. In brief, the Q-learner is tracking the winning option (which effectively varies over time).
 
-Graphical outputs (parameter estimation, model accuracy, inversion diagnostics, convergence, etc...) of the VBA model inversion are described [elsewhere](VBA-graphical-output.html) goes through all of them for this demo). Now let us check how accurate the model inversion was:
+Graphical outputs (parameter estimation, model accuracy, inversion diagnostics, convergence, etc...) of the VBA model inversion are described [elsewhere]({{ site.baseurl }}/wiki/VBA-graphical-output.html) goes through all of them for this demo). Now let us check how accurate the model inversion was:
 
 ![]({{ site.baseurl }}/images/wiki/demo1/demo1_2.jpg)
 
-Recall the unknown parameters of the [Q-learning model](Structure-of-VBA's-generative-model): 1 evolution parameter (learning rate), 1 observation parameter (temperature) and 2 initial conditions (initial action values).
+Recall the unknown parameters of the [Q-learning model]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model): 1 evolution parameter (learning rate), 1 observation parameter (temperature) and 2 initial conditions (initial action values).
 One can see that the posterior credible intervals (red errorbars) contain the simulated parameter values (green dots). In turn, estimated and simulated action values (as well as choices) dynamics tightly correlate with each other.
 
 Let us now eyeball the Volterra decomposition of action values and choices (w.r.t. winning action):

@@ -22,7 +22,7 @@ $$P_t(a_i) = \frac{exp \beta Q_t(a_i)}{\sum_j exp \beta Q_t(a_j)}$$
 where $$\beta$$ is the (unknown) inverse temperature.
 
 
-Given a series of experienced reward $$r_{t}$$ at each trial, these equations can be used to predict the choices of the subject. Fitting the above Q-learning model to behavioural data means finding estimates of the learning rate $$\alpha$$, the inverse temperature $$\beta$$, and the initial values $$Q_{0}$$ that best explains the observed choices (see [this page](/wiki/Fast-demo-Q-learning-model) for a demonstration).
+Given a series of experienced reward $$r_{t}$$ at each trial, these equations can be used to predict the choices of the subject. Fitting the above Q-learning model to behavioural data means finding estimates of the learning rate $$\alpha$$, the inverse temperature $$\beta$$, and the initial values $$Q_{0}$$ that best explains the observed choices (see [this page]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model) for a demonstration).
 
 In fact, although they are not general enough to capture the range of models that the toolbox can deal with, these equations convey the basic structure of models of learning and decision making. This is because:
 
