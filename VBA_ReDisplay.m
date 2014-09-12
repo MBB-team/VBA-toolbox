@@ -478,7 +478,7 @@ for i=1:ds %dim s
 end
 
 handles(1) = uicontrol('style','popupmenu','parent',hf,'tag','VBLaplace','units','normalized','position',[0.55 0.5 0.10 0.02],'fontsize',12,'string',snames,'callback',@myDiagnosticsi);
-handles(2) = uicontrol('style','text','parent',hf,'tag','VBLaplace','BackgroundColor',get(hf,'color'),'units','normalized','position',[0.52 0.53 0.16 0.02],'fontsize',12,'string','display source...');
+handles(2) = uicontrol('style','text','parent',hf,'tag','VBLaplace','BackgroundColor',get(hf,'color'),'units','normalized','position',[0.52 0.53 0.16 0.02],'fontsize',12,'string','source:');
 feval(@myDiagnosticsi,handles(1),[])
 
 
