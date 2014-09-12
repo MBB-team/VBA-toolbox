@@ -5,7 +5,7 @@ title: "VBA: graphical output"
 {:toc}
 
 This page describes the graphical output of the VBA model inversion.
-In particular, we focus on the example of a [Q-learning model](/wiki/Structure-of-VBA's-generative-model) given observed choices (see `demo_Qlearning.m` or [this page](/wiki/Fast-demo-Q-learning-model)).
+In particular, we focus on the example of a [Q-learning model]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model) given observed choices (see `demo_Qlearning.m` or [this page]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model)).
 
 By default, the VBA model inversion terminates by displaying the results in a MATLAB window using tabs, which are described below:
 

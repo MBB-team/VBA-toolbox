@@ -9,7 +9,7 @@ This page summarizes the steps required for performing a model inversion with th
 - one **needs** to define evolution and observation functions, as well as creating the `dim` matlab structure.
 - one **can** provide further information about the model and/or its inversion (e.g. priors).
 
-> **TIP:** Many demonstration scripts are provided with the toolbox (e.g., see this [fast demo](/wiki/Fast-demo-Q-learning-model)).
+> **TIP:** Many demonstration scripts are provided with the toolbox (e.g., see this [fast demo]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model)).
 
 # Step 1: Defining observation/evolution functions
 
@@ -24,7 +24,7 @@ Generative models are defined in terms of **evolution and observation functions*
 - `u_t` : the input (experimenter control variable) at time `t`.
 - `in` : may contain any extra relevant information
 - `z`: the predicted state (evolution function) or data (observation function).
-The definition of hidden states, parameters and inputs, as well as their role in the model, are given [here](/wiki/Structure-of-VBA's-generative-model).
+The definition of hidden states, parameters and inputs, as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
 
 # Step 2 : Setting model inversion options
 
@@ -65,7 +65,7 @@ options.isYout(1,1) = 1
 ```
 forces VBA to ignore the first time sample of the first dimension of `y`.
 
-> **TIP:** advanced users may use these optional arguments to control the inversion (see [this page](/wiki/Controlling-the-inversion-using-VBA-options) for an exhaustive list of options).
+> **TIP:** advanced users may use these optional arguments to control the inversion (see [this page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) for an exhaustive list of options).
 
 # Step 3 : Defining priors
 

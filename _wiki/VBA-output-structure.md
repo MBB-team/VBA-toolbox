@@ -4,7 +4,7 @@ title: "VBA: output structure"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-As can be seen on [this page](VBA-graphical-output.html), VBA provides users with many outputs, including inversion results (e.g. parameters' estimates) and diagnostics (e.g., residuals auto-correlation function).
+As can be seen on [this page]({{ site.baseurl }}/wiki/VBA-graphical-output), VBA provides users with many outputs, including inversion results (e.g. parameters' estimates) and diagnostics (e.g., residuals auto-correlation function).
 
 Below, we describe in more details VBA's main output arguments.
 
@@ -16,7 +16,7 @@ First of all, VBA derives an approximation to the posterior density over model v
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
 
-moments of the approximate posterior density are stored in `posterior`, in a similar fashion than the `options.priors` input structure (see [this description](VBA-model-inversion-in-4-steps.html)), i.e.:
+moments of the approximate posterior density are stored in `posterior`, in a similar fashion than the `options.priors` input structure (see [this description]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps)), i.e.:
 
 - **Observation parameters**
   - `posterior.muPhi`
@@ -57,7 +57,7 @@ where `out.diagnostics.LLH0` is the evidence for the "null" (i.e. a model that a
   - BIC: `out.fit.BIC`
 
 > **TIP**: here AIC and BIC scores are defined as the log-likelihood, minus a model complexity penalty term (typically related to the number of unknown model variables). This means that for all model quality metrics, the higher the score, the better the model.
-All these are given under the 'summary' tab (see [this page](VBA-graphical-output.html)).
+All these are given under the 'summary' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
 
 # Inversion diagnostics
 
@@ -66,6 +66,6 @@ Typically, three types of diagnostics can be eyeballed in a systematic manner:
 - **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential non-identifiability issues, which would express as non-zero posterior correlation between model parameters.
 - **residuals empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
 
-Both these diagnostics can be eyeballed nuder the 'diagnostics' tab (see [this page](VBA-graphical-output.html)).
+Both these diagnostics can be eyeballed nuder the 'diagnostics' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
 
-- **Volterra kernels**: `out.diagnostics.kernels`. This diagnostic analysis allows one to identify the system's states' and observables' impulse response to experimentally controlled inputs (even when the system is strongly nonlinear). Volterra kernels can be eyeballed under the 'kernels' tab (see [this page](VBA-graphical-output.html)).
+- **Volterra kernels**: `out.diagnostics.kernels`. This diagnostic analysis allows one to identify the system's states' and observables' impulse response to experimentally controlled inputs (even when the system is strongly nonlinear). Volterra kernels can be eyeballed under the 'kernels' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
