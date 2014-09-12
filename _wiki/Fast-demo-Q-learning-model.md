@@ -1,3 +1,6 @@
+---
+title: "A fast demo: Q-learning"
+---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 

@@ -1,3 +1,6 @@
+---
+title: "Comparison for large model spaces"
+---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 

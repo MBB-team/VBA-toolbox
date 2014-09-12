@@ -1,3 +1,6 @@
+---
+title: "Structure of VBA's generative models"
+---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 

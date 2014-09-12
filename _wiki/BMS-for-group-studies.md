@@ -1,3 +1,6 @@
+---
+title: "Bayesian model selection for group studies"
+---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 

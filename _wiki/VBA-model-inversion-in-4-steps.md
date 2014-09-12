@@ -1,3 +1,6 @@
+---
+title: "Model inversion in 4 steps"
+---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 

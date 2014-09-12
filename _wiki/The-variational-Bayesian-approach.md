@@ -1,3 +1,6 @@
+---
+title: "The variational Bayes approach"
+---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
