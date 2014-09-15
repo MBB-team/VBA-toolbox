@@ -22,7 +22,7 @@ addpath(genpath('path_to_your_VBA_folder'))
   
 
 ## Want more details?
-Please visit the [wiki pages](https://github.com/MBB-team/VBA-toolbox/wiki) for tutorials, demos and advanced features descriptions.
+Please visit the [wiki pages](http://mbb-team.github.io/VBA-toolbox/wiki/) for tutorials, demos and advanced features descriptions.
 
 ## How can I participate?
 
