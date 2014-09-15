@@ -563,7 +563,7 @@ else
 end
 % 
 if out.options.dim.n > 0
-    gri = diagnostics.microTime(diagnostics.sampleInd);
+    gri = out.diagnostics.microTime(out.diagnostics.sampleInd);
     ti = 'time';
 else
     if out.options.dim.n_t>1
