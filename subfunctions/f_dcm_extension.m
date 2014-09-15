@@ -25,7 +25,7 @@ nu = size(ut,1);
 idR =(1:nr) + n;
 
 % == self
-hself = - exp(Theta(inF.indhself(1))) * eye(nr) ;
+hself = - diag(exp(Theta(inF.indhself))) ;
 
 xI = easykron(Xt(1:n),n,nr);
 
@@ -33,7 +33,7 @@ xI = easykron(Xt(1:n),n,nr);
 
 dfdp = zeros(size(Theta,1),nr);
 dfdp(inF.indhself,:) = diag(diag(hself).*Xt(idR));
-dfdp(inF.indconst,:) = diag(ones(1,nr));
+%dfdp(inF.indconst,:) = diag(ones(1,nr));
 
 %%
 
@@ -82,13 +82,13 @@ for i=1:n
     end
 end
 
-consts = Theta(inF.indconst);
+%consts = Theta(inF.indconst);
 
 %%
 
 
 flow = hA + dxhB + dxhD; % Unperturbed flow
-dxdt = hself*Xt(idR) + flow*Xt(1:n) + hC*ut + consts; % vector field
+dxdt = hself*Xt(idR) + flow*Xt(1:n) + hC*ut ; %+ consts; % vector field
 Jself = [zeros(n,nr) ; hself]';
 J = [hA + dxhB + dxhD2 , zeros(nr,nr)] + Jself ; % Jacobian
 

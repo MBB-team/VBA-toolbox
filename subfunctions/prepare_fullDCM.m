@@ -1,4 +1,4 @@
-function [options] = prepare_fullDCM(A,B,C,D,TR,microDT,homogeneous,hA,hB,hC,hD)
+function [options] = prepare_fullDCM(A,B,C,D,TR,microDT,homogeneous,hA,hB,hC,hD,sources)
 % precalculates intermediary variables for the VB inversion of DCM for fMRI
 % function [options] = prepare_fullDCM(A,B,C,D,TR,microDT,homogeneous)
 % IN:
@@ -20,11 +20,13 @@ else
     homogeneous = ~~homogeneous;
 end
 if nargin > 7
-    if nargin ~= 11
-        error('wrong number of arguments');
-    else
         extended = 1;
-    end       
+        try sources
+        catch
+            sources(1).out=size(A,1);
+            sources(2).out=size(hA,1);
+        end
+
 else
     extended = 0; 
 end
@@ -39,14 +41,16 @@ dim.n_u = size(B,2);
 
 %- prepare decoding function parameters indices and matrices
 if extended
-    [inF,nresp] = extend_dcm(inF,hA,hB,hC,hD,dim);   
+    [inF,nresp] = extend_dcm(inF,hA,hB,hC,hD,dim,sources);  
+else
+    nresp = 0;
 end
 
 %- define hemodynamic parameters indices
 nreg=dim.n;
 if extended
-%     offset = inF.indhself;
-    offset = inF.indconst(end);
+    offset = inF.indhself(end);
+%     offset = inF.indconst(end);
 else
     offset = inF.indself;
 end
@@ -79,8 +83,12 @@ inG.n4 = inF.n4;
 inG.n5 = inF.n5;
 
 if extended
-    inG.r = offset+(1:nresp);
+    inG.r = offset+(1:nresp);        
+    for i=2:numel(sources)
+        sourceRespIdx{i-1} = sources(i).out - sources(1).out(end);
+    end
 end
+
 
 %- prepare observation function parameters indices and matrices
 if ~homogeneous
@@ -92,8 +100,18 @@ else
 end
 %- define decoding parameters indices
 if extended
-    inG.indr = inG.ind2(end) + (1:nresp);
+    inG.indr = inG.ind2(end) + (1:sum([sources.type]~=0));
 end
+
+% dimensions 
+dim.n_theta = inF.ind5(end);
+if extended
+    dim.n_phi = inG.indr(end);
+else
+    dim.n_phi = inG.ind2(end);
+end
+dim.p = nreg + nresp ;
+dim.n = 5*nreg+nresp;
 
 %- finalize options structure
 options.decim = max([1,ceil(TR./microDT)]);
@@ -116,11 +134,16 @@ inG.confounds.indp = [];
 inF.extended=extended;
 inG.extended=extended;
 options.extended=extended;
-% options.sources=sources;
+
+
+inG.sourceRespIdx = sourceRespIdx;
+
+options.sources=sources;
 
 options.inF = inF;
 options.inG = inG;
 
+options.dim = dim;
 
 
 

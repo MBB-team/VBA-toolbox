@@ -1,5 +1,4 @@
-
-function [a, b]=getHyperpriors(y,p_min,p_max)
+function [a, b]=getHyperpriors(variance,p_min,p_max)
 %% compute hyperpriors parameters given you want to eplain between p_min 
 %  and p_max fraction of the total variance.
 %% ex.
@@ -26,13 +25,6 @@ else
 end
 
 p_max = min(p_max, 1-eps);
-
-if numel(y) == 1 % retrocompatibility
-    variance = y;
-    warning('getHyperpriors: first argument should be a data vector');
-else
-    variance = var(vec(y));
-end
 
 % residual variance
 var_min = variance*(1-p_max);

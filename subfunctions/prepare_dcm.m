@@ -1,4 +1,4 @@
-function [inF] = prepare_dcm(A,B,C,D)
+function [inF] = prepare_dcm(A,B,C,D,kernelGroup)
 % prepares matrices and indices vectors for DCM (without HRF)
 % function [options] = prepare_fullDCM(A,B,C,D,TR,microDT,homogeneous)
 % IN:
@@ -10,6 +10,11 @@ function [inF] = prepare_dcm(A,B,C,D)
 %   - inF: the optional input structure to @f_dcm4fmri
 
 %check for empty matrices
+
+if nargin<5
+    kernelGroup=1;
+end
+
 nu = max([numel(B) size(C,2)]);
 nx1 = max([size(A,1) cellfun(@(cel) size(cel,1),B) size(C,1) cellfun(@(cel) size(cel,1),D) ]);
 nx2 = max([size(A,2) cellfun(@(cel) size(cel,2),B) size(C,1) cellfun(@(cel) size(cel,2),D) ]);
@@ -32,7 +37,7 @@ for i=1:nx2
 end
 
 %prepare indices
-[indA,indB,indC,indD,indself] = find_dcm(A,B,C,D);
+[indA,indB,indC,indD,indself] = find_dcm(A,B,C,D,kernelGroup);
 
 %save
 inF.indself = indself;
@@ -90,7 +95,7 @@ for i=1:length(ind)
 end
 
 
-function [indA,indB,indC,indD,indself] = find_dcm(A,B,C,D)
+function [indA,indB,indC,indD,indself] = find_dcm(A,B,C,D,kernelGroup)
 ia = find(A~=0);
 if ~isempty(ia)
     indA = 1:length(ia);
@@ -127,5 +132,5 @@ for i=1:length(D)
     end
     id = [id;tmp];
 end
-indself = length(ia)+length(ib)+length(ic)+length(id)+1;
+indself = (length(ia)+length(ib)+length(ic)+length(id))+kernelGroup;
 

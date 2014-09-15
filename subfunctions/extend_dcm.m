@@ -1,12 +1,18 @@
-function [inF, n_r] = extend_dcm(inF,hA,hB,hC,hD,dim)
+function [inF, n_r] = extend_dcm(inF,hA,hB,hC,hD,dim,sources)
 
 %%- get dimensions
 n=dim.n;
 n_u=dim.n_u;
 n_r = get_dims(hA,hB,hC,hD) ;
 
+sourcesDim = cellfun(@numel,{sources(2:end).out});
+for i=1:sum(sourcesDim)
+    respSource(i) = sum(i>cumsum(sourcesDim))+1 ;
+end
+
+
 %%
-[inFtemp] = prepare_dcm(hA,hB,hC,hD);
+[inFtemp] = prepare_dcm(hA,hB,hC,hD,respSource);
 
 %% = save extended structure
 %- raw matrices
@@ -24,9 +30,9 @@ inF.indhC = inFtemp.indC + inF.indself ;
 for i=1:length(inF.hD)
     inF.indhD{i} = inFtemp.indD{i} + inF.indself ;
 end
-inFtemp.indself = inFtemp.indself + (0:n_r-1);
+inFtemp.indself = inFtemp.indself ;
 inF.indhself = inFtemp.indself + inF.indself ;
-inF.indconst = inF.indhself(end) + (1:n_r);
+% inF.indconst = inF.indhself(end) + (1:n_r);
 %- indicators
 inF.dhA = inFtemp.dA;
 inF.dhB = inFtemp.dB;

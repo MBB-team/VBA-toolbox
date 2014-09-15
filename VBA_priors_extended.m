@@ -1,6 +1,6 @@
 function [priors] = VBA_priors_extended(dim,options)
 % checks (and fills in default) priors for the sDCM generative model
-% function [priors] = VBA_priors(dim)
+% function [priors] = VBA_priors_extended(dim)
 % This function sets the default parameters associated to the prior pdf
 % which are required by the NL state-space model.
 % IN:
