@@ -178,9 +178,11 @@ for i=1:n_sources
         y(s_idx,t) = gt(s_idx) ;
         y(s_idx,t) = y(s_idx,t) + e(s_idx,t);
     else % binary
-        if length(s_idx) == 1 % true binomial
-            y(s_idx,t) = sampleFromArbitraryP([gt(s_idx),1-gt(s_idx)],[1,0],1);
-%             y(s_idx,t) = binomial_sample(gt(s_idx));
+        if options.sources(i).type == 1% binary
+             for k=1:length(s_idx)
+                y(s_idx(k),t) = sampleFromArbitraryP([gt(s_idx(k)),1-gt(s_idx(k))],[1,0]',1);
+                e(s_idx(k),t) = y(s_idx(k),1) - gt(s_idx(k));
+             end
         else % multinomial
             resp = zeros(length(s_idx),1) ;
             try
