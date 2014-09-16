@@ -21,7 +21,8 @@ else
 end
 if nargin > 7
         extended = 1;
-        try sources;
+        try 
+            sources;
         catch
             sources(1).out=size(A,1);
             sources(2).out=size(hA,1);
@@ -85,6 +86,7 @@ if extended
     for i=2:numel(sources)
         sourceRespIdx{i-1} = sources(i).out - sources(1).out(end);
     end
+    inG.sourceRespIdx = sourceRespIdx;
 end
 
 
@@ -134,9 +136,9 @@ inG.extended=extended;
 options.extended=extended;
 
 
-inG.sourceRespIdx = sourceRespIdx;
-
-options.sources=sources;
+if extended
+    options.sources=sources;
+end
 
 options.inF = inF;
 options.inG = inG;
