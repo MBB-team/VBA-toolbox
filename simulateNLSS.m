@@ -35,7 +35,6 @@ try
 catch
     dim.n_theta = length(theta);
     dim.n_phi = length(phi);
-    dim.n_t = n_t;
     try
         dim.n = size(x0,1);
     catch
@@ -57,6 +56,12 @@ catch
         U = [];
     end
     dim.p = size(feval(g_fname,zeros(dim.n,1),phi,U,options.inG),1);
+end
+
+try
+    dim.n_t
+catch
+    dim.n_t = n_t;
 end
 
 try
