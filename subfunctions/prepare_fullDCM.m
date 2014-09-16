@@ -21,7 +21,7 @@ else
 end
 if nargin > 7
         extended = 1;
-        try sources
+        try sources;
         catch
             sources(1).out=size(A,1);
             sources(2).out=size(hA,1);
@@ -38,7 +38,6 @@ dim.n = size(A,1);
 dim.n_u = size(B,2);
 
 
-
 %- prepare decoding function parameters indices and matrices
 if extended
     [inF,nresp] = extend_dcm(inF,hA,hB,hC,hD,dim,sources);  
@@ -50,7 +49,6 @@ end
 nreg=dim.n;
 if extended
     offset = inF.indhself(end);
-%     offset = inF.indconst(end);
 else
     offset = inF.indself;
 end

@@ -23,21 +23,23 @@ inF.hD = inFtemp.D ;
 
 %- parameter indices
 inF.indhA = inFtemp.indA + inF.indself ;
-for i=1:length(inF.hB)
+
+for i=1:n_u
     inF.indhB{i} = inFtemp.indB{i} + inF.indself ;
 end
 inF.indhC = inFtemp.indC + inF.indself ;
-for i=1:length(inF.hD)
+for i=1:n
     inF.indhD{i} = inFtemp.indD{i} + inF.indself ;
 end
 inFtemp.indself = inFtemp.indself ;
 inF.indhself = inFtemp.indself + inF.indself ;
-% inF.indconst = inF.indhself(end) + (1:n_r);
+
 %- indicators
 inF.dhA = inFtemp.dA;
 inF.dhB = inFtemp.dB;
 inF.dhC = inFtemp.dC;
 inF.dhD = inFtemp.dD;
+
 %- save dimensions
 dim.n_r=n_r;
 
