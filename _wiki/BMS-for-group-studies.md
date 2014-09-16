@@ -78,16 +78,16 @@ fep = out.families.ep;
 
 ## Between-conditions RFX-BMS
 
-Now what if we are interested in the difference between treatment conditions; for example, when dealing with one group of subjects measured under two conditions? One could think that it would suffice to perform RFX-BMS independently for the different conditions, and then check to see whether the results of RFX-BMS were consistent. However, this approach is limited, because it does not test the hypothesis that the same model describes the two conditions. In this section, we address the issue of evaluating the evidence for a difference – in terms of models – between conditions.
+Now what if we are interested in the difference between treatment conditions; for example, when dealing with one group of subjects measured under two conditions? One could think that it would suffice to perform RFX-BMS independently for the different conditions, and then check to see whether the results of RFX-BMS were consistent. However, this approach is limited, because it does not test the hypothesis that the same model describes the two conditions. In this section, we address the issue of evaluating the evidence for a difference - in terms of models - between conditions.
 
 Let us assume that the experimental design includes `p` conditions, to which a group of `n` subjects were exposed. Subject-level model inversions were performed prior to the group-level analysis, yielding the log-evidence of each model, for each subject under each condition. One can think of the conditions as inducing an augmented model space composed of model "tuples" that encode all combinations of candidate models and conditions. Here, each tuple identifies which model underlies each condition (e.g., tuple 1: model 1 in both conditions 1 and 2, tuple 2: model 1 in condition 1 and model 2 in condition 2, etc...). The log-evidence of each tuple (for each subject) can be derived by appropriately summing up the log evidences over conditions.
 
 Note that the set of induced tuples can be partitioned into a first subset, in which the same model underlies all conditions, and a second subset containing the remaining tuples (with distinct condition-specific models). One can the use family RFX-BMS to ask whether the same model underlies all conditions. This is the essence of between-condition RFX-BMS, which is performed automatically as follows:
 
 ```
-[ep,out] = VBA_groupBMCbtw(L);
+[ep,out] = VBA_groupBMC_btwConds(L);
 ```
-where the I/O arguments of `VBA_groupBMCbtw` are summarized as follows:
+where the I/O arguments of `VBA_groupBMC_btwConds` are summarized as follows:
 
 - `L`: Kxnxp array of log-model evidences (K models; n subjects; p conditions)
 - `ep`: exceedance probability of no difference in models across conditions.
@@ -97,7 +97,7 @@ Now, one may be willing to ask whether the same model family underlies all condi
 
 ```
 options.families = {[1,2],[3,4]};
-[ep,out] = VBA_groupBMCbtw(L,options);
+[ep,out] = VBA_groupBMC_btwConds(L,options);
 ```
 
 Here, the EP will be high if, for most subjects, either family 1 (models 1 and 2) or family 2 (models 3 and 4) are most likely, irrespective of conditions.
@@ -106,7 +106,7 @@ If the design is factorial (e.g., conditions vary along two distinct dimensions)
 
 ```
 factors = [[1,2];[3,4]];
-[ep,out] = VBA_groupBMCbtw(L,[],factors);
+[ep,out] = VBA_groupBMC_btwConds(L,[],factors);
 ```
 
 Here, the input argument `factors` is the (2x2) factorial condition attribution matrix, whose entries contain the index of the corresponding condition (`p=4`). The output argument `ep` is a 2x1 vector, quantifying the EP that models are identical along each dimension of the factorial design.
@@ -116,7 +116,7 @@ Of course, one may want to combine family inference with factorial designs, as f
 ```
 options.families = {[1,2],[3,4]};
 factors = [[1,2];[3,4]];
-[ep,out] = VBA_groupBMCbtw(L,options,factors);
+[ep,out] = VBA_groupBMC_btwConds(L,options,factors);
 ```
 
 Note that the ensuing computational cost scales linearly with the number of dimensions in the factorial design, but is an exponential function of the number of conditions (there are `K^p` tuples).
@@ -146,8 +146,18 @@ Fd = out1.F + out2.F;
 where `Fe` is the log-evidence of the group-hypothesis $$H_{\neq}$$.
 
 
-The posterior probability $$P$$ that the two groups have distinct model frequencies is thus simply given by:
+The posterior probability $$p$$ that the two groups have the same model frequencies is thus simply given by:
 
-$$P=\frac{1}{1+e^{Fe-Fd}}$$
+```
+p=1/(1+exp(Fd-Fe))
+```
 
-This completes our introduction to RFX-BMS.
+Note that you can directly test for a group difference with the function `VBA_groupBMC_btwGroups` which does exactly all the operation above:
+
+```
+[h,p] = VBA_groupBMC_btwGroups({L1, L2});
+```
+
+
+
+
