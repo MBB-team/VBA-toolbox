@@ -96,17 +96,17 @@ end
     LLstr={'',''};
     gsi = find([out.options.sources.type]==0);
     if ~isempty(gsi)
-        R2str{1} = ['     - coefficient of determination (R2):  ',catnum2str(out.fit.R2,gsi)];
-        LLstr{1} = ['     - log-likelihood: ',catnum2str(out.fit.LL,gsi)];
+        R2str{1} = ['     - coefficient of determination (R2):  ',catnum2str(out.fit.R2,gsi) '\n'];
+        LLstr{1} = ['     - log-likelihood: ',catnum2str(out.fit.LL,gsi) '\n'];
     end
     bsi = find([out.options.sources.type]~=0);
     if ~isempty(bsi)
-        R2str{2} = ['     - balanced classification accuracy: ',catnum2str(out.fit.R2,bsi)];
-        LLstr{2} = ['     - log-likelihood: ',catnum2str(out.fit.LL,bsi)];
+        R2str{2} = ['     - balanced classification accuracy: ',catnum2str(out.fit.R2,bsi) '\n'];
+        LLstr{2} = ['     - log-likelihood: ',catnum2str(out.fit.LL,bsi) '\n'];
         
     end
-    R2str = [R2str{1},'\n',R2str{2},'\n'];
-    LLstr = [LLstr{1},'\n',LLstr{2},'\n'];
+    R2str = [R2str{1} R2str{2}];
+    LLstr = [LLstr{1} LLstr{2}];
 % else
 %     if ~out.options.binomial
 %         R2str = 'coefficient of determination (R2)';
