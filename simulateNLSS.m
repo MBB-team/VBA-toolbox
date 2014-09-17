@@ -146,7 +146,7 @@ for i=1:n_sources
             e(s_idx,1) = y(s_idx,1) - gt(s_idx);
         
     end
-    e(:,1) = y(:,1) - gt(:,1);
+    e(s_idx,1) = y(s_idx,1) - gt(s_idx);
 end
 
 %-- Loop over time points
