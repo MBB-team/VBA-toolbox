@@ -14,6 +14,10 @@ function [kernels] = VBA_VolterraKernels(posterior,out,nt)
 %   - v: the estimation variance of 1st-order Volterra kernels
 %   - R2: the percentage of variance explained, for each dimension
 
+if isfield(out.options,'multisession')
+    out.u(end,:) = [];
+end
+    
 nu = size(out.u,1);
 n = out.dim.n;
 p = out.dim.p;
