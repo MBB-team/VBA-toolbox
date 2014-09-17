@@ -18,13 +18,13 @@ try
 catch
     error('Provide dimensions of the model!')
 end
-try
-    dim.n_t;
-    dim.p;
-catch
-    dim.n_t = size(y,2);
-    dim.p = size(y,1);
-end
+
+options = check_option(options, ...
+    'n_t'   , size(y,2), ...
+    'p'     , size(y,1)  ...
+);
+
+
 if isempty(u)
     u = zeros(1,dim.n_t);
     dim.u=0;
@@ -37,105 +37,49 @@ end
 
 %--------- Check options structure ----------%
 
-% Micro-time resolution
-if ~isfield(options,'decim')
-    options.decim = 1;
-end
-% Micro-resolution input
-if ~isfield(options,'microU')
-    options.microU = 0;
-end
-% Optional (internal) parameters of the evolution function
-if ~isfield(options,'inF')
-    options.inF = [];
-end
-% Optional (internal) parameters of the observation function
-if ~isfield(options,'inG')
-    options.inG = [];
-end
-% Check analytical gradients against numerical gradients
-if ~isfield(options,'checkGrads')
-    options.checkGrads = 0;
-end
-% Flag for initial conditions update
-if ~isfield(options,'updateX0')
-    options.updateX0 = 1;
-end
-% Flag for hyperparameters update
-if ~isfield(options,'updateHP')
-    options.updateHP = 1;
-end
-% Flag for hyperparameters initialization
-if ~isfield(options,'initHP')
-    options.initHP = 1;
-end
-% time lag of the short-sighted backward-pass
-if ~isfield(options,'backwardLag')
-    options.backwardLag = 1;
-else
-    options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
-end
-% Maximum number of iterations
-if ~isfield(options,'MaxIter')
-    options.MaxIter = 32;
-end
-% Maximum number of iterations for the initialization
-if ~isfield(options,'MaxIterInit')
-    options.MaxIterInit = 32;
-end
-% Minimum number of iterations
-if ~isfield(options,'MinIter')
-    options.MinIter = 0;
-end
-% Minimum change in the free energy
-if ~isfield(options,'TolFun')
-    options.TolFun = 2e-2;
-end
-% VB display window
-if ~isfield(options,'DisplayWin')
-    options.DisplayWin = 1;
-end
-% Gauss-Newton ascent on free (1) or variational (0) energy
-if ~isfield(options,'gradF')
-    options.gradF = 0;
-end
-% Gauss-Newton coordinate ascent maximum number of iterations:
-if ~isfield(options,'GnMaxIter')
-    options.GnMaxIter = 32;
-end
-% Gauss-Newton coordinate ascent threshold on relative variational energy:
-if ~isfield(options,'GnTolFun')
-    options.GnTolFun = 1e-5;
-end
-% Gauss-Newton inner-loops figures
-if ~isfield(options,'GnFigs')
-    options.GnFigs = 0;
-end
-% matlab window messages
-if ~isfield(options,'verbose')
-    options.verbose = 1;
-end
-% On-line version (true when called from VBA_OnLineWrapper.m)
-if ~isfield(options,'OnLine')
-    options.OnLine = 0;
-end
-% delays
-if ~isfield(options,'delays')
-    options.delays = [];
-end
-% binomial data
-if ~isfield(options,'binomial')
-    options.binomial = 0;
-end
+% set defaults 
+options = check_option(options, ...
+    'decim'      , 1     , ...     % Micro-time resolution
+    'microU'     , 0     , ...     % Micro-resolution input
+    'inF'        , []    , ...     % Optional (internal) parameters of the evolution function
+    'inG'        , []    , ...     % Optional (internal) parameters of the observation function
+    'checkGrads' , 0     , ...     % Check analytical gradients against numerical gradients
+    'updateX0'   , 1     , ...     % Flag for initial conditions update
+    'updateHP'   , 1     , ...     % Flag for hyperparameters update
+    'initHP'     , 1     , ...     % Flag for hyperparameters initialization
+    'backwardLag', 1     , ...     % time lag of the short-sighted backward-pass
+    'MaxIter'    , 32    , ...     % Maximum number of iterations
+    'MaxIterInit', 32    , ...     % Maximum number of iterations for the initialization
+    'MinIter'    , 0     , ...     % Minimum number of iterations
+    'TolFun'     , 2e-2  , ...     % Minimum change in the free energy
+    'DisplayWin' , 1     , ...     % VB display window
+    'gradF'      , 0     , ...     % Gauss-Newton ascent on free (1) or variational (0) energy
+    'GnMaxIter'  , 32    , ...     % Gauss-Newton coordinate ascent maximum number of iterations:
+    'GnTolFun'   , 1e-5  , ...     % Gauss-Newton coordinate ascent threshold on relative variational energy:
+    'GnFigs'     , 0     , ...     % Gauss-Newton inner-loops figures
+    'verbose'    , 1     , ...     % matlab window messages
+    'OnLine'     , 0     , ...     % On-line version (true when called from VBA_OnLineWrapper.m)
+    'delays'     , []    , ...     % delays
+    'binomial'   , 0     , ...     % not binomial data
+    'kernelSize' , 16    , ...
+    'nmog'       , 1       ...     % split-Laplace VB?
+) ;
 
-% muxer
-if ~isfield(options,'sources')
-  options.sources(1).type=options.binomial;
-  options.sources(1).out=1:dim.p;
-end
-if ~isfield(options,'extended')
-    options.extended = numel(options.sources)>1;
-end
+options = check_option(options, ...
+    'isYout'    , zeros(dim.p,dim.n_t)            , ... % excluded data
+    'skipf'     , zeros(1,dim.n_t)                , ... 
+    'sources'   , struct('type', options.binomial , ... % multisource
+                         'out' , 1:dim.p  )         ...
+) ;
+                         
+options = check_option(options, ...
+    'extended'  , numel(options.sources)>1 ...          % is multisources
+) ;
+
+
+% checks
+options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
+options.kernelSize  = min([dim.n_t,options.kernelSize]);
 
 
 % binomial check
@@ -147,24 +91,6 @@ for i=1:numel(options.sources)
         end
         end
     end
-end
-
-
-
-
-if ~isfield(options,'isYout')
-    options.isYout = zeros(dim.p,dim.n_t);
-end
-if ~isfield(options,'skipf')
-    options.skipf = zeros(1,dim.n_t);
-end
-if ~isfield(options,'kernelSize')
-    options.kernelSize = 16;
-end
-options.kernelSize = min([dim.n_t,options.kernelSize]);
-% split-Laplace VB?
-if ~isfield(options,'nmog')
-    options.nmog = 1;
 end
 
 % split in multisession
