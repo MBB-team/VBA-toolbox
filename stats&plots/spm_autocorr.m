@@ -1,4 +1,4 @@
-function R = spm_autocorr(y)
+function R= spm_autocorr(y)
 % computes simple autocorrelation function of signal y
 % function R = spm_autocorr(y)
 % Note: the autocorrelation is computed from lag 0 to lag t (length of the
@@ -32,5 +32,8 @@ for i=1:n
     end
     tfr = fr';
     S = fr(:).*tfr(:);
-    R(i,:) = (S)'/t;
+    R(i,:) = ifft(S)'/t;
+    
+end
+
 end
