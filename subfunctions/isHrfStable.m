@@ -1,6 +1,10 @@
 function [flag] = isHrfStable(X,kas,kaf,phi)
 
-try; phi; catch phi = -0.5785; end
+try
+    phi;
+catch
+    phi = -0.5785; 
+end
 
 % get vasodilatory signal and blood inflow
 X1 = X(1);
