@@ -44,12 +44,13 @@ sigma = [1e-1 1e0];            % respective precision of the gaussian sources
 disp('*** Simulation');
 [y,x,x0,eta,e] = simulateNLSS(T,[],g_fname,[],phi,u,Inf,sigma,options,[]);
 
-for i=1:3
-    subplot(3,1,i);
-    plot(y(i,:));
-end
-pause;
-close all;
+% figure();
+% for i=1:3
+%     subplot(3,1,i);
+%     plot(y(i,:));
+% end
+% 
+% pause(1);
 
 %% === invert model =======================================
         

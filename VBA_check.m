@@ -38,7 +38,11 @@ end
 %--------- Check options structure ----------%
 
 % set defaults 
+<<<<<<< HEAD
 options = check_struct(options, ...
+=======
+options = check_option(options, ...
+>>>>>>> 5b42aebb666b1c58e02de4891faa492dfc7923d4
     'decim'      , 1     , ...     % Micro-time resolution
     'microU'     , 0     , ...     % Micro-resolution input
     'inF'        , []    , ...     % Optional (internal) parameters of the evolution function
@@ -65,14 +69,22 @@ options = check_struct(options, ...
     'nmog'       , 1       ...     % split-Laplace VB?
 ) ;
 
+<<<<<<< HEAD
 options = check_struct(options, ...
+=======
+options = check_option(options, ...
+>>>>>>> 5b42aebb666b1c58e02de4891faa492dfc7923d4
     'isYout'    , zeros(dim.p,dim.n_t)            , ... % excluded data
     'skipf'     , zeros(1,dim.n_t)                , ... 
     'sources'   , struct('type', options.binomial , ... % multisource
                          'out' , 1:dim.p  )         ...
 ) ;
                          
+<<<<<<< HEAD
 options = check_struct(options, ...
+=======
+options = check_option(options, ...
+>>>>>>> 5b42aebb666b1c58e02de4891faa492dfc7923d4
     'extended'  , numel(options.sources)>1 ...          % is multisources
 ) ;
 
