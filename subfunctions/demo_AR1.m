@@ -30,12 +30,14 @@ g_fname = @g_embedAR;  % this is an AR(1) embedding observation function
 u = [];
 in.opt.f_fname = @f_lin2D; % this is the native evolution function (n=2,n_theta=1)
 in.opt.g_fname = @g_Id;
+in.opt.priors.a_alpha = 1;
+in.opt.priors.b_alpha = 1;
 in.dim.n = 2;
 in.dim.n_theta = 1;
 in.dim.n_phi = 0;
 in.dim.p = 2;
 in.dim.n_t = n_t;
-[in.opt] = VBA_check([],u,in.opt.f_fname,in.opt.g_fname,in.dim,[]);
+[in.opt] = VBA_check([],u,in.opt.f_fname,in.opt.g_fname,in.dim,in.opt);
 in.opt.inF.deltat = dt;
 in.opt.inF.b = 5e-1;
 

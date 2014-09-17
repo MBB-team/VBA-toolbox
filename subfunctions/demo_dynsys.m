@@ -96,16 +96,17 @@ title(ha(1),['likelihood'])
 
 gp1 = theta(1)+[-4:4];
 gp2 = theta(2)+[-2:0.5:2];
-n = length(gp);
-for i=1:n
+n1 = length(gp1);
+n2 = length(gp2);
+for i=1:n1
     i
-    for j=1:n
+    for j=1:n2
         theta = [gp1(i);gp2(j)];
         [gy] = simulateNLSS(n_t,f_fname,g_fname,theta,[],u,alpha,sigma,options,x0);
         LLp(i,j) = sum((gy(1,:)-y(1,:)).^2);
     end
 end
-LLp(find(isnan(LLp)==1) = Inf;
+LLp(find(isnan(LLp)==1)) = Inf;
 LLp(LLp>1e3) = 1e3;
 ha(2) = subplot(1,2,2,'parent',hf,'nextplot','add');
 imagesc(exp(-1e-2*LLp),'parent',ha(2))

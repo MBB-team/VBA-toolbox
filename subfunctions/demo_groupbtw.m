@@ -42,9 +42,9 @@ for j=1:length(dr)
                 L(:,i,2) = L0(:,i2,3-m);
             end
         end
-        [ep(ii,j),out] = VBA_groupBMCbtw(L,struct('verbose',0));
+        [ep(ii,j),out] = VBA_groupBMC_btwConds(L,struct('verbose',0));
         pep(ii,j) = out.pep;
-        bor(ii,j) = out.VBA.out.bor;        
+        bor(ii,j) = out.VBA.btw.out.bor;        
     end
 end
 
