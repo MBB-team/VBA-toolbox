@@ -33,9 +33,9 @@ dim.n = 5*nreg;
 
 
 if extended
-    dim.n_r = numel(options.inG.r) ;
+    n_r = numel(options.inG.r) ;
 else
-    dim.n_r=0;
+    n_r=0;
 end
 
 %% SET PRIORS
@@ -44,7 +44,7 @@ end
 
 nx = 5*nreg;
 if extended
-    nx=nx+dim.n_r;
+    nx=nx+n_r;
 end
 %- state %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% TODO Different for predictors ?
 priors.muX0 = zeros(nx,1); 
@@ -70,7 +70,7 @@ priors.SigmaTheta(options.inF.indself,options.inF.indself) = 1e-1; %0.1
 if extended
     idx = options.inF.indself+1:options.inF.indhself-1;
     priors.SigmaTheta(idx,idx) =   5e0*eye(numel(idx)); %5
-    priors.SigmaTheta(options.inF.indhself,options.inF.indhself) = 5e-1*ones(dim.n_r); %.5
+    priors.SigmaTheta(options.inF.indhself,options.inF.indhself) = 5e-1*ones(n_r); %.5
     % const
 %     priors.muTheta(options.inF.indconst) = 0; 
 %     priors.SigmaTheta(options.inF.indconst,options.inF.indconst) = 10*ones(dim.n_r); 

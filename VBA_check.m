@@ -33,12 +33,10 @@ else
     dim.u = size(u,1);
 end
 
-
-
 %--------- Check options structure ----------%
 
 % set defaults 
-options = check_option(options, ...
+options = check_struct(options, ...
     'decim'      , 1     , ...     % Micro-time resolution
     'microU'     , 0     , ...     % Micro-resolution input
     'inF'        , []    , ...     % Optional (internal) parameters of the evolution function
@@ -65,24 +63,20 @@ options = check_option(options, ...
     'nmog'       , 1       ...     % split-Laplace VB?
 ) ;
 
-
-options = check_option(options, ...
+options = check_struct(options, ...
     'isYout'    , zeros(dim.p,dim.n_t)            , ... % excluded data
     'skipf'     , zeros(1,dim.n_t)                , ... 
     'sources'   , struct('type', options.binomial , ... % multisource
                          'out' , 1:dim.p  )         ...
 ) ;
                          
-
-options = check_option(options, ...
+options = check_struct(options, ...
     'extended'  , numel(options.sources)>1 ...          % is multisources
 ) ;
-
 
 % checks
 options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
 options.kernelSize  = min([dim.n_t,options.kernelSize]);
-
 
 % binomial check
 for i=1:numel(options.sources)
@@ -97,7 +91,6 @@ end
 
 % split in multisession
 [f_fname,g_fname,dim,options,u] = VBA_multisession_expand(f_fname,g_fname,dim,options,u);
-
 
 % Deal with micro-resolution input
 u = VBA_getU(u,options,dim,'2macro');
@@ -183,8 +176,6 @@ if ~isfield(options,'figName')
     end
 end
 
-
-
 % ensure excluded data consistency
 gsi = find([options.sources.type]==0);
 for i=1:numel(gsi) 
@@ -198,7 +189,6 @@ end
 % store evolution/observation function handles
 options.f_fname = f_fname;
 options.g_fname = g_fname;
-
 
 % split-MoG sufficient statistics
 if options.nmog > 1
@@ -262,7 +252,6 @@ if dim.n > 0 && sum(options.delays(:)) > 0
     dim.n = dim.n*(max(inF.options.delays(:))+1);
 end
 
-
 % Add other inputs in the options structure:
 options.g_nout = nargout(options.g_fname);
 options.priors = priors;
@@ -273,7 +262,6 @@ if isequal(options.f_fname,@f_DCMwHRF) && isequal(options.g_fname,@g_HRF3)
     % DCM for fMRI
     [options] = VBA_check4DCM(options);
 end
-
 
 if dim.n > 0
     options.f_nout = nargout(options.f_fname);

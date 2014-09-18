@@ -41,7 +41,7 @@ inF.dhC = inFtemp.dC;
 inF.dhD = inFtemp.dD;
 
 %- save dimensions
-dim.n_r=n_r;
+% dim.n_r=n_r;
 
 end
 

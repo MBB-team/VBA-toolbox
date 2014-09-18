@@ -78,9 +78,9 @@ dxdt = flow*Xt + C*ut; % vector field
 J = A + dxB + dxD2; % Jacobian
 
 function B=easykron(X,nx,n)
-B = zeros(n*nx,n);
+  B = zeros(n*nx,n);
   idx = 1:n:(n*nx+eps);
-  for k = 1:n  
+  for k = 1:n 
     B(idx,k) = X;
     idx = idx+1;
   end

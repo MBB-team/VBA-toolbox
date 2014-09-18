@@ -1,4 +1,3 @@
-
 function [a, b]=getHyperpriors(y,p_min,p_max)
 %% compute hyperpriors parameters given you want to eplain between p_min 
 %  and p_max fraction of the total variance.
