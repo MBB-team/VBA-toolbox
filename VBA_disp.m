@@ -5,9 +5,10 @@ if options.verbose
     if iscell(str)
         n = length(str);
         for i=1:n
-            disp(str{i})
+            fprintf(str{i})
         end
     else
-       disp(str) 
+       fprintf(str) 
     end
+    fprintf('\n')
 end
