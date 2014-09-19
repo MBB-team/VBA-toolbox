@@ -159,31 +159,6 @@ for iS = 1:numel(out.options.sources)
         dy(iS).pg2 = dy(iS).pg2./spgy;
     end
 end
-    
-
-    
-% dy.dy = out.suffStat.dy(:);
-% dy.R = spm_autocorr(out.suffStat.dy);
-% dy.m = mean(dy.dy);
-% dy.v = var(dy.dy);
-% [dy.ny,dy.nx] = hist(dy.dy,10);
-% dy.ny = dy.ny./sum(dy.ny);
-% d = diff(dy.nx);
-% d = abs(d(1));
-% dy.d = d;
-% spgy = sum(exp(-0.5.*(dy.m-dy.nx).^2./dy.v));
-% dy.grid = dy.nx(1):d*1e-2:dy.nx(end);
-% dy.pg = exp(-0.5.*(dy.m-dy.grid).^2./dy.v);
-% dy.pg = dy.pg./spgy;
-% if  ~out.options.binomial
-%     shat = posterior.a_sigma(end)./posterior.b_sigma(end);
-%     spgy = sum(exp(-0.5.*shat.*dy.nx.^2));
-%     dy.pg2 = exp(-0.5.*shat.*dy.grid.^2);
-%     dy.pg2 = dy.pg2./spgy;
-% end
-
-        
-        
 
 % get residuals: state noise
 dx.dx = out.suffStat.dx(:);
