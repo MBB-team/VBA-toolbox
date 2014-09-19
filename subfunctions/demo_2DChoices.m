@@ -6,7 +6,7 @@
 % is then compared to the simulated profile.
 
 
-clear all
+clear variable
 close all
 
 % initialize simulations
@@ -36,7 +36,6 @@ options.inG = in;
 options.binomial = 1;
 options.dim = dim;
 [y,x,x0,eta,e] = simulateNLSS(ntrials,[],g_fname,[],phi,u,[],[],options);
-
 
 % graphical summary of choice data
 dr = R(1,:) - R(2,:); % 1st-alternative reward minus 2nd-alternative reward

@@ -23,8 +23,8 @@ end
 priors.muPhi = zeros(n_u,1);
 priors.SigmaPhi = eye(n_u,n_u);
 options.priors = priors;
-options.verbose=0;
-options.DisplayWin=0;
+options.verbose=1;
+options.DisplayWin=1;
 
 %% simulate
 [y,x,x0,eta,e] = simulateNLSS(n_t,[],@g_linear,[],betas,u,1,5,options,[]);

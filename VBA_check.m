@@ -26,7 +26,7 @@ dim = check_struct(dim, ...
 
 
 if isempty(u)
-    u = zeros(1,dim.n_t);
+    u = zeros(0,dim.n_t);
     dim.u=0;
 else
     u = full(u);

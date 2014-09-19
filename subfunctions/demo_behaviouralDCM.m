@@ -1,4 +1,4 @@
-function [posterior,out] = demo_behaviouralDCM()
+function [posterior,out,simulated] = demo_behaviouralDCM()
 %%% ----------------------------------------------------------------------
 %%% ----------------------------------------------------------------------
 
@@ -115,10 +115,14 @@ for i=1:nreg
     theta(options.inF.indhD{i}) = t_hD{i};
 end
 
+simulated.theta = theta;
+simulated.phi = phi;
+
 %--- Simulate time series of hidden states and observations
 disp('*** Simulation');
 
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,zeros(dim.n,1));
+
 
 f=figure('Color','w');
 subplot(2,1,1)

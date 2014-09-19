@@ -27,7 +27,7 @@ n_t = 2e2;
 dt = 1e-1;
 f_fname = @f_embedAR;  % this is an AR(1) embedding evolution function
 g_fname = @g_embedAR;  % this is an AR(1) embedding observation function
-u = [];
+u = zeros(1,n_t);
 in.opt.f_fname = @f_lin2D; % this is the native evolution function (n=2,n_theta=1)
 in.opt.g_fname = @g_Id;
 in.opt.priors.a_alpha = 1;
@@ -78,6 +78,7 @@ options.dim = dim;
 
 
 % Build time series of hidden states and observations
+% [y,x,x0,eta,e] = simulateNLSS_old(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 
 % display time series of hidden states and observations

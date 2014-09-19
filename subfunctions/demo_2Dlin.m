@@ -11,7 +11,7 @@ delta_t = 1e-1;
 f_fname = @f_lin2D;
 g_fname = @g_Id;
 
-u       = [];
+u       = zeros(1,n_t);
 
 
 % Parameters of the simulation
@@ -49,7 +49,7 @@ dim.n               = 2;
 % options.checkGrads = 1;
 
 % Build time series of hidden states and observations
-[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,priors.muX0);
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)

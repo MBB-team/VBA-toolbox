@@ -33,14 +33,13 @@ function [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sig
 
 try
     x0; 
-    drawX0 = false;
+    n=numel(x0);
 catch
     try
-        x0 = options.priors.muX0;
+        n = numel(options.priors.muX0);
     catch
-        x0=[];
+        n = 0;
     end
-    drawX0 = true;
 end
 
 
@@ -54,12 +53,12 @@ dim = options.dim;
 dim = check_struct(dim, ...
     'n_theta'  , length(theta)  , ...
     'n_phi'    , length(phi)    , ...
-    'n'        , size(x0,1)     , ...
+    'n'        , n     , ...
     'n_t'      , n_t              ...
     );
 
 try, options.inG; catch, options.inG = []; end
-try, U = u(:,1);  catch, U = []; end
+try, U = u(:,1);  catch, U = zeros(size(u,1),1); end
 dim.p = size(feval(g_fname,zeros(dim.n,1),phi,U,options.inG),1);
 
 % --- check priors
@@ -99,10 +98,17 @@ sgi = find([options.sources(:).type]==0) ;
 % === Simulate timeseries
 
 % Initial hidden-states value
-if dim.n > 0 && drawX0 
-    sQ0 = VBA_getISqrtMat(options.priors.SigmaX0,0);
-    x0 = x0 + sQ0*randn(dim.n,1);
-    clear sQ0
+if dim.n > 0
+    try
+        x0;
+    catch
+        x0 = options.priors.muX0;
+        sQ0 = VBA_getISqrtMat(options.priors.SigmaX0,0);
+        x0 = x0 + sQ0*randn(dim.n,1);
+        clear sQ0
+    end
+else
+    x0 = zeros(dim.n,1);
 end
 
 % stack X0

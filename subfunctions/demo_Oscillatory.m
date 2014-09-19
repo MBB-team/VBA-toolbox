@@ -11,7 +11,7 @@ delta_t = 2e-1;         % integration time step (Euler method)
 f_fname = @f_lin2D;
 g_fname = @g_sigmoid;
 
-u       = [];
+u       = zeros(1,n_t);
 
 % Build options structure for temporal integration of SDE
 inF.deltat      = delta_t;
