@@ -1,5 +1,7 @@
 function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
-% checks (and fills in default) optional inputs to VBA_NLStateSpaceModel.m
+% VBA_CHECK 
+% [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
+% Checks (and fills in default) optional inputs to VBA_NLStateSpaceModel.m
 % function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
 % This function checks the consistency of the arguments to the
 % VBA_NLStateSpaceModel.m function. Importantly, it fills in the missing
@@ -9,8 +11,9 @@ function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
 % 0), the priors are modified to invert an ODE-like state-space model, i.e.
 % the equivalent deterministic system.
 
+%% ________________________________________________________________________
+%  check model dimension
 
-% Fills in dim structure and default input if required
 try
     dim.n;
     dim.n_theta;
@@ -24,16 +27,15 @@ dim = check_struct(dim, ...
     'p'     , size(y,1)  ...
 );
 
-
 if isempty(u)
     u = zeros(0,dim.n_t);
-    dim.u=0;
 else
     u = full(u);
-    dim.u = size(u,1);
 end
+dim.u = size(u,1);
 
-%--------- Check options structure ----------%
+%% ________________________________________________________________________
+%  check option structure
 
 % set defaults 
 options = check_struct(options, ...
@@ -74,11 +76,9 @@ options = check_struct(options, ...
     'extended'  , numel(options.sources)>1 ...          % is multisources
 ) ;
 
-% checks
 options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
 options.kernelSize  = min([dim.n_t,options.kernelSize]);
 
-% binomial check
 for i=1:numel(options.sources)
     if options.sources(i).type % if binomial
         if ~isempty(y)
@@ -96,9 +96,11 @@ end
 u = VBA_getU(u,options,dim,'2macro');
 VBA_disp(' ',options)
 
-%---------- Check priors -----------%
-options.params2update.phi = 1:dim.n_phi;
+%% ________________________________________________________________________
+%  check priors
+
 options.params2update.theta = 1:dim.n_theta;
+options.params2update.phi = 1:dim.n_phi;
 options.params2update.x0 = 1:dim.n;
 for t=1:dim.n_t
     options.params2update.x{t} = 1:dim.n;

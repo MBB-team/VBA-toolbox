@@ -8,9 +8,8 @@ function fit = VBA_fit(posterior,out)
 %       .LL: log-likelihood of the model
 %       .AIC: Akaike Information Criterion
 %       .BIC: Bayesian Informaion Criterion
-%       .R2: if data is continuous, R2 = coefficient of determination
-%       (fraction of explained variance). If data is binary, R2 = balanced
-%       classification accuracy (fraction of correctly predicted outcomes).
+%       .R2: coefficient of determination (fraction of explained variance). 
+%       .acc  balanced classification accuracy (fraction of correctly predicted outcomes).
 
 suffStat = out.suffStat;
 
@@ -57,7 +56,6 @@ for i=1:length(bsi)
     fit.ny(si) = sum(1-out.options.isYout(:));
     
     % balanced accuracy
-%     if isfield(out.options,'sources')
         idx = out.options.sources(si).out;
         y_temp = out.y(idx,:);
         y_temp = y_temp(out.options.isYout(idx,:) == 0);
@@ -74,31 +72,8 @@ for i=1:length(bsi)
         N = tn + fp;
         fit.R2(si) = 0.5*(tp./P + tn./N);
         fit.acc(si) = (tp+tn)./(P+N);
-%     end
     
 end
-
-% if ~isfield(out.options,'sources')
-%     if ~out.options.binomial
-%         % coefficient of determination
-%         SS_tot = sum((out.y(:)-mean(out.y(:))).^2);
-%         SS_err = sum((out.y(:)-suffStat.gx(:)).^2);
-%         fit.R2 = 1-(SS_err/SS_tot);
-%     else
-%         % balanced accuracy
-%         bg = out.suffStat.gx>.5; % binarized model predictions
-%         tp = sum(vec(out.y).*vec(bg)); % true positives
-%         fp = sum(vec(1-out.y).*vec(bg)); % false positives
-%         fn = sum(vec(out.y).*vec(1-bg)); % false positives
-%         tn = sum(vec(1-out.y).*vec(1-bg)); %true negatives
-%         P = tp + fn;
-%         N = tn + fp;
-%         fit.R2 = 0.5*(tp./P + tn./N);
-%         fit.acc = (tp+tn)./(P+N);
-%     end
-% end
-%     
-
 
 % AIC/BIC
 fit.ntot = 0;
