@@ -19,18 +19,14 @@ if nargin < 7
 else
     homogeneous = ~~homogeneous;
 end
-if nargin > 7
-        extended = 1;
-        try 
-            sources;
-        catch
-            sources(1).out=size(A,1);
-            sources(2).out=size(hA,1);
-        end
 
-else
-    extended = 0; 
+if ~exist('sources','var')
+    sources(1).out=size(A,1);
+    if exist('hA','var')
+        sources(2).out=size(hA,1);
+    end
 end
+extended = numel(sources)>1;
 
 %- prepare neural evolution function parameters indices and matrices
 [inF] = prepare_dcm(A,B,C,D);
