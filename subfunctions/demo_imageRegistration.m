@@ -2,7 +2,6 @@
 
 close all 
 clear variables
-clc
 
 % 1: create original 2D image
 [X,Y] = meshgrid(-2:.2:2, -2:.2:2);                                

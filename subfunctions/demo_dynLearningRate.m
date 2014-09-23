@@ -12,7 +12,6 @@
 
 close all
 clear variables
-clc
 
 % simulate VB volatile learner in a 2-armed bandit task
 fb.inH.u0 = repmat([ones(1,50),zeros(1,50)],1,4); % feedbacks with reversals

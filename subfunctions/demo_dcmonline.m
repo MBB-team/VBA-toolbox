@@ -18,7 +18,6 @@
 
 close all
 clear variables
-clc
 
 
 % Basic settings

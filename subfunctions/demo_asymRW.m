@@ -4,7 +4,6 @@
 
 close all
 clear all
-clc
 
 % Basic settings
 n_t = 128; % number of trials

@@ -8,7 +8,6 @@
 
 close all
 clear variables
-clc
 
 Nmcmc = 64;
 

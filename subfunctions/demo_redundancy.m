@@ -6,7 +6,6 @@
 
 clear all
 close all
-clc
 
 dim1.n_phi = 1;
 dim1.n_theta = 0;

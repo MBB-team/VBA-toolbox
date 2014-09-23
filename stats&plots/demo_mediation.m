@@ -2,7 +2,6 @@
 
 close all
 clear all
-clc
 
 n = 32; % sample size
 s = 2; % noise standard deviation
