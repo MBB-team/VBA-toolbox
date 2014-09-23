@@ -32,6 +32,8 @@ dim.n = size(x,1);
 options.isYout = zeros(1,3*nt);
 options.isYout(nt:2*nt+1) = 1;
 options.MaxIterInit = 0;
+options.priors.a_alpha = 1;
+options.priors.b_alpha = 1;
 
 % VB-Kalman-filter
 [p1,o1] = VBA_NLStateSpaceModel(y,[],f_fname,g_fname,dim,options);
