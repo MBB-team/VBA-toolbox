@@ -28,7 +28,7 @@ for i=1:length(gsi)
         fit.ny(si) = fit.ny(si) + length(find(diag(out.options.priors.iQy{t,i})~=0));
         fit.LL(si) = fit.LL(si) + 0.5*ldq;
     end
-    fit.LL(si) = fit.LL(si) - 0.5*fit.ny(si)*log(2*pi);
+    fit.LL(si) = fit.LL(si) - 0.5*fit.ny(si)*log(2*pi);    
     
     % coefficient of determination
 %     if isfield(out.options,'sources')
@@ -70,8 +70,8 @@ for i=1:length(bsi)
         tn = sum(vec(1-y_temp).*vec(1-bg)); %true negatives
         P = tp + fn;
         N = tn + fp;
-        fit.R2(si) = 0.5*(tp./P + tn./N);
-        fit.acc(si) = (tp+tn)./(P+N);
+        fit.R2(si) = (tp+tn)./(P+N);
+        fit.acc(si) = balanced_accuracy(suffStat.gx(idx,:),out.y(idx,:),out.options.isYout(idx,:));
     
 end
 
@@ -93,5 +93,4 @@ if out.dim.n > 0  && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.
 end
 fit.AIC = sum(fit.LL) - fit.ntot;
 fit.BIC = sum(fit.LL) - 0.5*fit.ntot.*log(sum(fit.ny));
-
 
