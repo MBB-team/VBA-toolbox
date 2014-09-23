@@ -13,7 +13,8 @@ switch type
         ddydphi = sigmaHat.*(dG_dPhi*Qy*dy);
         d2gdx2 = sigmaHat.*(dG_dPhi*Qy*dG_dPhi');
         dy2=dy'*Qy*dy ;
-        logL= -0.5*sigmaHat.*dy2;
+        logL = -0.5*sigmaHat.*dy2 ;
+        logL = logL + 0.5*VBA_logDet(Qy*sigmaHat) - 0.5*log(2*pi) ;
         
     case 1 %--- binomial
         gx = checkGX_binomial(gx);
