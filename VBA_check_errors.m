@@ -1,10 +1,6 @@
 function [suffStat,posterior] = VBA_check_errors(y,u,options)
-% dummy diagnostic of model specification
-
-if options.extended
-    [suffStat,posterior] = VBA_check_errors_extended(y,u,options);
-    return
-end
+% Function merging VBA_getsuffstat and the content of VBA_Initialize
+% regarding deterministic DCM
 
 [suffStat] = VBA_getSuffStat(options,[],0);
 dim = options.dim;
@@ -24,14 +20,13 @@ Phi = options.priors.muPhi;
 dy = zeros(dim.p,dim.n_t);
 vy = zeros(dim.p,dim.n_t);
 gx = zeros(dim.p,dim.n_t);
-if ~options.binomial
-    iQy = options.priors.iQy;
-    dy2 = 0;
-    % Get precision parameters
-    sigmaHat = posterior.a_sigma./posterior.b_sigma;
-else
-    logL = 0;
+dy2 = zeros(1,numel(options.sources));
+logL = zeros(1,numel(options.sources));
+
+if  sum([options.sources(:).type]==0)>0
+    iQy = options.priors.iQy; 
 end
+
 if isequal(options.g_fname,@VBA_odeLim)
     clear VBA_odeLim
     muX = zeros(options.inG.old.dim.n,dim.n_t);
@@ -75,26 +70,48 @@ for t=1:dim.n_t
         posterior = [];
         return
     end
-    
-    % remove irregular trials
-    yin = find(~options.isYout(:,t));
-    if ~options.binomial
-        % error terms
-        dy(:,t) = y(:,t) - gx(:,t);
-        dy2 = dy2 + dy(:,t)'*iQy{t}*dy(:,t);
-        % Predictive density (data space)
-        V = dG_dPhi'*posterior.SigmaPhi*dG_dPhi + (1./sigmaHat).*VBA_inv(iQy{t},[]);
-        vy(:,t) = diag(V);
-    else
-        % fix numerical instabilities
-        gx(:,t) = checkGX_binomial(gx(:,t));
-        % predicted variance over binomial data
-        vy(:,t) = gx(:,t).*(1-gx(:,t));
-        % accumulate log-likelihood
-        logL = logL + y(yin,t)'*log(gx(yin,t)) + (1-y(yin,t))'*log(1-gx(yin,t));
-        % prediction error
-        dy(yin,t) = y(yin,t) - gx(yin,t);
+
+
+   % accumulate gradients, hessian and likelyhood
+    gsi = find([options.sources(:).type]==0) ;
+    for si = 1:numel(options.sources)
+        % compute source contribution
+        idx_obs_all = options.sources(si).out;
+        is_obs_out = find(options.isYout(idx_obs_all,t)==0);
+        idx_obs = idx_obs_all(is_obs_out);
+       
+        if ~isempty(idx_obs) 
+            
+            sigmaHat=0;
+            iQyt=[];
+            if options.sources(si).type==0
+                gi = find(si==gsi) ;
+                sigmaHat = posterior.a_sigma(gi)./posterior.b_sigma(gi);
+                iQyt = iQy{t,gi};
+                iQyt=iQyt(is_obs_out,is_obs_out);
+            end
+            
+            [~,~,logL_t,dy(idx_obs,t),dy2_t,vy(idx_obs,t)] = VBA_get_dL(gx(idx_obs,t),dG_dPhi(:,idx_obs),y(idx_obs,t),options.sources(si).type,iQyt,sigmaHat);
+            
+            % aggregate
+            dy2(si) = dy2(si) + dy2_t;
+            logL(si) = logL(si) + logL_t;
+            
+             if options.sources(si).type==0
+                V = dG_dPhi(:,idx_obs)'*posterior.SigmaPhi*dG_dPhi(:,idx_obs) ;
+                if dim.n > 0
+                    V = V + dG_dX(:,idx_obs)'*posterior.SigmaX.current{t}*dG_dX(:,idx_obs);
+                end
+                vy(idx_obs,t) = vy(idx_obs,t) + diag(V);
+            end
+                 
+        end
+        
+        
+        
     end
+
+ %%
     
     % store states dynamics if ODE mode
     if isequal(options.g_fname,@VBA_odeLim)
@@ -140,8 +157,10 @@ if isequal(options.g_fname,@VBA_odeLim)
     suffStat.muX = muX;
     suffStat.SigmaX = SigmaX;
 end
-if ~options.binomial
-    suffStat.dy2 = dy2;
-else
-    suffStat.logL = logL;
-end
+suffStat.dy2 = dy2;
+suffStat.logL = logL;
+
+
+
+
+
