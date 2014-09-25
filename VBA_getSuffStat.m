@@ -7,6 +7,7 @@ function [suffStat] = VBA_getSuffStat(options,suffStat,flag)
 %   - flag: {0}, 1 if online version
 
 if ~exist('flag','var'), flag = 0; end
+if ~exist('suffStat','var'), suffStat = struct(); end
 
 dim = options.dim;
 dim.online = elvis(flag, dim.n_t, 1); 
