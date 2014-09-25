@@ -67,7 +67,7 @@ for t=1:p
     end
 end
 
-VBA_ReDisplay(posterior,out,1)
+VBA_ReDisplay(posterior,out,1);
 
 %---- Display results ----%
 displayResults(posterior,out,y,[],[],[],phi,[],[])

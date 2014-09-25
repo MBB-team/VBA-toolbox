@@ -80,6 +80,6 @@ o = out;
 o.u = uu;
 [kernels] = VBA_VolterraKernels(posterior,o,16);
 o.diagnostics.kernels = kernels;
-VBA_ReDisplay(posterior,o,1)
+VBA_ReDisplay(posterior,o,1);
 
 getSubplots

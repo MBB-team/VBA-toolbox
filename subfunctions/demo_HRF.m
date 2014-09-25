@@ -104,6 +104,6 @@ set(gcf,'name',['dt=',num2str(deltat),' sec (decim=',num2str(decim),')'])
 set(hres,'name',['dt=',num2str(deltat),' sec (decim=',num2str(decim),')'])
 
 % Re-display high-microtime VB inference
-VBA_ReDisplay(posterior,out,1)
+VBA_ReDisplay(posterior,out,1);
 set(gcf,'name',['dt=',num2str(out.options.inF.deltat),' sec (decim=',num2str(out.options.decim),')'])
 

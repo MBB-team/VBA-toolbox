@@ -103,7 +103,7 @@ displayResults(posterior,out,y,[],[],[],phi,[],[])
 set(handles.ha0,'nextplot','add')
 qx = g_sigm_binomial([],phi,gridu,[]);
 plot(handles.ha0,gridu,qx,'k--')
-VBA_ReDisplay(posterior,out)
+VBA_ReDisplay(posterior,out);
 hf = figure('color',[1 1 1]);
 ha = axes('parent',hf);
 plot(ha,eu,'k','marker','.');

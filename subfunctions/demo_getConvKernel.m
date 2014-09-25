@@ -55,4 +55,4 @@ hold on
 plot(theta*(1-theta).^[0:inG.dim.n_t-1])
 legend({'estimate','credible interval','theoretical'})
 
-VBA_ReDisplay(p0,o0,1)
+VBA_ReDisplay(p0,o0,1);

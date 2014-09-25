@@ -110,7 +110,7 @@ ha = plotVolterra(hf,mean(mw,3),var(mw,[],3));
 
 
 
-VBA_ReDisplay(posterior,out,1)
+VBA_ReDisplay(posterior,out,1);
 
 % VBA_ReDisplay(p0,o0,1)
 
