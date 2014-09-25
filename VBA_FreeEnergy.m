@@ -16,10 +16,6 @@ function [F] = VBA_FreeEnergy(posterior,suffStat,options)
 % OUT:
 %   - F: the free energy under the local Laplace approximation
 
-if isfield(options,'extended') && options.extended
-    [F] = VBA_FreeEnergy_extended(posterior,suffStat,options);
-    return
-end
 
 if options.DisplayWin % Display progress
     try
@@ -31,22 +27,27 @@ end
 
 priors = options.priors;
 dim = options.dim;
+gsi=find([options.sources(:).type]==0);
+bmsi=find([options.sources(:).type]==1 | [options.sources(:).type]==2);
 
 % Entropy calculus
 suffStat = VBA_Hpost(posterior,suffStat,options);
 
 % Get common free energy terms
-if ~options.binomial
-    E = posterior.a_sigma./posterior.b_sigma;
-    V = posterior.a_sigma./posterior.b_sigma^2;
-    E0 = priors.a_sigma./priors.b_sigma;
-    V0 = priors.a_sigma./priors.b_sigma^2;
-    SSE = E*suffStat.dy2;
-    dF = -VBA_KL(E,V,E0,V0,'Gamma');
-    ElogS = psi(posterior.a_sigma) - log(posterior.b_sigma);
-else
-    SSE = -2*suffStat.logL;
-    dF = 0;
+
+SSE=0;
+dF=0;
+for si=1:length(gsi)
+    E = posterior.a_sigma(si)./posterior.b_sigma(si);
+    V = posterior.a_sigma(si)./posterior.b_sigma(si)^2;
+    E0 = priors.a_sigma(si)./priors.b_sigma(si);
+    V0 = priors.a_sigma(si)./priors.b_sigma(si)^2;
+    SSE = SSE + E*suffStat.dy2(gsi(si));
+    dF = dF -VBA_KL(E,V,E0,V0,'Gamma');
+    ElogS(si) = psi(posterior.a_sigma(si)) - log(posterior.b_sigma(si));
+end
+for si=1:length(bmsi)
+    SSE = SSE - 2*suffStat.logL(bmsi(si));
 end
 ldQ = 0;
 S = 0;
@@ -64,14 +65,15 @@ if dim.n > 0 && ~isinf(priors.a_alpha) && ~isequal(priors.b_alpha,0)
 end
 
 for t=1:dim.n_t
-    if ~options.binomial
-        ldQ = ldQ + VBA_logDet(options.priors.iQy{t});
-        ny = length(find(diag(options.priors.iQy{t})~=0));
-        dF = dF + 0.5*ny*ElogS;
+    for si=1:length(gsi)
+        ldQ = ldQ + VBA_logDet(options.priors.iQy{t,si});
+        ny = length(find(diag(options.priors.iQy{t,si})~=0));
+        dF = dF + 0.5*ny*ElogS(si);
         ntot = ntot + ny;
     end
+
     if dim.n > 0  && ~isinf(priors.a_alpha) && ~isequal(priors.b_alpha,0)
-        indIn =options.params2update.x{t};
+        indIn = options.params2update.x{t};
         nx = length(indIn);
         ldQ = ldQ + VBA_logDet(options.priors.iQx{t},indIn);
         dF = dF + 0.5*nx*ElogA;
@@ -131,3 +133,4 @@ if options.DisplayWin % Display progress
         drawnow
     end
 end
+
