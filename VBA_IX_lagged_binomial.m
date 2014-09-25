@@ -192,7 +192,7 @@ deltaMuX = muX - X;
 
 % variational energy
 IX = logL -0.5*alphaHat.*dx2;
-if isweird({IX,SigmaX.current,SigmaX.inter}) || div
+if isweird({{IX},SigmaX.current,SigmaX.inter}) || div
     IX = -Inf;
 end
 
