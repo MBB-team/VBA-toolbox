@@ -41,9 +41,9 @@ else
 end
 if out.dim.n >= 1
     if isinf(out.options.priors.a_alpha) && isequal(out.options.priors.b_alpha,0)
-        str{4} = sprintf(['This was a deterministic dynamical system']);
+        str{4} = sprintf('This was a deterministic dynamical system');
     else
-        str{4} = sprintf(['This was a stochastic dynamical system']);
+        str{4} = sprintf('This was a stochastic dynamical system');
     end
     if isa(out.options.g_fname,'function_handle')
         gfn = func2str(out.options.g_fname);
@@ -88,8 +88,9 @@ str{5} = sprintf(['Bayesian log model evidences:','\n',...
 if ~out.options.OnLine && out.dim.n >= 1 && ~isinf(out.options.priors.a_alpha) && ~isequal(out.options.priors.b_alpha,0)
     Fd = out.options.init.out.F;
     str{5} = sprintf([str{5},'\n ',...
-        '    - deterministic variant: log p(y|m,eta=0) > ',num2str(Fd,'%4.3e')]);
+        '    - deterministic variant: log p(y|m,eta=0) > ',num2str(Fd,'%4.3e') ]);
 end
+str{5} = [str{5}, '\n'];
 
 R2str={'',''};
 LLstr={'',''};
@@ -110,7 +111,7 @@ LLstr = [LLstr{1} LLstr{2}];
 
 
 AICstr = ['     - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n'];
-BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e')];
+BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n'];
 
 str{6} = sprintf(['Classical fit accuracy metrics:','\n',...
     R2str,...

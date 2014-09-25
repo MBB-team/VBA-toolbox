@@ -204,7 +204,7 @@ if dim.n_phi >= 1
     VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
 end
 try
-    getSubplots
+    getSubplots ;
 end
 
 hdet = uicontrol('parent',hfig,'style','pushbutton','tag','VBLaplace','units','normalized','position',[0.4,0.05,0.2,0.02],'backgroundcolor',.8*[1,1,1],'string','diagnose deterministic?','callback',@diagnoseDeterministic);
@@ -273,9 +273,9 @@ end
 % Display precision hyperparameters
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
-    xlabel(options.display.ha(2*Ns+4),' ')
+    xlabel(options.display.ha(2*Ns+4),' ') ;
     try
-        xlabel(options.display.ha(2*Ns+6),' ')
+        xlabel(options.display.ha(2*Ns+6),' ') ;
     end
 end
 
@@ -291,7 +291,7 @@ if dim.n_phi >= 1
 end
 
 try
-    getSubplots
+    getSubplots ;
 end
 
 
@@ -315,8 +315,8 @@ diagnostics = out.diagnostics;
 if length(out.suffStat.F)>2
     nit = length(out.suffStat.F)-1;
     ha = axes('parent',hf,'units','normalized','tag','VBLaplace','position',[0.15,0.6,0.5,0.3],'nextplot','add','xlim',[0,nit],'xtick',[0,nit],'xticklabel',{'prior (0)',['posterior (',num2str(nit),')']},'xgrid','off','ygrid','on');
-    plot(ha,[0:nit],out.suffStat.F)
-    plot(ha,[0:nit],out.suffStat.F,'.')
+    plot(ha,[0:nit],out.suffStat.F) 
+    plot(ha,[0:nit],out.suffStat.F,'.') ;
     [haf,hp1,hp2] = plotUncertainTimeSeries(diagnostics.LLH0*ones(1,2),3^2*ones(1,2),[0,nit],ha);
     set(hp1,'facecolor',[1 0 0])
     set(hp2,'color',[1 0 0])
@@ -336,8 +336,8 @@ if length(out.suffStat.F)>2
         xtl = {'first time point','last time point'};
     end
     ha = axes('parent',hf,'units','normalized','tag','VBLaplace','position',[0.15,0.15,0.5,0.3],'nextplot','add','xlim',[0,nit-1],'xtick',[0,nit-1],'xticklabel',xtl,'xgrid','off','ygrid','on');
-    plot(ha,[0:nit-1],diff(out.suffStat.F))
-    plot(ha,[0:nit-1],diff(out.suffStat.F),'.')
+    plot(ha,[0:nit-1],diff(out.suffStat.F)) ;
+    plot(ha,[0:nit-1],diff(out.suffStat.F),'.') ;
     if ~out.options.OnLine
         title(ha,'VB optimization: F increments','fontsize',11)
         xlabel(ha,'inner (Gauss-Newton) iterations')
@@ -348,7 +348,7 @@ if length(out.suffStat.F)>2
     ylabel(ha,'Free energy differences')
     box(ha,'off')
     try
-        getSubplots
+        getSubplots ;
     end
 end
 
@@ -399,7 +399,7 @@ ind = get(hObject,'Value');
 ud = get(hf,'userdata');
 try
     if isequal(get(ud.handles.hkernels(2),'parent'),hf)
-        delete(ud.handles.hkernels)
+        delete(ud.handles.hkernels) ;
     end
 end
 out = ud.out;
@@ -426,15 +426,15 @@ plot(handles.hkernels(2),kernels.y.m(1,:,ind)','marker','.','linestyle',':','col
 legend(handles.hkernels(2),{['simulated observables',' (R2=',num2str(mean(kernels.g.R2),'%4.2f'),')'],['observed samples',' (R2=',num2str(mean(kernels.y.R2),'%4.2f'),')']})
 plot(handles.hkernels(2),kernels.y.m(:,:,ind)','marker','.','linestyle',':')
 [t1,t2,hp] = plotUncertainTimeSeries(kernels.g.m(:,:,ind),kernels.g.v(:,:,ind),[],handles.hkernels(2));
-set(hp,'marker','.')
-set(handles.hkernels(2),'XLim',[0.5 size(kernels.g.m,2)+0.5],'xtick',[1:size(kernels.g.m,2)],'xticklabel',[0:size(kernels.g.m,2)-1])
+set(hp,'marker','.') ;
+set(handles.hkernels(2),'XLim',[0.5 size(kernels.g.m,2)+0.5],'xtick',[1:size(kernels.g.m,2)],'xticklabel',[0:size(kernels.g.m,2)-1]) ;
 title(handles.hkernels(2),['observables'' Volterra kernels: input #',num2str(ind)],'fontsize',12)
 ylabel(handles.hkernels(2),'(lagged) input weight')
 xlabel(handles.hkernels(2),'time lag')
 
 ud.handles = handles;
 set(hf,'userdata',ud);
-try getSubplots; end
+try, getSubplots; end
 
 function myDiagnostics()
 
@@ -442,7 +442,7 @@ function myDiagnostics()
 hf = get(gco,'parent');
 hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
 if ~isempty(hc)
-    delete(hc)
+    delete(hc) ;
 end
 
 % Second: display diagnostics
