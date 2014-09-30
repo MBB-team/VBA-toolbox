@@ -48,19 +48,25 @@ dim_multi.u = dim.u+1 ;
 priors_multi = options.priors;
 
 % = get indexes of duplicated parameters
-X0_multi = 1:dim.n;
 theta_multi = 1:dim.n_theta;
-phi_multi = 1:dim.n_phi;
+phi_multi   = 1:dim.n_phi;
+X0_multi    = 1:dim.n;
 
 % = restrict fixed parameters
-if isfield(options.multisession,'fixed') 
-    if isfield(options.multisession.fixed,'theta')
-        theta_multi = setdiff(theta_multi,options.multisession.fixed.theta);
-    end
-    if isfield(options.multisession.fixed,'phi')
-        phi_multi = setdiff(phi_multi,options.multisession.fixed.phi);
-    end
-end
+options.multisession = check_struct(options.multisession,'fixed',struct);
+fixed = check_struct(options.multisession.fixed, ...
+    'theta'   , []   , ...
+    'phi'     , []   , ...
+    'X0'      , []     ...
+);
+% syntactic sugar handling 
+if isequal(fixed.theta ,'all'), fixed.theta = 1:dim.n_theta; end
+if isequal(fixed.phi   ,'all'), fixed.phi   = 1:dim.n_phi; end
+if isequal(fixed.X0    ,'all'), fixed.X0    = 1:dim.n; end
+    
+theta_multi = setdiff(theta_multi,fixed.theta);
+phi_multi   = setdiff(phi_multi  ,fixed.phi  );
+X0_multi    = setdiff(X0_multi   ,fixed.X0   );
 
 % = expand (duplicate) priors and dimensions to cover all sessions
 priors = options.priors;
@@ -76,15 +82,14 @@ priors = options.priors;
 
 
 % = restrict initial hidden states
-if isfield(options.multisession,'fixed') && isfield(options.multisession.fixed,'X0')
     % enforce covariance across states (duplication is needed for evolution
     % independance)
-    for i= options.multisession.fixed.X0
+    for i = fixed.X0
         X0_cor = i + (0:n_session-1)*dim.n;
         priors_multi.SigmaX0(X0_cor,X0_cor) = priors_multi.SigmaX0(i,i);
     end
     
-end
+
 
 options.priors = priors_multi;
 if isfield(options,'dim')
