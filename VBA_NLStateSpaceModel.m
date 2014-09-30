@@ -186,10 +186,7 @@ if nargin == 0
     out.options = options;
     out.in = in;
     disp(out)
-    return
-elseif isweird(y)
-    disp('Error: there is a numerical trouble with provided data!')
-    return
+    return 
 end
 
 %-------------------- Initialization -------------------%
@@ -216,6 +213,11 @@ else
     % Check input arguments consistency (and fill in priors if necessary)
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     VBA_disp(' ',options)
+    
+    if isweird(y(~options.isYout))
+        disp('Error: there is a numerical trouble with provided data!')
+        return
+    end
     
     try % Initialize posterior pdf
         [posterior,suffStat,options] = VBA_Initialize(y,u,dim,options);

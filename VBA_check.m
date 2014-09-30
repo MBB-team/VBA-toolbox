@@ -80,9 +80,11 @@ options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
 options.kernelSize  = min([dim.n_t,options.kernelSize]);
 
 for i=1:numel(options.sources)
-    if options.sources(i).type % if binomial
+    if options.sources(i).type ~= 0 % if binomial
         if ~isempty(y)
-        if ~isbinary(y(options.sources(i).out,:))
+            isYoutSource = options.isYout(options.sources(i).out);
+            ySource = y(options.sources(i).out,:);
+        if ~isbinary(ySource(~isYoutSource))
             error('*** Data should be binary!')
         end
         end
