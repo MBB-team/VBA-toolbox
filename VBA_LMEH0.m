@@ -12,30 +12,46 @@ function [LLH0] = VBA_LMEH0(y,options)
 % OUT:
 %   - LLH0: the log evidence of the null model
 
-if isfield(options,'extended') && options.extended
-    LLH0=VBA_LMEH0_extended(y,options);
-    return;
-end
 
-try
-    y = y(options.isYout==0);
-end
-n = numel(y);
-if ~isbinary(y)
+LLH0 = 0;
+
+% gaussian source
+s_g = find([options.sources(:).type]==0);
+for s=1:length(s_g)
+    y_i = options.sources(s_g(s)).out ;
+    y_s = y(y_i,:);
+    y_s = y_s(options.isYout(y_i,:)==0);
     try
-        a0 = options.priors.a_sigma;
-        b0 = options.priors.b_sigma;
+        a0 = options.priors.a_sigma(s);
+        b0 = options.priors.b_sigma(s);
     catch
         a0 = 1;
         b0 = 1;
     end
-    y = y(:);
-    y2 = y'*y;
+    n = numel(y_s);
+    y_s = y_s(:);
+    y2 = y_s'*y_s;
     alpha = n/2 + a0;
     beta = y2./2 + b0;
-    LLH0 = -0.5*n*log(2*pi) + a0.*log(b0) - alpha.*log(beta) - gammaln(a0) + gammaln(alpha);
-else % assume binary data under chance (p=0.5)
-    LLH0 = n*log(.5);
+    LLH0 = LLH0 -0.5*n*log(2*pi) + a0.*log(b0) - alpha.*log(beta) - gammaln(a0) + gammaln(alpha);
 end
-    
 
+% binomial sources
+s_b = find([options.sources(:).type]==1);
+for s=1:length(s_b)
+    y_i = options.sources(s_b(s)).out ;
+    y_s = y(y_i,:);
+    y_s = y_s(options.isYout(y_i,:)==0);
+    n = numel(y_s);
+    LLH0 = LLH0 + n*log(.5);
+end
+
+% multinomial sources
+s_m = find([options.sources(:).type]==2);
+for s=1:length(s_m)
+    y_i = options.sources(s_m(s)).out ;
+    y_s = y(y_i,:);
+    y_s = y_s(options.isYout(y_i,:)==0);
+    [c,n] = size(y_s); 
+    LLH0 = LLH0 + n*log(1/c);
+end
