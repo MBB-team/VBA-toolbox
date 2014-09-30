@@ -29,4 +29,4 @@ plot((y-e)')
 % Call inversion routine
 [posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
 % Display results
-displayResults(posterior,out,y,[],[],[],phi,[],[])
+displayResults(posterior,out,y,[],[],[],phi,[],[]);

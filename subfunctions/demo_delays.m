@@ -85,7 +85,7 @@ hfp = findobj('tag','VBNLSS');
 set(hfp,'tag','0','name','inversion with delays');
 
 % Display results
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
 
 
 % Compare with no delay embedding

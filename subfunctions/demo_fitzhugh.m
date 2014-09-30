@@ -67,7 +67,7 @@ dim.n               = 2;
 
 
 %------------ Display results ------------------%
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
 
 
 [ehat,v_e,etahat,v_eta] = VBA_getNoise(posterior,out);

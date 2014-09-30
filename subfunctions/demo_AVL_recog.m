@@ -186,4 +186,4 @@ end
 
 
 % Display results
-displayResults(posterior,out,y,x,x0,theta,phi,Inf,sigma)
+displayResults(posterior,out,y,x,x0,theta,phi,Inf,sigma);

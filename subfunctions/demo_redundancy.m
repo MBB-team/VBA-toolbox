@@ -4,7 +4,7 @@
 % impact of the complexity penalty term as a function of the data.
 
 
-clear all
+clear variables
 close all
 
 dim1.n_phi = 1;

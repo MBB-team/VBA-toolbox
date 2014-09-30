@@ -95,7 +95,7 @@ end
 
 
 % compare final estimates with simulations
-displayResults(posterior,out,y,[],[],[],phi,[],[])
+displayResults(posterior,out,y,[],[],[],phi,[],[]);
 
 
 % summarize results of adaptive design strategy

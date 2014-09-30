@@ -68,6 +68,6 @@ options.priors = priors;
 
 
 % Display results
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
 
 

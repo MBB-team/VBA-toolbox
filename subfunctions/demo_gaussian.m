@@ -43,5 +43,5 @@ options.dim=dim;
 
 
 %---- Display results ----%
-displayResults(posterior,out,y,[],[],[],phi,[],sigma)
+displayResults(posterior,out,y,[],[],[],phi,[],sigma);
 

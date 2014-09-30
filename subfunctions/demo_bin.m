@@ -41,7 +41,7 @@ for ii=1:Nmcmc
             % invert model with and without the 2nd half of the data
             options.isYout(dim.p/2:dim.p) = 2-j;
             [p{j,i,ii},o{j,i,ii}] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
-            F(j,i,ii) = o{j,i,ii}.F - VBA_LMEH0(y,options);
+            F(j,i,ii) = o{j,i,ii}.F - VBA_LMEH0(y,o{j,i,ii}.options);
             % proportion of correct predictions on 2nd half of the data
             gx = o{j,i,ii}.suffStat.gx(dim.p/2:dim.p);
             g0 = y(dim.p/2:dim.p);

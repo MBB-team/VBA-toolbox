@@ -106,7 +106,7 @@ end
 [p0,o0] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 % Display results
-displayResults(p0,o0,y-e,x(1:2,:),x0(1:2),theta,phi,alpha,sigma)
+displayResults(p0,o0,y-e,x(1:2,:),x0(1:2),theta,phi,alpha,sigma);
 
 
 

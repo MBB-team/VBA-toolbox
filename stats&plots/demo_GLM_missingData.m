@@ -36,7 +36,7 @@ options.inG = inG;
 
 phi = [b;vec(X(inG.xmd))];
 
-displayResults(posterior,out,g,[],[],[],phi,1/s.^2,[])
+displayResults(posterior,out,g,[],[],[],phi,1/s.^2,[]);
 
 
 

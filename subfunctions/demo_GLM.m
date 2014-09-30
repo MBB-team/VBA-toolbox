@@ -23,4 +23,4 @@ dim.n=0;                        % nb of hidden states
 
 
 %---- Display results ----%
-displayResults(posterior,out,y,[],[],[],b,[],sigma)
+displayResults(posterior,out,y,[],[],[],b,[],sigma);

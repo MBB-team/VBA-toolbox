@@ -78,7 +78,7 @@ displaySimulations(y,x,eta,e)
 
 
 % Display results
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
 
 % Make predictions
 try

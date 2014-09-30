@@ -76,6 +76,6 @@ getSubplots
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
-displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)
+displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf);
 
 
