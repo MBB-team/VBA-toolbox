@@ -15,7 +15,7 @@ n = size(Xt,1);
 
 % Get parameters
 [E0,V0,tau0,kaf,kas,epsilon,alpha] = BOLD_parameters;
-nreg = n./5;
+nreg = numel(in.n5); %n./5;
 ind1 = in.ind1;
 ind2 = in.ind2;
 ind3 = in.ind3;
