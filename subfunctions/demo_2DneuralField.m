@@ -10,10 +10,10 @@ close all
 
 % dimensions
 n_t             = 2e2;                      % number of time points
-ns              = 8;                        % size of the square grid
+ns              = 5;                        % size of the square grid
 deltat          = 5e-2;                     % time discretization
-f_fname         = @f_2DneuralField;        % Evolution function
-g_fname         = @g_Id;              % Observation function
+f_fname         = @f_2DneuralField;         % Evolution function
+g_fname         = @g_Id;                    % Observation function
 
 % Sinusoidal input to the approximate center of the neural field
 u               = zeros(ns^2,n_t);
@@ -24,7 +24,7 @@ u(centre-1:centre+1,:)     = repmat(1*sin(ohmega*deltat*[1:n_t]),3,1);
 
 % parameters of the simulation
 alpha           = Inf;%1e6;
-sigma           = Inf;%1e3;
+sigma           = 1e3;%Inf;
 theta           = [0.15;1;1];
 phi             = [1;1;0.1];
 
