@@ -14,6 +14,4 @@ opt = in.options;
 opt.g_fname = in.g_fname;
 opt.g_nout = in.g_nout;
 opt.checkGrads = 0;
-dim.n = in.dim.n;
-dim.n_phi = in.dim.n_phi;
-dim.p = in.dim.p;
+dim = in.dim;

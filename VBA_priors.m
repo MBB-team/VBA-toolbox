@@ -56,10 +56,11 @@ else
     priors.SigmaTheta = [];
 end
 
+% prior Gaussian pdf of the hidden states
+priors.muX0 = zeros(dim.n,1);
+priors.SigmaX0 = eye(dim.n);
+    
 if dim.n > 0
-    % prior Gaussian pdf of the hidden states
-    priors.muX0 = zeros(dim.n,1);
-    priors.SigmaX0 = eye(dim.n);
     % singular prior Gamma pdf of the state noise (deterministic system)
     priors.a_alpha = Inf;
     priors.b_alpha = 0;
@@ -69,8 +70,6 @@ if dim.n > 0
         priors.iQx{t} = speye(dim.n);
     end
 else
-    priors.muX0 = [];
-    priors.SigmaX0 = [];
     priors.a_alpha = [];
     priors.b_alpha = [];
     priors.iQx = [];

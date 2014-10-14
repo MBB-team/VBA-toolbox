@@ -101,8 +101,8 @@ end
 
 function [fx,dfdx,dfdp] = EvalFun(fname,Xt,P,ut,in,dim,nout,nout0,d)
 % evaluates function, Jacobian and gradients (numerically if necessary)
-dfdx = [];
-dfdp = [];
+dfdx = zeros(dim.n,dim.n);
+dfdp = zeros(dim.n_theta,dim.n);
 deriv = [1 1 1];
 switch nout
     case 3

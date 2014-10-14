@@ -61,6 +61,7 @@ try, options.inG; catch, options.inG = []; end
 try, U = u(:,1);  catch, U = zeros(size(u,1),1); end
 dim.p = size(feval(g_fname,zeros(dim.n,1),phi,U,options.inG),1);
 
+options.dim=dim;
 % --- check priors
 options.priors = check_struct(options.priors, ...
     'a_alpha', 1, ...
@@ -85,10 +86,10 @@ iQx = options.priors.iQx;
 et0 = clock;
 
 % pre-allocate variables
-x = zeros(dim.n,dim.n_t);
+x   = zeros(dim.n,dim.n_t);
 eta = zeros(dim.n,dim.n_t);
-e = zeros(dim.p,dim.n_t);
-y = zeros(dim.p,dim.n_t);
+e   = zeros(dim.p,dim.n_t);
+y   = zeros(dim.p,dim.n_t);
 
 % muxer
 n_sources=numel(options.sources);
