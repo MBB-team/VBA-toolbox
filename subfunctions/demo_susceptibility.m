@@ -3,10 +3,10 @@
 % scenario:
 % o = P1*u1 + P2*(u1+u2) + u3*(P3+P4) + u4*P5 + P6.
 % In other words:
-% - u1 flows through two parallel branches: u1 --[P1,P2]--> o
-% - u2 flows through one branch: u2 --[P2]--> o
-% - u3 flows through two parallel branches: u3 --[P3,P4]--> o
-% - u4 flows through one branch: u4 --[P5]--> o
+% - u1 flows through two parallel branches: u1 --[P1 P2         ]--> o
+% - u2 flows through one branch:            u2 --[   P2         ]--> o
+% - u3 flows through two parallel branches: u3 --[      P3 P4   ]--> o
+% - u4 flows through one branch:            u4 --[            P5]--> o
 % This also means that:
 % - parameters P1 and P2 are important for funnelling the u1->o
 % relationship (and nothing else)
@@ -20,35 +20,41 @@
 % Irrespective of the principles their stem from, any susceptibility
 % analysis should "discover" this hidden structure.
 
-%clear all
-%close all
-%clc
+clear variable
+close all
+clc
+
+N = 18;
+
 
 g_fname = @g_mixU;
 inG.weights = [1;1;1;1;1;1];
 
-dim.p = 1;
-dim.n = 0;
-dim.n_t = 128;
-dim.n_phi = 6;
+dim.p       = 1;
+dim.n       = 0;
+dim.n_t     = 256;
+dim.n_phi   = 6;
 dim.n_theta = 0;
 
-options.dim = dim;
-options.inG = inG;
+options.dim        = dim;
+options.inG        = inG;
 options.DisplayWin = 0;
 options.verbose    = 0;
-sigma = .1;
-phi = [1;1;1;1;1;1];
 
-N = 8;
-for i=1:N
+sigma              = 0.1;
+phi                = [1;1;1;1;1;1];
+
+parfor i=1:N
     disp(i)
     u = randn(4,dim.n_t);
     [y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,u,[],sigma,options,[]);
     [posterior,out] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);
     % displayResults(posterior,out,y-e,[],[],[],phi,sigma,[])
-    [susceptibility(i),specificity(i)] = VBA_susceptibility(posterior,out);
+    result(i) = VBA_susceptibility(posterior,out);
 end
+
+susceptibility = [result.susceptibility];
+specificity = [result.specificity];
 
 xiPhi = cat(3,susceptibility.phi) ;
 hf = figure('color',[1 1 1],'name','relative susceptibility');
@@ -59,6 +65,7 @@ colormap(flipud(colormap('bone')))
 xlabel(ha,'parameters')
 ylabel(ha,'inputs')
 set(ha,'xtick',1:size(xiPhi,2),'ytick',1:size(xiPhi,1))
+set(gca,'CLim',[0 1]) ;
 
 zetaPhi = cat(3,specificity.phi) ;
 
@@ -70,4 +77,68 @@ colormap(flipud(colormap('bone')))
 xlabel(ha,'parameters')
 ylabel(ha,'inputs')
 set(ha,'xtick',1:size(zetaPhi,2),'ytick',1:size(zetaPhi,1))
+set(gca,'CLim',[0 1]) ;
+
+
+
+
+%% interactions
+figure
+interaction = [result.interaction];
+
+
+
+subplot(1,4,1)
+inter_norm = [interaction.norm] ;
+inter      = cat(3,inter_norm.phi) ;
+
+imagesc(mean(inter,3));
+colorbar()
+colormap(flipud(colormap('bone')))
+xlabel('parameters')
+ylabel('inputs')
+set(gca,'xtick',1:size(inter,2),'ytick',1:size(inter,1))
+set(gca,'CLim',[0 1]) ;
+
+
+
+subplot(1,4,2)
+inter_norm = [interaction.normU] ;
+inter      = cat(3,inter_norm.phi) ;
+
+imagesc(mean(inter,3));
+colorbar()
+colormap(flipud(colormap('bone')))
+xlabel('parameters')
+ylabel('inputs')
+set(gca,'xtick',1:size(inter,2),'ytick',1:size(inter,1))
+set(gca,'CLim',[0 1]) ;
+
+
+
+subplot(1,4,3)
+inter_norm = [interaction.normP] ;
+inter      = cat(3,inter_norm.phi) ;
+
+imagesc(mean(inter,3));
+colorbar()
+colormap(flipud(colormap('bone')))
+xlabel('parameters')
+ylabel('inputs')
+set(gca,'xtick',1:size(inter,2),'ytick',1:size(inter,1))
+set(gca,'CLim',[0 1]) ;
+
+
+
+subplot(1,4,4)
+inter_norm = [interaction.normP] ;
+inter      = cat(3,inter_norm.phi) ;
+
+imagesc(mean(inter,3));
+colorbar()
+colormap(flipud(colormap('bone')))
+xlabel('parameters')
+ylabel('inputs')
+set(gca,'xtick',1:size(inter,2),'ytick',1:size(inter,1))
+set(gca,'CLim',[0 1]) ;
 

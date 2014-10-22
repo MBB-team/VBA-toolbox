@@ -8,8 +8,8 @@ function [posterior,out,theta] = demo_negfeedback(connectivity_model, encoding_r
 if nargin==0
     connectivity_model = 'forward_modulation' ;
     encoding_region    = 'first' ;
-    noise = 1;
-    nRepetition = 5;
+    noise = 0;
+    nRepetition = 15;
 end
 
 %% #########################################################
@@ -159,8 +159,8 @@ disp('*** model inversion');
 options.priors = getPriors(nreg,n_t,options,reduced_f,stochastic);
 
 % fix unused paramters
-% idd = [options.inF.indA, options.inF.indB{2}, options.inF.indhA];
-% options.priors.SigmaTheta(idd,idd) = options.priors.SigmaTheta(idd,idd) .* diag(theta(idd)~=0);
+idd = [options.inF.indA, options.inF.indB{2}, options.inF.indhA];
+options.priors.SigmaTheta(idd,idd) = options.priors.SigmaTheta(idd,idd) .* diag(theta(idd)~=0);
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
