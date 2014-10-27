@@ -8,23 +8,22 @@ function [ u, options ] = setInput(options,varargin )
 %     options is filled with options.in[FG].inputLabel.(each name) fields indexing the lines of u
 
 n = numel(varargin);
-assert(mod(n,2)==0,'***Parameters should be: matrix1, ''name1'', matrix2, ''name2'',...');
-[~, nTrial]=size(varargin{1});
+assert(mod(n,2)==0,'***Parameters should be: name1, ''matrix1'', name2, ''matrix2'',...');
+[~, nTrial]=size(varargin{2});
 for i=1:2:n
-    assert(isnumeric(varargin{i}), '***Parameters should be: matrix1, ''name1'', matrix2, ''name2'',...')
-    assert(ischar(varargin{i+1}), '***Parameters should be: matrix1, ''name1'', matrix2, ''name2'',...')
+    assert(isnumeric(varargin{i+1}), '***Parameters should be: name1, ''matrix1'', name2, ''matrix2'',...')
+    assert(ischar(varargin{i}), '***Parameters should be: name1, ''matrix1'', name2, ''matrix2'',...')
 end
 
 
 u =[];
 cpt = 0;
 for i=1:2:n
-    
-    newU = varargin{i};
+    newU = varargin{i+1};
     [nL, nT] = size(newU);
     assert(nT == nTrial, 'all u should have the same number of columns (i.e. nTrials)')
-    u = [u; varargin{i}];
-    inputLabel.(varargin{i+1})=(cpt+1):(cpt+nL);
+    u = [u; varargin{i+1}];
+    inputLabel.(varargin{i})=(cpt+1):(cpt+nL);
     cpt=cpt+nL;
 end
 
