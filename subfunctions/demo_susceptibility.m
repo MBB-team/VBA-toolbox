@@ -53,8 +53,8 @@ parfor i=1:N
     result(i) = VBA_susceptibility(posterior,out);
 end
 
-susceptibility = [result.susceptibility];
-specificity = [result.specificity];
+[result.susceptibility] ; susceptibility = [ans.norm] ;
+[result.specificity]; specificity = [ans.norm] ;
 
 xiPhi = cat(3,susceptibility.phi) ;
 hf = figure('color',[1 1 1],'name','relative susceptibility');
@@ -131,7 +131,7 @@ set(gca,'CLim',[0 1]) ;
 
 
 subplot(1,4,4)
-inter_norm = [interaction.normP] ;
+inter_norm = [interaction.normC] ;
 inter      = cat(3,inter_norm.phi) ;
 
 imagesc(mean(inter,3));

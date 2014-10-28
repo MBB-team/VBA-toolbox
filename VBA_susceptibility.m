@@ -44,6 +44,7 @@ try, isDCM=out.options.inF.fullDCM; catch, isDCM=0; end
 if isDCM
     % keep only DCM connections
    idxConnect = 1:(out.options.inF.indself-1);
+   idxConnect = setdiff(idxConnect,out.options.inF.indC); % trivial effects
    if isfield(out.options.inF,'indhself') 
       % behaviour DCM 
       idxResp = [out.options.sources(2:end).out] ;
@@ -73,6 +74,10 @@ ind.theta = setdiff(ind.theta,fixedTheta);
 fixedPhi = find(diag(out.options.priors.SigmaPhi)==0);
 ind.phi = setdiff(ind.phi,fixedPhi);
 
+% get rid of session param
+if isfield(out.options, 'multisession')
+    ind.u = setdiff(ind.u,dim.u);
+end
 % ========================================================================================
 % shortcuts
 % ========================================================================================
@@ -86,8 +91,7 @@ ind.phi = setdiff(ind.phi,fixedPhi);
 % initialization
 % ========================================================================================
 
-vfull = score(out.y,out.suffStat.gx,out.options,ind) ; 
-%v0    = mutilation_score(posterior,out,ind,'u',ind.u) ; 
+
 
 % ========================================================================================
 % Mutilating the models and deriving the output distortion
@@ -96,7 +100,7 @@ vfull = score(out.y,out.suffStat.gx,out.options,ind) ;
 % ________________________________________________________________________________________
 % 1 - switching off inputs
 vu = zeros(length(ind.u),1);
-for iu=1:length(ind.u)
+parfor iu=1:length(ind.u)
     mutilated_input_idx = ind.u(iu);
     vu(iu) = mutilation_score(posterior,out,ind,'u',mutilated_input_idx);
 end
@@ -108,37 +112,39 @@ for paramType = {'phi','theta'}
     if ~isempty(ind.(paramType)) > 0
         
         % compute mutilation score
-        vparam  = zeros(length(ind.u),1);
-        vuparam = zeros(length(ind.u),length(ind.(paramType)));
-        
+        vparam  = zeros(1,numel(ind.(paramType)));
         % ________________________________________________________________________________
         % 2 - switching off system parameters
-        for ip=1:length(ind.(paramType))
+        parfor ip=1:length(ind.(paramType))
             mutilated_param_idx = ind.(paramType)(ip);
             vparam(ip) = mutilation_score(posterior,out,ind,paramType,mutilated_param_idx);
         end
         
         % _______________________________________________________________________________
-        % 3 - bilateral mutilations
-        for ip=1:length(ind.(paramType))
-           for iu=1:length(ind.u)
+        % 3 - bilateral mutilations 
+        vuparam = zeros(numel(ind.u),numel(ind.(paramType)));
+        for iu=1:length(ind.u)
+           parfor ip=1:length(ind.(paramType))
                mutilated_param_idx = ind.(paramType)(ip);
                mutilated_input_idx = ind.u(iu);
-               vuparam(iu,ip) = mutilation_score(posterior,out,ind, ...
+               vuparam_iu(ip) = mutilation_score(posterior,out,ind, ...
                paramType,mutilated_param_idx,'u',mutilated_input_idx);
            end
+           vuparam(iu,:) = vuparam_iu ;
         end
         
         % ________________________________________________________________________________
         % compute susceptibility and specificity
         dvuparam = vuparam;
         dvu      = repmat(vu,1,length(ind.(paramType)));
-        dvparam  = repmat(vparam',length(ind.u),1);
+        dvparam  = repmat(vparam,length(ind.u),1);
 
         % relative susceptibility
-        susceptibility.(paramType) = 1 + (dvparam - dvuparam) ./dvu;
+        susceptibility.raw.(paramType)  = 1 + (dvparam - dvuparam)      ;
+        susceptibility.norm.(paramType) = 1 + (dvparam - dvuparam)./dvu ;
        % relative specificity
-        specificity.(paramType)    = 1 + (dvu     - dvuparam) ./dvparam ;
+        specificity.raw.(paramType)  = 1 + (dvu - dvuparam)      ;
+        specificity.norm.(paramType) = 1 + (dvu - dvuparam)./dvparam ;
         
         % interaction scores
         inter =  ((dvparam+dvu)-dvuparam) ; 
