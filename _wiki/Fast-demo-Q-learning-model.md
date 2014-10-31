@@ -111,6 +111,6 @@ One can see that the posterior credible intervals (red errorbars) contain the si
 
 Let us now eyeball the Volterra decomposition of action values and choices (w.r.t. winning action):
 
-![]({{ site.baseurl }}/images/wiki/demo1/demo1_2.jpg)
+![]({{ site.baseurl }}/images/wiki/demo1/demo1_3.jpg)
 
 The 'winning action' basis function was encoded as follows: it was 1 when the winning action was the first action, and -1 otherwise. It follows that the first (resp. second) Q-learner's action value exhibits a positive (resp. negative) exponentially decaying impulse response to the winning action. The decay rate of the Volterra kernel is simply controlled by the learning rate. Note that the choice is modelled as a binomial variable, whose log-odds is proportional to the difference between the first and second action values. This is why the observables' Volterra kernel is a positive exponentially decaying function of past winning actions.
