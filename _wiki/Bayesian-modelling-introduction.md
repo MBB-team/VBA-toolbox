@@ -1,5 +1,5 @@
 ---
-title: "Bayesian modeling: introduction"
+title: "Bayesian inference: introduction"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
