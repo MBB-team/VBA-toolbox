@@ -14,7 +14,7 @@ The VBA toolbox can handle two classes of problems, namely optimizing the system
 
 ## Parameter estimation
 
-In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"), as follows:
+In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). This can be done by evaluating the design efficeincy for each design, as follows:
 
 ```matlab
 e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters');
@@ -36,7 +36,7 @@ The numerical derivation of the design efficiency for model comparison can be do
 ```matlab
 [e,out] = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'models')
 ```
-where `f_fname`, `g_fname`, `dim`, `options` are nx1 cell arrays (n models), `e` is minus the Chernoff risk and `out` is a structure containing diagnostic variables (e.g.: upper bound on selection error probability, 1st and 2nd order-moment of the Laplace approximation to the prior predictive density..).
+where `f_fname`, `g_fname`, `dim`, `options` are nx1 cell arrays (n models), `e` is design efficiency (i.e. minus the Chernoff risk) and `out` is a structure containing diagnostic variables (e.g.: upper bound on selection error probability, 1st and 2nd order-moment of the Laplace approximation to the prior predictive density..).
 
 One can then either compare different designs on the basis of their efficiency (e.g. on a predefined set), or perform numerical optimization of the design efficiency w.r.t. `u` (or some parametric form of it).
 
