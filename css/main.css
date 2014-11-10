@@ -145,6 +145,7 @@ a:visited { color: #205caa; }
 .page-content {
   padding: 30px 0;
   background-color: #fff;
+  min-height: 600px;
 }
 
 
@@ -587,4 +588,70 @@ p.reference {
     width: auto;
     margin: 0 0 15px; }
 
+}
+
+/* forms */
+
+
+.ss-q-title {
+  font-style: italic;
+  color: #333333;
+  margin-right: 30px;
+  padding-left: 20px;
+
+}
+.ss-required-asterisk {
+  color: #990000;
+}
+
+.ss-q-item-label{
+  width: 250px;
+  float: left;
+  clear: both;
+}
+
+.ss-q-short {
+   display: inline-block;
+   color: #333333;
+    font-size: 90%;
+   border: 1px solid #CCCCCC;
+   padding: 4px;
+   line-height: 1.2;
+  width: 300px;
+  margin-left: 20px;
+  margin-bottom: 10px;
+
+
+}
+
+.ss-choices {
+   list-style-type: none;
+}
+
+.ss-choice-item input {
+  margin-left: 20px;
+}
+
+.ss-choice-label {
+    margin-left: 10px;
+}
+
+.ss-navigate {
+  margin-left: 250px;
+text-align: right;
+  margin-top: 20px;
+}
+
+.ss-navigate input {
+  padding: 4px;
+  border: 0px ;
+  background-color: #205caa;
+  color: #FFF;
+  font-size: 100%;
+  margin-right: 30px;
+
+}
+
+.ss-navigate input:hover {
+  background-color: #667;
 }
