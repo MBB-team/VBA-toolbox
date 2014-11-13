@@ -6,8 +6,8 @@
 % is then compared to the simulated profile.
 
 
-clear variable
-close all
+% clear all
+% close all
 
 % initialize simulations
 ntrials = 1024;
@@ -94,6 +94,7 @@ dim = [];
 dim.n_phi = size(X,3);
 dim.n = 0;
 dim.n_theta = 0;
+options.priors = [];
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
 options.checkGrads = 0;
 options.inG = inb;

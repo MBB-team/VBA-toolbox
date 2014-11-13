@@ -160,9 +160,9 @@ options.noPause = 1;
 options.DisplayWin = 1;
 dim = out.dim;
 suffStat = out.suffStat;
-suffStat.dx0 = out.options.priors.muX0 - posterior.muX0;
-suffStat.dtheta = out.options.priors.muTheta - posterior.muTheta;
-suffStat.dphi = out.options.priors.muPhi - posterior.muPhi;
+% suffStat.dx0 = out.options.priors.muX0 - posterior.muX0;
+% suffStat.dtheta = out.options.priors.muTheta - posterior.muTheta;
+% suffStat.dphi = out.options.priors.muPhi - posterior.muPhi;
 posterior.a_alpha = Inf;
 posterior.b_alpha = 0;
 
