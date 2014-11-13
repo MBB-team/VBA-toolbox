@@ -22,6 +22,12 @@ function [priors] = VBA_priors(dim,options)
 %       Gamma pdf upon the stochastic innovations precision
 
 
+
+% check for sources for backward compatibility
+if ~isfield(options,'sources')
+    options.sources = struct('out',1:dim.p,'type',options.binomial);
+end
+
 % prior Gamma pdf of the measurement noise (Jeffrey)
 gsi = find([options.sources.type] == 0);
 
