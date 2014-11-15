@@ -6,17 +6,55 @@ text: "The VBA toolbox is a collaborative project. Please contact us if you want
 
 collaborators:
 - name:   "Jean DAUNIZEAU"
-  status: "Principal Investigator at the Brain and Spine Institute."
+  status: "Principal Investigator at the Brain and Spine Institute, Paris."
   email:  "jean.daunizeau@gmail.com"
   avatar: "jean.jpg"
 - name:   "Lionel RIGOUX"
-  status: "Post-doctoral fellow at the Brain and Spine Institute."
+  status: "Post-doctoral fellow at the Max Planck Institute, Cologne."
   email:  "lionel.rigoux@gmail.com"
   avatar: "lionel.png"
 ---
 
-<h2>Contact</h2>
+
 {{ page.text }}
+
+
+<h2>Community</h2>
+The VBA-toolbox has an ever growing community of users all over the world:
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["geochart"]});
+      google.setOnLoadCallback(drawChart);
+
+	  function drawChart() {
+	    var query = new google.visualization.Query(
+	       'https://docs.google.com/spreadsheet/pub?key=0ApIDpxXZAdRYdE14bXVMM0o1aXdVaEF4N05TNl9rd2c&single=true&gid=0&output=csv,');
+
+	    query.send(drawRegionsMap);
+	  }
+	  
+      function drawRegionsMap(response) {
+
+		  if (response.isError()) {
+		      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+		      return;
+		    }
+		
+		var data = response.getDataTable();
+		
+     
+
+        var options = {
+        	colorAxis: {colors: ['#70acfa', '#000C5a']}
+        };
+
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));	
+        chart.draw(data, options);
+      }
+    </script>
+    <div id="regions_div" style="width: 85%; margin:20px auto;"></div>
+
+<h2>Contact the authors</h2>
 
 {% for collaborator in page.collaborators %}
 <section class="about-block">
@@ -32,4 +70,6 @@ collaborators:
 {% endfor %}
 
 <h2>Licence</h2>
-The toolbox is distributed under a GNU open-source licence. You are free to download and modify it, but you must aknowledge the original authors by citing the reference above.
+The toolbox is distributed under a GNU open-source licence. You are free to download and modify it, but you must aknowledge the original authors by citing the reference below.
+
+

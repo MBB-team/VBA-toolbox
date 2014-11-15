@@ -442,7 +442,7 @@ ul#markdown-toc *
 .about-block {
     margin:15px 0;
     padding: 15px 0 0 0;
-    border-top: #EBF2F6 1px solid;
+    border-bottom: #EBF2F6 0px solid;
     display: block;
 }
 

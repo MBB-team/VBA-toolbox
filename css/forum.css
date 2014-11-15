@@ -21,8 +21,18 @@
 }
 
 #moot-logo {
-	margin:0p;
-	padding: 10px 0 0 0;
+
+	margin:0px;
+	padding:50px 0 0 0;
+}
+
+#moot-logo a {
 	
+	width:100%;
+	
+}
+#moot-logo a:before {
+    content: "";
+	width:100%;
 }
 
