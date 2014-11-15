@@ -636,6 +636,10 @@ p.reference {
   margin-left: 20px;
 }
 
+select.ss-q-short  {
+  width: 310px;
+}
+
 .ss-choice-label {
     margin-left: 10px;
 }
