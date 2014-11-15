@@ -29,7 +29,7 @@ a:visited { color: #205caa; }
 .wrap:after { content:""; display:table; }
 .wrap:after { clear: both; }
 .wrap {
-  max-width: 800px;
+    max-width: 800px;
   padding: 0 30px;
   margin: 0 auto;
   zoom: 1;
@@ -145,7 +145,7 @@ a:visited { color: #205caa; }
 .page-content {
   padding: 30px 0;
   background-color: #fff;
-  min-height: 600px;
+  min-height: 70%;
 }
 
 
@@ -298,11 +298,13 @@ a:visited { color: #205caa; }
 
 .home {
     background-color: #FFF;
+    min-height: 100%;
+	
 }
 .home #bandeau{
   width: 100%;
   background-color: #205caa;
-  margin: 0;
+  margin: -30px 0 0 0;
   padding: 0;
 }
 
@@ -333,7 +335,7 @@ text-align: left;
   width: -o-calc(33.3%);
   width: calc(33.3%);
   float: left;
-  margin: 40px 0px 55px 0px;
+  margin: 50px 0px 65px 0px;
   padding: 0 ;
   text-align:center;
 
@@ -431,6 +433,8 @@ ul#markdown-toc *
     color: #667;
 
 }
+
+
 
 /* Author styling */
 /* ----------------------------------------------------------*/

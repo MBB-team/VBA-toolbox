@@ -1,0 +1,28 @@
+/* forum */
+/* ----------------------------------------------------------*/
+
+.m-title{
+	color:#205caa;
+}
+
+.m-wrap {
+	background-color:#FFF;
+	
+}
+
+
+.m-header {
+	visibility: hidden;	
+	height:0px;
+}
+
+.m-sidebar {
+	min-height:500px;
+}
+
+#moot-logo {
+	margin:0p;
+	padding: 10px 0 0 0;
+	
+}
+
