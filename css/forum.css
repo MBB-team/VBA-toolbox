@@ -7,7 +7,12 @@
 
 .m-wrap {
 	background-color:#FFF;
-	
+	min-height:500px;
+}
+
+.m-page {
+	background-color:#FFF;
+	min-height:600px;
 }
 
 
@@ -16,9 +21,6 @@
 	height:0px;
 }
 
-.m-sidebar {
-	min-height:500px;
-}
 
 #moot-logo {
 
