@@ -314,7 +314,7 @@ target="hidden_iframe" onsubmit="submitted=true;">
 
 
 <label class="ss-q-item-label" for="entry_268375085">
-    <div class="ss-q-title">What type of data will you analyse with this the VBA toolbox?</div>
+    <div class="ss-q-title">What type of data will you analyse with the VBA toolbox?</div>
 </label>
 
 <ul class="ss-choices" role="group">
@@ -325,6 +325,14 @@ target="hidden_iframe" onsubmit="submitted=true;">
     <li class="ss-choice-item">
             <input type="checkbox" name="entry.1443269083" value="fMRI / DCM" id="group_1443269083_2" role="checkbox" class="ss-q-checkbox">
             <span class="ss-choice-label">fMRI / DCM</span>
+    </li>
+    <li class="ss-choice-item">
+            <input type="checkbox" name="entry.1443269083" value="EEG / MEG" id="group_1443269083_3" role="checkbox" class="ss-q-checkbox">
+            <span class="ss-choice-label">EEG / MEG</span>
+    </li>
+    <li class="ss-choice-item">
+            <input type="checkbox" name="entry.1443269083" value="Other" id="group_1443269083_4" role="checkbox" class="ss-q-checkbox">
+            <span class="ss-choice-label">Other</span>
     </li>
 </ul>
 

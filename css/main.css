@@ -630,10 +630,13 @@ p.reference {
 
 .ss-choices {
    list-style-type: none;
+   display:inline-block;
+   width:290px;
+   
 }
 
 .ss-choice-item input {
-  margin-left: 20px;
+    margin-left: -20px;
 }
 
 select.ss-q-short  {
