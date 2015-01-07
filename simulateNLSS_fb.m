@@ -42,6 +42,9 @@ function [y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,u,alph
 %   and feedback online)
 
 % check inputs
+
+warning('*** simulateNLSS_fb is deprecated. Please use simulateNLSS instead, with the same syntax as simulateNLSS_fb');
+
 try
     u(fb.indy,1);
     u(fb.indfb,1);

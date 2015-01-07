@@ -1,4 +1,4 @@
-function [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0)
+function [y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb)
 % samples times series from sDCM generative model
 % [y,x,x0,dTime,eta,eta0] =
 % simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0)
@@ -39,6 +39,16 @@ catch
         n = numel(options.priors.muX0);
     catch
         n = 0;
+    end
+end
+
+feedback =  exist('fb','var');
+if feedback
+    try
+    u(fb.indy,1);
+    u(fb.indfb,1);
+    catch
+        error('*** Simulation with feedback requires allocated inputs');   
     end
 end
 
@@ -162,6 +172,16 @@ for t = 1:dim.n_t
         
     end
     e(:,t) = y(:,t) - gt;
+    
+    
+    % fill in next input with last output and feedback
+    if feedback && t < dim.n_t
+        % get feedback on system's output
+        if ~isempty(fb.h_fname)
+            u(fb.indfb,t+1) = feval(fb.h_fname,y(:,t),t,fb.inH);
+        end
+        u(fb.indy,t+1) = y(:,t);
+    end   
     
     % Display progress
     if mod(100*t/dim.n_t,10) <1 
