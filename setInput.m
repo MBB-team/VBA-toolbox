@@ -1,4 +1,4 @@
-function [ u, options ] = setInput(options,varargin )
+function [ u, dim, options ] = setInput(options,dim,varargin )
 % allow to specify labels to inputs (u)
 % IN
 %     options: a structure
@@ -11,6 +11,9 @@ n = numel(varargin);
 assert(mod(n,2)==0,'***Parameters should be: name1, ''matrix1'', name2, ''matrix2'',...');
 [~, nTrial]=size(varargin{2});
 for i=1:2:n
+    if islogical(varargin{i+1})
+        varargin{i+1} = +varargin{i+1};
+    end
     assert(isnumeric(varargin{i+1}), '***Parameters should be: name1, ''matrix1'', name2, ''matrix2'',...')
     assert(ischar(varargin{i}), '***Parameters should be: name1, ''matrix1'', name2, ''matrix2'',...')
 end
@@ -29,5 +32,9 @@ end
 
 options.inF.inputLabel=inputLabel;
 options.inG.inputLabel=inputLabel;
+
+
+dim.u = size(u,1) ;
+
 end
 

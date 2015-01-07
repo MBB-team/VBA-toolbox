@@ -24,7 +24,7 @@ clear variable
 close all
 clc
 
-N = 18;
+N = 1;
 
 
 g_fname = @g_mixU;
@@ -44,7 +44,7 @@ options.verbose    = 0;
 sigma              = 0.1;
 phi                = [1;1;1;1;1;1];
 
-parfor i=1:N
+for i=1:N
     disp(i)
     u = randn(4,dim.n_t);
     [y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,u,[],sigma,options,[]);

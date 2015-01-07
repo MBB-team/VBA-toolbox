@@ -329,7 +329,7 @@ switch flag % What piece of the model to display?
         
 end
 
-drawnow
+%drawnow
 
 
 %--- subfunction ---%

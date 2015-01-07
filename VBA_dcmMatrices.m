@@ -1,5 +1,5 @@
 function [A,B,C,D,dim] = VBA_dcmMatrices(out,theta)
-%VBA_DCMMATRICES matrices A,B adn C of a bilinear DCM
+%VBA_DCMMATRICES matrices A,B, C D of a DCM
 
 
 try 
@@ -53,6 +53,8 @@ for i=1:n
 end
 
 return
+
+%% ########################################################################
 try
 hself = - diag(exp(theta(inF.indhself))) ;
 

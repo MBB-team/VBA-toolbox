@@ -30,6 +30,7 @@ if numel(y) == 1 % retrocompatibility
     variance = y;
     warning('getHyperpriors: first argument should be a data vector');
 else
+    y(isnan(y)) = [];
     variance = var(vec(y));
 end
 

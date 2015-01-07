@@ -227,6 +227,7 @@ else
     catch e
         VBA_disp(' ',options)
         VBA_disp('Error: Program stopped during initialisation',options)
+        VBA_disp(e.message,options)
         return
     end
     
