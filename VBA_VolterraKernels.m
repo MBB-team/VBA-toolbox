@@ -91,6 +91,7 @@ for k = 1:p
         g_fname = @g_conv0;
         opt.binomial = 0;
     end
+    opt.isYout = out.options.isYout(k,:)';
     [pk,ok] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,opt);
     kernels.y.R2(k) = ok.fit.R2;
     if out.options.verbose
