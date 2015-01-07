@@ -317,7 +317,7 @@ switch flag % What piece of the model to display?
 
      end   
         
-        if options.updateHP || (isequal(it,0) && sum([options.sources(:).type]==0)>0)
+        if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
                 dTime = 1;
                 cla(display.ha(2*Ns+4))
                 logCI = log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat);
