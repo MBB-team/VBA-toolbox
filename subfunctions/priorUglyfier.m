@@ -7,6 +7,7 @@ assert(mod(n,3)==0,'***Parameters should be: ''name'',mu,sigma,...');
 
 priorsMu = [];
 priorsSigma = [];
+labeler = struct ;
 
 cpt = 0;
 for i=1:3:n
