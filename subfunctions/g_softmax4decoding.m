@@ -31,6 +31,6 @@ dgdp=zeros(length(P),length(Xt));
     dgdx=diag(beta.*ex ./(ex+1).^2); 
     
     %derivative wrt parameters
-    dgdp = beta.*ex./(ex+1).^2;   
+    dgdp = diag(beta.*ex./(ex+1).^2);   
 
 % end
