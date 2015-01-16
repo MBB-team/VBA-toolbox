@@ -40,7 +40,7 @@ for t=1:dim.n_t
     % evaluate observation function at current mode
     try
         [gx(:,t),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
-        if isweird(gx(:,t))
+        if isweird(gx(find(options.isYout(:,t)==0),t)) 
             VBA_disp('',options)
             VBA_disp('Error: could not initialize VB scheme: model generates NaN or Inf!',options)
             posterior = [];
