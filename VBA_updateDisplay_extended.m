@@ -141,12 +141,19 @@ switch flag % What piece of the model to display?
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
         dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        plot(display.ha(2*s_i-1),dTime,y_s',':')
-        plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
-        plot(display.ha(2*s_i-1),dTime,y_s_on','.')
-        vy_s= vy(s_out,:);
-        if ~isempty(dTime_in)
-        plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+        if options.sources(s_i).type < 2
+            plot(display.ha(2*s_i-1),dTime,y_s',':')
+            plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
+            plot(display.ha(2*s_i-1),dTime,y_s_on','.')
+            vy_s= vy(s_out,:);
+            if ~isempty(dTime_in)
+                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+            end
+        else
+            imagesc(gx(s_out,dTime_in),'Parent',display.ha(2*s_i-1)); 
+            set(display.ha(2*s_i-1),'Clim',[0 1]) ;
+            colormap(flipud(colormap('bone'))); 
+            plot(display.ha(2*s_i-1),multi2num(y_s_on),'.r');
         end
         set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
@@ -224,14 +231,21 @@ switch flag % What piece of the model to display?
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
         dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        plot(display.ha(2*s_i-1),dTime,y_s',':')
-        plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
-        plot(display.ha(2*s_i-1),dTime,y_s_on','.')
-        vy_s= vy(s_out,:);
-        if ~isempty(dTime_in)
-        plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+        if options.sources(s_i).type < 2
+            plot(display.ha(2*s_i-1),dTime,y_s',':')
+            plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
+            plot(display.ha(2*s_i-1),dTime,y_s_on','.')
+            vy_s= vy(s_out,:);
+            if ~isempty(dTime_in)
+                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+            end
+        else
+            imagesc(gx(s_out,dTime_in),'Parent',display.ha(2*s_i-1)); 
+            set(display.ha(2*s_i-1),'Clim',[0 1]) ;
+            colormap(flipud(colormap('bone'))); 
+            plot(display.ha(2*s_i-1),multi2num(y_s_on),'.r');
         end
-         set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
+        set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
         
         % update top-right subplot: predicted VS observed data
@@ -305,14 +319,21 @@ switch flag % What piece of the model to display?
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
         dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        plot(display.ha(2*s_i-1),dTime,y_s',':')
-        plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
-        plot(display.ha(2*s_i-1),dTime,y_s_on','.')
-        vy_s= vy(s_out,:);
-        if ~isempty(dTime_in)
-            plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+        if options.sources(s_i).type < 2
+            plot(display.ha(2*s_i-1),dTime,y_s',':')
+            plot(display.ha(2*s_i-1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
+            plot(display.ha(2*s_i-1),dTime,y_s_on','.')
+            vy_s= vy(s_out,:);
+            if ~isempty(dTime_in)
+                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
+            end
+        else
+            imagesc(gx(s_out,dTime_in),'Parent',display.ha(2*s_i-1)); 
+            set(display.ha(2*s_i-1),'Clim',[0 1]) ;
+            colormap(flipud(colormap('bone'))); 
+            plot(display.ha(2*s_i-1),multi2num(y_s_on),'.r');
         end
-         set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
+        set(display.ha(2*s_i-1),'ygrid','on','xgrid','off')
         axis(display.ha(2*s_i-1),'tight')
 
      end   

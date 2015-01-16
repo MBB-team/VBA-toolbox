@@ -49,14 +49,15 @@ end
 
 
 
-bsi = find([out.options.sources.type]~=0);
+bsi = find([out.options.sources.type]==1);
 for i=1:length(bsi)
     si=bsi(i);
+    idx = out.options.sources(si).out;
+
     fit.LL(si) = out.suffStat.logL(si);
-    fit.ny(si) = sum(1-out.options.isYout(:));
+    fit.ny(si) = sum(1-vec(out.options.isYout(idx,:)));
     
     % balanced accuracy
-        idx = out.options.sources(si).out;
         y_temp = out.y(idx,:);
         y_temp = y_temp(out.options.isYout(idx,:) == 0);
         
@@ -72,6 +73,22 @@ for i=1:length(bsi)
         N = tn + fp;
         fit.R2(si) = (tp+tn)./(P+N);
         fit.acc(si) = balanced_accuracy(suffStat.gx(idx,:),out.y(idx,:),out.options.isYout(idx,:));
+    
+end
+
+msi = find([out.options.sources.type]==2);
+for i=1:length(msi)
+    
+    si=msi(i);
+    fit.LL(si) = out.suffStat.logL(si);
+    
+    idx = out.options.sources(si).out;
+
+    fit.ny(si) = sum(1-any(out.options.isYout(idx,:)));
+   
+    
+    fit.R2(si) = NaN;
+    fit.acc(si) = multinomial_accuracy(suffStat.gx(idx,:),out.y(idx,:),out.options.isYout(idx,:));
     
 end
 

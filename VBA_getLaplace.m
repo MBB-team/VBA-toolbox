@@ -95,10 +95,11 @@ for t = 1:dim.n_t
             
             switch options.sources(si).type
                 case 0 % gaussian
-                    varY = options.priors.b_sigma(gsi==si)./options.priors.a_sigma(gsi==si);
-                    Qy = VBA_inv(options.priors.iQy{t,si});
+                    g_idx = find(gsi==si);
+                    varY = options.priors.b_sigma(g_idx)./options.priors.a_sigma(g_idx);
+                    Qy = VBA_inv(options.priors.iQy{t,g_idx});
                     Vy_tmp = varY.*Qy;
-                    tmp = options.priors.iQy{t,si}./varY ;
+                    tmp = options.priors.iQy{t,g_idx}./varY ;
                 case 1 % binomial
                     gt = gx(s_idx,t);
                     Vy_tmp = diag(gt.*(1-gt));
