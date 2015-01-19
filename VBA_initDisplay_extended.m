@@ -53,6 +53,8 @@ if isequal(xlim,[1,1])
     xlim = [1-eps,1+eps];
 end
 
+display.hfp = getPanel(display.hfp);
+
 for s_i=1:Ns
     
 display.ha(2*s_i-1) = subplot(3+Ns,2,2*s_i-1,'parent',display.hfp,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
@@ -215,6 +217,8 @@ options.display = display;
 try
     getSubplots
 end
+
+
 
 
 

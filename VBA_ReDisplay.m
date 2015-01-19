@@ -111,10 +111,9 @@ try
 catch
     hf = get(gco,'parent');
 end
-hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
-if ~isempty(hc)
-    delete(hc)
-end
+
+cleanPanel(hf);
+
 ud = get(hf,'userdata');
 out = ud.out;
 str = VBA_summary(out,1);
@@ -144,10 +143,7 @@ function myDeterministic(hfig)
 
 try, hfig; catch, hfig = get(gco,'parent'); end
 % first: clear diagnostics display
-hc = intersect(findobj('tag','VBLaplace'),get(hfig,'children'));
-if ~isempty(hc)
-    delete(hc)
-end
+cleanPanel(hfig);
 
 % Second: re-display VB-Laplace inversion output
 ud = get(hfig,'userdata');
@@ -225,10 +221,7 @@ catch
     hfig = get(gco,'parent');
 end
 % first: clear diagnostics display
-hc = intersect(findobj('tag','VBLaplace'),get(hfig,'children'));
-if ~isempty(hc)
-    delete(hc)
-end
+cleanPanel(hfig);
 
 % Second: re-display VB-Laplace inversion output
 ud = get(hfig,'userdata');
@@ -303,10 +296,10 @@ try
 catch
     hf = get(gco,'parent');
 end
-hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
-if ~isempty(hc)
-    delete(hc)
-end
+
+hPanel = getPanel(hf);
+cleanPanel(hf);
+
 
 ud = get(hf,'userdata');
 out = ud.out;
@@ -314,7 +307,7 @@ diagnostics = out.diagnostics;
 
 if length(out.suffStat.F)>2
     nit = length(out.suffStat.F)-1;
-    ha = axes('parent',hf,'units','normalized','tag','VBLaplace','position',[0.15,0.6,0.5,0.3],'nextplot','add','xlim',[0,nit],'xtick',[0,nit],'xticklabel',{'prior (0)',['posterior (',num2str(nit),')']},'xgrid','off','ygrid','on');
+    ha = axes('parent',hPanel,'units','normalized','tag','VBLaplace','position',[0.15,0.6,0.5,0.3],'nextplot','add','xlim',[0,nit],'xtick',[0,nit],'xticklabel',{'prior (0)',['posterior (',num2str(nit),')']},'xgrid','off','ygrid','on');
     plot(ha,[0:nit],out.suffStat.F) 
     plot(ha,[0:nit],out.suffStat.F,'.') ;
     [haf,hp1,hp2] = plotUncertainTimeSeries(diagnostics.LLH0*ones(1,2),3^2*ones(1,2),[0,nit],ha);
@@ -335,7 +328,7 @@ if length(out.suffStat.F)>2
     else
         xtl = {'first time point','last time point'};
     end
-    ha = axes('parent',hf,'units','normalized','tag','VBLaplace','position',[0.15,0.15,0.5,0.3],'nextplot','add','xlim',[0,nit-1],'xtick',[0,nit-1],'xticklabel',xtl,'xgrid','off','ygrid','on');
+    ha = axes('parent',hPanel,'units','normalized','tag','VBLaplace','position',[0.15,0.15,0.5,0.3],'nextplot','add','xlim',[0,nit-1],'xtick',[0,nit-1],'xticklabel',xtl,'xgrid','off','ygrid','on');
     plot(ha,[0:nit-1],diff(out.suffStat.F)) ;
     plot(ha,[0:nit-1],diff(out.suffStat.F),'.') ;
     if ~out.options.OnLine
@@ -376,11 +369,9 @@ uicontrol('parent',hf,'style','text','tag','VBLaplace','units','normalized','pos
 function myKernels()
 % first: clear VB-Laplace inversion output display
 hf = get(gco,'parent');
-hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
-if ~isempty(hc)
-    delete(hc)
-end
-ud = get(hf,'userdata');
+cleanPanel(hf);
+
+get(hf,'userdata');
 du = size(ud.out.diagnostics.kernels.y.m,3);
 % dim = ud.out.options.dim;
 unames = cell(du,1);
@@ -440,10 +431,8 @@ function myDiagnostics()
 
 % first: clear VB-Laplace inversion output display
 hf = get(gco,'parent');
-hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
-if ~isempty(hc)
-    delete(hc) ;
-end
+cleanPanel(hf);
+
 
 % Second: display diagnostics
 ud = get(hf,'userdata');
@@ -451,9 +440,10 @@ out = ud.out;
 y = out.y;
 diagnostics = out.diagnostics;
 
+hPanel = getPanel(hf);
 % display micro-time hidden-states
 if ~isempty(diagnostics.MT_x)
-    display.ha(1) = subplot(4,2,1,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
+    display.ha(1) = subplot(4,2,1,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
     title(display.ha(1),'micro-time resolution predicted data','fontsize',11)
     xlabel(display.ha(1),'time','fontsize',8)
     ylabel(display.ha(1),'g(x) & y','fontsize',8)
@@ -461,7 +451,7 @@ if ~isempty(diagnostics.MT_x)
     plot(display.ha(1),diagnostics.microTime(diagnostics.sampleInd),diagnostics.MT_gx(:,diagnostics.sampleInd)','.')
     plot(display.ha(1),diagnostics.microTime(diagnostics.sampleInd),y,':')
     axis(display.ha(1),'tight')
-    display.ha(2) = subplot(4,2,2,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
+    display.ha(2) = subplot(4,2,2,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
     title(display.ha(2),'micro-time resolution hidden states','fontsize',11)
     xlabel(display.ha(2),'time','fontsize',8)
     ylabel(display.ha(2),'x','fontsize',8)
@@ -485,7 +475,7 @@ feval(@myDiagnosticsi,handles(1),[])
 % display state noise
 if ~isempty(diagnostics.dx.dx)
     xlim = [diagnostics.dx.nx(1)-diagnostics.dx.d,diagnostics.dx.nx(end)+diagnostics.dx.d];
-    display.ha(4) = subplot(4,2,6,'parent',hf,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
+    display.ha(4) = subplot(4,2,6,'parent',hPanel,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
     title(display.ha(4),'state noise empirical distribution','fontsize',11)
     xlabel(display.ha(4),'eta(t) = x(t+1)-f(x(t))','fontsize',8)
     ylabel(display.ha(4),'p(eta|y)','fontsize',8)
@@ -493,7 +483,7 @@ if ~isempty(diagnostics.dx.dx)
     plot(display.ha(4),diagnostics.dx.grid,diagnostics.dx.pg,'r')
     plot(display.ha(4),diagnostics.dx.grid,diagnostics.dx.pg2,'g')
     legend(display.ha(4),{'empirical histogram','Gaussian approx','posterior approx'})
-    display.ha(8) = subplot(4,2,4,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
+    display.ha(8) = subplot(4,2,4,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
     try
         plotUncertainTimeSeries(out.suffStat.dx,out.suffStat.vdx,diagnostics.microTime(diagnostics.sampleInd),display.ha(8));
     catch
@@ -508,7 +498,7 @@ end
 
 
 % display parameters posterior correlation matrix
-display.ha(6) = subplot(4,2,8,'parent',hf);
+display.ha(6) = subplot(4,2,8,'parent',hPanel);
 imagesc(diagnostics.C,'parent',display.ha(6))
 title(display.ha(6),'parameters posterior correlation matrix','fontsize',11)
 set(display.ha(6),'tag','VBLaplace','xtick',diagnostics.ltick,'ytick',diagnostics.ltick,'xticklabel',diagnostics.ticklabel,'yticklabel',diagnostics.ticklabel,'box','off','nextplot','add');
@@ -533,8 +523,10 @@ function myDiagnosticsi(hObject,evt)
 hf = get(hObject,'parent');
 ind = get(hObject,'Value');
 ud = get(hf,'userdata');
+hPanel = getPanel(hf);
+
 try
-    if isequal(get(ud.handles.hdiagnostics(1),'parent'),hf)
+    if isequal(get(ud.handles.hdiagnostics(1),'parent'),hPanel)
         delete(ud.handles.hdiagnostics)
     end
 end
@@ -546,7 +538,7 @@ sourceYidx = out.options.sources(ind).out;
 % 
 % % display data noise
 xlim = [dy.nx(1)-dy.d,dy.nx(end)+dy.d];
-handles.hdiagnostics(1) = subplot(4,2,5,'parent',hf,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
+handles.hdiagnostics(1) = subplot(4,2,5,'parent',hPanel,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
 title(handles.hdiagnostics(1),'residuals empirical distribution','fontsize',11)
 xlabel(handles.hdiagnostics(1),'e(t) = y(t)-g(x(t))','fontsize',8)
 ylabel(handles.hdiagnostics(1),'p(e|y)','fontsize',8)
@@ -574,16 +566,19 @@ else
         ti = 'data dimensions';
     end
 end
-handles.hdiagnostics(2) = subplot(4,2,3,'parent',hf,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
+
+
+handles.hdiagnostics(2) = subplot(4,2,3,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
 plot(handles.hdiagnostics(2),gri,out.suffStat.dy(sourceYidx,:)','marker','.')
 axis(handles.hdiagnostics(2),'tight')
 title(handles.hdiagnostics(2),'residuals time series','fontsize',11)
 xlabel(handles.hdiagnostics(2),ti,'fontsize',8)
 ylabel(handles.hdiagnostics(2),'e(t) = y(t)-g(x(t))','fontsize',8)
 
+
 % display autocorrelation of residuals
 if ~isweird(dy.R) && out.dim.n_t > 1
-    handles.hdiagnostics(3) = subplot(4,2,7,'parent',hf);
+    handles.hdiagnostics(3) = subplot(4,2,7,'parent',hPanel);
     plot(handles.hdiagnostics(3),[-out.options.dim.n_t:out.options.dim.n_t-1],fftshift(dy.R)')
     axis(handles.hdiagnostics(3),'tight')
     title(handles.hdiagnostics(3),'residuals empirical autocorrelation','fontsize',11)
@@ -608,10 +603,7 @@ catch
     hfig = get(gco,'parent');
 end
 % first: clear diagnostics display
-hc = intersect(findobj('tag','VBLaplace'),get(hfig,'children'));
-if ~isempty(hc)
-    delete(hc)
-end
+cleanPanel(hfig);
 
 
 % Second: re-display VB-Laplace inversion output
@@ -674,4 +666,15 @@ try
     getSubplots
 end
 
+function cleanPanel(hf)
 
+hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
+if ~isempty(hc)
+    delete(hc)
+end
+
+hPanel = getPanel(hf);
+hc = intersect(findobj('tag','VBLaplace'),get(hPanel,'children'));
+if ~isempty(hc)
+    delete(hc)
+end
