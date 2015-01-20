@@ -53,11 +53,11 @@ if isequal(xlim,[1,1])
     xlim = [1-eps,1+eps];
 end
 
-display.hfp = getPanel(display.hfp);
+hPanel = getPanel(display.hfp);
 
 for s_i=1:Ns
     
-display.ha(2*s_i-1) = subplot(3+Ns,2,2*s_i-1,'parent',display.hfp,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
+display.ha(2*s_i-1) = subplot(3+Ns,2,2*s_i-1,'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
 if ~priors
     title(display.ha(2*s_i-1),'posterior predictive density: p(g(x)|y,m)','fontsize',11)
 else
@@ -70,7 +70,7 @@ else
     ylabel(display.ha(2*s_i-1),'<g(x)|m> & y','fontsize',8)
 end
 
-display.ha(2*s_i) = subplot(3+Ns,2,2*s_i,'parent',display.hfp,'nextplot','add','tag','VBLaplace','box','off');
+display.ha(2*s_i) = subplot(3+Ns,2,2*s_i,'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
 if ~priors
     title(display.ha(2*s_i),'Model fit: <g(x)|y,m> versus y','fontsize',11)
     xlabel(display.ha(2*s_i),'<g(x)|y,m>','fontsize',8)
@@ -83,7 +83,7 @@ ylabel(display.ha(2*s_i),'y','fontsize',8)
 end
 % Create axes for hidden states and initial conditions
 if options.dim.n > 0
-    display.ha(2*Ns+1) = subplot(3+Ns,2,2*Ns+1,'parent',display.hfp,'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(2*Ns+1) = subplot(3+Ns,2,2*Ns+1,'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(2*Ns+1),'hidden states: p(x|y,m)','fontsize',11)
     else
@@ -95,7 +95,7 @@ if options.dim.n > 0
     else
         ylabel(display.ha(2*Ns+1),'<x|m>','fontsize',8)
     end
-    display.ha(2*Ns+2) = subplot(3+Ns,2,2*Ns+2,'parent',display.hfp,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+2) = subplot(3+Ns,2,2*Ns+2,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
     if ~priors
         title( display.ha(2*Ns+2),'initial conditions: p(x_0|y,m)','fontsize',11)
     else
@@ -116,7 +116,7 @@ end
 
 % Create axes for observation parameters
 if options.dim.n_phi > 0
-    display.ha(2*Ns+3) = subplot(3+Ns,2,2*Ns+3,'parent',display.hfp,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+3) = subplot(3+Ns,2,2*Ns+3,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(2*Ns+3),'observation parameters: p(phi|y,m)','fontsize',11)
     else
@@ -137,7 +137,7 @@ end
 % Create axes for measurement noise precision hyperparameter
 Ngs=sum([options.sources(:).type]==0);
 if Ngs>0
-    display.ha(2*Ns+4) = subplot(3+Ns,2,2*Ns+4,'parent',display.hfp,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+4) = subplot(3+Ns,2,2*Ns+4,'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',[],'tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(2*Ns+4),'measurement noise precision: p(sigma|y,m)','fontsize',11)
     else
@@ -155,7 +155,7 @@ end
 
 % Create axes for evolution parameters
 if options.dim.n_theta > 0
-    display.ha(2*Ns+5) = subplot(3+Ns,2,2*Ns+5,'parent',display.hfp,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+5) = subplot(3+Ns,2,2*Ns+5,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(2*Ns+5),'evolution parameters: p(theta|y,m)','fontsize',11)
     else
@@ -175,7 +175,7 @@ end
 
 % Create axes for state noise precision hyperparameter
 if ~isequal(options0.g_fname,@VBA_odeLim) && options.dim.n > 0 % not for non stochastic systems
-    display.ha(2*Ns+6) = subplot(3+Ns,2,2*Ns+6,'parent',display.hfp,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(2*Ns+6) = subplot(3+Ns,2,2*Ns+6,'parent',hPanel,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(2*Ns+6),'system''s noise precision: p(alpha|y,m)','fontsize',11)
     else
