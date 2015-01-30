@@ -51,7 +51,8 @@ s_m = find([options.sources(:).type]==2);
 for s=1:length(s_m)
     y_i = options.sources(s_m(s)).out ;
     y_s = y(y_i,:);
-    y_s = y_s(options.isYout(y_i,:)==0);
+    isYinIdx = find(~any(options.isYout(y_i,:)));
+    y_s = y_s(:,isYinIdx);
     [c,n] = size(y_s); 
     LLH0 = LLH0 + n*log(1/c);
 end
