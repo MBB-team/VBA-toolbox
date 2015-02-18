@@ -73,7 +73,7 @@ options = check_struct(options, ...
 ) ;
                          
 options = check_struct(options, ...
-    'extended'  , numel(options.sources)>1 ...          % is multisources
+    'extended'  , numel(options.sources)>1 || options.sources(1).type==2 ...          % is multisources
 ) ;
 
 options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);

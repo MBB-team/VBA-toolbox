@@ -149,8 +149,8 @@ switch flag % What piece of the model to display?
             if ~isempty(dTime_in)
                 plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
             end
-        else
-            imagesc(gx(s_out,dTime_in),'Parent',display.ha(2*s_i-1)); 
+        else 
+            imagesc(gx(s_out,:),'Parent',display.ha(2*s_i-1)); 
             set(display.ha(2*s_i-1),'Clim',[0 1]) ;
             colormap(flipud(colormap('bone'))); 
             plot(display.ha(2*s_i-1),multi2num(y_s_on),'.r');
@@ -240,7 +240,7 @@ switch flag % What piece of the model to display?
                 plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
             end
         else
-            imagesc(gx(s_out,dTime_in),'Parent',display.ha(2*s_i-1)); 
+            imagesc(gx(s_out,:),'Parent',display.ha(2*s_i-1)); 
             set(display.ha(2*s_i-1),'Clim',[0 1]) ;
             colormap(flipud(colormap('bone'))); 
             plot(display.ha(2*s_i-1),multi2num(y_s_on),'.r');
@@ -328,7 +328,7 @@ switch flag % What piece of the model to display?
                 plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(2*s_i-1));
             end
         else
-            imagesc(gx(s_out,dTime_in),'Parent',display.ha(2*s_i-1)); 
+            imagesc(gx(s_out,:),'Parent',display.ha(2*s_i-1)); 
             set(display.ha(2*s_i-1),'Clim',[0 1]) ;
             colormap(flipud(colormap('bone'))); 
             plot(display.ha(2*s_i-1),multi2num(y_s_on),'.r');

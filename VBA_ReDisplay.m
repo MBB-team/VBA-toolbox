@@ -624,6 +624,10 @@ end
 dim = out.dim;
 
 % Initialize display figure
+
+
+
+
 options.display.hfp = hfig;
 options.figName = get(hfig,'name');
 [options] = VBA_initDisplay(options);
@@ -636,6 +640,11 @@ if options.dim.n == 0 || isinf(posterior.a_alpha(end))
 end
 hfig = options.display.hfp;
 drawnow
+
+
+
+
+
 
 % Display data and hidden states (if any)
 if options.dim.n > 0
@@ -678,3 +687,4 @@ hc = intersect(findobj('tag','VBLaplace'),get(hPanel,'children'));
 if ~isempty(hc)
     delete(hc)
 end
+

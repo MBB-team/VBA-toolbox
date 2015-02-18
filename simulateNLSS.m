@@ -166,8 +166,13 @@ for t = 1:dim.n_t
         	% multinomial
             case 2
                 resp = zeros(length(s_idx),1) ;
-                resp(sampleFromArbitraryP(gt(s_idx),1:length(s_idx),1)) = 1;
-                y(s_idx,t) = resp;
+                respIdx = sampleFromArbitraryP(gt(s_idx),1:length(s_idx),1) ;
+                if ~isnan(respIdx)
+                    resp(respIdx) = 1;
+                    y(s_idx,t) = resp;
+                else
+                    y(s_idx,t) = NaN;
+                end
         end
         
     end
@@ -191,7 +196,7 @@ for t = 1:dim.n_t
         }, options);
     end
     
-    if isweird({x(:,t),y(:,t)})
+    if isweird({x(:,t)}) %,y(:,t)
         break
     end
     

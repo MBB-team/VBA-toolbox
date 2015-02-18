@@ -29,6 +29,12 @@ if isempty(display.hfp)
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
     display.hfp = figure('position',pos,'color',[1 1 1],'name',options.figName,'menubar','none','tag','VBNLSS','Renderer','OpenGL','visible',visible);
+    display.hpannel = uipanel(...
+    'parent',display.hfp,...
+    'BorderType','none',...
+    'BackgroundColor',[1 1 1]);
+    set(display.hpannel,'units','normalized');
+    set(display.hpannel,'Position',[.02 .08 .96 .87]);
 else
     display.hfp = display.hfp(1);
     hc = intersect(findobj('tag','VBLaplace'),get(display.hfp,'children'));
@@ -55,9 +61,25 @@ end
 
 hPanel = getPanel(display.hfp);
 
+if Ns > 1
+set(hPanel,'UserData',struct('sliderPos',1,'offScreen',(Ns-1)*.25));
+% panelPos = get(hppp,'Position');
+% height = panelPos(4) + .2*(numel(options.sources)-1);
+% panelPos = [panelPos(1) .965-height panelPos(3) height];
+% set(hppp,'Position',panelPos);
+
+Tab1_Slider = uicontrol('Parent', hPanel,...
+    'units','normalized',...
+    'position',[.98, 0 .02 1],...
+    'style', 'slider',...
+    'value', 1, 'max', 1, 'min', 0,...
+    'callback', {@SliderCallback, hPanel});
+end
+
 for s_i=1:Ns
     
-display.ha(2*s_i-1) = subplot(3+Ns,2,2*s_i-1,'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
+% display.ha(2*s_i-1) = subplot(3+Ns,2,2*s_i-1,'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
+display.ha(2*s_i-1) = subplot('Position',[.1 .03+1-s_i*.25 .525 .175],'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
 if ~priors
     title(display.ha(2*s_i-1),'posterior predictive density: p(g(x)|y,m)','fontsize',11)
 else
@@ -70,7 +92,9 @@ else
     ylabel(display.ha(2*s_i-1),'<g(x)|m> & y','fontsize',8)
 end
 
-display.ha(2*s_i) = subplot(3+Ns,2,2*s_i,'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
+% display.ha(2*s_i) = subplot(3+Ns,2,2*s_i,'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
+display.ha(2*s_i) = subplot('Position',[.7 .03+1-s_i*.25 .225 .175],'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
+
 if ~priors
     title(display.ha(2*s_i),'Model fit: <g(x)|y,m> versus y','fontsize',11)
     xlabel(display.ha(2*s_i),'<g(x)|y,m>','fontsize',8)
@@ -82,8 +106,12 @@ ylabel(display.ha(2*s_i),'y','fontsize',8)
 
 end
 % Create axes for hidden states and initial conditions
+
+
 if options.dim.n > 0
-    display.ha(2*Ns+1) = subplot(3+Ns,2,2*Ns+1,'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
+%     display.ha(2*Ns+1) = subplot(3+Ns,2,2*Ns+1,'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(2*Ns+1) = subplot('Position',[.1 .03+1-(Ns+1)*.25 .375 .175],'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
+
     if ~priors
         title(display.ha(2*Ns+1),'hidden states: p(x|y,m)','fontsize',11)
     else
@@ -95,7 +123,8 @@ if options.dim.n > 0
     else
         ylabel(display.ha(2*Ns+1),'<x|m>','fontsize',8)
     end
-    display.ha(2*Ns+2) = subplot(3+Ns,2,2*Ns+2,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
+%     display.ha(2*Ns+2) = subplot(3+Ns,2,2*Ns+2,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+2) = subplot('Position',[.55 .03+1-(Ns+1)*.25 .375 .175],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
     if ~priors
         title( display.ha(2*Ns+2),'initial conditions: p(x_0|y,m)','fontsize',11)
     else
@@ -116,7 +145,9 @@ end
 
 % Create axes for observation parameters
 if options.dim.n_phi > 0
-    display.ha(2*Ns+3) = subplot(3+Ns,2,2*Ns+3,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    %display.ha(2*Ns+3) = subplot(3+Ns,2,2*Ns+3,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+3) = subplot('Position',[.1 .03+1-(Ns+2)*.25 .375 .175],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
+
     if ~priors
         title(display.ha(2*Ns+3),'observation parameters: p(phi|y,m)','fontsize',11)
     else
@@ -137,7 +168,8 @@ end
 % Create axes for measurement noise precision hyperparameter
 Ngs=sum([options.sources(:).type]==0);
 if Ngs>0
-    display.ha(2*Ns+4) = subplot(3+Ns,2,2*Ns+4,'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',[],'tag','VBLaplace','box','off');
+%     display.ha(2*Ns+4) = subplot(3+Ns,2,2*Ns+4,'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+4) = subplot('Position',[.55 .03+1-(Ns+2)*.25 .375 .175],'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',[],'tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(2*Ns+4),'measurement noise precision: p(sigma|y,m)','fontsize',11)
     else
@@ -155,7 +187,9 @@ end
 
 % Create axes for evolution parameters
 if options.dim.n_theta > 0
-    display.ha(2*Ns+5) = subplot(3+Ns,2,2*Ns+5,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    %display.ha(2*Ns+5) = subplot(3+Ns,2,2*Ns+5,'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(2*Ns+5) = subplot('Position',[.1 .03+1-(Ns+3)*.25 .375 .175],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    
     if ~priors
         title(display.ha(2*Ns+5),'evolution parameters: p(theta|y,m)','fontsize',11)
     else
@@ -175,7 +209,8 @@ end
 
 % Create axes for state noise precision hyperparameter
 if ~isequal(options0.g_fname,@VBA_odeLim) && options.dim.n > 0 % not for non stochastic systems
-    display.ha(2*Ns+6) = subplot(3+Ns,2,2*Ns+6,'parent',hPanel,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
+    %display.ha(2*Ns+6) = subplot(3+Ns,2,2*Ns+6,'parent',hPanel,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(2*Ns+6) = subplot('Position',[.55 .03+1-(Ns+3)*.25 .375 .175],'parent',hPanel,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(2*Ns+6),'system''s noise precision: p(alpha|y,m)','fontsize',11)
     else
@@ -219,6 +254,26 @@ try
 end
 
 
+
+function SliderCallback(hObject, eventdata, h)
+    val = get(hObject,'Value');
+    
+    userData = get(h,'UserData');
+    delta = val - userData.sliderPos ;
+    
+    c = findobj(h,'Type','Axes');
+
+    for i=1:numel(c)
+       pos = get(c(i),'Position');
+       pos(2) = pos(2) - delta*userData.offScreen;
+       set(c(i),'Position',pos);
+       %c(i).Position(2) = c(i).Position(2) - delta*userData.offScreen;
+    end
+    
+    % update 
+    userData.sliderPos = val;
+    set(h,'UserData',userData);
+    
 
 
 

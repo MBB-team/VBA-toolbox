@@ -11,13 +11,19 @@ function [X] = sampleFromArbitraryP(p,gridX,N)
 
 try; N; catch, N=1; end
 p = vec(p);
+
 if size(gridX,1)==1
     gridX = vec(gridX);
 end
-pcdf = cumsum(p(:));
 k = size(gridX,2);
-X = zeros(N,k);
-for i=1:N
-    below = find(rand<=pcdf);
-    X(i,:) = gridX(below(1),:);
+
+if any(isnan(p))
+    X = nan(N,k);
+else
+    pcdf = cumsum(p(:));
+    X = zeros(N,k);
+    for i=1:N
+        below = find(rand<=pcdf);
+        X(i,:) = gridX(below(1),:);
+    end
 end
