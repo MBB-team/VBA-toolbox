@@ -11,7 +11,9 @@ infos.path = str(1:end-13);
 try
     gitInf = getGitInfo ;
     infos.version = [gitInf.branch '/' gitInf.hash];
+    infos.git = true;
 catch
-    infos.version = '*** not under git versioning...';
+    infos.version = 'unkown (not under git control)';
+    infos.git = false;
 end
 
