@@ -371,7 +371,7 @@ function myKernels()
 hf = get(gco,'parent');
 cleanPanel(hf);
 
-get(hf,'userdata');
+ud = get(hf,'userdata');
 du = size(ud.out.diagnostics.kernels.y.m,3);
 % dim = ud.out.options.dim;
 unames = cell(du,1);
@@ -395,9 +395,11 @@ try
 end
 out = ud.out;
 kernels = out.diagnostics.kernels;
+
+hPanel = getPanel(hf);
 if ~isempty(kernels.x)
     % input effects - hidden states
-    handles.hkernels(1) = subplot(2,1,1,'parent',hf,'nextplot','add','ygrid','on','tag','VBLaplace');
+    handles.hkernels(1) = subplot(2,1,1,'parent',hPanel,'nextplot','add','ygrid','on','tag','VBLaplace');
     pos = get(handles.hkernels(1),'position');
     set(handles.hkernels(1),'position',[0.2 pos(2) 0.6 pos(4)]);
     [t1,t2,hp] = plotUncertainTimeSeries(kernels.x.m(:,:,ind),kernels.x.v(:,:,ind),[],handles.hkernels(1));
@@ -408,7 +410,7 @@ if ~isempty(kernels.x)
     xlabel(handles.hkernels(1),'time lag')
 end
 % input effects - observables
-handles.hkernels(2) = subplot(2,1,2,'parent',hf,'nextplot','add','ygrid','on','tag','VBLaplace');
+handles.hkernels(2) = subplot(2,1,2,'parent',hPanel,'nextplot','add','ygrid','on','tag','VBLaplace');
 pos = get(handles.hkernels(2),'position');
 set(handles.hkernels(2),'position',[0.2 pos(2) 0.6 pos(4)])
 hold(handles.hkernels(2),'on')

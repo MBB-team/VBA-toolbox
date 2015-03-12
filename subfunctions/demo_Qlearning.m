@@ -1,7 +1,7 @@
 % Q-learning demo
 % In psychological terms, motivation can be defined as the set of processes
 % that generate goals and thus determine behaviour. A goal is nothing else
-% than a �state of affairs�, to which people attribute (subjective) value.
+% than a ???state of affairs???, to which people attribute (subjective) value.
 % Empirically speaking, one can access these values by many means,
 % including subjective verbal report or decision making. These measures
 % have been used to demonstrate how value change as people learn a new
