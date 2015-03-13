@@ -1,4 +1,4 @@
-function [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options,checkVar)
+function [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options,checkVar,reduceVy)
 % returns the Laplace approximation to the prior predictive density
 % function [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options)
 % IN:
@@ -17,6 +17,7 @@ function [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options,checkVar)
 % _________________________________________________________________________
 % checks
 if ~exist('checkVar'), checkVar = 0; end
+if ~exist('reduceVy'), reduceVy = 'full'; end
 
 options.checkGrads     = 0; % well, this should have been done before...
 options.priors.a_alpha = 0; % to bypass ODE transform in VBA_check.m
@@ -29,15 +30,24 @@ get_iVp = (nargout >= 3);
 % initialization
 
 % + memory preallocations
-muy      = zeros(dim.p.*dim.n_t,1);                             % first moment of the predictive density
-Vy       = zeros(dim.p.*dim.n_t);                               % first moment of the predictive density
-x        = zeros(dim.n,dim.n_t);                                % hidden state time-series
-gx       = zeros(dim.p,dim.n_t);                                % observation time-series
-dxdTheta = zeros(dim.n_theta,dim.n);                            % derivatives of states wrt to theta
-dxdX0    = eye(dim.n,dim.n);                                    % derivatives of states wrt to initial state
+muy      = zeros(dim.p.*dim.n_t,1);                                     % first moment of the predictive density
+switch reduceVy
+    case 'full'
+        Vy       = zeros(dim.p.*dim.n_t);                               % second moment of the predictive density
+        dgdp     = zeros(dim.n_phi+dim.n_theta+dim.n,dim.p*dim.n_t);    % derivatives of obs wrt to paramters
+    case 'diag'
+        Vy       = zeros(dim.p.*dim.n_t,1);   
+        dgdp     = zeros(dim.n_phi+dim.n_theta+dim.n,dim.p);            % derivatives of obs wrt to paramters
+    case 'skip'
+        Vy = NaN;
+end
+
+%x        = zeros(dim.n,1);                                             % current hidden state
+%gx       = zeros(dim.p,1);                                             % current observation
+dxdTheta = zeros(dim.n_theta,dim.n);                                    % derivatives of states wrt to theta
+dxdX0    = eye(dim.n,dim.n);                                            % derivatives of states wrt to initial state
 dF_dP    = nan(dim.n_theta,dim.n);                            
 dF_dX    = nan(dim.n,dim.n);                            
-dgdp     = zeros(dim.n_phi+dim.n_theta+dim.n,dim.p*dim.n_t);    % derivatives of obs wrt to paramters
 
 % + initial values
 Phi   = options.priors.muPhi;
@@ -57,8 +67,8 @@ gsi = find([options.sources(:).type]==0);
 % _________________________________________________________________________
 % integration loop
 
-% append initial state
-x = [X0 x];
+% start with initial state
+x = X0;
 
 % loop over time
 for t = 1:dim.n_t
@@ -69,9 +79,9 @@ for t = 1:dim.n_t
     % .....................................................................
     % apply evolution and observation function
     if dim.n > 0
-        [x(:,t+1),dF_dX,dF_dP] = VBA_evalFun('f',x(:,t),Theta,u(:,t),options,dim,t);  
+        [x,dF_dX,dF_dP] = VBA_evalFun('f',x,Theta,u(:,t),options,dim,t);  
     end
-    [gx(:,t),dG_dX,dG_dP] = VBA_evalFun('g',x(:,t+1),Phi,u(:,t),options,dim,t);
+    [gx,dG_dX,dG_dP] = VBA_evalFun('g',x,Phi,u(:,t),options,dim,t);
     
     % .....................................................................
     % Obtain derivatives of path wrt parameters and initial conditions
@@ -80,8 +90,8 @@ for t = 1:dim.n_t
 
     % .....................................................................
     % store first moment and parameter gradient
-    muy(offset+(1:dim.p)) = gx(:,t);
-    dgdp(:,offset+(1:dim.p)) = [dG_dP ; dxdTheta*dG_dX ; dxdX0*dG_dX];
+    muy(offset+(1:dim.p)) = gx;
+    dgdp_t = [dG_dP ; dxdTheta*dG_dX ; dxdX0*dG_dX];
     
     % .....................................................................
     % compute second moment
@@ -101,28 +111,50 @@ for t = 1:dim.n_t
                     Vy_tmp = varY.*Qy;
                     tmp = options.priors.iQy{t,g_idx}./varY ;
                 case 1 % binomial
-                    gt = gx(s_idx,t);
+                    gt = gx(s_idx);
                     Vy_tmp = diag(gt.*(1-gt));
                     tmp = diag(1./gt + 1./(1-gt));
                 case 2 % multinomial
-                    gt = gx(s_idx,t);
+                    gt = gx(s_idx);
                     Vy_tmp = diag(gt.*(1-gt));
                     tmp = diag(1./gt);
             end
             
             % aggregate and store
-            Vy(s_idx_t,s_idx_t) = Vy_tmp ;
+            switch reduceVy
+                case 'full'
+                	Vy(s_idx_t,s_idx_t) = Vy_tmp ;    
+                case 'diag'
+                	Vy(s_idx_t) = Vy(s_idx_t) + diag(Vy_tmp) ;
+                case 'skip'
+            end
+
             if get_iVp
-                iVp = iVp + dgdp(:,s_idx_t)*tmp*dgdp(:,s_idx_t)';
+                iVp = iVp + dgdp_t(:,s_idx)*tmp*dgdp_t(:,s_idx)';
             end
         end
     end
+    
+    switch reduceVy
+        case 'full'
+            dgdp(:,offset+(1:dim.p)) = dgdp_t;
+        case 'diag'
+            Vy(offset+(1:dim.p)) = Vy(offset+(1:dim.p)) + diag(dgdp_t'*Sigma*dgdp_t);
+        case 'skip'
+    end
+
     
 end
 
 % _________________________________________________________________________
 % form Laplace approximation to the covariance matrix
-Vy = Vy + dgdp'*Sigma*dgdp;
+switch reduceVy
+    case 'full'
+        Vy = Vy + dgdp'*Sigma*dgdp;
+    case 'diag'
+    case 'skip'
+end
+            
 
 % _________________________________________________________________________
 % optional display

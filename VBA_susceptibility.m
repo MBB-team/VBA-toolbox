@@ -253,7 +253,7 @@ function [muy] = laplace_mutilated(posterior,out,mutilation)
     end
    
    % compute trajectory moments
-   [muy] = VBA_getLaplace(u,out.options.f_fname,out.options.g_fname,out.dim,opt,0);
+   [muy] = VBA_getLaplace(u,out.options.f_fname,out.options.g_fname,out.dim,opt,0,'skip');
    muy = reshape(muy,size(out.y));
 end
     

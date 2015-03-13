@@ -75,7 +75,7 @@ switch flag
         try,binomial=options.binomial;catch,binomial=0;end
         
         % get prediced model parameter precision matrix
-        [muy,Vy,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options);
+        [~,~,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options,0,'skip');
         % compute the trace of predicted posterior variance
         e = -trace(VBA_inv(iVp));
         out = [];

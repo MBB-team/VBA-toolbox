@@ -40,8 +40,7 @@ slope = exp(posterior.muPhi(1))./4;
 vslope = slope.^2.*posterior.SigmaPhi(1,1);
 options = out.options;
 options.priors = posterior;
-[gx,vy] = VBA_getLaplace(sort(u),[],options.g_fname,out.dim,options);
-vy = diag(vy);
+[gx,vy] = VBA_getLaplace(sort(u),[],options.g_fname,out.dim,options,0,'diag');
 plotUncertainTimeSeries(gx(:)',vy(:)',sort(u)',handles.ha0);
 plot(handles.ha0,sort(u),gx,'b.')
 yy = [0 g0 1];

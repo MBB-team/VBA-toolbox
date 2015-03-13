@@ -27,8 +27,8 @@ vs = zeros(size(VX));
 for t=1:n_t
     opt.priors.muPhi = muX(:,t);
     opt.priors.SigmaPhi = diag(VX(:,t));
-    [ms(:,t),VS] = VBA_getLaplace(0,[],g_fname,dim,opt);
-    vs(:,t) = diag(VS);
+    [ms(:,t),VS] = VBA_getLaplace(0,[],g_fname,dim,opt,0,'diag');
+    vs(:,t) = VS;
 end
 
 

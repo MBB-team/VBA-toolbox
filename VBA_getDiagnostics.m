@@ -119,7 +119,7 @@ end
 
 % get prior predictive density
 try
-    [muy,Vy] = VBA_getLaplace(u,out.options.f_fname,out.options.g_fname,out.dim,out.options);
+    [muy,Vy] = VBA_getLaplace(u,out.options.f_fname,out.options.g_fname,out.dim,out.options,0,'diag');
 catch
     muy =[];
     Vy = [];
@@ -244,7 +244,7 @@ ltick = ltick + 0.5;
 
 % wrap up
 diagnostics.pgx = reshape(muy,out.dim.p,[]);
-diagnostics.pvy = reshape(diag(Vy),out.dim.p,[]);
+diagnostics.pvy = reshape(Vy,out.dim.p,[]);
 diagnostics.kernels = kernels;
 diagnostics.efficiency = efficiency;
 diagnostics.DKL = DKL;
