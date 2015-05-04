@@ -16,7 +16,8 @@ This toolbox runs in Matlab.
    - download and unzip the ~~[latest stable relase]()~~ or the [current beta version](https://github.com/MBB-team/VBA-toolbox/archive/master.zip)
 1. Add the toolbox folder to your Matlab path:
 ```matlab
-addpath(genpath('path_to_your_VBA_folder'))
+cd path_to_/your/VBA_folder
+VBA_setup
 ```
 1. Enjoy!
   
