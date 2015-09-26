@@ -44,11 +44,12 @@ for i=1:numel(out.options.multisession.split)
 
     posteriors(i).iQy = posterior.iQy(idx_t,:);
     
+    try
     posteriors(i).iQx =  posterior.iQx(idx_t);%cellfun(@(Q) Q(idx_X0,idx_X0),posterior.iQx(idx_t),'UniformOutput',false); 
     posteriors(i).muX = posterior.muX(idx_X0,idx_t);
     posteriors(i).SigmaX.current =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.current(idx_t,:),'UniformOutput',false); 
     posteriors(i).SigmaX.inter =  cellfun(@(Q) Q(idx_X0,idx_X0),posterior.SigmaX.inter(:,idx_t),'UniformOutput',false); 
-
+    end
 end
  
 posterior.perSession = posteriors;

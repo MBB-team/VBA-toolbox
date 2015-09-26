@@ -130,7 +130,7 @@ for t=1:dim.n_t
     end
     
     % Accelerate divergent update
-    if isweird({dy,dG_dPhi,dG_dX})
+    if isweird({dy(find(options.isYout(:,t)==0),t),dG_dPhi(:,find(options.isYout(:,t)==0)),dG_dX})
         div = 1;
         VBA_disp(' ',options)
         VBA_disp('Error: Output of evolution or observation function is weird (nan or inf)   ...',options)

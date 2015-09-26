@@ -50,11 +50,11 @@ switch flag
             end
         end
         fprintf(1,['Deriving prior predictive densities: model       '])
-        for j=1:nm % loops over models
+        parfor j=1:nm % loops over models
             % get prior predictive density
             fprintf(1,repmat('\b',1,6))
             fprintf(1,[num2str(j),'/',num2str(nm),'...'])
-            [muy{j},Vy{j}] = VBA_getLaplace(u,f_fname{j},g_fname{j},dim{j},options{j});
+            [muy{j},Vy{j}] = VBA_getLaplace(u{j},f_fname{j},g_fname{j},dim{j},options{j});
         end
         
         % computes Jensen-Shannon divergence of models

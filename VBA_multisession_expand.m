@@ -71,12 +71,14 @@ X0_multi    = setdiff(X0_multi   ,fixed.X0   );
 % = expand (duplicate) priors and dimensions to cover all sessions
 priors = options.priors;
 
+try
 [priors_multi.muX0, priors_multi.SigmaX0, dim_multi.n] ...
     = expand_param(priors.muX0,priors.SigmaX0,X0_multi,n_session) ;
-
+end
+try
 [priors_multi.muTheta, priors_multi.SigmaTheta, dim_multi.n_theta] ...
     = expand_param(priors.muTheta,priors.SigmaTheta,theta_multi,n_session) ;
-
+end
 [priors_multi.muPhi, priors_multi.SigmaPhi, dim_multi.n_phi] ...
     = expand_param(priors.muPhi,priors.SigmaPhi,phi_multi,n_session) ;
 
