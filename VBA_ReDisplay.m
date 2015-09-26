@@ -594,7 +594,7 @@ end
 
 ud.handles = handles;
 set(hf,'userdata',ud);
-try getSubplots; end
+try, getSubplots; end
 
 
 function myVB(hfig)
@@ -607,6 +607,7 @@ end
 % first: clear diagnostics display
 cleanPanel(hfig);
 
+hPanel = getPanel(hfig);
 
 % Second: re-display VB-Laplace inversion output
 ud = get(hfig,'userdata');
@@ -633,6 +634,7 @@ dim = out.dim;
 options.display.hfp = hfig;
 options.figName = get(hfig,'name');
 [options] = VBA_initDisplay(options);
+
 delete(options.display.htt)
 delete(options.display.hpause)
 delete(options.display.hm)

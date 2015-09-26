@@ -7,10 +7,10 @@ catch
     priors = 0;
 end
 
-if options.extended
+%if options.extended
     [options] = VBA_initDisplay_extended(options,priors);
     return
-end
+%end
 
 if ~options.DisplayWin
     return
