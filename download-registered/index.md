@@ -37,10 +37,9 @@ title: Get the toolbox
 
 <h2>Install</h2>
 
-<p> Add the VBA-toolbox directory to your Matlab path, and you are ready to go:
+<p> Copy the VBA directory where you like. Navigate there in Matlab and type:
 {% highlight matlab %}
-addpath(genpath('path_to_the/VBA-toolbox'));
- demo_Qlearning
+VBA_setup()
 {% endhighlight %}
 </p>
 
