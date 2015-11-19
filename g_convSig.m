@@ -1,4 +1,4 @@
-function [sg,dsdx,dsdp] = g_convSig(x,P,u,in)
+function [sg,dsdx,dgdp] = g_convSig(x,P,u,in)
 % this function evaluates a logistic convolution of the inputs
 % function [gx,dgdx,dgdp] = g_convSig(x,P,u,in)
 % This function evaluates the following multiple convolution model:
@@ -20,8 +20,6 @@ function [sg,dsdx,dsdp] = g_convSig(x,P,u,in)
 %   - dsdp: the gradient of the system's output w.r.t. kernel parameters
 % SEE ALSO: g_conv0
 
-[g,dgdx,dgdp] = g_conv0(x,P,u,in);
-%sg = sigm(g,struct('mat',1));
+[g,dsdx,dgdp] = g_conv0(x,P,u,in);
 sg = sig(g);
-dsdx = [];
-dsdp = dgdp*diag(sg.*(1-sg));
+dgdp = dgdp*diag(sg.*(1-sg));

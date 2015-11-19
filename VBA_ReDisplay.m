@@ -33,7 +33,7 @@ end
 try
     out.diagnostics;
 catch
-    [out.diagnostics,out] = VBA_getDiagnostics(posterior,out);
+    out.diagnostics = VBA_getDiagnostics(posterior,out);
 end
 
 ud.posterior = posterior;

@@ -6,7 +6,7 @@ function [posterior,out,theta] = demo_negfeedback(connectivity_model, encoding_r
 %%% ----------------------------------------------------------------------
 
 if nargin==0
-    connectivity_model = 'forward_modulation' ;
+    connectivity_model = 'feedback_modulation' ;
     encoding_region    = 'first' ;
     noise = 0;
     nRepetition = 15;
@@ -139,7 +139,7 @@ theta(options.inF.indC)     = 1;       % direct inputs
 
 %- decoding 
 theta(options.inF.indhA)    = hAs;
-theta(options.inF.indhself) = log(1/options.inF.deltat);
+theta(options.inF.indhself) = log(1/options.inF.deltat); %/options.inF.deltat
 
 % __________________________________________________________
 % === Simulate time series of hidden states and observations 
