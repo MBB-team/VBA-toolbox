@@ -44,7 +44,7 @@ try, isDCM=out.options.inF.fullDCM; catch, isDCM=0; end
 if isDCM
     % keep only DCM connections
    idxConnect = 1:(out.options.inF.indself-1);
-   idxConnect = setdiff(idxConnect,out.options.inF.indC); % trivial effects
+   % idxConnect = setdiff(idxConnect,out.options.inF.indC); % trivial effects (or maybe not)
    if isfield(out.options.inF,'indhself') 
       % behaviour DCM 
       idxResp = [out.options.sources(2:end).out] ;
