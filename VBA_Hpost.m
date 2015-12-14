@@ -56,7 +56,7 @@ if options.dim.n_phi > 0
     suffStat.Sphi = 0.5*length(indIn)*log(2*pi*exp(1)) + 0.5*VBA_logDet(posterior.SigmaPhi,indIn);
 end
 
-if ~options.binomial || sum([options.sources(:).type]==0) >1
+if sum([options.sources(:).type]==0) >1
        
     suffStat.Ssigma = gammaln(posterior.a_sigma) ...
         - log(posterior.b_sigma) ...
