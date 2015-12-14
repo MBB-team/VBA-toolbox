@@ -657,7 +657,7 @@ end
 
 % Display precision hyperparameters
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-if ~options.OnLine && ~options.binomial
+if ~options.OnLine && sum([options.sources(:).type]==0) > 0
     xlabel(options.display.ha(2*Ns+4),' ')
     try
         xlabel(options.display.ha(2*Ns+6),' ')
