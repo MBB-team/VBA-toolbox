@@ -55,7 +55,7 @@ function [posterior,out] = VBA_MoG(y,K,options)
 
 % First of all, deal with data normalization
 if ~isfield(options,'normalize')
-    options.normalize = 1;
+    options.normalize = 0;
 end
 y0 = y;
 if options.normalize
@@ -329,8 +329,10 @@ end
 
 % wrap up
 if options.normalize
-    posterior.muEta = posterior.muEta.*sy + repmat(my,1,dim.K);
-    posterior.b_gamma = posterior.b_gamma.*sy.^2;
+    out.normalize.Q = diag(sy.^2);
+    out.normalize.m = my;
+    % muEta <-- diag(sqrt(diag(Q)))*muEta + repmat(m,1,dim.K);
+    % b_gamma(i) <-- = b_gamma(i).*Q;
 end
 out.dt = toc(options.tStart);
 out.dim = dim;
