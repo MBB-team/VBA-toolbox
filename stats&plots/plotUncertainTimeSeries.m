@@ -14,7 +14,7 @@ function [haf,hf,hp] = plotUncertainTimeSeries(muX,SX,dTime,hParent,ind)
 %   (useful in high dimensional cases)
 % OUT:
 %   - haf: the current axes handle
-%   - hf: the patchs handles (for later error bar corrections)
+%   - hf: the patchs/errorbar handles (for later error bar corrections)
 %   - hp: the bar/line plot handles
 
 

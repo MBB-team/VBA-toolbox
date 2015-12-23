@@ -43,7 +43,7 @@ if ~isfield(options,'verbose')
     options.verbose = 1;
 end
 if ~isfield(options,'DisplayWin')
-    options.DisplayWin = 0;
+    options.DisplayWin = 1;
 end
 if ~isfield(options,'families')
     options.families = [];
@@ -185,9 +185,7 @@ for f=1:nf
         fprintf('\n')
     end
 end
-if options.DisplayWin
-    VBA_displayGroupBMCbtw(ep,out)
-end
+
 
 % wrap-up
 out.dt = toc(options.tStart);
@@ -198,5 +196,7 @@ out.factors = factors;
 out.Ccon = Ccon;
 out.L = L;
 
-
+if options.DisplayWin
+    VBA_displayGroupBMCbtw(ep,out)
+end
 

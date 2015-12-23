@@ -29,7 +29,7 @@ X0 = 0;
 y1 = simulateNLSS(round(n_t/2),@f_demo_multisession,@g_demo_multisession,theta,phi,u(1:(n_t/2)),Inf,.1,options,X0);
 
 % second session
-theta = -[5 1]';
+theta = [-5 1]';
 phi = 2;
 X0 = 0;
 y2 = simulateNLSS(round(n_t/2),@f_demo_multisession,@g_demo_multisession,theta,phi,u((1+n_t/2):end),Inf,.1,options,X0);
@@ -78,7 +78,7 @@ options.multisession.split = [n_t/2 n_t/2]; % two sessions of 120 datapoints eac
 % % can fix some parameters so they remain constants across sessions.
 
 % + Example: same evolution parameter in both sessions
-% options.multisession.fixed.theta = 1; % <~ uncomment for fixing theta(1)
+% options.multisession.fixed.theta = 2; % <~ uncomment for fixing theta(2)
 
 % + Example: same observation parameter in both sessions
 % options.multisession.fixed.phi = 1; % <~ uncomment for fixing phi(1)
@@ -95,7 +95,7 @@ options.multisession.fixed.X0 = 'all';
 
 % = Model identification as usual
 fprintf('-----\n');
-[posterior_fixed,out_fixed] = VBA_NLStateSpaceModel(y,u,@f_demo_multisession,@g_demo_multisession,dim,options);
+% [posterior_fixed,out_fixed] = VBA_NLStateSpaceModel(y,u,@f_demo_multisession,@g_demo_multisession,dim,options);
 
 end
 

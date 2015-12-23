@@ -61,7 +61,7 @@ if ~options.OnLine
     end
     VBA_disp(['VB ',status,' complete (took ~',timeString,').'],options)
     if ~ifInit
-        str = VBA_summary(out);
+        str = VBA_summary(out,1);
         VBA_disp(str(setdiff(1:6,1:2)),options)
     end
     VBA_disp(' ',options)
