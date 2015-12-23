@@ -30,14 +30,14 @@ if isa(out.options.g_fname,'function_handle')
 else
     gfn = out.options.g_fname;
 end
-if out.dim.n >= 1
+if out.options.dim.n >= 1
     if isa(out.options.f_fname,'function_handle')
         ffn = func2str(out.options.f_fname);
     else
         ffn = out.options.f_fname;
     end
     str{4} = sprintf([str{4},'\n ',...
-        '    - observation function: ',gfn,tmp,'\n ',...
+        '    - observation function: ',gfn,'\n ',...
         '    - evolution function: ',ffn]);
 else
     str{4} = sprintf([str{4},'    - observation function: ',gfn]);
