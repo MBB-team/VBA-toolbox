@@ -24,6 +24,9 @@ try % if called from uitabs of VBA_ReDisplay
     get(display.hfp,'children');
 catch
     display.hfp = findobj('tag','VBNLSS');
+    try
+    delete(intersect(findobj('tag','diagnostics_tabs'),get(display.hfp,'children')));
+    end
 end
 if isempty(display.hfp)
     pos0 = get(0,'screenSize');
@@ -41,6 +44,7 @@ else
     if ~isempty(hc)
         delete(hc)
     end
+
     set(display.hfp,'name',options.figName,'visible',visible);
 end
 
