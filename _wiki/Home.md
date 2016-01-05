@@ -7,13 +7,26 @@ title: "home"
 - [VBA model inversion in 4 steps](VBA-model-inversion-in-4-steps)
 - [VBA graphical output](VBA-graphical-output)
 
-## Model Inversion
+## Some theory
 
 - [Bayes' basics](Bayesian-modelling-introduction)
 - [Variational Bayes](The-variational-Bayesian-approach)
-- [VBA: model structure](Structure-of-VBA's-generative-model)
-- [VBA: inversion options](Controlling-the-inversion-using-VBA-options)
-- [VBA: results and diagnostics](VBA-output-structure)
+- [General model structure](Structure-of-VBA's-generative-model)
+
+## Model Inversion
+
+[comment]: # (- [Defining a model]())
+[comment]: # (- [Setting the priors]())
+- [VBA options](Controlling-the-inversion-using-VBA-options)
+
+[comment]: # (- [Simulation and model estimation]())
+- [Results and diagnostics](VBA-output-structure)
+
+## Advanced options
+
+- [Multisession](Multisession)
+
+[comment]: # (- [Mixed observations](Multisources))
 
 ## Examples of models
 
