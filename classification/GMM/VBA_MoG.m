@@ -53,7 +53,29 @@ function [posterior,out] = VBA_MoG(y,K,options)
 %       .F: history of Free Energy across VB iterations
 %       .it: # VB iterations until convergence
 
-
+% First of all, deal with data normalization
+if ~isfield(options,'normalize')
+    options.normalize = 0;
+end
+y0 = y;
+if options.normalize
+    my = mean(y,2);
+    y = y - repmat(my,1,size(y,2));
+    sy = std(y,[],2);
+    if any(sy==0)
+        i0 = find(sy==0);
+        y(i0,:) = [];
+        y0(i0,:) = [];
+        my(i0) = [];
+        sy(i0) = [];
+        disp('Warning: removing 0 variance data dimensions!')
+    else
+        i0 = [];
+    end
+    y = diag(1./sy)*y;
+else
+    i0 = [];
+end
 
 % Fill in default options
 options.tStart = tic;
@@ -81,9 +103,6 @@ end
 if ~isfield(options,'init')
     options.init = 'hierarchical';
 end
-if ~isfield(options,'normalize')
-    options.normalize = 1;
-end
 
 % Fill in default priors
 if ~isfield(options,'priors')
@@ -92,11 +111,18 @@ end
 priors = options.priors;
 if ~isfield(priors,'muEta')
     priors.muEta = zeros(dim.p,dim.K);
+else
+    priors.muEta(i0,:) = [];
 end
 if ~isfield(priors,'SigmaEta')
     priors.SigmaEta = cell(dim.K,1);
     for k=1:K
         priors.SigmaEta{k} = 1e0*eye(dim.p);
+    end
+else
+    for k=1:K
+        priors.SigmaEta{k}(i0,:) = [];
+        priors.SigmaEta{k}(:,i0) = [];
     end
 end
 if ~isfield(priors,'a_gamma')
@@ -117,15 +143,6 @@ if options.verbose
 end
 
 % Initialization
-if options.normalize
-    y0 = y;
-    my = mean(y,2);
-    y = y - repmat(my,1,dim.n);
-    sy = std(y(:));
-    y = y./sy;
-else
-    y0 = y;
-end
 posterior = priors;
 suffStat.iS0 = cell(dim.K,1);
 for k=1:K
@@ -288,7 +305,7 @@ while ~stop
     Egam = EV(posterior);
     for k=1:dim.K
         iS = suffStat.iS0{k} + Egam(k)*sumZ(k)*eye(dim.p);
-        posterior.SigmaEta{k} = VB_inv(iS);
+        posterior.SigmaEta{k} = VBA_inv(iS);
         posterior.muEta(:,k) = posterior.SigmaEta{k}*(suffStat.iS0{k}*priors.muEta(:,k)+Egam(k)*y*posterior.z(k,:)');
     end
     suffStat.Ed2 = Ed2(y,posterior);
@@ -312,8 +329,10 @@ end
 
 % wrap up
 if options.normalize
-    posterior.muEta = posterior.muEta.*sy + repmat(my,1,dim.K);
-    posterior.b_gamma = posterior.b_gamma.*sy.^2;
+    out.normalize.Q = diag(sy.^2);
+    out.normalize.m = my;
+    % muEta <-- diag(sqrt(diag(Q)))*muEta + repmat(m,1,dim.K);
+    % b_gamma(i) <-- = b_gamma(i).*Q;
 end
 out.dt = toc(options.tStart);
 out.dim = dim;

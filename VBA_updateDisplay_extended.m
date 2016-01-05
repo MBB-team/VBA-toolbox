@@ -47,7 +47,7 @@ dTime = [1:size(y,2)];
 gx = suffStat.gx(:,dTime);
 vy = suffStat.vy(:,dTime);
 indEnd = length(dTime);
-if   sum([options.sources(:).type]==0) || ~options.binomial
+if   sum([options.sources(:).type]==0) > 0
     if options.OnLine
         sigmaHat = posterior.a_sigma(:,dTime)./posterior.b_sigma(:,dTime);
         var_sigma = sigmaHat./posterior.b_sigma(dTime);

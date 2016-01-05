@@ -90,7 +90,7 @@ if ~out.options.OnLine && out.dim.n >= 1 && ~isinf(out.options.priors.a_alpha) &
     str{5} = sprintf([str{5},'\n ',...
         '    - deterministic variant: log p(y|m,eta=0) > ',num2str(Fd,'%4.3e') ]);
 end
-str{5} = [str{5}, '\n'];
+% str{5} = [str{5}, '\n'];
 
 R2str={'',''};
 LLstr={'',''};
@@ -111,7 +111,8 @@ LLstr = [LLstr{1} LLstr{2}];
 
 
 AICstr = ['     - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n'];
-BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n'];
+% BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n'];
+BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e')];
 
 str{6} = sprintf(['Classical fit accuracy metrics:','\n',...
     R2str,...
