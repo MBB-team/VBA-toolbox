@@ -1,15 +1,15 @@
-function [posterior1,out1,posterior2,out2,posterior,out,posterior_fixed,out_fixed] = demo_multisession()
+function [posterior_split,out_split,posterior_fixed,out_fixed] = demo_multisession()
 
 
 %% ### Model Definition 
 
-function [fx]=f_demo_multisession(Xt,Theta,ut,inF)
+function [fx]=f_demo_multisession(Xt,Theta,ut,~)
 fx = Xt + [ut 1]*Theta;
 % dfdx = 1;
 % dfdp = ut;
 end
 
-function [gx]=g_demo_multisession(Xt,Phi,ut,inG)
+function [gx]=g_demo_multisession(Xt,Phi,~,~)
 gx = Phi+Xt;
 % dgdx = 1;
 % dgdp = 1;
@@ -17,6 +17,7 @@ end
 
 
 %% ### Simulations
+
 % We simulate the same model two times with different parameters
 n_t = 100;
 u = rand(1,n_t);
@@ -40,17 +41,15 @@ y = [y1 y2];
 %% ### Model inversion
 
 % = Set the priors for as if data were from a unique session
-priors.muX0 = 0;
-priors.SigmaX0 = 0;
-priors.muTheta = [0 0]';
+priors.muX0       = 0;
+priors.SigmaX0    = .1;
+priors.muTheta    = [0 0]';
 priors.SigmaTheta = eye(2);     
-priors.muPhi = 0;         % prior mean on observation params
-priors.SigmaPhi = 1;      % prior covariance on observation params
-priors.a_sigma = 1;       % Jeffrey's prior
-priors.b_sigma = 1;       % Jeffrey's prior
-priors.a_alpha = Inf;     
-priors.b_alpha = 0;       
-options.priors = priors;  % include priors in options structure
+priors.muPhi      = 0;       % prior mean on observation params
+priors.SigmaPhi   = 1;       % prior covariance on observation params
+priors.a_sigma    = 1;       % Jeffrey's prior
+priors.b_sigma    = 1;       % Jeffrey's prior   
+options.priors    = priors;  % include priors in options structure
 
 dim.n_t = n_t;
 dim.n_phi = 1;            % nb of observation parameters
@@ -60,20 +59,14 @@ dim.n=1;
 
 options.verbose=1;
 options.DisplayWin=1;
+options.extended=1
+% =========================================================================
+% 2 sessions case
+% =========================================================================
 
-
-% dim.n_t = n_t/2;
-% 
-% [posterior1,out1] = VBA_NLStateSpaceModel(y1,u(1:(n_t/2)),@f_demo_multisession,@g_demo_multisession,dim,options);
-% options2 = options;
-% options2.priors.a_sigma = posterior1.a_sigma;
-% options2.priors.b_sigma = posterior1.b_sigma;
-% [posterior2,out2] = VBA_NLStateSpaceModel(y2,u((1+n_t/2):end),@f_demo_multisession,@g_demo_multisession,dim,options2);
-
-dim.n_t = n_t;
-
-% = Specifiy the sessions
+% split into sessions
 options.multisession.split = [n_t/2 n_t/2]; % two sessions of 120 datapoints each
+
 % % By default, all parameters are duplicated for each session. However, you
 % % can fix some parameters so they remain constants across sessions.
 
@@ -87,14 +80,19 @@ options.multisession.split = [n_t/2 n_t/2]; % two sessions of 120 datapoints eac
 % options.multisession.fixed.X0 = 1; % <~ uncomment for fixing X0(1)
 
 % = Model identification as usual
-[posterior,out] = VBA_NLStateSpaceModel(y,u,@f_demo_multisession,@g_demo_multisession,dim,options);
+[posterior_split,out_split] = VBA_NLStateSpaceModel(y,u,@f_demo_multisession,@g_demo_multisession,dim,options);
 
-options.multisession.fixed.theta = 'all'; 
-options.multisession.fixed.phi = 'all'; 
-options.multisession.fixed.X0 = 'all'; 
+pause()
+
+% =========================================================================
+% 1 session case
+% =========================================================================
+
+% keep the two sessions but fix all parameters
+options.multisession.fixed.theta = 'all'; % shrotcut for 1:dim.n_theta
+options.multisession.fixed.phi   = 'all'; % shrotcut for 1:dim.n_phi
 
 % = Model identification as usual
-fprintf('-----\n');
 [posterior_fixed,out_fixed] = VBA_NLStateSpaceModel(y,u,@f_demo_multisession,@g_demo_multisession,dim,options);
 
 end
