@@ -62,11 +62,11 @@ fixed = check_struct(options.multisession.fixed, ...
 % syntactic sugar handling 
 if isequal(fixed.theta ,'all'), fixed.theta = 1:dim.n_theta; end
 if isequal(fixed.phi   ,'all'), fixed.phi   = 1:dim.n_phi; end
-if isequal(fixed.X0    ,'all'), fixed.X0    = 1:dim.n; end
+%if isequal(fixed.X0    ,'all'), fixed.X0    = 1:dim.n; end
     
 theta_multi = setdiff(theta_multi,fixed.theta);
 phi_multi   = setdiff(phi_multi  ,fixed.phi  );
-X0_multi    = setdiff(X0_multi   ,fixed.X0   );
+%X0_multi    = setdiff(X0_multi   ,fixed.X0   );
 
 % = expand (duplicate) priors and dimensions to cover all sessions
 priors = options.priors;
@@ -86,10 +86,10 @@ end
 % = restrict initial hidden states
     % enforce covariance across states (duplication is needed for evolution
     % independance)
-    for i = fixed.X0
-        X0_cor = i + (0:n_session-1)*dim.n;
-        priors_multi.SigmaX0(X0_cor,X0_cor) = priors_multi.SigmaX0(i,i);
-    end
+%     for i = fixed.X0
+%         X0_cor = i + (0:n_session-1)*dim.n;
+%         priors_multi.SigmaX0(X0_cor,X0_cor) = priors_multi.SigmaX0(i,i);
+%     end
     
 
 
