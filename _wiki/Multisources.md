@@ -6,6 +6,8 @@ title: "Mixed observations"
 
 The toolbox allows to develop models of multiple concurrent observations. For example bDCM can fit both behavioural responses _and_ BOLD timeseries. You can also imagine a single model explaining binary button responses _and_ reaction time. In fact, you can combine virtually as many recordings as you want in a unique model where some parameters will affect the prediction of multiple observations. Within the toolbox, this is possible using the ```multisources``` option. The estimation procedure will then try to estimate the parameter values that best explain all data simultaneously.
 
+Please check the ```demo_multisource``` for an interactive example.
+
 # Creating the observation matrix
 
 The first step is to create a single observation matrix containing all the observations. We will call 'source' each set of measurements of similar nature, _ie._ following a same probability distribution. For example:
