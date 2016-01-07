@@ -18,9 +18,9 @@ The general procedure to deal with those multiple observations is first to creat
 
 ```matlab
 y = [ y_source_1 ;
-       y_source_2 ;
-       ...
-       y_source_n ] ;
+      y_source_2 ;
+      ...
+      y_source_s ] ;
 ```
 
 ## Case 1: synchronous data
@@ -48,25 +48,25 @@ If we now want to resample it with a new timestep of 500ms, we should insert 3 N
 
 ```matlab
 y_fmri_resampled = [data_mri(1) NaN NaN NaN ...
-                     data_mri(2) NaN NaN NaN ...
-                     ... 
-                     data_mri(N) NaN NaN NaN] ;
+                    data_mri(2) NaN NaN NaN ...
+                    ... 
+                    data_mri(N) NaN NaN NaN] ;
 ```
 
 A more efficient way to write it is:
 
-```Matlab
+```matlab
 old_timestep = 2   ; % old TR in s
- new_timestep = 0.5 ; % new timestep is 0.5s
+new_timestep = 0.5 ; % new timestep is 0.5s
 
- % how many new points for an old one
- dilution = old_timestep / new_timestep ; 
+% how many new points for an old one
+dilution = old_timestep / new_timestep ; 
 
- % initialize resampled observation with nans
- y_fmri_resampled = nan(1, N*dilution) ; 
+% initialize resampled observation with nans
+y_fmri_resampled = nan(1, N*dilution) ; 
  
- % insert one mri datapoint every four observation points
- y_fmri_resampled(1:dilution:end) = data_mri ; 
+% insert one mri datapoint every four observation points
+y_fmri_resampled(1:dilution:end) = data_mri ; 
 
 ```
 
@@ -74,13 +74,13 @@ Now, let's say you want to associate your BOLD signal to some button responses t
 
 ```matlab
 % initialize resampled observation with nans
- y_resp_resampled = nan(1, numel(y_fmri_resampled)) ; 
+y_resp_resampled = nan(1, numel(y_fmri_resampled)) ; 
  
- % find the rounded onsets
- onsets_resampled = round(onsets / new_timestep) ;
+% find the rounded onsets
+onsets_resampled = round(onsets / new_timestep) ;
  
- % set the observed responses at the correct timing
- y_resp_resampled(onsets_resampled+1) = response ;
+% set the observed responses at the correct timing
+y_resp_resampled(onsets_resampled+1) = response ;
  
 ```
 
@@ -90,11 +90,76 @@ It's now time to wrap up. You have one vector for the BOLD timeseries, ```y_fmri
 y = [y_fmri_resampled ; y_resp_resampled] ;
 ```
 
-# Defining the observation mixture
+# Defining the mixed observation function
 
+[A generative model consists]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model) of an evolution function $$f$$ and of an observation function $$g$$. We now need to adapt the generative model to deal with the multiple sources we aggregated. To do this, we need to construct an observation function that can provide a prediction for all sources simultanously from the current inputs and hidden states.
 
+Say we already have an observation function for each observed source, _ie._ ```g_source_1(x,u)``` predicts ```y_source_1```, ```g_source_2(x,u)``` predicts ```y_source_2```, and so on. Here, the hidden state ```x``` and the inputs ```u``` must be the same: a unique evolution dynamics roots all predications. Then, the mixture observation function is simply given by:
 
-# Specifying the mixed observation function
+```matlab
+g(x,u) = [ g_source_1(x,u) ;
+           g_source_2(x,u) ;
+           ...
+           g_source_s(x,u) ] ;
+```
 
+In the example of bDCM we used in the previous section, this correspond to:
 
-# Of the importance of hyperpriors
+```matlab
+g_bdcm(x,u) = [ g_hrf(x,u)     ;   % predicts BOLD signal  
+                g_softmax(x,u) ] ; % predicts the binary response
+```
+
+# Specifying the observation mixture
+
+We now have a model that can predict multiple sources of observations stored in a unique matrix ```y```. This matrix however contains data following different distributions. In order to compute correctly the likelihood of the data given the model, we thus need to specify how each observation should be treated. 
+
+To do so, the ```options``` structure must have ```sources``` field that describe how to split the observation matrix. More precisely, each source ```i``` should be defined as follows:
+
+* ```options.sources(i).out``` : the line numbers in ```y``` where the source is stored
+* ```options.sources(i).type```: the distribution the source follows
+	- 0 for (multivariate) gaussian
+	- 1 for binomial
+	- 2 for for multinomial
+
+In our bDCM example, if we have 3 ROIs/nodes and 1 binary response:
+
+```matlab
+% the 3 first lines are normally distributed (BOLD)
+options.sources(1).out  = 1:3 ;
+options.sources(1).type = 0   ;
+
+% the 4th line is the binary response
+options.sources(2).out  = 4 ;
+options.sources(2).type = 1   ;
+
+```
+
+# Setting hyperpriors
+
+If the mixed model includes multiple gaussian sources, one should define hyperpriors for each of them. This is done by setting the ```a_sigma``` and ```b_sigma``` fields in the ```options``` structure. Those values correspond respectively to the shape and rate (inverse scale) parameters of the Gamma distribution defining the prior observation precision.
+
+To set the hyperpriors for a gaussian source ```s```
+
+```matlab
+% Jeffrey's "neutral" hyperprior
+options.priors.a_sigma(s) = 1 ;
+options.priors.b_sigma(s) = 1 ;
+```
+
+Note that the index ```s``` is defined over the gaussian sources and is different from the ```options.sources``` counting. In other words, ```a_sigma``` and ```b_sigma``` should be vectors with a length equal to the total number of gaussian sources only.
+
+When the model is fitted to multiple sources of observation, the VBA algorithm concurently maximizes the respective (log-)likelihoods while minimizing the overall model complexity. One consequence is that the different sources will be weighted according to their respective precision. To reduce potential biases in the model inversion, it is preferable to use informed hyperpriors about the sources precisions. To help you do so, you can define the hyperpriors as a function of the expected range explained variance of the source:
+
+```matlab
+% compute source variance
+v = var(y(options.sources(i).out,:));
+
+% set explained variance range
+min_ev = 0.05 ; % between 5%
+max_ev = 0.15 ; % and 15%
+
+% informed hyperprior
+[options.priors.a_sigma(s), options.priors.b_sigma(s)] = ...
+	getHyperpriors(v,min_ev,max_ev) ;
+```

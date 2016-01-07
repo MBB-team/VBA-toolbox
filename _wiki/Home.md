@@ -25,6 +25,7 @@ title: "home"
 ## Advanced options
 
 - [Multisession](Multisession)
+- [Mixed observations](Multisources)
 
 [comment]: # (- [Mixed observations](Multisources))
 
