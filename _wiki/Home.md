@@ -1,11 +1,6 @@
 ---
 title: "home"
 ---
-## Getting Started
-
-- [A fast demo of the toolbox](Fast-demo-Q-learning-model)
-- [VBA model inversion in 4 steps](VBA-model-inversion-in-4-steps)
-- [VBA graphical output](VBA-graphical-output)
 
 ## Some theory
 
@@ -13,34 +8,37 @@ title: "home"
 - [Variational Bayes](The-variational-Bayesian-approach)
 - [General model structure](Structure-of-VBA's-generative-model)
 
-## Model Inversion
+## Getting Started
+
+- [VBA model inversion in 4 steps](VBA-model-inversion-in-4-steps)
+- [A fast demo of the toolbox](Fast-demo-Q-learning-model)
+- [VBA graphical output](VBA-graphical-output)
+
+## Going further
+
+- [Results and diagnostics](VBA-output-structure)
 
 [comment]: # (- [Defining a model]())
 [comment]: # (- [Setting the priors]())
 - [VBA options](Controlling-the-inversion-using-VBA-options)
 
 [comment]: # (- [Simulation and model estimation]())
-- [Results and diagnostics](VBA-output-structure)
 
-## Advanced options
+
+## Advanced tricks
 
 - [Multisession](Multisession)
 - [Mixed observations](Multisources)
-
-[comment]: # (- [Mixed observations](Multisources))
+- [Group-level model selection](BMS-for-group-studies)
+- [Large model spaces](Comparing-large-spaces-of-models)
+- [Design Optimization](Optimizing-the-experimental-design)
+- [Volterra decomposition](Volterra-decomposition)
 
 ## Examples of models
 
 - [Behavioural/cognitive models](Behavioural-cognitive-models)
 - [Neurobiological models](Neurobiological-models)
 - [Miscellaneous models](Miscellaneous-models)
-
-## Advanced issues
-
-- [Large model spaces](Comparing-large-spaces-of-models)
-- [Group-level model selection](BMS-for-group-studies)
-- [Design Optimization](Optimizing-the-experimental-design)
-- [Volterra decomposition](Volterra-decomposition)
 
 ## References
 
