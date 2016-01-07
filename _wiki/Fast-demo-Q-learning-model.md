@@ -9,7 +9,7 @@ The task is the so-called two-armed bandit problem, which captures the essence o
 
 
 
-```
+```matlab
 % Q-learning demo
 % In psychological terms, motivation can be defined as the set of processes
 % that generate goals and thus determine behaviour. A goal is nothing else

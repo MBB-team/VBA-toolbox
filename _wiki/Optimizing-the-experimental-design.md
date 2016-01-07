@@ -17,7 +17,7 @@ The VBA toolbox can handle two classes of problems, namely optimizing the system
 In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). This can be done by evaluating the design efficeincy for each design, as follows:
 
 ```matlab
-e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters');
+e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters')
 ```
 where `u` is the time series of experimental control variables (inputs) that defines the design and `e` is minus the trace of the expected posterior covariance matrix.
 

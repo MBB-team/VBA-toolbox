@@ -16,7 +16,7 @@ This page summarizes the steps required for performing a model inversion with th
 Generative models are defined in terms of **evolution and observation functions**. One may have to write these evolution/observation functions, in compliance with the following I/O:
 
 ```matlab
-[ z ] = function_name( x_t,P,u_t,in )
+z = function_name(x_t, P, u_t, in) ;
 ```
 
 - `x_t` : the vector of hidden states at time `t`
@@ -39,9 +39,9 @@ The VBA model inversion requires the user to specify some additional information
 For example, setting:
 
 ```matlab
-dim.n = 1
-dim.n_theta = 2
-dim.n_phi = 3
+dim.n       = 1 ;
+dim.n_theta = 2 ;
+dim.n_phi   = 3 ;
 ```
 tells VBA that there are 1 hidden state, 2 evolution parameters and 3 observation parameters.
 
@@ -51,18 +51,20 @@ tells VBA that there are 1 hidden state, 2 evolution parameters and 3 observatio
 Dealing with categorical (binary) data?
 
 ```matlab
-options.binomial = 1
+options.binomial = 1 ;
 ```
 Want to get rid of annoying graphical output figures?
 
 ```matlab
-options.DisplayWin = 0
+options.DisplayWin = 0 ;
 ```
 When dealing with missing data, fill in `options.isYout`, which is a vector of same size as the data matrix `y`, whose entries are 1 if the corresponding sample is to be left out. For example:
+
 ```matlab
-options.isYout = zeros(size(y))
-options.isYout(1,1) = 1
+options.isYout      = zeros(size(y)) ;
+options.isYout(1,1) = 1 ;
 ```
+
 forces VBA to ignore the first time sample of the first dimension of `y`.
 
 > **TIP:** advanced users may use these optional arguments to control the inversion (see [this page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) for an exhaustive list of options).
@@ -90,22 +92,22 @@ In addition to the evolution and observation functions, specifying the generativ
 For example, setting:
 
 ```matlab
-priors.muPhi = zeros(dim.n_phi,1)
-priors.SigmaPhi = eye(dim.n_phi)
+priors.muPhi    = zeros(dim.n_phi,1) ;
+priors.SigmaPhi = eye(dim.n_phi)     ;
 ```
 effectively defines a N(0,I) i.i.d. (zero mean, unit variance) normal density on observation parameters.
 
 Note that when dealing with deterministic models, one has to specify the following prior for the state noise precision:
 
 ```matlab
-priors.a_alpha = Inf
-priors.b_alpha = 0
+priors.a_alpha = Inf ;
+priors.b_alpha = 0   ;
 ```
 
 > **TIP:** one then fills in the `priors` field of the `options` structure, as follows:
 >
 >```matlab
-options.priors = priors
+options.priors = priors ;
 ```
 If left unspecified, this field is filled in with defaults (typically, i.i.d. zero-mean and unit variance Gaussian densities).
 
@@ -116,6 +118,7 @@ Having completed steps 1 to 3, one simply calls the main **VB model inversion** 
 ```matlab
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options)
 ```
+
 Its input arguments are:
 - the data `y`
 - the input `u` (can be left empty)

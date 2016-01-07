@@ -35,8 +35,8 @@ where `r` is the population frequency profile, `m` is the subject's label (it as
 
 The above RFX generative model can be inverted using a VB scheme, as follows:
 
-```
-[posterior,out] = VBA_groupBMC(L);
+```matlab
+[posterior,out] = VBA_groupBMC(L) ;
 ```
 
 where the I/O arguments of `VBA_groupBMC` are summarized as follows:
@@ -48,8 +48,8 @@ where the I/O arguments of `VBA_groupBMC` are summarized as follows:
 In Stephan et al. (2009), we introduced the notion of exceedance probability (EP), which measures how likely it is that any given model is more frequent than all other models in the comparison set. Estimated model frequencies and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
 
 ```matlab
-f = out.Ef;
-EP = out.ep;
+f  = out.Ef ;
+EP = out.ep ;
 ```
 
 The graphical output of `VBA_groupBMC.m` is appended below (with random log-evidences, with `K=4` and `n=16`):
@@ -60,16 +60,16 @@ The graphical output of `VBA_groupBMC.m` is appended below (with random log-evid
 
 Note that optional arguments can be passed to the function, which can be used to control the convergence of the VB scheme. Importantly, information Re: **model families** are passed through an `options` variable (see header of `VBA_groupBMC.m`):
 
-```
-options.families = {[1,2],[3,4]};
-[posterior,out] = VBA_groupBMC(L,options);
+```matlab
+options.families = {[1,2], [3,4]} ;
+[posterior, out] = VBA_groupBMC(L, options) ;
 ```
 
 The above script effectively forces RFX-BMS to perform family inference at the group-level, where the first (resp. second) family contains the first and second (resp., third and fourth) model. Queering the family frequencies and EPs can be done as follows:
 
-```
-ff = out.families.Ef;
-fep = out.families.ep;
+```matlab
+ff  = out.families.Ef ;
+fep = out.families.ep ;
 ```
 
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbms3.jpg)
@@ -84,8 +84,8 @@ Let us assume that the experimental design includes `p` conditions, to which a g
 
 Note that the set of induced tuples can be partitioned into a first subset, in which the same model underlies all conditions, and a second subset containing the remaining tuples (with distinct condition-specific models). One can the use family RFX-BMS to ask whether the same model underlies all conditions. This is the essence of between-condition RFX-BMS, which is performed automatically as follows:
 
-```
-[ep,out] = VBA_groupBMC_btwConds(L);
+```matlab
+[ep, out] = VBA_groupBMC_btwConds(L) ;
 ```
 where the I/O arguments of `VBA_groupBMC_btwConds` are summarized as follows:
 
@@ -95,28 +95,28 @@ where the I/O arguments of `VBA_groupBMC_btwConds` are summarized as follows:
 
 Now, one may be willing to ask whether the same model family underlies all conditions. For example, one may not be interested in knowing that different conditions may induce some variability in  models that do not cross the borders of some relevant model space partition. This can be done as follows:
 
-```
-options.families = {[1,2],[3,4]};
-[ep,out] = VBA_groupBMC_btwConds(L,options);
+```matlab
+options.families = {[1,2], [3,4]} ;
+[ep, out] = VBA_groupBMC_btwConds(L, options) ;
 ```
 
 Here, the EP will be high if, for most subjects, either family 1 (models 1 and 2) or family 2 (models 3 and 4) are most likely, irrespective of conditions.
 
 If the design is factorial (e.g., conditions vary along two distinct dimensions), one may be willing to ask whether there is a difference in models along each dimension of the factorial design. For example, let us consider a 2x2 factorial design:
 
-```
-factors = [[1,2];[3,4]];
-[ep,out] = VBA_groupBMC_btwConds(L,[],factors);
+```matlab
+factors  = [[1,2]; [3,4]] ;
+[ep,out] = VBA_groupBMC_btwConds(L, [], factors) ;
 ```
 
 Here, the input argument `factors` is the (2x2) factorial condition attribution matrix, whose entries contain the index of the corresponding condition (`p=4`). The output argument `ep` is a 2x1 vector, quantifying the EP that models are identical along each dimension of the factorial design.
 
 Of course, one may want to combine family inference with factorial designs, as follows:
 
-```
-options.families = {[1,2],[3,4]};
-factors = [[1,2];[3,4]];
-[ep,out] = VBA_groupBMC_btwConds(L,options,factors);
+```matlab
+options.families = {[1,2], [3,4]} ;
+factors = [[1,2]; [3,4]] ;
+[ep, out] = VBA_groupBMC_btwConds(L, options, factors) ;
 ```
 
 Note that the ensuing computational cost scales linearly with the number of dimensions in the factorial design, but is an exponential function of the number of conditions (there are `K^p` tuples).
@@ -128,34 +128,36 @@ Assessing between-group model comparison in terms of random effects amounts to a
 - $$H_=$$: data `y` come from the same population, i.e. model frequencies are the same for all subgroups:
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbmsbtw0.jpg)
 Under $$H_=$$ , the group-specific datasets can be pooled to perform a standard RFX-BMS, yielding a single evidence $$p(y|H_{=})$$:
-```
-L = [L1,L2];
-[posterior,out] = VBA_groupBMC(L);
-Fe = out.F;
+
+  ```matlab
+L = [L1, L2] ;
+[posterior, out] = VBA_groupBMC(L) ;
+Fe = out.F ;
 ```
 where `L1` (resp. `L2`) is the subject-level log-evidence matrix of the first -resp. second) group of subjects, and `Fe` is the log-evidence of the group-hypothesis $$H_=$$.
 
 - $$H_{\neq}$$: subjects' data `y` come from different populations, i.e. they have distinct model frequencies:
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbmsbtw2.jpg)
 Under $$H_{\neq}$$, datasets are marginally independent. In this case, the evidence $$p(y|H_{\neq})$$ is the product of group-specific evidences:
-```
-[posterior1,out1] = VBA_groupBMC(L1);
-[posterior2,out2] = VBA_groupBMC(L2);
-Fd = out1.F + out2.F;
+
+  ```matlab
+[posterior1, out1] = VBA_groupBMC(L1) ;
+[posterior2, out2] = VBA_groupBMC(L2) ;
+Fd = out1.F + out2.F ;
 ```
 where `Fe` is the log-evidence of the group-hypothesis $$H_{\neq}$$.
 
 
 The posterior probability $$p$$ that the two groups have the same model frequencies is thus simply given by:
 
-```
-p=1/(1+exp(Fd-Fe))
+```matlab
+p = 1/(1+exp(Fd-Fe)) 
 ```
 
 Note that you can directly test for a group difference with the function `VBA_groupBMC_btwGroups` which does exactly all the operation above:
 
-```
-[h,p] = VBA_groupBMC_btwGroups({L1, L2});
+```matlab
+[h, p] = VBA_groupBMC_btwGroups({L1, L2})
 ```
 
 

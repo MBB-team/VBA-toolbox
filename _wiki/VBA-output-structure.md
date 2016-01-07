@@ -12,8 +12,9 @@ Below, we describe in more details VBA's main output arguments.
 
 First of all, VBA derives an approximation to the posterior density over model variables (i.e.: evolution/observation parameters, hidden states, initial conditions and precision hyperparameters). When calling the main inversion function, e.g.:
 
-```
-[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+```matlab
+[posterior, out] = ...
+   VBA_NLStateSpaceModel(y, u, f_fname, g_fname, dim, options) ;
 ```
 
 moments of the approximate posterior density are stored in `posterior`, in a similar fashion than the `options.priors` input structure (see [this description]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps)), i.e.:
@@ -45,11 +46,13 @@ All these can be eyeballed under the 'VB inversion' tab (see [this page](VBA-gra
 The above inversion call also returns the structure `out`, which can be queried for all sorts of diagnostics. Among these, VBA computes model quality metrics:
 
 - **Model's log-evidence**: `out.F`. This is the variational Bayesian approximation to the model's marginal likelihood, which is required for model comparison. A dummy "Bayesian p-value" for the model can then be computed as follows:
+   
+  ```matlab
+dF = out.F - out.diagnostics.LLH0 ;
+bayesianP = 1./(1+exp(dF)) ;
 ```
-dF = out.F - out.diagnostics.LLH0;
-bayesianP = 1./(1+exp(dF));
-```
-where `out.diagnostics.LLH0` is the evidence for the "null" (i.e. a model that assumes that data are random samples). The above "Bayesian p-value" is in fact the posterior probability of the null...
+
+  where `out.diagnostics.LLH0` is the evidence for the "null" (i.e. a model that assumes that data are random samples). The above "Bayesian p-value" is in fact the posterior probability of the null...
 - **Fit accuracy metrics**:
   - percentage of variance explained: `out.fit.R2`. NB: when dealing with categorical (binary) data, `out.fit.R2` is the balanced classification accuracy, i.e. the percentage of correct classifications (based upon a 0.5 threshold).
   - log-likelihood: `out.fit.LL`.

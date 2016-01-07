@@ -14,12 +14,19 @@ where $$H_1$$ is the "full" model, and $$H_0$$ is the "reduced" model (i.e. with
 
 This implies that one only needs to invert the full model to test the significance of its parameters. The following script demonstrates the approach:
 
-```
-[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-rprior = out.options.priors;
-rprior.muPhi(1) = 0;
-rprior.SigmaPhi(1) = 0;
-[Fr,rpost] = VB_SavageDickey(posterior,out.options.priors,out.F,dim,rprior);
+```matlab
+% invert full model
+[posterior, out] = ...
+   VBA_NLStateSpaceModel(y, u, f_fname, g_fname, dim, options) ;
+   
+% define reduced model
+rprior = out.options.priors ;
+rprior.muPhi(1)    = 0 ;
+rprior.SigmaPhi(1) = 0 ;
+
+% Compute reduced model evidence
+[Fr, rpost] = ...
+    VB_SavageDickey(posterior, out.options.priors, out.F, dim, rprior) ;
 ```
 
 The first line is VBA's inversion of the full model (arbitrary data and model structure). The next lines create the reduced model's priors from the full model's, by zeroing the prior mean and variance of the first observation parameter. Then, both the log-evidence of the reduced model (`Fr`) and its posterior density (`rpost`) are derived. Note that posterior correlation among parameters under the full model induce changes in the marginal posterior densities of the non-zero parameters of the reduced model.

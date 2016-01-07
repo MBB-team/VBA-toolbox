@@ -13,12 +13,12 @@ The toolbox also contains additional models that may not be specific to neurobio
 The general linear model (GLM) is a statistical linear model. The GLM incorporates a number of different statistical models: ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. It is a generalization of multiple linear regression model to the case of more than one dependent variable. The following script demonstrates VBA's GLM classical test functionality:
 
 ```matlab
-X = randn(32,4);
-b = [1;0;0;0];
-y = X*b;
-y = y + randn(size(y));
-c = [1;0;0;0];
-[pv] = GLM_contrast(X,y,c,type);
+X  = randn(32, 4)  ;
+b  = [1; 0; 0; 0 ] ;
+y  = X*b ;
+y  = y + randn(size(y)) ;
+c  = [1; 0; 0; 0 ] ;
+pv = GLM_contrast(X, y, c, type) ;
 ```
 where `X` is the design matrix, `y` is the data matrix, `c` is the contrast matrix, `type` is flag for the test (t-test or F-test) and `pv` is the p-value of the corresponding test.
 
@@ -37,14 +37,14 @@ Strictly speaking, VBa's default generative model copes with continuous data, fo
 Until recently, condition and group effects have been addressed by performing random effects BMS independently for the different conditions, and then checking anecdotally to see whether the results of random effects BMS were consistent. This approach is limited, because it does not test the hypothesis that the same model describes the two conditions. VBA provides the inference machinery to evaluate the evidence for a difference – in terms of models – between conditions. This is exemplified in the demosntration script `demo_groupbtw.m`. Note that the main call function for such analysis writes as follows:
 
 ```matlab
-[ep,out] = VBA-groupBMCbtw(L)
+[ep, out] = VBA-groupBMCbtw(L)
 ```
 where `L` is the log-evidence ND-array, `ep` is the appropriate exceedance probability, and `out` gathers diagnostic metrics.
 
 Readers interested in standard group-BMS are encouraged to run the script `demo_bmc4glm.m`, which relies demonstrates random-effect group BMS in the context of nested models. NB: the model evidence is evaluated at the frequentist limit, using a dedicated function, as follows:
 
 ```matlab
-[lev] = lev_GLM(y,X)
+[lev] = lev_GLM(y, X)
 ```
 where `y` is the data vector, `X` is the design matrix, and `lev` is the log-model evidence evaluated at the frequentist limit (flat priors).
 

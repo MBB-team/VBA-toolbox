@@ -32,24 +32,24 @@ When performing dynamical systems' inversion, the VBA toolbox computes the first
 
 The Volterra decomposition is performed under the numerical constraint of a finite lag. Choosing the maximum lag is thus necessarily balancing fit against estimation efficiency. The default maximum lag in VBA is 16. Setting:
 
-```
-options.kernelSize = 32;
+```matlab
+options.kernelSize = 32 ;
 ```
 
 effectively asks VBA to estimate Volterra kernels with a maximum lag of 32 time samples.
 
 In addition, one may want to orthogonalize the inputs prior to the Volterra decomposition. This can be done by setting:
 
-```
-options.orthU = 1;
+```matlab
+options.orthU = 1 ;
 ```
 
 The inputs are orthogonalized in order, i.e. the second input is orthogonalized w.r.t. the first, the third is orthogonalized w.r.t. the first and the second, etc...
 
 One may also want to detrend inputs. The variable `options.detrendU` controls the order of a polynomial Taylor series which is removed from the inputs and from the system's dynamics. For example:
 
-```
-options.detrendU = 3;
+```matlab
+options.detrendU = 3 ;
 ```
 
 will explain away any temporal variability (in the inputs and system's dynamics), which can be explained by a cubic function of time.
@@ -57,10 +57,10 @@ will explain away any temporal variability (in the inputs and system's dynamics)
 
 Note that one can perform a Volterra decomposition of the system w.r.t. any *arbitrary set of inputs* by calling `VBA_VolterraKernels.m`, having appropriately reset the inputs in out.u. Replacing the estimated kernels in out.diagnostics.kernels allows one to eyeball the new Volterra decomposition from the "kernels" tab (cf. `VBA_ReDisplay.m`). This can be done as follows:
 
-```
-out.u = u0;
-out = rmfield(out,'diagnostics');
-[hf,out0] = VBA_ReDisplay(out,posterior,1);
+```matlab
+out.u = u0 ;
+out   = rmfield(out, 'diagnostics') ;
+[hf, out0] = VBA_ReDisplay(out, posterior, 1) ;
 ```
 
 This first re-sets the inputs in the `out` structure with the appropriate set (here, `u0`). Then, the `diagnostics` structure is removed from `out`. Therefore, when called, `VBA_ReDisplay` derives the Volterra deomcposition w.r.t. `u0`, instead of `u`. These will be stored in `out0.diagnostics.kernels` (but can be eyeballed directly from the graphical results window).
