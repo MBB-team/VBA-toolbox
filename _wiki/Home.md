@@ -45,12 +45,15 @@ title: "home"
 - [Reinforcement learning](Reinforcement-learning)
 - [Bayesian learning](bayesian-learning)
 - [Intertemporal choice](intertemporal-choice)
+- [Behavioural Dynamic Causal Modeling](behavioural-dcm)
+
 
 [comment]: # (- [Behavioural/cognitive models](Behavioural-cognitive-models))
 
 ### Neurobiological models 
 
 - [Dynamic Causal Modeling](dcm)
+- [Behavioural Dynamic Causal Modeling](behavioural-dcm)
 - [Neural Fields](neural-fields)
 - [Spiking Neuron](spiking-neuron)
 
