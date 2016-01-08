@@ -2,6 +2,8 @@
 title: "home"
 ---
 
+# How to use the toolbox
+
 ## Some theory
 
 - [Bayes' basics](Bayesian-modelling-introduction)
@@ -34,13 +36,36 @@ title: "home"
 - [Design Optimization](Optimizing-the-experimental-design)
 - [Volterra decomposition](Volterra-decomposition)
 
-## Examples of models
+# Library of models
 
-- [Behavioural/cognitive models](Behavioural-cognitive-models)
-- [Neurobiological models](Neurobiological-models)
-- [Miscellaneous models](Miscellaneous-models)
+> The VBA-toolbox already includes a large set of models you can use as such or adapt to the specifics of your reasearch. Below, we give a few examples of such models. We briefly expose the main theoretical and experimental issues, and point to the relevant functions of the VBA toolbox (demonstration scripts, evolution/observation functions, etc...).
 
-## References
+### Behavioural models 
+
+- [Reinforcement learning](Reinforcement-learning)
+- [Bayesian learning](bayesian-learning)
+- [Intertemporal choice](intertemporal-choice)
+
+[comment]: # (- [Behavioural/cognitive models](Behavioural-cognitive-models))
+
+### Neurobiological models 
+
+- [Dynamic Causal Modeling](dcm)
+- [Neural Fields](neural-fields)
+- [Spiking Neuron](spiking-neuron)
+
+[comment]: # (- [Neurobiological models](Neurobiological-models))
+
+### Miscellaneous models 
+
+- [Statistical models (GLM, classification)](statistical-models)
+- [Attractors and oscillators](Dynamical-models)
+
+
+[comment]: # (- [Miscellaneous models](Miscellaneous-models))
+
+
+# References
 
 1. [Jean’s website](https://sites.google.com/site/jeandaunizeauswebsite/code/vb-for-sdcm)
 1. J. Daunizeau, V. Adam, L. Rigoux, VBA: A probabilistic treatment of nonlinear models for neurobiological and behavioural data, PLoS Comp. Biol. (2014), 10(1): e1003441
