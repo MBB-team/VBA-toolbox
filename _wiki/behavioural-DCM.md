@@ -104,7 +104,7 @@ Now we have implemented our neural dynamics, we can focus on extending the model
 ## Combining the responses
 
 We already have the BOLD observations stored in the ```y_fmri```. The full observation matrix ```y``` should also include the behavioural observations (button responses, skin conductance, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different rates. You also need to inform toolbox about respective data distribution. 
-We refer the reader to the [mixed observations]({{ site.base_url}}/wiki/Multisources) page which covers this issue.
+We refer the reader to the [mixed observations]({{ site.baseurl }}/wiki/Multisources) page which covers this issue.
 
 ## Setting the neuro-behavioural mapping
 
@@ -113,7 +113,7 @@ In bDCM, the mapping from neural state patterns to behaviour is based on a quadr
 ### Direct neural mapping
 
 The most intuitive neuro-bahvioural mapping is a linear predictor that directly maps DCM nodes to behavioural predictors:
-![direct neural mapping]({{ site.base_url}}/images/wiki/bdcm/mapping_ha.png){:width="50%"} This is implemented in the matrix ```hA```, where columns representent neural states and lines are the different response predictors:
+![direct neural mapping]({{ site.baseurl  }}/images/wiki/bdcm/mapping_ha.png){:width="50%"} This is implemented in the matrix ```hA```, where columns representent neural states and lines are the different response predictors:
   
 ```matlab
 hA = [ 0 1 0 ;   % the first response is predicted by node 2
@@ -123,7 +123,7 @@ hA = [ 0 1 0 ;   % the first response is predicted by node 2
 ### Modulated neural mapping
 
 If part of the behaviour is explained by external factors for which you don't have neural correlates in your DCM, you can include an input modulation of the direct mapping:
-![modulated neural mapping]({{ site.base_url}}/images/wiki/bdcm/mapping_hb.png){:width="50%"} This is implement in the matrix array `hB`:
+![modulated neural mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hb.png){:width="50%"} This is implement in the matrix array `hB`:
   
 ```matlab
 % the first response is predicted by the 3rd node modulated by the 2nd input
@@ -133,7 +133,7 @@ hB{2} = [ 0 0 1 ;
 
 ### Direct input mapping
 Another solution is to predict the behaviour directly from the inputs, without using the neural computations made within the DCM network:
-![cheating mapping]({{ site.base_url}}/images/wiki/bdcm/mapping_hc.png){:width="50%"} In this case, you loose all the benefits of the bDCM approach, as the neural and behavioural observations will be independantly predicted. However, such workaround can provide good control models to benchmark your bDCMs.
+![cheating mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hc.png){:width="50%"} In this case, you loose all the benefits of the bDCM approach, as the neural and behavioural observations will be independantly predicted. However, such workaround can provide good control models to benchmark your bDCMs.
 
 This type of "mapping" is implemented in the matrix `hC`:
   
@@ -147,7 +147,7 @@ hC = [ 1 1 ;
 ### Quadratic neural mapping
 
 Finally, similar to the quadratic effects in the classic DCM, we can design quadratic predictors. This type of mapping captures gating effects, _ie._ two nodes must be coactivated in order to drive the response.
-![quadratic mapping]({{ site.base_url}}/images/wiki/bdcm/mapping_hd.png){:width="50%"} This can be defined in the matrix array `hD`:
+![quadratic mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hd.png){:width="50%"} This can be defined in the matrix array `hD`:
   
 ```matlab
 % the 2nd response (line) is jointly predicted by the 1st (array index) and 3rd (column) nodes
@@ -157,7 +157,7 @@ hD{1} = [ 0 0 0 ;
 
 # Defining the complete model
 
-A model is defined by an evolution function, an observation function, and a set of priors (see [here]({{ site.base_url}}/wiki/Structure-of-VBA's-generative-model)). The toolbox already includes generic functions that allow you to implement a bDCM in a couple of lines of code once you defined the connectivity matrices. This section will guide you step by step.
+A model is defined by an evolution function, an observation function, and a set of priors (see [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model)). The toolbox already includes generic functions that allow you to implement a bDCM in a couple of lines of code once you defined the connectivity matrices. This section will guide you step by step.
 
 ## bDCM evolution function
 
@@ -181,7 +181,7 @@ Note that the `@prepare_fullDCM` function will also set default priors for the b
 
 ## bDCM observation function
 
-Remember we [began this tutorial]({{ site.base_url }}/wiki/behavioural-DCM/#combining-the-responses) by defining a general observation matrix `y` containing both the BOLD timeseries and the behavioural responses. As the toolbox can only handle one observation function to map hidden states to the observation, we need to 1) create one aggregated observation function predicting all the observation types, 2) inform thee toolbox how to split the observations into sub-units.
+Remember we [began this tutorial]({{ site.baseurl }}/wiki/behavioural-DCM/#combining-the-responses) by defining a general observation matrix `y` containing both the BOLD timeseries and the behavioural responses. As the toolbox can only handle one observation function to map hidden states to the observation, we need to 1) create one aggregated observation function predicting all the observation types, 2) inform thee toolbox how to split the observations into sub-units.
 
 ### Mixing the predictors
 
@@ -203,7 +203,7 @@ It will apply the HRF model on the first observations, depending on the number o
 
 ### Splitting the observations
 
-The only thing you still have to do is to specify which lines in the observation matrix `y` correspond to the BOLD and to the responses respectively (cf. [mixed observations]({{ site.base_url}}/wiki/Multisources)). For the example given above, this should look like:
+The only thing you still have to do is to specify which lines in the observation matrix `y` correspond to the BOLD and to the responses respectively (cf. [mixed observations]({{ site.baseurl }}/wiki/Multisources)). For the example given above, this should look like:
 
 ```matlab
 % specify distribution of observations
@@ -226,7 +226,7 @@ We now assume that you are able to construct your bDCM model completely and want
 Behavioural DCM is not different from any other model in the toolbox. You can thus use the generic functions `@simulateNLSS` to simulate artifical data and `@VBA_NLStateSpaceModel` to estimate the model's parameters from your recordings.
 
 You can also look at the demo script `demo_negfeedback` that implement the simple two-nodes bDCM descibed in the original paper ([Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}):
-![bdcm-demo]({{ site.base_url}}/images/wiki/bdcm/bdcm_example.png)
+![bdcm-demo]({{ site.baseurl }}/images/wiki/bdcm/bdcm_example.png)
 
 > **Toy bDCM example from [Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}**
 The 1st input evokes responses throught the action of the node 1. The 2nd input modulates the influence of the negative feedback loop formed by the node 2.
@@ -246,7 +246,7 @@ results.lesion(2).y
 
 ```
 
-![bdcm-lesion]({{ site.base_url}}/images/wiki/bdcm/bdcm_lesion.png){:width="95%"}
+![bdcm-lesion]({{ site.baseurl }}/images/wiki/bdcm/bdcm_lesion.png){:width="95%"}
 
 > **Example of lesion analysis**
 If the 1st node is lesioned (left), then the normal behaviour (plain bars) is completly abolished (hatched bars). If the 2nd node is lesioned (right), we observe an increase in the response rate when the modulatory input is on, showing the loss of the feedback process.
@@ -267,7 +267,7 @@ results.susceptibility.norm
 ```
 
 
-![bdcm-susceptibility]({{ site.base_url}}/images/wiki/bdcm/bdcm_susceptibility.png){:width="85%"}
+![bdcm-susceptibility]({{ site.baseurl }}/images/wiki/bdcm/bdcm_susceptibility.png){:width="85%"}
 
 > **Example of susceptibility analysis**
 The first input is mainly dependent on the direct access C to the node 1. The modulatory influence of the second input also requires the two connections forming the feedback loop.
