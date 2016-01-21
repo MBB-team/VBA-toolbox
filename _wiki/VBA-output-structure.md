@@ -68,7 +68,7 @@ Typically, three types of diagnostics can be eyeballed in a systematic manner:
 
 - **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential non-identifiability issues, which would express as non-zero posterior correlation between model parameters.
 - **residuals empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
-- **residuals empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: normal distribution. Note: although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
+- **residuals empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: residuals should be normally distributed. Note: although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
 
 These diagnostics can be eyeballed under the 'diagnostics' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
 
