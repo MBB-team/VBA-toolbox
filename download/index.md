@@ -5,7 +5,7 @@ title: Get the toolbox
 
 <h2>Download registration form</h2>
 
-Prior to downloading, please fill in this form to help us know who are the users of the toolbox. None of these information will be publicly accessible.
+Prior to downloading, please fill in this form to help us know who are the users of the toolbox. This information will not be made publicly available.
 
 <script type="text/javascript">var submitted=false;</script>
 <iframe name="hidden_iframe" id="hidden_iframe"
@@ -314,7 +314,7 @@ target="hidden_iframe" onsubmit="submitted=true;">
 
 
 <label class="ss-q-item-label" for="entry_268375085">
-    <div class="ss-q-title">What type of data will you analyse with the VBA toolbox?</div>
+    <div class="ss-q-title">What type of data will you analyse with VBA?</div>
 </label>
 
 <ul class="ss-choices" role="group">
