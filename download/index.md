@@ -5,7 +5,7 @@ title: Get the toolbox
 
 <h2>Download registration form</h2>
 
-Prior to downloading, please fill in this form to help us know who are the users of the toolbox. This information will not be made publicly available.
+Prior to downloading the VBA matlab package, we ask you to please fill in this registration form. This information will not be made publicly available.
 
 <script type="text/javascript">var submitted=false;</script>
 <iframe name="hidden_iframe" id="hidden_iframe"
