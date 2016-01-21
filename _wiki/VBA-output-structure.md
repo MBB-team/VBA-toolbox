@@ -68,7 +68,8 @@ Typically, three types of diagnostics can be eyeballed in a systematic manner:
 
 - **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential non-identifiability issues, which would express as non-zero posterior correlation between model parameters.
 - **residuals empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
+- **residuals empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: normal distribution. Note: although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
 
-Both these diagnostics can be eyeballed nuder the 'diagnostics' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
+These diagnostics can be eyeballed under the 'diagnostics' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
 
 - **Volterra kernels**: `out.diagnostics.kernels`. This diagnostic analysis allows one to identify the system's states' and observables' impulse response to experimentally controlled inputs (even when the system is strongly nonlinear). Volterra kernels can be eyeballed under the 'kernels' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
