@@ -61,7 +61,7 @@ end
 if nargout < 2 ; return; end
 
 % evaluate derivative wrt x
-dsdx = b*(Sx-in.S0).*(1-(Sx-in.s0)./in.G0);
+dsdx = b*(Sx-in.S0).*(1-(Sx-in.S0)./in.G0);
 
 if nargout < 3 ; return; end
 
