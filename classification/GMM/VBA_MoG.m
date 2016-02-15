@@ -52,6 +52,12 @@ function [posterior,out] = VBA_MoG(y,K,options)
 %       .date: date (vector format)
 %       .F: history of Free Energy across VB iterations
 %       .it: # VB iterations until convergence
+%       .normalize: a structure containing the necessary information for
+%       de-normalization of the inferred class patterns, i.e.:
+%           muEta <-- diag(sqrt(diag(Q)))*muEta + repmat(m,1,dim.K);
+%           b_gamma(k) <-- = b_gamma(k).*Q;
+%       NB: this is performed automatically by VBA_projectMoG.m, when
+%       visualizing the decision boundaries.
 
 % First of all, deal with data normalization
 if ~isfield(options,'normalize')
@@ -111,19 +117,19 @@ end
 priors = options.priors;
 if ~isfield(priors,'muEta')
     priors.muEta = zeros(dim.p,dim.K);
-else
-    priors.muEta(i0,:) = [];
 end
+priors.muEta(i0,:) = [];
 if ~isfield(priors,'SigmaEta')
     priors.SigmaEta = cell(dim.K,1);
     for k=1:K
         priors.SigmaEta{k} = 1e0*eye(dim.p);
     end
-else
-    for k=1:K
-        priors.SigmaEta{k}(i0,:) = [];
-        priors.SigmaEta{k}(:,i0) = [];
-    end
+end
+suffStat.iS0 = cell(dim.K,1);
+for k=1:K
+    priors.SigmaEta{k}(i0,:) = [];
+    priors.SigmaEta{k}(:,i0) = [];
+    suffStat.iS0{k} = VBA_inv(priors.SigmaEta{k});
 end
 if ~isfield(priors,'a_gamma')
     priors.a_gamma = 1e0*ones(dim.K,1);
@@ -144,13 +150,9 @@ end
 
 % Initialization
 posterior = priors;
-suffStat.iS0 = cell(dim.K,1);
-for k=1:K
-    suffStat.iS0{k} = pinv(priors.SigmaEta{k});
-end
 switch options.init
     case 'hierarchical'
-        posterior.muEta = dummyHierarchical(y,K,options);
+        [posterior.muEta,Z] = dummyHierarchical(y,K,options);
     case 'prior'
         posterior.muEta = priors.muEta + eps*randn(dim.p,dim.K);
     case 'rand'
@@ -175,7 +177,7 @@ posterior.z = tmp./repmat(sum(tmp,1),dim.K,1);
 F = FE(posterior,priors,suffStat,y);
 
 if options.DisplayWin
-    handles.hf = figure('name','Convergence monitoring','color',[1 1 1]);
+    handles.hf = figure('name','VBA/MoG: convergence monitoring','color',[1 1 1]);
     for i=1:8
         handles.ha(i) = subplot(3,3,i,'parent',handles.hf,'box','off');
     end
@@ -353,7 +355,6 @@ if options.DisplayWin && dim.p >=2
 end
 
 if options.verbose
-    fprintf('\n')
     fprintf('---')
     fprintf('\n')
     fprintf(['Date: ',datestr(out.date),'\n'])
@@ -370,7 +371,13 @@ if options.verbose
     fprintf(['Posterior probabilities:','\n'])
     fprintf(['     - MoG: p(H1|y)= ','%4.3f','\n'],1-out.bor)
     fprintf(['     - null: p(H0|y)= ','%4.3f','\n'],out.bor)
+    fprintf('---')
     fprintf('\n')
+    if options.normalize
+        fprintf(['Warning: data has been normalized! (check out.normalize)','\n'])
+        fprintf('---')
+        fprintf('\n')
+    end
 end
 
 

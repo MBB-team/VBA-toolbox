@@ -3,7 +3,7 @@
 % position and width are then estimated using VBA.
 
 close all
-clear variables
+clear all
 
 %---- simulate noisy gbf ----%
 
@@ -23,7 +23,6 @@ plot(y','ro')
 hold on;
 plot(gx')
 
-
 %---- Invert gbf on simulated data ----%
 
 % Build priors structure
@@ -36,12 +35,15 @@ options.inG = inG;              % input structure (grid)
 dim.n_phi = 4;                  % nb of observation parameters
 dim.n_theta = 0;                % nb of evolution parameters
 dim.n=0;                        % nb of hidden states
-dim.u=0;                        % nb of inputs
-options.dim=dim;
+
+
+
+
+
 % Call inversion routine
 [posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
 
 
 %---- Display results ----%
-displayResults(posterior,out,y,[],[],[],phi,[],sigma);
+displayResults(posterior,out,y,[],[],[],phi,[],sigma)
 
