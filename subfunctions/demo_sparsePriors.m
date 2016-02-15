@@ -76,8 +76,8 @@ plot(ha3,-subgx(subgx<=0).^2,subgx(subgx<=0).^2,'k.')
 getSubplots
 
 % 1- simulate "sparse" GLM and invert
-p = 64;
-n = 128;
+p = 128;
+n = 256;
 A = randn(p,n);
 phi1 = sparseTransform(X(randperm(n)),1);
 sigma = 1;
@@ -88,7 +88,8 @@ dims.n_theta = 0;
 dims.n_phi = n;
 options.inG.X = A;
 options.inG.sparseP = 1;
-options.priors.muPhi = 1e-2*ones(n,1);
+% options.priors.muPhi = 1e-2*ones(n,1);
+options.checkGrads = 0;
 [posterior,out] = VBA_NLStateSpaceModel(y1,[],[],@g_GLMsparse,dims,options);
 set(gcf,'tag','dummy','name','"sparse" sim, "sparse" priors')
 hf = figure('color',[1 1 1],'name','estimation accuracy');
