@@ -3,7 +3,7 @@
 % position and width are then estimated using VBA.
 
 close all
-clear all
+% clear all
 
 %---- simulate noisy gbf ----%
 
