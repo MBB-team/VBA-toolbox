@@ -85,7 +85,7 @@ options.kernelSize  = min([dim.n_t,options.kernelSize]);
 for i=1:numel(options.sources)
     if options.sources(i).type ~= 0 % if binomial
         if ~isempty(y)
-            isYoutSource = options.isYout(options.sources(i).out);
+            isYoutSource = options.isYout(options.sources(i).out,:);
             ySource = y(options.sources(i).out,:);
             if ~isbinary(ySource(~isYoutSource))
                 error('*** Data should be binary!')
