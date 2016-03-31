@@ -63,12 +63,18 @@ may = max(y,[],2);
 dy = (may-miy).*1e-2;
 [X,Y] = meshgrid(miy(1):dy(1):may(1),miy(2):dy(2):may(2));
 lpdf = zeros(length(X),length(Y),K);
+mu = zeros(p,K);
+muk = zeros(2,K);
 for k = 1:K
-    muk = posterior.muEta(:,k);
+    mu(:,k) = posterior.muEta(:,k);
     vark = posterior.b_gamma(k)./posterior.a_gamma(k);
-    muk = u(:,1:2)'*muk;
+    if out.options.normalize
+        mu(:,k) = diag(sqrt(diag(out.normalize.Q)))*mu(:,k) + out.normalize.m;
+        vark = vark.*out.normalize.Q;
+    end
+    muk(:,k) = u(:,1:2)'*mu(:,k);
     vark = u(:,1:2)'*vark*u(:,1:2);
-    [lpdf(:,:,k)] = getLogNormpdf(muk,vark,X,Y);
+    [lpdf(:,:,k)] = getLogNormpdf(muk(:,k),vark,X,Y);
 end
 % 3- Detect and display components' boundaries
 [mp,imp] = max(lpdf,[],3);
@@ -87,7 +93,6 @@ for i = 1:n
     plot(handles.ha,y(1,i),y(2,i),'.','color',col(im(i),:));
 end
 % 5- project and plot the components' modes
-muk = u(:,1:2)'*posterior.muEta;
 muk = (muk - repmat(miy(:),1,K))./repmat(dy(:),1,K);
 for k = 1:K
     text(muk(1,k),muk(2,k),num2str(k),'color',col(k,:),'parent',handles.ha,'HorizontalAlignment','center','VerticalAlignment','middle','FontSize',14);

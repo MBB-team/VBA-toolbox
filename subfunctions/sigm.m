@@ -20,28 +20,10 @@ function [Sx,dsdx,dsdp] = sigm(x,in,Phi)
 %   - dsdp: the derivative of the sigmoid function wrt Phi.
 
 % get default parameterization
-if ~exist('in','var') || isempty(in)
-    in = struct('G0',1,'S0',0,'beta',1,'INV',0,'mat',0);
-else
-    if ~isfield(in,'G0')
-        in.G0 = 1;
-    end
-    if ~isfield(in,'S0')
-        in.S0 = 0;
-    end
-    if ~isfield(in,'beta')
-        in.beta = 1;
-    end
-    if ~isfield(in,'INV')
-        in.INV = 0;
-    end
-    if ~isfield(in,'deriv')
-        in.deriv = 0;
-    end
-    if ~isfield(in,'mat')
-        in.mat = 0;
-    end
+if ~exist('in','var')
+    in = [];
 end
+in = check_struct(in,'G0',1,'S0',0,'beta',1,'INV',0,'deriv',0,'mat',0);
 if ~in.mat
     % transform x into a row vector
     x = x(:)';
@@ -70,8 +52,7 @@ if in.INV
 else
     % evaluate sigmoid (and check numerical instabilities)
     bx = b*(x-th);
-    Sx = in.G0./(1+exp(-bx));
-    Sx = Sx + in.S0;
+    Sx = in.S0 + in.G0./(1+exp(-bx));
 end
 
 % Sx(Sx<1e-3)=1e-3;
@@ -80,7 +61,7 @@ end
 if nargout < 2 ; return; end
 
 % evaluate derivative wrt x
-dsdx = b*Sx.*(1-Sx./in.G0);
+dsdx = b*(Sx-in.S0).*(1-(Sx-in.S0)./in.G0);
 
 if nargout < 3 ; return; end
 

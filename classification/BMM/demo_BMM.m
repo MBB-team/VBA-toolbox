@@ -16,7 +16,7 @@ lambda = [0.95 0.01 0.5
           0.01 0.5 0.95];
       
 % sample size:
-n = 5e2;
+n = 5e3;
 
 % Generate n data samples from a binomial mixture model (BMM):
 [y,labels] = generateBMM(n,alpha,lambda);
@@ -32,7 +32,7 @@ ylabel('data dimensions')
 % classify data samples using VB inversion of BMM
 
 % number of classes:
-K = 20;
+K = 3;
 % set priors:
 % options.c = 1e0*ones(2,1);
 % options.b = 1e0*ones(K,1);

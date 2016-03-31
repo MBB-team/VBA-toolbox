@@ -1,10 +1,16 @@
-% demo for mixed-effets analysis (2-levels hierachical model)
+% demo for mixed-effects analysis (2-levels hierachical model)
 % This script simulates and analyses data under two different hierarchical
 % models, namely (i) H0: group-mean=0, and (ii) H1: group-mean~=0.
 % The effect of H1 and H0 onto both the group-mean parameters estimates
 % (given H1) and the log-Bayes factors (comparisons of H1 vs H0) is
 % assessed using Monte-Carlo simulations.
-
+% The trick for performing a mixed-effects analysis using the structure of
+% the generative model of VBA is to use hidden states, where "initial
+% conditions" (x_0) serve as the group mean, x_1 are subject-dependant
+% effects, and the precision (alpha) of the transition density
+% p(x_1|x_0,alpha) captures the between-subject variance. This trick
+% however, can be used here because we deal with a static model (a
+% within-subject GLM). 
 
 clear variables
 close all
@@ -62,6 +68,7 @@ for ii=1:Nmcmc
             [p{i,j,ii},o{i,j,ii}] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
             F(i,j,ii) = o{i,j,ii}.F;
             if j==1
+                % extract estimaetd group-mean
                 X0(i,ii) = p{i,j,ii}.muX0(1);
             end
         end

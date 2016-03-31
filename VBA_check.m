@@ -61,8 +61,11 @@ options = check_struct(options, ...
     'OnLine'     , 0     , ...     % On-line version (true when called from VBA_OnLineWrapper.m)
     'delays'     , []    , ...     % delays
     'binomial'   , 0     , ...     % not binomial data
-    'kernelSize' , 16    , ...
-    'nmog'       , 1       ...     % split-Laplace VB?
+    'kernelSize' , 16    , ...     % max lag of Volterra kernels
+    'nmog'       , 1     , ...     % split-Laplace VB?
+    'UNL'        , 0     , ...     % un-normalized likelihood?
+    'UNL_width'  , 4     , ...     % for partition function estimation
+    'UNL_ng'     , 64      ...     % for partition function estimation
 ) ;
 
 options = check_struct(options, ...
@@ -73,7 +76,7 @@ options = check_struct(options, ...
 ) ;
                          
 options = check_struct(options, ...
-    'extended'  , numel(options.sources)>1 || options.sources(1).type==2 ...          % is multisources
+    'extended'  , numel(options.sources)>1 || options.sources(1).type==2 ...          % multisource
 ) ;
 
 options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);

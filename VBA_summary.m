@@ -39,6 +39,11 @@ if out.options.binomial
 else
     tmp = [];
 end
+if out.options.UNL
+    so = 'un-normalized likelihood';
+else
+    so = 'observation';
+end
 if out.dim.n >= 1
     if isinf(out.options.priors.a_alpha) && isequal(out.options.priors.b_alpha,0)
         str{4} = sprintf('This was a deterministic dynamical system');
@@ -71,7 +76,7 @@ if out.dim.n >= 1
         ffn = [ffn,' (',ffn0,')'];
     end
     str{4} = sprintf([str{4},'\n ',...
-        '    - observation function: ',gfn,tmp,'\n ',...
+        '    - ',so,' function: ',gfn,tmp,'\n ',...
         '    - evolution function: ',ffn]);
 else
     str{4} = ['The model was static (no hidden states)','\n '];
@@ -80,7 +85,7 @@ else
     else
         gfn = out.options.g_fname;
     end
-    str{4} = sprintf([str{4},'    - observation function: ',gfn,tmp]);
+    str{4} = sprintf([str{4},'    - ',so,' function: ',gfn,tmp]);
 end
 str{5} = sprintf(['Bayesian log model evidences:','\n',...
     '     - full model: log p(y|m) > ',num2str(F,'%4.3e'),'\n',...

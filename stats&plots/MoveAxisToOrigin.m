@@ -7,6 +7,7 @@ function MoveAxisToOrigin(ha)
 % GET TICKS
 X=get(ha,'Xtick');
 Y=get(ha,'Ytick');
+fs = get(ha,'fontsize');
 
 % GET LABELS
 XL=get(ha,'XtickLabel');
@@ -30,8 +31,8 @@ for i=1:length(Y)
 end;
 
 % ADD LABELS
-text(X,zeros(size(X))-2.*Yoff,XL,'fontsize',10,'HorizontalAlignment','center','VerticalAlignment','cap','parent',ha);
-text(zeros(size(Y))-2.*Xoff,Y,YL,'fontsize',10,'HorizontalAlignment','right','VerticalAlignment','middle','parent',ha);
+text(X,zeros(size(X))-2.*Yoff,XL,'fontsize',fs,'HorizontalAlignment','center','VerticalAlignment','cap','parent',ha);
+text(zeros(size(Y))-2.*Xoff,Y,YL,'fontsize',fs,'HorizontalAlignment','right','VerticalAlignment','middle','parent',ha);
 
 box(ha,'off');
 % axis(ha,'square');

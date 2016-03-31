@@ -48,6 +48,7 @@ if ~options.OnLine
                 VBA_ReDisplay(posterior,out);
             end
             out.options = rmfield(out.options,'display');
+            out.options.hf = display.hfp;
         end
         status = 'inversion';
     else

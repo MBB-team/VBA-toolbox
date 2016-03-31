@@ -15,9 +15,9 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 % IN:
 %   - X: nXk design matrix
 %   - y: nXp data matrix
-%   - c: kXm contrast matrix
+%   - c: kXm contrast matrix (default is eye(k) -> omnibus F-test)
 %   - type: flag for t- or F- test. Can be set to 't' (default) or 'F'
-%   - verbose: flag for displaying results
+%   - verbose: flag for displaying results (default is 0)
 %   - Xnames: px1 cell array of independent variables names
 %   - Ynames: kx1 cell array of dependent variables names
 % OUT:
@@ -39,24 +39,60 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames)
 %       .stat: kXp matrix of F- statistics
 %   	.df: kX2Xp matrix of degees of freedom
 
-
+% fill in default I/O
+pv = [];
+stat = [];
+df = [];
+all = [];
 [n,p] = size(y);
-k = size(X,2);
-m = size(c,2);
-
+[n0,k] = size(X);
+[k0,m] = size(c);
 try;c;catch;c=eye(k);type='F';end
 try;type;catch;type='t';end
 try;verbose;catch;verbose=0;end
 try;Xnames{k};catch;Xnames=[];end
 try;Ynames{p};catch;Ynames=[];end
 
+% check basic numerical requirements
+try
+    if isweird(y)
+        disp('Error: data contains weird values!')
+        return
+    end
+end
+if ~isequal(n,n0)
+    disp('Error: design matrix has to have as many rows as the data matrix!')
+    return
+end
+if ~isequal(k,k0)
+    disp('Error: contrasts have to have as many rows as there are columns in the design matrix!')
+    return
+end
+
+% Estimate GLM parameters
+if verbose
+    fprintf(1,'Computing parameter covariance matrix...')
+end
 C = X'*X;
 iC = pinv(C);
+if verbose
+    fprintf(1,' OK.')
+    fprintf(1,'\n')
+end
 b = iC*X'*y;
+if verbose
+    fprintf(1,'Computing projection matrices...')
+end
 P = X*iC*X';
+R = speye(n) - P;
+if verbose
+    fprintf(1,' OK.')
+    fprintf(1,'\n')
+end
 yhat = P*y;
-R = eye(n) - P;
 trR = trace(R);
+
+% perform significance testing
 stat = zeros(p,1);
 pv = zeros(p,1);
 vhat = zeros(p,1);
@@ -68,14 +104,15 @@ switch type
         
         if m~=1
             disp('Error: cannot have contrast matrices for ''t''-tests!')
-            pv = [];
-            stat = [];
-            df = [];
-            all = [];
             return
         end
-
         df = trR.^2./sum(sum(R.^2,1));
+        if verbose
+            fprintf(1,'Computing t-statistics...')
+            if p>1
+                fprintf(1,'%6.2f %%',0)
+            end
+        end
         for i=1:p
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
             V = vhat(i).*c'*iC*c;
@@ -84,22 +121,47 @@ switch type
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum((y(:,i)-yhat(:,i)).^2);
             R2(i) = 1-(SS_err/SS_tot);
+            if verbose && p>1
+                fprintf(1,repmat('\b',1,8))
+                fprintf(1,'%6.2f %%',100*i/p)
+            end
+        end
+        if verbose
+            if p>1
+                fprintf(1,repmat('\b',1,8))
+            end
+            fprintf(1,[' OK.'])
+            fprintf(1,'\n')
         end
         
     case 'F'
         
+        if verbose
+            fprintf(1,'Computing contrast null-space projectors...')
+        end
         ic = pinv(c'*c)*c';
-        c0 = eye(size(c,1)) - c*ic;
+        c0 = speye(size(c,1)) - c*ic;
         X0 = X*c0;
-        R0 = eye(n) - X0*pinv(X0'*X0)*X0';
+        R0 = speye(n) - X0*pinv(X0'*X0)*X0';
         y_a = R0*y;
         yhat_a = R0*yhat;
         R2_a = zeros(p,1);
         M = R0 - R;
-        df = [trace(M).^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];
+        trM = trace(M);
+        df = [trM.^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];
+        if verbose
+            fprintf(1,' OK.')
+            fprintf(1,'\n')
+        end
+        if verbose
+            fprintf(1,'Computing F-statistics...')
+            if p>1
+                fprintf(1,'%6.2f %%',0)
+            end
+        end
         for i=1:p
             vhat(i) = y(:,i)'*R*y(:,i)./trR;
-            stat(i) = ((b(:,i)'*X'*M*X*b(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trace(R0-R));
+            stat(i) = ((b(:,i)'*X'*M*X*b(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trM);
             pv(i) = 1 - myFcdf(stat(i),df(1),df(2));
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum((y(:,i)-yhat(:,i)).^2);
@@ -107,19 +169,27 @@ switch type
             SS_tot_a = sum((y_a(:,i)-mean(y_a(:,i))).^2);
             SS_err_a = sum((y_a(:,i)-yhat_a(:,i)).^2);
             R2_a(i) = 1-(SS_err_a/SS_tot_a);
+            if verbose && p>1
+                fprintf(1,repmat('\b',1,8))
+                fprintf(1,'%6.2f %%',100*i/p)
+            end
+        end
+        if verbose
+            if p>1
+                fprintf(1,repmat('\b',1,8))
+            end
+            fprintf(1,[' OK.'])
+            fprintf(1,'\n')
         end
         
     otherwise
         
         disp('Error: this function only supports t- and F- tests!')
-        pv = [];
-        stat = [];
-        df = [];
-        all = [];
-        return;
+        return
         
 end
 
+% fill in output structure
 all.R2 = R2;
 if isequal(type,'F')
     all.R2_a = R2_a;
@@ -127,24 +197,42 @@ end
 all.b = b;
 all.iC = iC;
 all.vhat = vhat;
+% all.tolerance = myTolerance(X);
 
 if ~verbose
     return;
 end
 
-% first run F-test through all regressors
+% run F-test through all regressors
 all.pv = zeros(k,p);
 all.stat = zeros(k,p);
 all.df = zeros(k,2,p);
+if verbose
+    fprintf(1,'Testing for each regressor significance...')
+    if p*k>1
+        fprintf(1,'%6.2f %%',0)
+    end
+end
 for i=1:p
     for j=1:k
         cij = zeros(k,1);
         cij(j) = 1;
         [all.pv(j,i),all.stat(j,i),all.df(j,:,i)] = GLM_contrast(X,y(:,i),cij,'F',0);
+        if verbose && p*k>1
+            fprintf(1,repmat('\b',1,8))
+            fprintf(1,'%6.2f %%',100*((i-1)*k+j)/(k*p))
+        end
     end
 end
+if verbose
+    if p*k>1
+        fprintf(1,repmat('\b',1,8))
+    end
+    fprintf(1,' OK.')
+    fprintf(1,'\n')
+end
 
-
+% create display figure
 pos0 = get(0,'screenSize');
 pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
 handles.hf = figure('color',[1 1 1],'position',pos);
@@ -280,7 +368,7 @@ for j=1:k
     uimenu(hcmenu, 'Label',['dof=[',num2str(ud.all.df(j,1,ind)),',',num2str(ud.all.df(j,2,ind)),']']);
     set(get(hp,'children'),'uicontextmenu',hcmenu);
     set(hp,'uicontextmenu',hcmenu);
-    hp = errorbar(ud.handles.ha(2),j,ud.all.b(j,ind),1.96*sqrt(Vb(j)),'r.');
+    hp = errorbar(ud.handles.ha(2),j,ud.all.b(j,ind),1.96*sqrt(Vb(j)),'r.'); %p=.05 confidence intervals 
 %     hp = errorbar(ud.handles.ha(2),j,ud.all.b(j,ind),sqrt(Vb(j)),'r.');
     set(hp,'uicontextmenu',hcmenu);
 end
@@ -290,7 +378,20 @@ title(ud.handles.ha(2),'parameter estimates')
 strp = ['p=',num2str(ud.pv(ind),'%3.3f'),' (',ud.type,'=',num2str(ud.stat(ind),'%3.3f'),')'];
 set(ud.handles.ht(1),'string',strp);
 
-
+function tol = myTolerance(X0)
+n = size(X0,2);
+X0 = zscore(X0);
+for i=1:n
+    X = X0(:,setdiff(1:n,i));
+    y = X0(:,i);
+    C = X'*X;
+    iC = pinv(C);
+    b = iC*X'*y;
+    yhat = X*b;
+    SS_tot = sum((y-mean(y)).^2);
+    SS_err = sum((y-yhat).^2);
+    tol(i) = SS_err/SS_tot;
+end
 
 function F = myTcdf(x,v)
 % Cumulative Distribution Function (CDF) of Students t distribution

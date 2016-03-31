@@ -17,6 +17,11 @@ function [F] = VBA_FreeEnergy(posterior,suffStat,options)
 %   - F: the free energy under the local Laplace approximation
 
 
+if options.UNL % to be rationalized when UNL is extended to NLSSM...
+    F = VBA_FreeEnergy_UNL(posterior,suffStat,options);
+    return
+end
+
 if options.DisplayWin % Display progress
     try
         set(options.display.hm(1),'string','Calculating Free Energy... ');

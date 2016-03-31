@@ -19,16 +19,24 @@ for i=1:length(gsi)
     
     si=gsi(i);
     
-    % Log-likelihood
-    v(i) = posterior.b_sigma(i)/posterior.a_sigma(i);
-    fit.LL(si) = -0.5*out.suffStat.dy2(i)/v(i);
-    fit.ny(si) = 0;
-    for t=1:out.dim.n_t
-        ldq = VBA_logDet(out.options.priors.iQy{t,i}/v(i));
-        fit.ny(si) = fit.ny(si) + length(find(diag(out.options.priors.iQy{t,i})~=0));
-        fit.LL(si) = fit.LL(si) + 0.5*ldq;
+    if out.options.UNL % to be rationalized...
+        
+        fit.LL = out.suffStat.logL;
+        fit.ny = sum(1-out.options.isYout(:));
+        
+    else
+        % Log-likelihood
+        v(i) = posterior.b_sigma(i)/posterior.a_sigma(i);
+        fit.LL(si) = -0.5*out.suffStat.dy2(i)/v(i);
+        fit.ny(si) = 0;
+        for t=1:out.dim.n_t
+            ldq = VBA_logDet(out.options.priors.iQy{t,i}/v(i));
+            fit.ny(si) = fit.ny(si) + length(find(diag(out.options.priors.iQy{t,i})~=0));
+            fit.LL(si) = fit.LL(si) + 0.5*ldq;
+        end
+        fit.LL(si) = fit.LL(si) - 0.5*fit.ny(si)*log(2*pi);
+        
     end
-    fit.LL(si) = fit.LL(si) - 0.5*fit.ny(si)*log(2*pi);    
     
     % coefficient of determination
 %     if isfield(out.options,'sources')

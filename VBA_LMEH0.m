@@ -21,19 +21,20 @@ for s=1:length(s_g)
     y_i = options.sources(s_g(s)).out ;
     y_s = y(y_i,:);
     y_s = y_s(options.isYout(y_i,:)==0);
-    try
-        a0 = options.priors.a_sigma(s);
-        b0 = options.priors.b_sigma(s);
-    catch
-        a0 = 1;
-        b0 = 1;
-    end
-    n = numel(y_s);
-    y_s = y_s(:);
-    y2 = y_s'*y_s;
-    alpha = n/2 + a0;
-    beta = y2./2 + b0;
-    LLH0 = LLH0 -0.5*n*log(2*pi) + a0.*log(b0) - alpha.*log(beta) - gammaln(a0) + gammaln(alpha);
+    LLH0 = LLH0 + lev_GLM(vec(y_s),ones(numel(y_s),1));
+%     try
+%         a0 = options.priors.a_sigma(s);
+%         b0 = options.priors.b_sigma(s);
+%     catch
+%         a0 = 1;
+%         b0 = 1;
+%     end
+%     n = numel(y_s);
+%     y_s = y_s(:);
+%     y2 = y_s'*y_s;
+%     alpha = n/2 + a0;
+%     beta = y2./2 + b0;
+%     LLH0 = LLH0 -0.5*n*log(2*pi) + a0.*log(b0) - alpha.*log(beta) - gammaln(a0) + gammaln(alpha);
 end
 
 % binomial sources
