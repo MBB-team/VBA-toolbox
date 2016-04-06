@@ -91,12 +91,6 @@ else
     dim.n_theta = 0;
     dim.n_t = size(y,2);
     dim.p = 1;
-    try
-        priors0 = options.priors;
-        options.priors = VBA_priors(dim,options);
-        options.priors.muPhi = priors0.muPhi;
-        options.priors.SigmaPhi = priors0.SigmaPhi;
-    end
     % -- --
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     VBA_disp(' ',options)
