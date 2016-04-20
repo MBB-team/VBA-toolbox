@@ -50,7 +50,7 @@ try;display=options.display;catch;display=1;end
 [p1,stat1,df1,a1] = GLM_contrast([ones(n,1),X],Y,[0;1],'F',0);
 
 % regress M on X
-[p2,stat2,df2,a2] = GLM_contrast([ones(n,1),M],Y,[0;1],'F',0);
+[p2,stat2,df2,a2] = GLM_contrast([ones(n,1),X],M,[0;1],'F',0);
 
 % regress Y on both X and M
 [p3,stat3,df3,a3] = GLM_contrast([ones(n,1),X,M],Y,[0;1;0],'F',0);
