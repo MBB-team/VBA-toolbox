@@ -1,11 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % QGIF evolution function:
 %
 %                   [fx] = f_CaBBI_QGIF(Xt,Theta,Isyn,inF)
 %
 % this function contains the equations and parameters of the QGIF neuron
 % model, and the over-time integration scheme
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
 
 function [fx] = f_CaBBI_QGIF(Xt,Theta,Isyn,inF)
 
@@ -52,5 +51,6 @@ f_rep =I_rep* 1./ (1+exp(-b_rep*((G_rep)-c_rep)));
 xdot = [ ((-I_L+ f_sp + Isyn) ./ Cm - (f_rep/dt) )
          ( -scale*I_Ca - ( (Ca-Ca_base)/Tau_Ca) )  
          ];
+
 
 fx = Xt + dt.*xdot;
