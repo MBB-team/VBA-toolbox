@@ -1,11 +1,10 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FHN evolution function:
 %
 %                   [fx] = f_CaBBI_FHN(Xt,Theta,Isyn,inF)
 %
 % this function contains the equations and parameters of the FHN neuron
 % model, and the over-time integration scheme
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+
 
 function [fx] = f_CaBBI_FHN(Xt,Theta,Isyn,inF)
 
