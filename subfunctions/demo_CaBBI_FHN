@@ -1,9 +1,9 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This script inverts the FHN model for the given fluorescence trace using
 % CaBBI method: [ Rahmati. et al. 2016, PLoS Comput Biol 12(2) ]
 %
 % To user:
-% I) in Step 1, determine the directory to the fluorescence trace (a row vector)
+% I) in Step 1, determine the directory to the fluorescence trace (a real row vector);
+%    as default the code will download and use our published data for CaBBI 
 % II) in Step 2, determine the sampling rate (Hz) used for recording the fluorescence trace
 % III) run the code
 % IV) the main outputs of the CaBBI are listed in Step 11. 
@@ -15,42 +15,59 @@
 % 3) For further description of the toolbox options, please see:
 %    http://mbb-team.github.io/VBA-toolbox/wiki/Controlling-the-inversion-using-VBA-options/
 %    http://mbb-team.github.io/VBA-toolbox/wiki/VBA-output-structure/
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-clc; clear all; close all
+clear all; close all
 
 %% Step 1. Importing the fluorescence trace
 % import the fluorescence trace
-dataFolder = ['Fluor_Data/'];addpath('/Fluor_Data'); 
+dataFolder = [pwd,'\Data\'];
+addpath('dataFolder'); 
 Fluor_trace_name = 'fluorescence_data8';                                   % file name of the fluorescence trace
-Data_Directory = [dataFolder,Fluor_trace_name,'.mat'];                     
-ydata = importdata(Data_Directory);                                        % the fluorescence trace before pre-processing 
+Fluor_trace_dir = [dataFolder,Fluor_trace_name,'.mat'];
+ 
+if exist(Fluor_trace_dir,'file') == 0                                      % check whether the fluorescence data have been already downloaded
+    url = 'https://github.com/VahidRahmati/Sample_Data/blob/master/Sample_Data.zip?raw=true';
+    urlwrite(url,[pwd,'\Data.zip']);                                       % download the fluorescence data
+    unzip('Data.zip',[pwd,'\Data']); 
+end
+
+ydata = importdata(Fluor_trace_dir);                                       % the fluorescence trace before pre-processing (a real row vector)
 
 
 %% Step 2. Determining the sampling rate used to record the fluorescence trace
 sampling_rate = 22.6;                                                        % in [Hz], for our data enter 22.6
-display(['the sampling rate used to record the fluorescence trace is << ',num2str(sampling_rate),' Hz >>']); %[Hz] 
+display(['the sampling rate used to record the fluorescence trace is << ',num2str(sampling_rate),' Hz >>']);
 
 
 %% Step 3. Pre-processing
+% prparing the data
+warning('on')
+if ~all(isfinite(ydata))                                                   % check whether there is any NaN and/or Inf in the given fluorescence trace
+    ydata(~isfinite(ydata)) = [];                                          % reovme the NaN and/or Inf elements from the trace
+    warning('the given fluorescence traces had some NaN and/or Inf elements, which were removed')
+end
+
+if ~isreal(ydata)                                                          % check whether the given fluorescence trace contains any complex number
+    error('..... the given fluorescence traces contains complex numbers .....')
+end
+
 % normalizing
 if size(ydata,1) ~= 1; ydata = ydata'; end                                 % fluorescence trace should be a row vector
 ydata = (ydata - mean(ydata))./(max(mean(ydata),1));                       % relativer fluorescncee trace
 ydata = ydata - median(ydata);                                             % removing the median
 
 % removing the slow drifts 
-xdata = 1:length(ydata);
-[xData, yData] = prepareCurveData( xdata, ydata );
-
+xdata = 1:length(ydata);                                                   % vector of frames
 degree = '4';                                                              % Polynomial degree (4 or 3)
 ft = fittype( ['poly',degree] );                                           % define the model to fit the slow drifts 
 opts = fitoptions( ft );
 opts.Lower = [-Inf -Inf -Inf -Inf -Inf];
 opts.Robust = 'Bisquare';
 opts.Upper = [Inf Inf Inf Inf Inf];
-[fitresult, gof] = fit( xData, yData, ft, opts );                          % fitting the polynomial model to fluorecence trace
-
+warning('off')
+[fitresult, gof] = fit( xdata', ydata', ft, opts );                          % fitting the polynomial model to fluorecence trace
+warning('on')
 Coeffs = coeffvalues(fitresult);
 if degree == '4'
     fittedcurve = Coeffs(1)*xdata.^4 + Coeffs(2)*xdata.^3 + Coeffs(3)*xdata.^2 + Coeffs(4)*xdata + Coeffs(5);
@@ -74,7 +91,7 @@ title('fluorescence trace')
 %% Step 6. The generative model
 % assigning the generative model
 f_fname = @f_CaBBI_FHN;                                                    % evolution function
-g_fname = @g_CaBBI_observation;                                            % observation function
+g_fname = @g_CaBBI;                                                        % observation function
 
 % setting the parameters of the FHN model used for inversion
 nFrames = numel(Fluor_trace);                                              % number of recording frames
@@ -134,7 +151,7 @@ for t = 1:nFrames
     priors.iQx{t}   = diag(dq);
 end
 
-% building the precision verctor the fluorescnce observations    
+% building the precision verctor the fluorescence observations    
 priors.iQy = cell(nFrames,1);
 for t=1:nFrames
     priors.iQy{t} = 3;                                                     % on F
@@ -168,7 +185,7 @@ Calcium_basal = 50;                                                        % in 
 % Plot the pre-processed fluorescence trace
 figure
 subplot(411); plot(1:nFrames, Fluor_trace,'g','LineWidth',2)
-legend('fluoresnce')
+legend('fluorescence')
 set(gca,'xLim',[0 nFrames])
 axis tight
 
