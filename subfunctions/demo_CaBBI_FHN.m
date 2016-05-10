@@ -21,15 +21,15 @@ clear all; close all
 
 %% Step 1. Importing the fluorescence trace
 % import the fluorescence trace
-dataFolder = [pwd,'\Data\'];
+dataFolder = [pwd filesep 'Data' filesep];
 addpath('dataFolder'); 
 Fluor_trace_name = 'fluorescence_data8';                                   % file name of the fluorescence trace
 Fluor_trace_dir = [dataFolder,Fluor_trace_name,'.mat'];
  
 if exist(Fluor_trace_dir,'file') == 0                                      % check whether the fluorescence data have been already downloaded
     url = 'https://github.com/VahidRahmati/Sample_Data/blob/master/Sample_Data.zip?raw=true';
-    urlwrite(url,[pwd,'\Data.zip']);                                       % download the fluorescence data
-    unzip('Data.zip',[pwd,'\Data']); 
+    urlwrite(url,[pwd filesep 'Data.zip']);                                       % download the fluorescence data
+    unzip('Data.zip',[pwd filesep 'Data']); 
 end
 
 ydata = importdata(Fluor_trace_dir);                                       % the fluorescence trace before pre-processing (a real row vector)
