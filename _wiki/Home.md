@@ -40,7 +40,7 @@ title: "home"
 
 > The VBA-toolbox already includes a large set of models you can use as such or adapt to the specifics of your reasearch. Below, we give a few examples of such models. We briefly expose the main theoretical and experimental issues, and point to the relevant functions of the VBA toolbox (demonstration scripts, evolution/observation functions, etc...).
 
-### Behavioural models 
+### Behavioural models
 
 - [Reinforcement learning](Reinforcement-learning)
 - [Bayesian learning](bayesian-learning)
@@ -50,20 +50,20 @@ title: "home"
 
 [comment]: # (- [Behavioural/cognitive models](Behavioural-cognitive-models))
 
-### Neurobiological models 
+### Neurobiological models
 
 - [Dynamic Causal Modeling](dcm)
 - [Behavioural Dynamic Causal Modeling](behavioural-DCM)
 - [Neural Fields](neural-fields)
 - [Spiking Neuron](spiking-neuron)
+- [Calcium imaging using biophysical models](CaBBI)
 
 [comment]: # (- [Neurobiological models](Neurobiological-models))
 
-### Miscellaneous models 
+### Miscellaneous models
 
 - [Statistical models (GLM, classification)](statistical-models)
 - [Attractors and oscillators](Dynamical-models)
 
 
 [comment]: # (- [Miscellaneous models](Miscellaneous-models))
-
