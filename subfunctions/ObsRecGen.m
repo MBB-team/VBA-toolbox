@@ -1,9 +1,8 @@
 function [ gx ] = ObsRecGen(x,P,u,in)
 % Marie devaine wrote this
 % ObsRecGen obsevration function general for recursive ToM
-%   This one is the simplest one and does not include bias
 % x are the hidden states
-% P is the temperature
+% P : temperature and bias
 % u is useless here can be left empty
 % in contains important information such as the level of the player, its
 % role and the game nb total de para
@@ -32,13 +31,14 @@ else
             vecV(j)=vecV(j)+Sig*df(i)^2;
         end
         vecPi(j)=sigmoid(f/sqrt(1+alpha*vecV(j)));
- 
+        
     end
     Pi= vecp*vecPi;
 end
+DV = fplayer(Pi,exp(P(1)),player,game);
 if length(P)==1
-gx=sigmoid(fplayer(Pi,exp(P(1)),player,game));
+    gx=sigmoid(DV);
 else %bias
-  gx=sigmoid(fplayer(Pi,exp(P(1)),player,game)+P(2));
+    gx=sigmoid(DV+P(2));
 end
 end
