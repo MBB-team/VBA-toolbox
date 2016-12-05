@@ -1,0 +1,38 @@
+function [Pw] = RFT_Pval(u,k,c,fwhm,L,type,dof)
+% computes Pval according to Friston et al. (1996), Eq. 1-4.
+% [Pw] = RFT_Pval(u,k,c,fwhm,L)
+% This function ca be called to derive the p-value at different levels of
+% inference, i.e.:
+% - P_peak = RFT_Pval(u,0,1,fwhm,L)
+% - P_cluster = RFT_Pval(U,k,1,fwhm,L), where U was the set-inducing
+% threshold, and k is the observed spatial extent of the cluster.
+% - P_set = RFT_Pval(U,K,c,fwhm,L), where U and K were the set-inducing
+% thresholds, and c was the number of observed upcrossing clusters
+% IN:
+%   - u: RF value
+%   - k: cluster's spatial extent
+%   - c: number of upcrossing clusters
+%   - fwhm: estimated FWHM
+%   - L: search volume
+%   - type: type of RF. Can be set to 'norm' (normal, default), 't'
+%   (Student) or 'F' (Fisher).
+%   - dof: degrees of freedom (only relevant for 't' or 'F' fields).
+% OUT:
+%   - Pw: the ensuing p-value
+
+EC = RFT_expectedTopo(u,L,fwhm,1,type,dof);
+% EC =(L./fwhm).*(sqrt(4*log(2))./(2*pi)).*exp(-u.^2./2);
+beta = (gamma(3/2).*EC./(L.*normcdf(-u))).^2;
+Pnk = exp(-beta.*k.^2);
+Pw = 1;
+for i=0:c-1
+    Pw = Pw - myPoissonPMF(i,EC.*Pnk);
+end
+
+function p = myPoissonPMF(x,Ex)
+p = (Ex.^x).*exp(-Ex)./factorial(x);
+
+% function p = myPoissonCDF(x,Ex)
+% p = 1 - gammainc(Ex,x+1);
+
+
