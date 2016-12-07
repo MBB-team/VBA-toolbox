@@ -42,6 +42,7 @@ end
 
 % hidden states
 T = size(p0{1}.muX,2);
+try
 for t=1:T
     mus = cell(K,1);
     Qs = cell(K,1);
@@ -51,36 +52,41 @@ for t=1:T
     end
     [p_BMA.muX(:,t),p_BMA.SigmaX.current{t}] = get2moments(mus,Qs,ps);
 end
+end
 
 % data precision
 mus = cell(K,1);
 Qs = cell(K,1);
-for k=1:K
-    mus{k} = p0{k}.a_sigma/p0{k}.b_sigma;
-    Qs{k} = p0{k}.a_sigma/p0{k}.b_sigma^2;
+for iS=1:numel(p0{1}.a_sigma)  % loop over sources
+    for k=1:K
+        mus{k} = p0{k}.a_sigma(iS)/p0{k}.b_sigma(iS);
+        Qs{k}  = p0{k}.a_sigma(iS)/p0{k}.b_sigma(iS)^2;
+    end
+    [m,v] = get2moments(mus,Qs,ps);
+    p_BMA.b_sigma(iS) = m/v;
+    p_BMA.a_sigma(iS) = m*p_BMA.b_sigma(iS);
 end
-[m,v] = get2moments(mus,Qs,ps);
-p_BMA.b_sigma = m/v;
-p_BMA.a_sigma = m*p_BMA.b_sigma;
 
 % hidden state precision
 mus = cell(K,1);
 Qs = cell(K,1);
 id = zeros(K,1);
+
 for k=1:K
     mus{k} = p0{k}.a_alpha/p0{k}.b_alpha;
     Qs{k} = p0{k}.a_alpha/p0{k}.b_alpha^2;
-    if isinf(p0{k}.a_alpha) && p0{k}.b_alpha==0
+    if  (isempty(p0{k}.a_alpha) && isempty(p0{k}.b_alpha)) || (isinf(p0{k}.a_alpha) && p0{k}.b_alpha==0) 
         id(k) = 1;
     end
 end
+
 if isequal(sum(id),K) % all deterministic systems
     p_BMA.b_alpha = Inf;
     p_BMA.a_alpha = 0;
 elseif isequal(sum(id),0) % all stochastic systems
     [m,v] = get2moments(mus,Qs,ps);
     p_BMA.b_alpha = m/v;
-    p_BMA.a_alpha = m*p_BMA.b_sigma;
+    p_BMA.a_alpha = m*p_BMA.b_alpha;
 else
     disp('VBA_MBA: Warning: mixture of deterministic and stochastic models!')
     p_BMA.b_alpha = Inf;
