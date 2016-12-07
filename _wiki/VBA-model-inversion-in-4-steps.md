@@ -120,13 +120,22 @@ Having completed steps 1 to 3, one simply calls the main **VB model inversion** 
 ```
 
 Its input arguments are:
+
 - the data `y`
+
 - the input `u` (can be left empty)
+
 - the name/handle of the observation function g
+
 - the name/handle of the evolution function f (empty for static models)
+
 - `dim` : the dimensions of the model variables
+
 - `options` (can be left empty)
 
 Its output arguments are:
+
 - `posterior`: a matlab structure that has the same format as the `priors` above (i.e. stores the first- and second-order moments of the posterior densities of all unknown variables in the model)
+
 - `out`: a matlab structure that summarizes some diagnostics of the model VBA inversion. NB: the (lower bound to) the model evidence is stored in `out.F`.
+
