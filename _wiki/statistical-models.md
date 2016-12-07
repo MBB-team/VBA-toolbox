@@ -32,7 +32,9 @@ Let us eyeball the graphical output of the function `GLM_contrast.m`:
 Statistical data analyses may require performing multiple tests, e.g., across time samples within a peri-stimulus time window.
 In neuroimpaging (e.g., fMRI), the problem of correcting for multiple comparisons across voxels has been solved using random field theory or RFT (Friston et al., 1991, 1994, 1996; Worsley et al., 1992). RFT provides a general expression for the probability of topological features in statistical maps under the null hypothesis, such as the number of peaks above some threshold. It controls for the family-wise error rate or FWER, i.e. the probability of detecting one or more false positives across the entire search volume. This allows one to make valid peak-level and/or cluster-level inferences that account for spatial dependences between voxels, without having to compromise statistical power (as, e.g., a Bonferroni correction would). More precisely, RFT corrects p-values of local peaks in proportion to the estimated roughness of the underlying continuous random field (Kiebel et al., 1999).
 VBA includes a simple version of RFT, which obtains when applied to 1D signals (e.g., intra-EEG traces, eyetracking data, skin conductance responses, etc...). It is based upon two main functions:
+
 - **`RFT_main.m`**: this is a generic call to RFT, which can be tailored to any user-specific application
+
 - **`RFT_GLM_contrast.m`**: this applies RFT to GLM-based contrast inference. We will describe an exmaple application below.
 
 Let us assume that our experiment consists in a 2x2 factorial design, with 8 trials per design cell. On each trial, we measure some peri-stimulus response, e.g., a skin conductance response, which has 10^3 time samples. We want to infer on when, in peri-stimulus time, there is a significant interaction of our two experimental factors.
