@@ -75,7 +75,7 @@ Let us eyeball the ensuing graphical output :
 
 All summary statistics are stored in the `out` structure.
 
-> **Tip**: right-liclicking on either local paeks or upcrossing clusters provides a summary of corrected and uncorrected p-values!
+> **Tip**: right-clicking on either local paeks or upcrossing clusters provides a summary of corrected and uncorrected p-values!
 
 
 # GLM with missing data
