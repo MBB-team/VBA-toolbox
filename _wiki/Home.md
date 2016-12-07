@@ -44,6 +44,7 @@ title: "home"
 
 - [Reinforcement learning](Reinforcement-learning)
 - [Bayesian learning](bayesian-learning)
+- [Bayesian mentalizing (k-ToM)](ktom)
 - [Intertemporal choice](intertemporal-choice)
 - [Behavioural Dynamic Causal Modeling](behavioural-DCM)
 
@@ -62,7 +63,7 @@ title: "home"
 
 ### Miscellaneous models
 
-- [Statistical models (GLM, classification)](statistical-models)
+- [Statistical models (GLM, RFT, classification)](statistical-models)
 - [Attractors and oscillators](Dynamical-models)
 
 
