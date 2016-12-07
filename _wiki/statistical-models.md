@@ -37,11 +37,14 @@ VBA includes a simple version of RFT, which obtains when applied to 1D signals (
 
 Let us assume that our experiment consists in a 2x2 factorial design, with 8 trials per design cell. On each trial, we measure some peri-stimulus response, e.g., a skin conductance response, which has 10^3 time samples. We want to infer on when, in peri-stimulus time, there is a significant interaction of our two experimental factors.
 First, the corresponding design matrix and contrast would look something like this:
+
 ```matlab
 X = kron(eye(4),ones(8,1));
 c = [1;-1;1;-1];
 ```
+
 Let us simulate data under the null (we smooth the noise to take adavntage of RFT's power):
+
 ```matlab
 L = 1e3; % size of the 1D field
 kernel = exp(-0.5.*([1:L]-L/2).^2/(8*2.355)^2); % smoothing kernel (here: FWHM = 8 time samples)
@@ -53,10 +56,13 @@ end
 b = zeros(4,L); % effect sizes for each time sample (here, no effect)
 y = X*b + e';
 ```
+
 Now let's apply RFT to solve the multiple comparison problem (across time samples):
+
 ```matlab
 [stat,out] = RFT_GLM_contrast(X,y,c,'t',1,1);
 ```
+
 In brief, `RFT_GLM_contrast` (i) computes a 1D statistical field composed of Student's t summary statistic for the contrast `c` sampled at each peri-stimulus time point, and (ii) applies RFt to correct for the multiple comparison problem across time samples.
 Let us eyeball the ensuing graphical output :
 
