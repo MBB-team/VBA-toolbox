@@ -26,6 +26,50 @@ Let us eyeball the graphical output of the function `GLM_contrast.m`:
 
 **Tip**: defining contrasts for, e.g., main effects of multi-level factors can be tedious. However, VBA has an in-built function for doing exactly this: `Contrast_MEbins.m`. It outputs the contrast matrix corresponding to an F-test of the main effect of a given experimental factor with n levels. 
 
+
+# 1D-RFT: Random Field Theory for the multiple comparison problem
+
+Statistical data analyses may require performing multiple tests, e.g., across time samples within a peri-stimulus time window.
+In neuroimpaging (e.g., fMRI), the problem of correcting for multiple comparisons across voxels has been solved using random field theory or RFT (Friston et al., 1991, 1994, 1996; Worsley et al., 1992). RFT provides a general expression for the probability of topological features in statistical maps under the null hypothesis, such as the number of peaks above some threshold. It controls for the family-wise error rate or FWER, i.e. the probability of detecting one or more false positives across the entire search volume. This allows one to make valid peak-level and/or cluster-level inferences that account for spatial dependences between voxels, without having to compromise statistical power (as, e.g., a Bonferroni correction would). More precisely, RFT corrects p-values of local peaks in proportion to the estimated roughness of the underlying continuous random field (Kiebel et al., 1999).
+VBA includes a simple version of RFT, which obtains when applied to 1D signals (e.g., intra-EEG traces, eyetracking data, skin conductance responses, etc...). It is based upon two main functions:
+- **`RFT_main.m`**: this is a generic call to RFT, which can be tailored to any user-specific application
+- **`RFT_GLM_contrast.m`**: this applies RFT to GLM-based contrast inference. We will describe an exmaple application below.
+
+Let us assume that our experiment consists in a 2x2 factorial design, with 8 trials per design cell. On each trial, we measure some peri-stimulus response, e.g., a skin conductance response, which has 10^3 time samples. We want to infer on when, in peri-stimulus time, there is a significant interaction of our two experimental factors.
+First, the corresponding design matrix and contrast would look something like this:
+```matlab
+X = kron(eye(4),ones(8,1));
+c = [1;-1;1;-1];
+```
+Let us simulate data under the null (we smooth the noise to take adavntage of RFT's power):
+```matlab
+L = 1e3; % size of the 1D field
+kernel = exp(-0.5.*([1:L]-L/2).^2/(8*2.355)^2); % smoothing kernel (here: FWHM = 8 time samples)
+kernel = kernel./sum(kernel);
+e = zeros(L,8*4);
+for i=1:8*4
+   e(:,i) = conv(randn(L,1),kernel,'same'); % smooth residuals
+end
+b = zeros(4,L); % effect sizes for each time sample (here, no effect)
+y = X*b + e';
+```
+Now let's apply RFT to solve the multiple comparison problem (across time samples):
+```matlab
+[stat,out] = RFT_GLM_contrast(X,y,c,'t',1,1);
+```
+In brief, `RFT_GLM_contrast` (i) computes a 1D statistical field composed of Student's t summary statistic for the contrast `c` sampled at each peri-stimulus time point, and (ii) applies RFt to correct for the multiple comparison problem across time samples.
+Let us eyeball the ensuing graphical output :
+
+![]({{ site.baseurl }}/images/wiki/1D-RFT.jpg)
+
+
+> **Upper panel**: The statistical t-field (y-axis) is plotted against time (x-axis). Local peaks are highlighted in red (if the corrected p-value does not reach significance, here: FWER=5%) or in green (if the corrected p-value reaches significance). The same colour-coding applies to upcrossing clusters (for cluster-level inference). **Middle panel**: RFT analysis summary (essentially: expectations, under the null, of features of the sample field). **Lower panel**: list of corrected p-values (set-, cluster- and peak- level inferences). NB: the column "location" relates to local peaks.
+
+All summary statistics are stored in the `out` structure.
+
+> **Tip**: right-liclicking on either local paeks or upcrossing clusters provides a summary of corrected and uncorrected p-values!
+
+
 # GLM with missing data
 
 Missing data occur when the value of either the dependent or the independent variables (or both) are unknown or lost. This is an issue because the GLM cannot be fitted using the usual procedure (cf. missing values in the design matrix). VBA relies on the variational Bayesian algorithm to estimate likely values for missing data in addition to fitting the GLM parameters. See the demo: `demo_GLM_missingData.m`.
