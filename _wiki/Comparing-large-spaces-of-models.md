@@ -26,9 +26,10 @@ rprior.SigmaPhi(1) = 0 ;
 
 % Compute reduced model evidence
 [Fr, rpost] = ...
-    VB_SavageDickey(posterior, out.options.priors, out.F, dim, rprior) ;
+    VBA_SavageDickey(posterior, out.options.priors, out.F, dim, rprior) ;
 ```
 
 The first line is VBA's inversion of the full model (arbitrary data and model structure). The next lines create the reduced model's priors from the full model's, by zeroing the prior mean and variance of the first observation parameter. Then, both the log-evidence of the reduced model (`Fr`) and its posterior density (`rpost`) are derived. Note that posterior correlation among parameters under the full model induce changes in the marginal posterior densities of the non-zero parameters of the reduced model.
 
-The key insight here is that the use of Savage-Dickey ratios is orders of magnitude faster than a proper model inversion. This means that one can use this to compare large spaces of nested models, by looping over combinations of model parameters...
+The key insight here is that the use of Savage-Dickey ratios is orders of magnitude faster than a proper model inversion. This means that one can use this to compare large spaces of nested models, by looping over combinations of model parameters. However, Savage-Dickey ratios only provide approximated inference!
+
