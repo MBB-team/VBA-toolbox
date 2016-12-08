@@ -30,6 +30,8 @@ title: "home"
 - [Bayesian model selection with large model spaces](Comparing-large-spaces-of-models)
 - [Experiemental design Optimization](Optimizing-the-experimental-design)
 - [Volterra decompositions](Volterra-decomposition)
+- [Bayesian Model Averaging](BVA-BMA)
+- [Setting the priors through Empirical Bayes (group studies)](VBA-MFX)
 
 # Library of models
 
