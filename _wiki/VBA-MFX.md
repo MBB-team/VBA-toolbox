@@ -11,7 +11,7 @@ In VBA, empirical Bayes is formally identical to mixed-effect modelling (MFX), w
 
 The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 
-```
+```matlab
 - for i=1:n (loop over subjects)
     
       define within-subject priors from group-level summary statistics
