@@ -19,12 +19,7 @@ title: "home"
 ## Going further
 
 - [VBA: results and diagnostics](VBA-output-structure)
-
-[comment]: # (- [Defining a model]())
-[comment]: # (- [Setting the priors]())
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
-
-[comment]: # (- [Simulation and model estimation]())
 
 
 ## Advanced tricks
