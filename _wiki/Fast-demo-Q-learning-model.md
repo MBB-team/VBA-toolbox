@@ -102,15 +102,22 @@ Below are graphical outputs of the demonstration script. First, let us focus on 
 
 On can see how the agent's behavioural response changes according to the feedback he receives. In brief, the Q-learner is tracking the winning option (which effectively varies over time).
 
-Graphical outputs (parameter estimation, model accuracy, inversion diagnostics, convergence, etc...) of the VBA model inversion are described [elsewhere]({{ site.baseurl }}/wiki/VBA-graphical-output) goes through all of them for this demo). Now let us check how accurate the model inversion was:
+All VBA's graphical outputs (parameter estimation, model accuracy, inversion diagnostics, convergence, etc...), for this particular example, are described [here]({{ site.baseurl }}/wiki/VBA-graphical-output). Now let us check how accurate the model inversion was:
 
 ![]({{ site.baseurl }}/images/wiki/demo1/demo1_2.jpg)
+
+> **Upper-left panel**: posterior mean (grey bar) and standard deviation (red errorbar) of the model's evolution parameter (theta = learning rate, here). The simulated parameter is shown using a green dot. **Upper-right panel**: same for the observation parameter (phi = behavioural log-temperature). **Middle-up-right panel**: same for initial conditions (options values). **Middle-down-left panel**: same for hidden states (2 option values plotted as a function of time or trials). **Middle-down-right panel**: same for observed data. **Lower-left panel**: estimated hidden states (y-axis) are plotted against simulated hidden states (x-axis). **Lower-left panel**: fitted data (y-axis) are plotted against simulated data (x-axis).
 
 Recall the unknown parameters of the [Q-learning model]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model): 1 evolution parameter (learning rate), 1 observation parameter (temperature) and 2 initial conditions (initial action values).
 One can see that the posterior credible intervals (red errorbars) contain the simulated parameter values (green dots). In turn, estimated and simulated action values (as well as choices) dynamics tightly correlate with each other.
 
-Let us now eyeball the Volterra decomposition of action values and choices (w.r.t. winning action):
+Of course, analysis of experimental data does not allow one to evaluate the accuracy of parameter estimation, as was done here using simulated data. However, VBA provides a number of [inversion diagnostics]({{ site.baseurl }}/wiki/VBA-output-structure) that are useful to review, such as the structure of model residuals, the parameter posterior correlation matrix, Volterra kernels, etc...
 
-![]({{ site.baseurl }}/images/wiki/demo1/demo1_3.jpg)
+Note also that VBA also includes routines for performing other types of analyses. These include, but are not limited to:
 
-The 'winning action' basis function was encoded as follows: it was 1 when the winning action was the first action, and -1 otherwise. It follows that the first (resp. second) Q-learner's action value exhibits a positive (resp. negative) exponentially decaying impulse response to the winning action. The decay rate of the Volterra kernel is simply controlled by the learning rate. Note that the choice is modelled as a binomial variable, whose log-odds is proportional to the difference between the first and second action values. This is why the observables' Volterra kernel is a positive exponentially decaying function of past winning actions.
+- **Bayesian model averaging**: Standard statistical practice ignores model uncertainty. Data analysts typically select a model from some class of models and then proceed as if the selected model had generated the data. This approach ignores the uncertainty in model selection, leading to over-confident inferences. Bayesian model averaging (BMA) provides a coherent mechanism for accounting for this model uncertainty when deriving parameter estimates.
+- **Empirical Bayes inversion**: Empirical Bayes methods are procedures for statistical inference in which the prior distribution is estimated from the data. This approach stands in contrast to standard Bayesian methods, for which the prior distribution is fixed before any data are observed. In VBA, the empirical Bayes approach is a fully Bayesian treatment of a hierarchical model wherein the parameters at the highest level of the hierarchy are summary statistics of the group, which are unknown but eventually constrain the likely range of subject-level parameters.
+- **group-level Bayesian model comparisons**: In this type of analysis, models are treated as random effects that could differ between subjects and have a fixed (unknown) distribution in the population. VBA inverts the ensuing hierarchical model to provide posterior estimates of the frequency with which any model prevails in the population. In particular, this approach can be adapted to perform between-condition and between-group comparisons.
+
+Finally, note that VBA already includes a large library of models for behavioural and neurophysiological data...
+
