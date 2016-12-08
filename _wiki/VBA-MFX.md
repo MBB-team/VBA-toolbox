@@ -11,20 +11,22 @@ In VBA, empirical Bayes is formally identical to mixed-effect modelling (MFX), w
 
 The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 
-- **for** i=1:n (loop over subjects)
+```
+- for i=1:n (loop over subjects)
     
       define within-subject priors from current estimate of population mean and precision
       
       perform within-subject model inversion
       
-      store subject-level posterior summary statistics
+      store within-subject posterior summary statistics
       
-    **end**
+  end
     
-- update posterior over population mean and precision from posterior subject-level posterior summary statistics
+- update posterior over population mean and precision from posterior within-subject posterior summary statistics
     
 - store posterior group-level summary statistics
-    
+```
+
 ... until convergence. Over the iterations, within-subject priors are refined and matched to the inferred parent population distribution.
 
 Of course, there is no need to write specific functions, and VBA performs this analysis automatically. One simply calls the function `VBA_MFX.m`, as follows:
@@ -43,5 +45,5 @@ Its intputs and outputs are described below:
 - `p_group`: structure containing the sufficient statistics of the posterior over the moments of the parent population distribution.
 - `o_group`: output structure of the VBA_MFX approach. In particular, it contains the Free Energy of the MFX model.
 
-
+Note: empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually shrinks the within-subject posterior estimate around the estimated group mean...
 
