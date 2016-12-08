@@ -9,31 +9,31 @@ Here, we address the problem of Bayesian model selection (BMS) at the group leve
 - **fixed-effect analysis (FFX)**: a single model best describes all subjects
 - **random-effect analysis (RFX)**: models are treated as random effects that could differ between subjects, with an unknown population distribution (described in terms of model frequencies/proportions).
 
-We first recall how to perform an FFX analysis. We then expose how to perform a RFX analysis. Finally, we address the problem of between group or condition model comparisons.  The key idea is to quantify the evidence for a difference in model labels or frequencies across groups or conditions.
+We first recall how to perform an FFX analysis. We then expose how to perform a RFX analysis. Finally, we address the problem of between-groups and between-conditions model comparisons. The key idea here is to quantify the evidence for a difference in model labels or frequencies across groups or conditions.
 
 ## FFX-BMS
 
-In brief, FFX-BMS assumes that the same model generated the data of all subjects. NB: subjects might still differ with each other through different model parameters. The corresponding FFX generative model is depicted in the following graph:
+In brief, FFX-BMS assumes that the same model generated the data of all subjects. NB: Subjects might still differ with each other through different model parameters. The corresponding FFX generative model is depicted in the following graph:
 ![]({{ site.baseurl }}/images/wiki/bms/ffxbms1.jpg)
-where `m` is the group's label (it assigns the group to a given model) and `y` are (subject-dependent) experimentally measured datasets.
+where $$m$$ is the group's label (it assigns the group to a given model) and $$y$$ are (within-subject) experimentally measured datasets.
 
 Under FFX assumptions, the posterior probability of a given model is expressed as:
 
 $$ p(m\mid y_1,\dots,y_n )\propto p(y_1,\dots,y_n\mid m)p(m)= p(y_1\mid m)\dots p(y_n\mid m)p(m) $$
 
-Thus, FFX-BMS simply proceeds as a subject-level BMS, having summed the model log-evidences over subjects.
+**Thus, FFX-BMS simply proceeds as a subject-level BMS, having summed the model log-evidences over subjects**.
 
 FFX-BMS is valid whenever one may safely assume that the group of subjects is homogeneous.
 
 ## RFX-BMS
 
-In RFX-BMS, models are treated as random effects that could differ between subjects and have a fixed (unknown) distribution in the population. Critically, the relevant statistical quantity is the frequency with which any model prevails in the population. This random effects BMS procedure complements fixed effects procedures that assume subjects are sampled from a homogenous population with one (unknown) model. The corresponding RFX generative model is depicted in the following graph:
+In RFX-BMS, models are treated as random effects that could differ between subjects and have a fixed (unknown) distribution in the population. Critically, the relevant statistical quantity is the frequency with which any model prevails in the population. The corresponding RFX generative model is depicted in the following graph:
 
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbms1.jpg)
 
-where `r` is the population frequency profile, `m` is the subject's label (it assigns each subject to a given model) and `y` are (subject-dependent) experimentally measured datasets.
+where $$r$$ is the population frequency profile, $$m$$ is the subject-specific model label (it assigns each subject to a given model) and $$y$$ are (within-subject) experimentally measured datasets.
 
-The above RFX generative model can be inverted using a VB scheme, as follows:
+in VBA, the above RFX generative model can be inverted as follows:
 
 ```matlab
 [posterior,out] = VBA_groupBMC(L) ;
@@ -41,11 +41,11 @@ The above RFX generative model can be inverted using a VB scheme, as follows:
 
 where the I/O arguments of `VBA_groupBMC` are summarized as follows:
 
-- `L`: `Kxn` array of log-model evidences (`K` models; `n` subjects)
+- `L`: Kxn array of log-model evidences (K models; n subjects)
 - `posterior`: a structure containing the sufficient statistics (moments) of the posterior distributions over unknown model variables (i.e. subjects' labels and model frequencies).
 - `out`: a structure containing inversion diagnostics, e.g.: RFX log-evidence, exceedance probabilities (see below), etc...
 
-In Stephan et al. (2009), we introduced the notion of exceedance probability (EP), which measures how likely it is that any given model is more frequent than all other models in the comparison set. Estimated model frequencies and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
+In [Stephan et al. (2009)](https://www.ncbi.nlm.nih.gov/pubmed/19306932), we introduced the notion of exceedance probability (EP), which measures how likely it is that any given model is more frequent than all other models in the comparison set. Estimated model frequencies and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
 
 ```matlab
 f  = out.Ef ;
@@ -56,9 +56,9 @@ The graphical output of `VBA_groupBMC.m` is appended below (with random log-evid
 
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbms2.jpg)
 
-> **Upper-left panel**: log-evidences (y-axis) over each model (x-axis). NB: Each line/colour identifies one subjects within the group. **Middle-left panel**: exceedance probabilities (y-axis) over models (x-axis). **Lower-left panel**: RFX free energy (y-axis) over VB iterations (x-axis). NB: the log-evidence (+/- 3) of the FFX (resp., "null") model is shown in blue (resp. red) for comparison purposes. NB: here, the observed log-evidence are better explained by chance than by the RFX generative model (cf. simulated random log-evidences)! **Upper-right panel**: model attributions (subjects' labels), in terms of the posterior probability (colour code) of each model (x-axis) to best explain each subject (y-axis). **Middle-right panel**: estimated model frequencies (y-axis) over models (x-axis). NB: the red line shows the "null" frequency profile over models.
+> **Upper-left panel**: log-evidences (y-axis) over each model (x-axis). NB: Each line/colour identifies one subjects within the group. **Middle-left panel**: exceedance probabilities (y-axis) over models (x-axis). **Lower-left panel**: RFX free energy (y-axis) over VB iterations (x-axis). The log-evidence (+/- 3) of the FFX (resp., "null") model is shown in blue (resp. red) for comparison purposes. NB: here, the observed log-evidence are better explained by chance than by the RFX generative model (cf. simulated random log-evidences)! **Upper-right panel**: model attributions (subjects' labels), in terms of the posterior probability (colour code) of each model (x-axis) to best explain each subject (y-axis). **Middle-right panel**: estimated model frequencies (y-axis) over models (x-axis). NB: the red line shows the "null" frequency profile over models.
 
-Note that optional arguments can be passed to the function, which can be used to control the convergence of the VB scheme. Importantly, information Re: **model families** are passed through an `options` variable (see header of `VBA_groupBMC.m`):
+Optional arguments can be passed to the function, which can be used to control the convergence of the VB scheme. Importantly, information Re: **model families** are passed through an `options` variable (see header of `VBA_groupBMC.m`):
 
 ```matlab
 options.families = {[1,2], [3,4]} ;
@@ -75,6 +75,7 @@ fep = out.families.ep ;
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbms3.jpg)
 
 > (Same format as before). NB: in the lower-left panel, one can also eyeball the "family null" log-evidence (here, it is confounded with the above "model null"). **Lower-right panel**: model space partition and estimated frequencies (y-axis) over families (x-axis).
+
 
 ## Between-conditions RFX-BMS
 
@@ -154,7 +155,7 @@ The posterior probability $$p$$ that the two groups have the same model frequenc
 p = 1/(1+exp(Fd-Fe)) 
 ```
 
-Note that you can directly test for a group difference with the function `VBA_groupBMC_btwGroups` which does exactly all the operation above:
+Note that you can directly test for a group difference with the function `VBA_groupBMC_btwGroups` which directly performs the above analysis:
 
 ```matlab
 [h, p] = VBA_groupBMC_btwGroups({L1, L2})
