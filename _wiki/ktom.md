@@ -4,7 +4,7 @@ title: "Bayesian mentalizing (k-ToM)"
 
 {:toc}
 
-When it comes to interpreting others' behaviour, we almost irrepressibly engage in the attribution of mental states (beliefs, emotions...). Such "mentalizing" or Theory of Mind (ToM) can become very sophisticated, eventually endowing us with highly adaptive skills such as convincing, teaching or deceiving. Here, sophistication can be captured in terms of the depth of our recursive beliefs, as in "I think that you think that I think...". In Devaine et al. (2014), we show that such sophisticated recursive beliefs subtend learning in the context of social interaction (e.g., repeated dyadic games). Critical here is the notion that belief update rules that account for recursive beliefs of this sort (hereafter: k-ToM models) induce behavioural responses that are very different from typical trial-and-error based learning schemes. 
+When it comes to interpreting others' behaviour, we almost irrepressibly engage in the attribution of mental states (beliefs, emotions...). Such "mentalizing" or Theory of Mind (ToM) can become very sophisticated, eventually endowing us with highly adaptive skills such as convincing, teaching or deceiving. Here, sophistication can be captured in terms of the depth of our recursive beliefs, as in "I think that you think that I think...". In [Devaine et al. (2014)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992), we show that such sophisticated recursive beliefs subtend learning in the context of social interaction (e.g., repeated dyadic games). Critical here is the notion that belief update rules that account for recursive beliefs of this sort (hereafter: k-ToM models) induce behavioural responses that are very different from typical trial-and-error based learning schemes. 
 This section summarizes the prequisites for using k-ToM models in dyadic games.
 
 First, recall that, in its simplest form, a game is defined in terms of a utility table U(a,b), which yields the payoff player a gets when making his decision, depending on what player b decides. Incentives can be arbitrarily chosen to capture different forms of social exchanges or transactions, such as competitive or cooperative interactions. In what follows, we will only deal with 2x2 games, i.e. games with two players, both of which have only two alternative options.
@@ -28,7 +28,9 @@ Below are optional inputs that can be changed to adapt the model to one's specif
 - options.inF.lev: this is the player's ToM sophistication level (k).
 - options.inF.dummyPar: this is 3x1 binary vector, which states which hidden parameter k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to [1;0;0], which means that only k-ToM's opponent's prior volatility is assumed to change across trials.
 
-Note that some states indexing has to be set according to: `options.inG.indlevel=defIndlev(level, NtotPar)`, where `level` is the player's ToM sophistication level, and `NtotPar` is the total number of hidden evolution and observation parameters for k-ToM players (here, `NtotPar=3`: volatility, temperature and bias). 
+Note that some states indexing has to be set according to: `options.inG.indlevel=defIndlev(level, NtotPar)`, where `level` is the player's ToM sophistication level, and `NtotPar` is the total number of hidden evolution and observation parameters for k-ToM players (here, `NtotPar=3`: volatility, temperature and bias).
+
+All relevant mathematical details are described in [Devaine et al. (2014)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992).
 
 
 
