@@ -49,3 +49,4 @@ Its intputs and outputs are described below:
 
 Note: empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually shrinks the within-subject posterior estimate around the estimated group mean...
 
+A complete mathematical description of the approach is available [on this page](https://sites.google.com/site/jeandaunizeauswebsite/links/resources).
