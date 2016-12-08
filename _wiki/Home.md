@@ -6,23 +6,23 @@ title: "home"
 
 ## Some theory
 
-- [Bayes' basics](Bayesian-modelling-introduction)
-- [Variational Bayes](The-variational-Bayesian-approach)
-- [General model structure](Structure-of-VBA's-generative-model)
+- [Bayesian inference: introduction](Bayesian-modelling-introduction)
+- [The variational Bayes approach](The-variational-Bayesian-approach)
+- [VBA: structure of the generative model](Structure-of-VBA's-generative-model)
 
 ## Getting Started
 
-- [VBA model inversion in 4 steps](VBA-model-inversion-in-4-steps)
-- [A fast demo of the toolbox](Fast-demo-Q-learning-model)
-- [VBA graphical output](VBA-graphical-output)
+- [VBA: model inversion in 4 steps](VBA-model-inversion-in-4-steps)
+- [VBA: a fast demo (Q-learning)](Fast-demo-Q-learning-model)
+- [VBA: graphical output](VBA-graphical-output)
 
 ## Going further
 
-- [Results and diagnostics](VBA-output-structure)
+- [VBA: results and diagnostics](VBA-output-structure)
 
 [comment]: # (- [Defining a model]())
 [comment]: # (- [Setting the priors]())
-- [VBA options](Controlling-the-inversion-using-VBA-options)
+- [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
 
 [comment]: # (- [Simulation and model estimation]())
 
@@ -31,10 +31,10 @@ title: "home"
 
 - [Multisession](Multisession)
 - [Mixed observations](Multisources)
-- [Group-level model selection](BMS-for-group-studies)
-- [Large model spaces](Comparing-large-spaces-of-models)
-- [Design Optimization](Optimizing-the-experimental-design)
-- [Volterra decomposition](Volterra-decomposition)
+- [Bayesian model selection for group studies](BMS-for-group-studies)
+- [Bayesian model selection with large model spaces](Comparing-large-spaces-of-models)
+- [Experiemental design Optimization](Optimizing-the-experimental-design)
+- [Volterra decompositions](Volterra-decomposition)
 
 # Library of models
 
