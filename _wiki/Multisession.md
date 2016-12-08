@@ -4,7 +4,7 @@ title: "Multisession"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-In some experiments, a same subject will perform multiple blocs of the same task. It this case, it will often be better to fit all data at once to maximize the precision of the parameter estimates. However, some parameters can differ accross the sessions, like the initial hidden states that should be reinitialized at the beginning of each bloc.
+In some experiments, a given subject may perform multiple blocks of the same task. It this case, one may want to fit all data at once to maximize the precision of the parameter estimates. However, some parameters can differ accross the sessions, like the initial hidden states that should be reinitialized at the beginning of each block.
 
 The toolbox offers a simple way to deal with this situation, as demonstrated in the ```demo_multisession``` script.
 
@@ -13,10 +13,10 @@ The toolbox offers a simple way to deal with this situation, as demonstrated in 
 Let's say you have 3 blocs of 40 trials each. You first have to concatenate all your data in order to get one observation vector or matrix with 3x40=120 columns: 
 
 ```matlab
-y = [y_bloc1 y_bloc2 y_bloc3] ;
+y = [y_block1 y_block2 y_block3] ;
 ```
 
-Then, you simply have to indicate in the ```options``` structure how the toolbox should split the observations by giving how many timepoints are in each session:
+Then, you simply have to indicate in VBA's ```options``` structure how the observations should be patitionned, by specifying the number of time samples there is for each block:
 
 ```matlab
 options.multisession.split = [40 40 40] ;
@@ -24,9 +24,9 @@ options.multisession.split = [40 40 40] ;
 
 # Fixing parameters across sessions
 
-By default, spliting your data into multiple sessions will duplicate all parameters (evolution $$\theta$$, observation $$\phi$$ and initial hidden state $$X0$$) such that each session has its own set (with identical priors). You can however fix some parameters to keep them constant across all sessions. 
+By default, spliting your data into multiple sessions will duplicate all parameters (evolution $$\theta$$, observation $$\phi$$ and initial hidden state $$X0$$) such that each session has its own set (with identical priors). In this case, there is no assimilation of information from one session (or block) to the next. However, you can tell VBA to fix some parameters, i.e. to keep them constant across all sessions. In turn, these parameters will be estimated given all the available sessions.
 
-For example, if you have one observation parameter corresponding ie. to the choice temperature you do not expect to vary across blocs:
+For example, let's say that the first observation parameter (corresponding, e.g., to the choice temperature) is not expected to vary across blocks:
 
 ```matlab
 % fix the first observation parameter
@@ -36,15 +36,15 @@ options.multisession.fixed.phi = 1 ;
 If you now want to fix the second and third evolution parameters:
 
 ```matlab
-% fix the first second and third evolution parameter
+% fix the first second and third evolution parameters
 options.multisession.fixed.theta = [2 3] ; 
 ```
 
-Note that by fixing or not pecific parameters you can easily generate different models that can then be compared to test for a session effect.
+Note that by fixing or not specific parameters you can easily generate different models that can then be compared to test for a session effect.
 
 # Reading the inversion results
 
-In order to estimate your multisession model, just call ```VBA_NLStateSpaceModel``` as usual. The posterior structure will contain all parameter estimates including the fixed parameters and those duplicated for each sessions. To help you reading out these results, the toolbox also output one posterior structure for each session:
+In order to estimate your multisession model, just call ```VBA_NLStateSpaceModel``` as usual, but with the `options` structure set as above. The `posterior` structure will contain the usual outputs, plus a session-specific posterior structure:
 
 ```matlab
 % one structure for each session 
