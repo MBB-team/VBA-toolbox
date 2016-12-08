@@ -71,7 +71,7 @@ The main effect of increasing the lag is to average across more data points when
 
 > **TIP:** The ensuing computational cost scales with `k^2`.
 
-# Controlling the VBA algorithmic convergence
+# Controlling VBA's algorithmic convergence
 
 The free energy eventually serves as an analytical approximation to the log model evidence, but it is also used to monitor the algorithmic convergence of the algorithm. More precisely, VBA stops whenever the maximum number of iterations has been reached, or the increase in free energy has fallen below a predefined threshold. These two criteria can be controlled, e.g.:
 
@@ -97,19 +97,19 @@ options.gradF = 1 ;
 
 # VBA initialization for stochastic dynamical systems
 
-When dealing with stochastic dynamical systems, VBA initializes the inversion under a deterministic variant of the model. This automatically done by simply another call to VBA, having set the prior mean of the states noise variance to zero (with infinite prior precision, see below). However, one may want to control the convergence of the VBA initialization. For example, setting:
+When dealing with stochastic dynamical systems, VBA initializes the inversion under a deterministic variant of the model. By default, this is done through an initial model inversion, where the prior mean of the states noise variance has been set to zero (with infinite prior precision, see [this page]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model) for a generic description of VBA's priors). However, one may want to control the convergence of the VBA initialization. For example, setting:
 
 ```matlab
 options.MaxIterInit = 0 ;
 ```
-effectively bypasses the VBA initialization.
+effectively bypasses the default VBA initialization.
 
-In addition to initialized posterior densities on evolution/observation parameters and initial conditions, the VBA initialization also derives the posterior on measurement noise precision. However, the deterministic variant might be lead to such strong model residuals, that one may want to ignore this. This can be done by setting:
+In addition to initialized posterior densities on evolution/observation parameters and initial conditions, VBA initialization also derives the posterior $$p(\sigma\mid y,m)$$ on measurement noise precision. However, the inversion of the deterministic variant of the system might result in such strong model residuals, that one may want to ignore this. This can be done by setting:
 
 ```matlab
 options.initHP = 0 ;
 ```
-Here, the prior on measurement noise precision will be used instead of its posterior (under the deterministic variant model), when initializing the posterior for the stochastic inversion.
+Here, the prior $$p(\sigma\mid m)$$ on measurement noise precision will be used instead of its posterior (under the deterministic variant model), when initializing the posterior for the main inversion of the stochastic system.
 
 # Switching on/off graphical display
 
@@ -137,41 +137,10 @@ options.GnFigs = 1 ;
 options.verbose = 0 ;
 ```
 
-# Volterra kernels
-
-When dealing with dynamical systems, VBA eventually performs a Volterra decomposition of hidden states dynamics onto the set `u` of inputs to the system. This diagnostic analysis allows one to identify the hidden states' impulse response to experimentally controlled inputs to the system. Setting:
-
-```matlab
-options.kernelSize = 32 ;
-```
-effectively asks VBA to estimate Volterra kernels with a maximum lag of 32 time samples.
-
-In addition, one may want to orthogonalize the inputs prior to the Volterra decomposition. This can be done by setting:
-
-```matlab
-options.orthU = 1 ;
-```
-The inputs are orthogonalized in order, i.e. the second input is orthogonalized w.r.t. the first, the third is orthogonalized w.r.t. the first and the second, etc...
-
-One may also want to detrend inputs. The variable `options.detrendU` controls the order of a polynomial Taylor series which is removed from the inputs and from the system's dynamics. For example:
-
-```matlab
-options.detrendU = 3 ;
-```
-will explain away any temporal variability (in the inputs and system's dynamics), which can be explained by a cubic function of time.
-
-Note that one may want to Volterra-decompose the system's dynamics onto another set of inputs. This can be done as follows:
-
-```matlab
-out.u = u0 ;
-out = rmfield(out, 'diagnostics') ;
-[hf, out0] = VBA_ReDisplay(out, posterior, 1) ;
-```
-This first re-sets the inputs in the `out` structure with the appropriate set (here, `u0`). Then, the `diagnostics` structure is removed from `out`. Therefore, when called, `VBA_ReDisplay` derives the Volterra deomcposition w.r.t. `u0`, instead of `u`. These will be stored in `out0.diagnostics.kernels` (but can be eyeballed directly from the graphical results window).
 
 # Miscellaneous
 
-## By-passing the evolution function at times
+## Bypassing the evolution function at times
 
 One may want to skip the evolution function at times, i.e. replace it with the identity mapping. For example, this is useful when dealing with learning models, where the transition from the initial conditions to the first states is ill-defined (because no feedback has yet been received). This can be done by setting the variable `options.skipf`. By default, `options.skipf` is a zero-valued matrix, whose length is the number of time samples. Setting any of its value to one effectively asks VBA to replace the corresponding states transition by the identity mapping. For example:
 
