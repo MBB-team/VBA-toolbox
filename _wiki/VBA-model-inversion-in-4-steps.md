@@ -4,7 +4,9 @@ title: "Model inversion in 4 steps"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-This page summarizes the steps required for performing a model inversion with the core VB routines of the toolbox. In brief:
+This page summarizes the steps required for performing a model inversion with the core VBA routines of the toolbox. Recall that the main model inversion routine is `VBA_NLStateSpaceModel.m`, whose inputs/outputs are defined below. It implements a variational Bayesian approach to the inversion of a very generic class of generative models, namely: "nonlinear state-space models". This class of models is described [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
+
+In brief, to perform a model-based analysis of data:
 
 - one **needs** to define evolution and observation functions, as well as creating the `dim` matlab structure.
 - one **can** provide further information about the model and/or its inversion (e.g. priors).
@@ -13,7 +15,7 @@ This page summarizes the steps required for performing a model inversion with th
 
 # Step 1: Defining observation/evolution functions
 
-Generative models are defined in terms of **evolution and observation functions**. One may have to write these evolution/observation functions, in compliance with the following I/O:
+Generative models are defined in terms of **evolution and observation functions**. The VBA toolbox already contains a library of such functions (for models of behavioural and/or physiological responses). In case one may want to use VBA on one's in-house model, one has to write these evolution/observation functions, in compliance with the following I/O:
 
 ```matlab
 z = function_name(x_t, P, u_t, in) ;
