@@ -44,7 +44,7 @@ Note that by fixing or not specific parameters you can easily generate different
 
 # Reading the inversion results
 
-In order to estimate your multisession model, just call ```VBA_NLStateSpaceModel``` as usual, but with the `options` structure set as above. The `posterior` structure will contain the usual outputs, plus a session-specific posterior structure:
+In order to estimate your multisession model, just call ```VBA_NLStateSpaceModel``` as usual, but with the `options` structure set as above. The `posterior` structure will contain the usual outputs, plus session-specific posterior structures:
 
 ```matlab
 % one structure for each session 
@@ -67,4 +67,4 @@ In order to estimate your multisession model, just call ```VBA_NLStateSpaceModel
     SigmaX
 ```
 
-If you fix some parameters, then the estimated value will be the same in all the ```perSession``` structures.
+If you fix some parameters, then the estimated value will be the same in all the ```posterior.perSession``` structures.
