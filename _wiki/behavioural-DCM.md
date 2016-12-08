@@ -208,7 +208,7 @@ g = [g_fmri         ; % 3 lines for the 3 nodes
 Such an observation function can be saved and wrapped with appropriate input/output standards (see [this page]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps) for a complete description of the I/O structure of observation/evolution functions).
 
 Note that VBA already includes a default bDCM observation function, `g_DCMwHRFext.m`, that does exactly that for you.
-It will apply the DCM model on the first $n$ observations (where $n$ is the number of nodes), and treat all the remaining lines in the data matrix as binary behaviorual responses (by applying a sigmoid transform). If you want to implement another brain-to-bbehaviour mapping (that deals with, e.g., real valued responses), you'll have to adapt `g_DCMwHRFext.m` accordingly.
+It will apply the DCM model on the first $$n$$ observations (where $$n$$ is the number of nodes), and treat all the remaining lines in the data matrix as binary behaviorual responses (by applying a sigmoid transform). If you want to implement another brain-to-bbehaviour mapping (that deals with, e.g., real valued responses), you'll have to adapt `g_DCMwHRFext.m` accordingly.
 
 ### Splitting the observations
 
@@ -278,6 +278,6 @@ results.susceptibility.norm
 ![bdcm-susceptibility]({{ site.baseurl }}/images/wiki/bdcm/bdcm_susceptibility.png){:width="85%"}
 
 > **Example of susceptibility analysis**.
-The first input is mostly dependent on parameter $C$ in our example above, which scores the impact of input $u$ onto node 1. The modulatory influence of the second input onto the behavioural response requires the two network connections ($A$ and $B$) forming the feedback loop.
+The first input is mostly dependent on parameter $$C$$ in our example above, which scores the impact of input $$u$$ onto node 1. The modulatory influence of the second input onto the behavioural response requires the two network connections ($$A$$ and $$B$$) forming the feedback loop.
 
 
