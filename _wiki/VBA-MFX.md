@@ -14,7 +14,7 @@ The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 ```
 - for i=1:n (loop over subjects)
     
-      define within-subject priors from current estimate of population mean and precision
+      define within-subject priors from group-level summary statistics
       
       perform within-subject model inversion
       
@@ -22,7 +22,7 @@ The pseudo-code of VBA's ensuing hierarchical inversion is given below:
       
   end
     
-- update posterior over population mean and precision from posterior within-subject posterior summary statistics
+- update group-level summary statistics from within-subject summary statistics
     
 - store posterior group-level summary statistics
 ```
@@ -31,7 +31,9 @@ The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 
 Of course, there is no need to write specific functions, and VBA performs this analysis automatically. One simply calls the function `VBA_MFX.m`, as follows:
 
-`[p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group)`
+```
+[p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group)
+```
 
 Its intputs and outputs are described below:
 
