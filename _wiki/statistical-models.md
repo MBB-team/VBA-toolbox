@@ -35,7 +35,7 @@ In neuroimpaging (e.g., fMRI), the problem of correcting for multiple comparison
 VBA includes a simple version of RFT, which obtains when applied to 1D signals (e.g., intra-EEG traces, eyetracking data, skin conductance responses, etc...). It is based upon two main functions:
 
 - **`RFT_main.m`**: this is a generic call to 1D-RFT, which can be tailored to any user-specific application. It deals with different sorts of random fields, namely: Gaussian, Student's t or Fisher's F. It provides corrected p-values for set-, cluster- and peak- level inferences, and yields an output structure `out` that contains the complete list of corrected and uncorrected p-values (at each level of inference) for an exhaustive results report. NB: as for neuroimaging, cluster-level inference requires the specification of a "cluster-inducing" threshold (default corresponds to p=0.01 uncorrected). 
-- **`RFT_GLM_contrast.m`**: this applies RFT to GLM-based contrast inference. As `GLM_contrast,.m`, this function requires the specification of a design matrix (which is applied to a dimension orthogonal to samples of the random field, e.g., trials), a contrast vector/matrix and the type of summary statistics (i.e. "t" or "F") that ensues. We will describe an exmaple application below.
+- **`RFT_GLM_contrast.m`**: this applies RFT to GLM-based contrast inference. As `GLM_contrast,.m`, this function requires the specification of a design matrix (which is applied to a dimension orthogonal to samples of the random field, e.g., trials), a contrast vector/matrix and the type of summary statistics (i.e. "t" or "F") that ensues. We will describe an example application below.
 
 Let us assume that our experiment consists in a 2x2 factorial design, with 8 trials per design cell. On each trial, we measure some peri-stimulus response, e.g., a skin conductance response, which has 10^3 time samples. We want to infer on when, in peri-stimulus time, there is a significant interaction of our two experimental factors.
 First, the corresponding design matrix and contrast would look something like this:
@@ -72,7 +72,7 @@ In brief, `RFT_GLM_contrast` (i) computes a 1D statistical field composed of Stu
 
 > **Upper panel**: The statistical t-field (y-axis) is plotted against time (x-axis). Local peaks are highlighted in red (if the corrected p-value does not reach significance, here: FWER=5%) or in green (if the corrected p-value reaches significance). The same colour-coding applies to upcrossing clusters (for cluster-level inference). **Middle panel**: RFT analysis summary (essentially: expectations, under the null, of features of the sample field). **Lower panel**: list of corrected p-values (set-, cluster- and peak- level inferences). NB: the column "location" relates to local peaks.
 
-All summary statistics are stored in the `out` structure, and the sampled statistical field is stored in the variable `statfield`.
+One can see that, in this example, no peak or upcrossing cluster reaches statistical significance. This is in fact expected, given that we simulated data under the null. Note: all summary statistics are stored in the `out` structure, and the sampled statistical field is stored in the variable `statfield`.
 
 > **Tip**: The RFT results can be explored by right-clicking on either local peaks or upcrossing clusters, which provides a summary of corrected and uncorrected p-values!
 
