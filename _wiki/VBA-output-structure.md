@@ -1,5 +1,5 @@
 ---
-title: "Results and diagnostics"
+title: "VBA: results and diagnostics"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
