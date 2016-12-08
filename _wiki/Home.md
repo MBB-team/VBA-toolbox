@@ -35,7 +35,7 @@ title: "home"
 
 # Library of models
 
-> The VBA-toolbox already includes a large set of models you can use as such or adapt to the specifics of your reasearch. Below, we give a few examples of such models. We briefly expose the main theoretical and experimental issues, and point to the relevant functions of the VBA toolbox (demonstration scripts, evolution/observation functions, etc...).
+> The VBA-toolbox already includes a large library of plug-and-play models. Below, we give a few examples of such models. We briefly expose the main theoretical and experimental issues, and point to the relevant functions of the VBA toolbox (demonstration scripts, evolution/observation functions, etc...).
 
 ### Behavioural models
 
