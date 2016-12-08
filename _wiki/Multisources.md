@@ -12,7 +12,7 @@ Please refer to the ```demo_multisource``` for an interactive example.
 
 To begin with, one needs to form a single observation matrix with all the observations. In what follows, a set of measurements of similar nature (i.e. following a given probability distribution) will be referred to as a "source". For example:
 
-* _button response_ are a **binary** source. Note: it can also be a multinomial source if more than two alternative button presses are available to subjects within a given trial.
+* _button responses_ are a **binary** source. Note: it can also be a multinomial source if more than two alternative button presses are available to subjects within a given trial.
 * _(log)-reaction times_ are a **normal** source.
 * _BOLD timeseries_ are a **normal** source. If multiple ROIs are recorded, as for a DCM, they can be considered a single multivariate source: VBA will then assume that noise precision is identical accross ROIs. 
 
