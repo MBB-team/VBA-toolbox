@@ -14,7 +14,7 @@ Many Bayesian models are available in the VBA toolbox.
 
 The script `demo_AVL_recog.m` demonstrates a simple Bayesian learning model, which predicts trial-by-trial variations in reaction times during an associative learning task. The constituents of this model are:
 
-- a set of hierarchically four organized states (3 per available action). The first level captures potential perceptual uncertainty in sensory feedbacks. The second level contains the moments (mean and variance) of peoples' posterior belief about the cue-outcome contingency.
+- a set of hierarchically organized states (3 per available action). The first level captures potential perceptual uncertainty in sensory feedbacks. The second level contains the moments (mean and variance) of peoples' posterior belief about the cue-outcome contingency.
 - two evolution parameters that control the perceptual uncertainty and the prior variance of cue-action contingency, respectively.
 - two observation parameters that control the speed-accuracy trade-off during perceptual categorization.
 
@@ -25,6 +25,7 @@ The script `demo_volatileVB.m` demonstrates a (hierarchical) Bayesian learning m
 - a set of hierarchically organized states (6 per available action). The first two levels are similar to the above model. The third level contains the moments (mean and variance) of peoples' posterior belief about the the action-outcome contingency's volatility. Critically, the effective learning rate of such an agent follows his belief about the environmental volatility.
 - three evolution parameters that control the dynamical changes of the agent's effective learning rate (volatility weight, base volatility, and volatility transition prior variance).
 - two observation parameters: bias and temmperature.
+
 We refer the interested reader to [Mathys et al. 2011](http://www.frontiersin.org/human_neuroscience/10.3389/fnhum.2011.00039/abstract).
 
 The script `demo_dynLearningRate.m` uses the above model to demonstrate how one can use inversion diagnostics to improve existing models, in the aim of progressively capturing the complexity of (hidden) computational mechanisms.
