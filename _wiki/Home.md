@@ -24,8 +24,8 @@ title: "home"
 
 ## Advanced tricks
 
-- [Multisession](Multisession)
-- [Mixed observations](Multisources)
+- [Multisession inversions](Multisession)
+- [Mixed observations (including multinomial and gaussian variables)](Multisources)
 - [Bayesian model selection for group studies](BMS-for-group-studies)
 - [Bayesian model selection with large model spaces](Comparing-large-spaces-of-models)
 - [Experimental design optimization](Optimizing-the-experimental-design)
