@@ -32,6 +32,7 @@ title: "home"
 - [Volterra decompositions](Volterra-decomposition)
 - [Bayesian Model Averaging](VBA-BMA)
 - [Setting the priors through Empirical Bayes (group studies)](VBA-MFX)
+- [Setting "hard constraints" throuh parameter transformations](param-transform)
 
 # Library of models
 
