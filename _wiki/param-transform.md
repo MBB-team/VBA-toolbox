@@ -15,6 +15,6 @@ However, one may wan to insert "hard constraints", i.e. some models may include 
 
 If one is interested in the posterior density over transformed parameters, one can simply use the Laplace approximation (see `VBA_Laplace.m`). Alternatively, one can sample (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report summary statistics over the set of transformed samples (such as mean and variance) and/or full sampling histograms. 
 
-Note that Bayesian inference is not invariant through changes in model parameterization. For example, let us consider the mapping $$P \rightarrow P^3$$. This mapping does not insert any hard constraint, in the sense that the mapped parameter $$P^3$$ is allowed to vary without finite bounds. Inference on a model that uses parameter `P` does not yield the same result as inference on the same model, but this time using the mapped parameter `P^3`... 
+> Note that Bayesian inference is not invariant through changes in model parameterization. For example, let us consider the mapping $$P \rightarrow P^3$$. This mapping does not insert any hard constraint, in the sense that the mapped parameter $$P^3$$ is allowed to vary without finite bounds. Nevertheless, Bayesian inference on a model that uses parameter `P` does not yield the same result as inference on the same model, but this time using the mapped parameter `P^3`... 
 
 
