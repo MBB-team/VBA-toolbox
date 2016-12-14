@@ -22,7 +22,7 @@ title: "home"
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
 
 
-## Advanced tricks
+## Advanced VBA tricks
 
 - [Multisession inversions](Multisession)
 - [Mixed observations (including multinomial and gaussian variables)](Multisources)
@@ -32,7 +32,7 @@ title: "home"
 - [Volterra decompositions](Volterra-decomposition)
 - [Bayesian Model Averaging](VBA-BMA)
 - [Setting the priors through Empirical Bayes (group studies)](VBA-MFX)
-- [Setting "hard constraints" throuh parameter transformations](param-transform)
+- [Setting "hard constraints" through parameter transformations](param-transform)
 
 # Library of models
 
