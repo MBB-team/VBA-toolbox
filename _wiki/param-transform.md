@@ -11,7 +11,7 @@ However, one may wan to insert "hard constraints", i.e. some models may include 
 
 - **range constraint**: one may use the (re-scaled) sigmoidal transform. For example, within a RL evolution function, the learning rate may be defined as `sigm(P)`, where `P` is VBA's evolution parameter (which has a Gaussian prior). Thus, irrespective of the actual value of `P`, the learing rate `sigm(P)` will be constrained to lie on the [0,1] interval.
 
-- **positivity constraint**: one may use the exponential transform (i.e. `exp(P)` will be positive, irrespective of the actual value of `P`. 
+- **positivity constraint**: one may use the exponential transform, i.e. `exp(P)` will be positive, irrespective of the actual value of `P`. 
 
 If one is interested in the posterior density over transformed parameters, one can simply use the Laplace approximation (see `VBA_Laplace.m`). Alternatively, one can sample (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report summary statistics over the set of transformed samples (such as mean and variance) and/or full sampling histograms. 
 
