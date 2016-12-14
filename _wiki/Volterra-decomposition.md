@@ -12,7 +12,7 @@ Volterra decomposition is a diagnostic analysis that allows one to identify the 
 Identifying relevant mechanisms is arguably the most difficult task in modelling complex behavioural and/or biological data. In fact, one may not be in a position to suggest an informed model for the data before the experiment. One solution is then to perform a first model inversion, and then to refine the model based upon inversion diagnostics. Among these, Volterra decompositions of hidden states dynamics may appear particularly useful.
 
 
-For example, when modelling how subjects update the value of alternative options given the feedback they receive, one may assume that the learning rate may change over trials. However, one may not know what the determinants of learning rate adaptation are. A practical solution to this problem is to first treat the learning rate as a stochastic hidden state, whose random walk dynamics cannot be a priori predicted. One would then use the VBA inversion of such a model to estimate the learning rate dynamics from, e.g., observed people's choices. Finally, one could then perform a Volterra decomposition of hidden states dynamics onto a set of appropriately chosen basis functions. Volterra kernels may then provide insights into what in the model can be changed to improve to capture the effect of the inputs onto the learning rate's dynamics. We will see an exmaple of this below.
+For example, when modelling how subjects update the value of alternative options given the feedback they receive, one may assume that the learning rate may change over trials. However, one may not know what the determinants of learning rate adaptation are. A practical solution to this problem is to first treat the learning rate as a stochastic hidden state, whose random walk dynamics cannot be a priori predicted. One would then use the VBA inversion of such a model to estimate the learning rate dynamics from, e.g., observed people's choices. Finally, one could then perform a Volterra decomposition of hidden states dynamics onto a set of appropriately chosen basis functions. Volterra kernels may then provide insights into what in the model can be changed to better capture the effect of the inputs onto the learning rate's dynamics. We will see an example of this below.
 
 
 
@@ -23,7 +23,7 @@ Most dynamical systems can be described in terms of input-output relationships, 
 
 $$x_t = w^{(0)} + \sum_{\tau} w_{\tau}^{(1)} u_{t-\tau} + \sum_{\tau_1} \sum_{\tau_2} w_{\tau_1,\tau_2}^{(2)} u_{t-\tau_1} u_{t-\tau_2} +\dots$$
 
-where we have chosen a discrete-time formulation. Here, $$\tau$$ is some arbitrary time lag and we have truncated the series (up to second order). First-order Volterra kernels $$w^{(1)}$$ capture the linear weight of lagged inputs onto the output. First-order Volterra kernels would be equivalent to impulse response functions, would the system be linear . Second-order Volterra kernels $$w^{(2)}$$ capture additional hysteresis effects, whereby the systematic response to some past input depends upon the input it received at some other point in time. For example, systems exhibiting "refractory periods" can be captured using second-order Volterra kernels that cancel the first-order impact of inputs during recovery time.
+where we have chosen a discrete-time formulation. Here, $$\tau$$ is some arbitrary time lag and we have truncated the series (up to second order). First-order Volterra kernels $$w^{(1)}$$ capture the linear weight of lagged inputs onto the output. First-order Volterra kernels would be equivalent to impulse response functions, would the system be linear . Second-order Volterra kernels $$w^{(2)}$$ capture additional hysteresis effects, whereby the systematic response to some past input depends upon the input it received at some other point in time. For example, systems exhibiting "refractory periods" can be captured using second-order Volterra kernels that cancel the first-order impact of inputs during recovery time. Of course, the equation above can be generalized to situations in which multiple inputs drive the system of interest.
 
 
 # Default Volterra analysis in VBA
@@ -88,6 +88,8 @@ The VBA toolbox is then used to invert a “dynamical” variant of the Q-learni
 The VBA inversion has identified some variability in the learning rate. A simple classical GLM test allows us to check that this variability correlates with the simulated agent's inferred volatility (F = 79.2, p<10−8):
 
 ![]({{ site.baseurl }}/images/wiki/volterra/glm_test.jpg)
+
+> This is the graphical output of `GLM_contrast.m`, where the design matrix has been set with the simulated agent's volatility estimate (plus a constant term). This [this page]({{ site.baseurl }}/wiki/statistical-models) for more details regarding this statistical tool.
 
 In brief, the VBA estimate of learning rate time series matches the trial-by-trial simulated agent's learning rate. This is reassuring, as the problem of estimating learning rates' stochastic dynamics from observed choices is not a priori trivial.
 
