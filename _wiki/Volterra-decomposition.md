@@ -72,7 +72,7 @@ The script `demo_dynLearningRate.m` demonstrates the above procedure, in the con
 
 ## Simulating agent's choices under a sophisticated learning model
 
-First, a series of choices are simulated, under an agent model that learns both the evolving action-outcome probabilities and their volatility (see hierarchical Bayesian learning model on  [http://code.google.com/p/mbb-vb-toolbox/wiki/RL_models this page]).
+First, a series of choices are simulated, under an agent model that learns both the evolving action-outcome probabilities and their volatility (see hierarchical Bayesian learning model on [this page]({{ site.baseurl }}/wiki/Reinforcement-learning)).
 
 ![]({{ site.baseurl }}/images/wiki/volterra/simu_volatileVB.jpg)
 
