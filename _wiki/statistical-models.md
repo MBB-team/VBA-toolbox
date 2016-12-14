@@ -10,7 +10,7 @@ The general linear model (GLM) is a statistical linear model. The GLM incorporat
 
 ```matlab
 X  = randn(32, 4)  ;
-b  = [1; 0; 0; 0 ] ;
+b  = [1.5; 0; 0; 0 ] ;
 y  = X*b ;
 y  = y + randn(size(y)) ;
 c  = [1; 0; 0; 0 ] ;
