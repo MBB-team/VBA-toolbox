@@ -96,7 +96,8 @@ else
 end
 %- define decoding parameters indices
 if extended
-    inG.indr = inG.ind2(end) + (1:sum([sources.type]~=0));
+    % default is one parameter for each source, which is a constant offset
+    inG.indr = inG.ind2(end) + (1:numel(sources)-1);
 end
 
 % dimensions 
