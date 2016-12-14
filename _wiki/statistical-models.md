@@ -16,7 +16,7 @@ y  = y + randn(size(y)) ;
 c  = [1; 0; 0; 0 ] ;
 pv = GLM_contrast(X, y, c, type) ;
 ```
-where `X` is the design matrix, `y` is the data matrix, `c` is the contrast matrix, `type` is flag for the test (t-test or F-test) and `pv` is the p-value of the corresponding test.
+where `X` is the design matrix, `y` is the data matrix, `c` is the contrast matrix, `type` is flag for the test (t-test or F-test) and `pv` is the p-value of the corresponding test (in this example, the contrast effectively tests for the significance of the first regressor of the design matrix).
 
 Let us eyeball the graphical output of the function `GLM_contrast.m`:
 
@@ -24,7 +24,11 @@ Let us eyeball the graphical output of the function `GLM_contrast.m`:
 
 > **Upper-left panel**: observed data (y-axis) plotted against predicted data (x-axis). NB: The percentage of explained variance is indicated (the adjusted R^2 is the percentage of variance explained by the contrast of interest). **Middle-left panel**: observed and predicted data (y-axis) plotted against data dimensions (x-axis). **Lower-left panel**: parameter's correlation matrix. **Upper-right panel**: parameter estimates plus or minus one standard deviation. NB: Right-clicking on barplots allows one to access the results individual significance F-tests. **Middle-right panel**: contrast of interest. **Lower-right panel**: design matrix. Note that all descriptive statistics can be retrieved from optional output arguments.
 
-**Tip**: defining contrasts for, e.g., main effects of multi-level factors can be tedious. However, VBA has an in-built function for doing exactly this: `Contrast_MEbins.m`. It outputs the contrast matrix corresponding to an F-test of the main effect of a given experimental factor with n levels. 
+**Tip**: defining contrasts for, e.g., main effects of multi-level factors can be tedious. However, VBA has an in-built function for doing exactly this: `Contrast_MEbins.m`. It outputs the contrast matrix corresponding to an F-test of the main effect of a given experimental factor with n levels.
+
+Note that t-tests effectively perform one-tailed tests (positive effects). This means that the sign of the contrast matters. In contradistinction, F-tests perform two-tailed tests.
+
+The function `GLM_contrast.m` can output more than just the p-value. In particular, it can be used to recover ordinary least-squares (OLS) estimates of GLM parameters and residual variance, as well as summary statistics such as t- or F- values and percentage of explained variance...
 
 
 # 1D-RFT: Random Field Theory for the multiple comparison problem
