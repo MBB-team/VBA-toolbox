@@ -21,7 +21,7 @@ The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 2) update group-level summary statistics from within-subject summary statistics
 ```
 
-... until convergence. Over the iterations, within-subject priors are refined and matched to the inferred parent population distribution. Empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually shrinks the within-subject posterior estimate around the estimated group mean...
+Over the iterations, within-subject priors are refined and matched to the inferred parent population distribution. Empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually shrinks the within-subject posterior estimate around the estimated group mean...
 
 Of course, there is no need to write specific functions, and VBA performs this analysis automatically. One simply calls the function `VBA_MFX.m`, as follows:
 
