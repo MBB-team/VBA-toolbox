@@ -16,9 +16,8 @@ The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 1) for i=1:n (loop over subjects)
       define within-subject priors from group-level summary statistics
       perform within-subject model inversion
-      store within-subject posterior summary statistics
   end
-2) update group-level summary statistics from within-subject summary statistics
+2) update group-level summary statistics from posterior within-subject summary statistics
 ```
 
 Over the iterations, within-subject priors are refined and matched to the inferred parent population distribution. Empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually shrinks the within-subject posterior estimate around the estimated group mean...
