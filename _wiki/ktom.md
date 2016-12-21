@@ -22,6 +22,12 @@ Here, the recursion depth (k) induces distinct ToM sophistication levels, which 
 
 In VBA, there is a pair of generic evolution and observation functions for k-ToM agents, namely: `f_kToM.m` and `g_kToM.m`. These can be used in conjunction with the appropriate inputs (previous players' choices) to fit the series of observed choices in a 2x2 game, whose utility table is given. The script `demo_recur.m` exemplifies the simulation and inversion of such k-ToM learner (using a competitive 2X2 game, namely: "hide-and-seek").
 
+The conditions for applying the existing k-ToM model are as follows:
+
+- the game has to be a 2X2 (2 players, 2 alternative actions) game.
+- the structure of the utillity function of k-ToM's opponent is fixed, but does not need to be identical as k-ToM's.
+- some additional behavioural forces (e.g., perseveration and/or directed exploration) may be easily inserted in k-ToM's observation function.
+
 Below are optional inputs that can be changed to adapt the model to one's specific experiment:
 
 - `options.InF.game`: 2x2x2 payoff table (game(:,:,1) is the first player's payoff, whereas game(:,:,2) is the second player's payoff). For example (as in the demo script), setting `game=cat(3,[1,0;0,1],[0,1;1,0])` induces a competitive ("hide-and-seek") game, where the first player is the seeker and the second is the hider.
@@ -34,12 +40,6 @@ Note that some states indexing has to be set according to:
 `options.inG.indlevel=defIndlev(level, NtotPar)`
 
 where `level` is the player's ToM sophistication level, and `NtotPar` is the total number of hidden evolution and observation parameters for k-ToM players (here, `NtotPar=3`: volatility, temperature and bias).
-
-The conditions for applying the existing k-ToM model are as follows:
-
-- the game has to be a 2X2 (2 players, 2 alternative actions) game.
-- the structure of the utillity function of k-ToM's opponent is fixed, but does not need to be identical as k-ToM's.
-- some additional behavioural forces (e.g., perseveration and/or directed exploration) may be easily inserted in k-ToM's observation function.
 
 Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. The indexing is a bit tricky here, essentially because it depends upon k (`f_kToM.m` is recursive):
 
