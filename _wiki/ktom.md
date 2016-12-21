@@ -24,10 +24,10 @@ In VBA, there is a pair of generic evolution and observation functions for k-ToM
 
 Below are optional inputs that can be changed to adapt the model to one's specific experiment:
 
-- options.InF.game: 2x2x2 payoff table (game(:,:,1) is the first player's payoff, whereas game(:,:,2) is the second player's payoff). For example (as in the demo script), setting `game=cat(3,[1,0;0,1],[0,1;1,0])` induces a competitive ("hide-and-seek") game, where the first player is the seeker and the second is the hider.
-- options.inF.player: 1 or 2. In the above example, this flag effectively switches the role (hider or seeker) of the player, whose behaviour we are trying to fit.
-- options.inF.lev: this is the player's ToM sophistication level (k).
-- options.inF.dummyPar: this is 3x1 binary vector, which states which hidden parameter k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to [1;0;0], which means that only k-ToM's opponent's prior volatility is assumed to change across trials.
+- `options.InF.game`: 2x2x2 payoff table (game(:,:,1) is the first player's payoff, whereas game(:,:,2) is the second player's payoff). For example (as in the demo script), setting `game=cat(3,[1,0;0,1],[0,1;1,0])` induces a competitive ("hide-and-seek") game, where the first player is the seeker and the second is the hider.
+- `options.inF.player`: 1 or 2. In the above example, this flag effectively switches the role (hider or seeker) of the player, whose behaviour we are trying to fit.
+- `options.inF.lev`: this is the player's ToM sophistication level (k).
+- `options.inF.dummyPar`: this is 3x1 binary vector, which states which hidden parameter k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to `[1;0;0]`, which means that only k-ToM's opponent's prior volatility is assumed to change across trials.
 
 Note that some states indexing has to be set according to:
 
