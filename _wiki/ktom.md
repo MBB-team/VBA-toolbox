@@ -41,7 +41,7 @@ The conditions for applying the existing k-ToM model are as follows:
 - the structure of the utillity function of k-ToM's opponent is fixed, but does not need to be identical as k-ToM's.
 - some additional behavioural forces (e.g., perseveration and/or directed exploration) may be easily inserted in k-ToM's observation function.
 
-Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. The indexing is a bit tricky here, essentially because it depends upon k (`f_kToM.m` is recursive). here is how it works (for a k-ToM agent, where k>0):
+Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. The indexing is a bit tricky here, essentially because it depends upon k (`f_kToM.m` is recursive):
 
 - k-1 first hidden states : sufficient statistics of the agent's posterior belief about her opponent's sophistication level. More precisely, passing these states through `sigm.m` yields the posterior probability that the opponent's sophistication is k'=0,1,...,k-2 (by construction, the probability for k'=k-1 is `1-sum(sigm(posterior.muX(1:k-2)))`).
 - the next hidden states are the represented hidden states of the agent's vitual opponents, for all admissible sophistication level. The corresponding indices are stored in the structure `options.inG.indlevel`. For example, `options.inG.indlev(2).X` contains the indices of the represented hidden states of a virtual 2-ToM opponent (only posible if the agent is himself at least 3-ToM). Note that the number of these indices is increasing with the sophistication level (because of the recursive nature of k-ToM beliefs).
