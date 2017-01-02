@@ -50,7 +50,7 @@ end
 
 if isempty(options)
     options.FWER = 0.05;
-    options.u = icdf('norm',0.99);
+    options.u = icdf('norm',0.99,0,1);
     options.k = 6;
     options.R = [];
     options.type = 'norm';
@@ -89,7 +89,7 @@ else
     if ~isfield(options,'u')
         switch options.type
             case 'norm'
-                options.u = icdf('norm',0.99);
+                options.u = icdf('norm',0.99,0,1);
             case 't'
                 options.u = icdf('t',0.99,options.dof);
             case 'F'
@@ -174,7 +174,7 @@ set.prft = RFT_Pval(options.u,options.k,set.c,out.fwhm,L,options.type,options.do
 
 % E[number of voxel per cluster] and E[number of clusters]
 out.Em = RFT_expectedTopo(options.u,L,out.fwhm,1,options.type,options.dof);
-out.En = L.*(1-cdf('norm',options.u))./out.Em;
+out.En = L.*(1-cdf('norm',options.u,0,1))./out.Em;
 
 OUTSTR{6} = ['Expected voxels per cluster [cluster-level]: E[k|H0]=',num2str(out.En,'%3.1f'),' (height threshold: X>',num2str(options.u,'%3.2f'),').'];
 OUTSTR{7} = ['Expected number of clusters [set-level]: E[c|H0]=',num2str(out.Em,'%3.1f'),' (extent threshold: k>',num2str(options.k),').'];

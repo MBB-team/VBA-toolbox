@@ -13,4 +13,4 @@ lnu = sum(ft.*dt);
 
 
 function p = myp(t,nu)
-p = normpdf(icdf('norm',tcdf(t,nu)));
+p = normpdf(icdf('norm',tcdf(t,nu),0,1));
