@@ -11,6 +11,7 @@ d=0.1;
 b=-0.4;
 c=0.7;
 level=inF.lev;
+fx = zeros(size(x));
 if level==0
     fx=evolution0bisND(x,P,u,inF);
     indlev=[];
