@@ -32,10 +32,7 @@ if isempty(display.hfp)
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
     display.hfp = figure('position',pos,'color',[1 1 1],'name',options.figName,'menubar','none','tag','VBNLSS','Renderer','OpenGL','visible',visible);
-    display.hpannel = uipanel(...
-    'parent',display.hfp,...
-    'BorderType','none',...
-    'BackgroundColor',[1 1 1]);
+    display.hpannel = uipanel('parent',display.hfp,'BorderType','none','BackgroundColor',[1 1 1]);
     set(display.hpannel,'units','normalized');
     set(display.hpannel,'Position',[.02 .08 .96 .87]);
 else

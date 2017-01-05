@@ -96,7 +96,11 @@ else
 end
 %- define decoding parameters indices
 if extended
-    inG.indr = inG.ind2(end) + (1:sum([sources.type]~=0));
+    inG.indr = [];
+    for i=2:length(sources)
+        inG.indr = [inG.indr,sources(i).out];
+    end
+%     inG.indr = inG.ind2(end) + (1:sum([sources.type]~=0));
 end
 
 % dimensions 

@@ -124,8 +124,8 @@ if dim.n_phi > 0
         var_alpha = alphaHat./p_group.b_vPhi;
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(1,2));
-        set(display.ha(1,2),'xlim',[0.5,1.5],'box','off','xtick',[])
-        title(display.ha(1,2),'phi: population log-variance')
+        set(display.ha(1,2),'xlim',[0.5,options.dim.n_phi+0.5],'box','off','xtick',[])
+        title(display.ha(1,2),'phi: population log-precision')
     else
         title(display.ha(1,1),'phi: group mean (FFX)')
     end
@@ -147,8 +147,8 @@ if dim.n_theta > 0
         var_alpha = alphaHat./p_group.b_vTheta;
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(2,2));
-        set(display.ha(2,2),'xlim',[0.5,1.5],'box','off','xtick',[])
-        title(display.ha(2,2),'theta: population log-variance')
+        set(display.ha(2,2),'xlim',[0.5,options.dim.n_theta+0.5],'box','off','xtick',[])
+        title(display.ha(2,2),'theta: population log-precision')
     else
         title(display.ha(2,1),'theta: group mean (FFX)')
     end
@@ -170,8 +170,8 @@ if dim.n >0
         var_alpha = alphaHat./p_group.b_vX0;
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(3,2));
-        set(display.ha(3,2),'xlim',[0.5,1.5],'box','off','xtick',[])
-        title(display.ha(3,2),'x0: population log-variance')
+        set(display.ha(3,2),'xlim',[0.5,options.dim.n+0.5],'box','off','xtick',[])
+        title(display.ha(3,2),'x0: population log-precision')
     else
         title(display.ha(3,1),'x0: group mean (FFX)')
     end

@@ -1,4 +1,4 @@
-function [haf,hf,hp] = plotUncertainTimeSeries(muX,SX,dTime,hParent,ind)
+function [haf,hf,hp] = plotUncertainTimeSeries(muX,SX,dTime,hParent,ind,color)
 % plots uncertain time series
 % function [haf,hf,hp] = plotUncertainTimeSeries(muX,SX,dTime,hParent,ind)
 % This function plots uncertain time series, ie time series associated with
@@ -12,12 +12,13 @@ function [haf,hf,hp] = plotUncertainTimeSeries(muX,SX,dTime,hParent,ind)
 %   - hParent: the handle of the parent axes
 %   - ind: the indices of the dimensions of the time series to be displayed
 %   (useful in high dimensional cases)
+%   - color: color of the graphical objects
 % OUT:
 %   - haf: the current axes handle
-%   - hf: the patchs/errorbar handles (for later error bar corrections)
+%   - hf: the patchs handles (for later error bar corrections)
 %   - hp: the bar/line plot handles
 
-
+try,color;catch,color=[];end
 
 % Get dimensions
 n = size(muX,1);
@@ -73,10 +74,18 @@ if indEnd > 1
     end
     set(haf,'ygrid','on')
     axis(haf,'tight')
+    if ~isempty(color)
+        set(hp,'color',color)
+        set(hf,'FaceColor',color)
+    end
 else
     hp = bar(dTime:dTime+n-1,muX(ind),'facecolor',[.8 .8 .8],'parent',haf);
     set(haf,'nextplot','add')
     hf = errorbar(dTime:dTime+n-1,muX(ind),sc*sqrt(SX(ind)),'r.','parent',haf);
+    if ~isempty(color)
+        set(hp,'FaceColor',color)
+        set(hf,'color',color)
+    end
 end
 
 % Add confidence intervals scaling control
