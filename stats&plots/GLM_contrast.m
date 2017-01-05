@@ -13,35 +13,37 @@ function [pv,stat,df,all] = GLM_contrast(X,y,c,type,verbose,Xnames,Ynames,notest
 %  - 'F' tests are two-sided: H0={c(:,1)'beta=0 AND ... c(:,m)'*beta=0}
 % For example, testing for the ith parameter corresponds to an all-zero
 % contrast vector, except on its ith entry.
+% Note: To derive matricial F-contrasts for a main effect of an IV with n
+% different values, see Contrast_MEbins.m!
 % IN:
-%   - X: nXk design matrix
-%   - y: nXp data matrix
-%   - c: kXm contrast matrix (default is eye(k) -> omnibus F-test)
+%   - X: nxk design matrix
+%   - y: nxp data matrix
+%   - c: kxm contrast matrix (default is eye(k) -> omnibus F-test)
 %   - type: flag for t- or F- test. Can be set to 't' (default) or 'F'
 %   - verbose: flag for displaying results (default is 0)
 %   - Xnames: px1 cell array of independent variables names
 %   - Ynames: kx1 cell array of dependent variables names
 %   - notest: flag for testing all regressors in verbose mode
 % OUT:
-%   - pv: pX1 vector of p-values
-%   - stat: pX1 vector of t- or F- statistics
+%   - pv: px1 vector of p-values
+%   - stat: px1 vector of t- or F- statistics
 %   - df: effective degees of freedom of the t- or F- test
 %   - all: structure array with fields:
-%       .ks: pX1 vector of p-values for Kolmogorov-Smirnoff test
+%       .ks: px1 vector of p-values for Kolmogorov-Smirnoff test
 %       (residuals' normality)
-%       .R2: pX1 vector of coefficients of determination
-%       .R2_a: pX1 vector of coefficients of determination of adjusted data
-%       (only for F-test).
-%       .b: kXp matrix of parameter OLS-estimates
-%       .iC: kXk unscaled parameter covariance matrix
-%       .vhat: pX1 vector of residual variances
+%       .R2: px1 vector of coefficients of determination
+%       .R2_a: px1 vector of amount of variance explained by the contrast
+%       of interest
+%       .b: kxp matrix of parameter OLS-estimates
+%       .iC: kxk unscaled parameter covariance matrix
+%       .vhat: px1 vector of residual variances
 %   NB: the covariance matrix Q of the i^th set of parameter is defined by:
 %   Q = all.vhat(i).*all.iC.
 %   If verbose=1, then 'all' also contains summary statistics of F-tests
 %   wrt each parameter, through the following fields:
-%       .pv: kXp matrix of p-values
-%       .stat: kXp matrix of F- statistics
-%   	.df: kX2Xp matrix of degees of freedom
+%       .pv: kxp matrix of p-values
+%       .stat: kxp matrix of F- statistics
+%   	.df: kx2xp matrix of degees of freedom
 
 % fill in default I/O
 pv = [];
@@ -56,7 +58,7 @@ try;type;catch;type='t';end
 try;verbose;catch;verbose=0;end
 try;Xnames{k};catch;Xnames=[];end
 try;Ynames{p};catch;Ynames=[];end
-try;notest;catch;notest=1;end
+try;notest;catch;notest=0;end
 
 if verbose
     fprintf(1,'---')
@@ -112,6 +114,7 @@ stat = zeros(p,1);
 pv = zeros(p,1);
 vhat = zeros(p,1);
 R2 = zeros(p,1);
+R2_a = zeros(p,1);
 
 switch type
     
@@ -136,6 +139,7 @@ switch type
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
+            R2_a(i) = FtoR2(stat(i).^2,1,df);
             [tmp,ks(i)] = kstest(zscore(e));
             if verbose && p>1
                 fprintf(1,repmat('\b',1,8))
@@ -159,9 +163,8 @@ switch type
         c0 = speye(size(c,1)) - c*ic;
         X0 = X*c0;
         R0 = speye(n) - X0*pinv(X0'*X0)*X0';
-        y_a = R0*y;
-        yhat_a = R0*yhat;
-        R2_a = zeros(p,1);
+%         y_a = R0*y;
+%         yhat_a = R0*yhat;
         M = R0 - R;
         trM = trace(M);
         df = [trM.^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];
@@ -182,9 +185,10 @@ switch type
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
-            SS_tot_a = sum((y_a(:,i)-mean(y_a(:,i))).^2);
-            SS_err_a = sum((y_a(:,i)-yhat_a(:,i)).^2);
-            R2_a(i) = 1-(SS_err_a/SS_tot_a);
+            R2_a(i) = FtoR2(stat(i),df(1),df(2));
+%             SS_tot_a = sum((y_a(:,i)-mean(y_a(:,i))).^2);
+%             SS_err_a = sum((y_a(:,i)-yhat_a(:,i)).^2);
+%             R2_a(i) = 1-(SS_err_a/SS_tot_a);
             [tmp,ks(i)] = kstest(zscore(e));
             if verbose && p>1
                 fprintf(1,repmat('\b',1,8))
@@ -208,14 +212,12 @@ end
 
 % fill in output structure
 all.R2 = R2;
-if isequal(type,'F')
-    all.R2_a = R2_a;
-end
+all.R2_a = R2_a;
 all.b = b;
 all.iC = iC;
 all.vhat = vhat;
-all.ks = ks; % komogorov-smirnov test (normality of the residuals)
-% all.tolerance = myTolerance(X);
+all.ks = ks; % kolmogorov-smirnov test (normality of the residuals)
+% all.tolerance = GLM_tolerance(X);
 
 if ~verbose
     return;
@@ -486,6 +488,8 @@ for j=1:k
         uimenu(hcmenu, 'Label',['p=',num2str(ud.all.pv(j,ind),'%3.3f')]);
         uimenu(hcmenu, 'Label',['F=',num2str(ud.all.stat(j,ind),'%3.3f')]);
         uimenu(hcmenu, 'Label',['dof=[',num2str(ud.all.df(j,1,ind)),',',num2str(ud.all.df(j,2,ind)),']']);
+        R2 = FtoR2(ud.all.stat(j,ind),ud.all.df(j,1,ind),ud.all.df(j,2,ind));
+        uimenu(hcmenu, 'Label',['R2=',num2str(R2*100,'%3.1f'),'%']);
     end
     set(get(hp,'children'),'uicontextmenu',hcmenu);
     set(hp,'uicontextmenu',hcmenu);
@@ -499,19 +503,4 @@ title(ud.handles.ha(2),'parameter estimates')
 strp = ['p=',num2str(ud.pv(ind),'%3.3f'),' (',ud.type,'=',num2str(ud.stat(ind),'%3.3f'),')'];
 set(ud.handles.ht(1),'string',strp);
 
-
-function tol = myTolerance(X0)
-n = size(X0,2);
-X0 = zscore(X0);
-for i=1:n
-    X = X0(:,setdiff(1:n,i));
-    y = X0(:,i);
-    C = X'*X;
-    iC = pinv(C);
-    b = iC*X'*y;
-    yhat = X*b;
-    SS_tot = sum((y-mean(y)).^2);
-    SS_err = sum((y-yhat).^2);
-    tol(i) = SS_err/SS_tot;
-end
 
