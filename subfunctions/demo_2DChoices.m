@@ -3,14 +3,14 @@
 % differ in terms of the expected reward and temporal horizons, under a
 % hyperbolic temporal discounting model. It then estimates the 2D utility
 % profile, using 2D-Fourier basis functions. This semi-parametric estimate
-% is then compared to the simulated profile.
+% is then compared to the simulated (hyperbolic) utility profile.
 
 
-% clear all
-% close all
+clear all
+close all
 
 % initialize simulations
-ntrials = 1024;
+ntrials = 512;
 g_fname = @g_discounting;
 phi = [-1;0];
 in.ind.logk = 1; % index of discount factor (phi)
@@ -37,6 +37,7 @@ options.binomial = 1;
 options.dim = dim;
 [y,x,x0,eta,e] = simulateNLSS(ntrials,[],g_fname,[],phi,u,[],[],options);
 
+
 % graphical summary of choice data
 dr = R(1,:) - R(2,:); % 1st-alternative reward minus 2nd-alternative reward
 dt = t(1,:) - t(2,:); % 1st-alternative delay minus 2nd-alternative delay
@@ -51,9 +52,6 @@ hf = figure('color',[1 1 1]);
 ha = subplot(2,2,1,'parent',hf,'nextplot','add');
 xlabel(ha,'dr')
 ylabel(ha,'dt')
-ha(2) = subplot(2,2,2,'parent',hf,'nextplot','add');
-xlabel(ha(2),'dr')
-ylabel(ha(2),'dt')
 counts = zeros(size(ne)); % # choices in favour of the 1st-alternative
 col = {'r','g'};
 for i=1:ntrials
@@ -67,6 +65,9 @@ plot(ha(1),[br(1),br(1)],bt,'k');
 plot(ha(1),[br(2),br(2)],bt,'k');
 axis(ha(1),'equal')
 axis(ha(1),'tight')
+ha(2) = subplot(2,2,2,'parent',hf,'nextplot','add');
+xlabel(ha(2),'dr')
+ylabel(ha(2),'dt')
 imagesc(f,'parent',ha(2))
 axis(ha(2),'equal')
 axis(ha(2),'tight')
@@ -76,37 +77,57 @@ options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
 options.DisplayWin = 0;
 options.verbose = 1;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);
-VBA_ReDisplay(posterior,out,1);
+VBA_ReDisplay(posterior,out,1)
 
 
-% evaluate utility profile on a grid
-g1 = linspace(min(vec(R)),max(vec(R)),1e2);
-g2 = linspace(min(vec(t)),max(vec(t)),5e1);
-N = 8;
-X = create2dbf(g1,g2,N);
+% invert semi-parametric model (using Fourier basis functions)
+n1 = 1e2; % density of grid for R
+n2 = 5e1; % density of grid for t
+N = 4; % # 1D-DCT bsis functions
+X = Fourier2DBF(n1,n2,N,0);
 inb.ind.x = in.ind.t;
 inb.ind.y = in.ind.R;
-inb.gx = g1;
-inb.gy = g2;
+inb.gx = linspace(min(vec(R)),max(vec(R)),n1);
+inb.gy = linspace(min(vec(t)),max(vec(t)),n2);
 inb.bf = X;
 g_fname = @g_2AFC_basis;
 dim = [];
 dim.n_phi = size(X,3);
 dim.n = 0;
 dim.n_theta = 0;
-options.priors = [];
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
-options.checkGrads = 0;
 options.inG = inb;
 options.binomial = 1;
 options.DisplayWin = 0;
 options.verbose = 1;
-Eu = zeros(size(X,1),size(X,2));
 [p0,o0] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);
-VBA_ReDisplay(p0,o0,1);
+VBA_ReDisplay(p0,o0,1)
+
+% evaluate estimated utility profile on a 2D-grid
+Eu = zeros(size(X,1),size(X,2));
 for ii=1:size(X,3)
     Eu = Eu + X(:,:,ii)*p0.muPhi(ii);
 end
+
+% to be compared with simulated utility function
+v = zeros(size(X,1),size(X,2));
+for i=1:length(inb.gx)
+    for j=1:length(inb.gy)
+        uxy = [inb.gx(i);inb.gy(j)];
+        [v(i,j)] = v_discounting([],phi,uxy,in);
+    end
+end
+
+
+% evaluate posterior uncertainty on utility profile
+Vu = zeros(size(X,1),size(X,2));
+for i=1:length(inb.gx)
+    for j=1:length(inb.gy)
+        Vu(i,j) = vec(X(i,j,:))'*p0.SigmaPhi*vec(X(i,j,:));
+    end
+end
+
+% check sampling bias on the grid
 nsamples = zeros(size(X,1),size(X,2));
 for t=1:ntrials
     u1 = u(inb.ind.x,t);
@@ -118,34 +139,28 @@ for t=1:ntrials
     end
 end
 
-% to be compared with simulated utility function
-v = zeros(size(X,1),size(X,2));
-for i=1:length(inb.gx)
-    for j=1:length(inb.gy)
-        uxy = [inb.gx(i);inb.gy(j)];
-        [v(i,j)] = v_discounting([],phi,uxy,in);
-    end
-end
-        
-        
-
 hf = figure('color',[1 1 1]);
-ha = subplot(2,2,1,'parent',hf);
+ha = subplot(2,3,1,'parent',hf);
 imagesc(Eu,'parent',ha)
 title(ha,'estimated utility')
 xlabel(ha,'delay')
 ylabel(ha,'reward')
-ha = subplot(2,2,2,'parent',hf);
+ha = subplot(2,3,2,'parent',hf);
+imagesc(sqrt(Vu),'parent',ha)
+title(ha,'STD[utility]')
+xlabel(ha,'delay')
+ylabel(ha,'reward')
+ha = subplot(2,3,3,'parent',hf);
 imagesc(nsamples,'parent',ha)
 title(ha,'# samples')
 xlabel(ha,'delay')
 ylabel(ha,'reward')
-ha = subplot(2,2,3,'parent',hf);
+ha = subplot(2,3,4,'parent',hf);
 imagesc(v,'parent',ha)
 title(ha,'simulated utility')
 xlabel(ha,'delay')
 ylabel(ha,'reward')
-ha = subplot(2,2,4,'parent',hf);
+ha = subplot(2,3,5,'parent',hf);
 plot(Eu(:),v(:),'.','parent',ha)
 title(ha,'comp')
 xlabel(ha,'estimated utility')
