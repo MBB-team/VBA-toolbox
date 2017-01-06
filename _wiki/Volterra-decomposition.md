@@ -72,7 +72,7 @@ The script `demo_dynLearningRate.m` demonstrates the above procedure, in the con
 
 ## Simulating agent's choices under a sophisticated learning model
 
-First, a series of choices are simulated, under an agent model that learns both the evolving action-outcome probabilities and their volatility (see hierarchical Bayesian learning model on [this page]({{ site.baseurl }}/wiki/Reinforcement-learning)).
+First, a series of choices are simulated, under an agent model that learns both the evolving action-outcome contingencies and their volatility (see Bayesian associative learning models on [this page]({{ site.baseurl }}/wiki/bayesian-learning)).
 
 ![]({{ site.baseurl }}/images/wiki/volterra/simu_volatileVB.jpg)
 
@@ -81,7 +81,7 @@ Hidden states of this model include the mean and variance of the agent's probabi
 
 ## Inverting a stochastic variant of a Q-learning model
 
-The VBA toolbox is then used to invert a “dynamical” variant of the Q-learning model, given the agent's sequence of choices. More precisely, the state-space was augmented with the learning rate, whose evolution function is set to be the identity mapping. When considering stochastic noise, this is equivalent to an AR(1) model (of learning rates). NB: the learning rate's state-noise precision was set hundred time smaller than that of action values. This is to ensure that stochastic deviations from deterministic learning dynamics originate from changes in learning rate.
+The VBA toolbox is then used to invert a “dynamical” variant of a (much simpler) [reinforcement learning model]({{ site.baseurl }}/wiki/Reinforcement-learning), given the agent's sequence of choices. The only modification to the classical Q-learning model was that the learning rate was allowed to change over time. This was done by augmenting the state-space with an additional state (the learning rate). At this point, we are agnostic about how the learning rate should evolve. Thus, its evolution function is set to be the identity mapping. When considering stochastic noise, this is equivalent to an AR(1) model (of learning rates). NB: the learning rate's state-noise precision was set hundred time smaller than that of action values. This is to ensure that stochastic deviations from deterministic learning dynamics originate from changes in learning rate.
 
 ![]({{ site.baseurl }}/images/wiki/volterra/invQlearning.jpg)
 
