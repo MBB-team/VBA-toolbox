@@ -40,10 +40,10 @@ $$U(x,y) = a_0 + \sum_n{ \sum_m{ (a_{nm} f_{nm}(x,y)+b_{nm} g_{nm}(x,y)+c_{nm} h
 
 where $$(L1,L2)$$ is the size of the domain and the 2D Fourier basis functions are given by:
 
-$$f_{nm}(x,y) = cos(2n \pi x/L1) cos(2m \pi y/L2) $$
-$$g_{nm}(x,y) = cos(2n \pi x/L1) sin(2m \pi y/L2) $$
-$$h_{nm}(x,y) = sin(2n \pi x/L1) cos(2m \pi y/L2) $$
-$$i_{nm}(x,y) = sin(2n \pi x/L1) sin(2m \pi y/L2) $$
+$$f_{nm}(x,y) = \cos(2n \pi x/L1) \cos(2m \pi y/L2) $$
+$$g_{nm}(x,y) = \cos(2n \pi x/L1) \sin(2m \pi y/L2) $$
+$$h_{nm}(x,y) = \sin(2n \pi x/L1) \cos(2m \pi y/L2) $$
+$$i_{nm}(x,y) = \sin(2n \pi x/L1) \sin(2m \pi y/L2) $$
 
 Here, $$a_{nm}$$, $$b_{nm}$$, $$c_{nm}$$ and $$d_{nm}$$ are unknown Fourier coefficients, to be adjusted to the signal. This can be done simply by modelling each choice as a softmax mapping of the difference in utiltiy of the two alternative options, i.e.: $$U(x,y)-U(x',y')$$, where the utility function has now been replaced by its Fourier decomposition. Then, one can reconstruct the estimated utility profile by inserting the estimated Fourier coefficients in the series above, and display it.
 
