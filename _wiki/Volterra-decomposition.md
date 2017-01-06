@@ -81,15 +81,19 @@ Hidden states of this model include the mean and variance of the agent's probabi
 
 ## Inverting a stochastic variant of a Q-learning model
 
-The VBA toolbox is then used to invert a “dynamical” variant of a (much simpler) [reinforcement learning model]({{ site.baseurl }}/wiki/Reinforcement-learning), given the agent's sequence of choices. The only modification to the classical Q-learning model was that the learning rate was allowed to change over time. This was done by augmenting the state-space with an additional state (the learning rate). At this point, we are agnostic about how the learning rate should evolve. Thus, its evolution function is set to be the identity mapping. When considering stochastic noise, this is equivalent to an AR(1) model (of learning rates). NB: the learning rate's state-noise precision was set hundred time smaller than that of action values. This is to ensure that stochastic deviations from deterministic learning dynamics originate from changes in learning rate.
+The VBA toolbox is then used to invert a “dynamical” variant of a (much simpler) [reinforcement learning model]({{ site.baseurl }}/wiki/Reinforcement-learning). The only modification to the classical Q-learning model was that the learning rate was allowed to change over time. This was done by augmenting the state-space with a third state that played the role of the learning rate for the first two (native) states. At this point, we are agnostic about how the learning rate should evolve. Thus, its evolution function is set to be the identity mapping. When considering stochastic noise, this is equivalent to an AR(1) model (of learning rates). NB: the learning rate's state-noise precision was set hundred time smaller than that of action values. This is to ensure that stochastic deviations from deterministic learning dynamics originate from changes in learning rate.
+
+
+VBA is then used to invert this stochastic variant of the Q-learning model, given the agent's sequence of choices (which was simulated according to a shophisticated hierarchical -volatile- Bayesian learning rule):
+
 
 ![]({{ site.baseurl }}/images/wiki/volterra/invQlearning.jpg)
 
-The VBA inversion has identified some variability in the learning rate. A simple classical GLM test allows us to check that this variability correlates with the simulated agent's inferred volatility (F = 79.2, p<10−8):
+The VBA inversion has identified some variability in the learning rate (cf. posterior estimate of the third states -in red-, on the top-left graph). A simple classical GLM test allows us to check that this variability correlates with the simulated agent's inferred volatility (F = 79.2, p<10−8):
 
 ![]({{ site.baseurl }}/images/wiki/volterra/glm_test.jpg)
 
-> This is the graphical output of `GLM_contrast.m`, where the design matrix has been set with the simulated agent's volatility estimate (plus a constant term). This [this page]({{ site.baseurl }}/wiki/statistical-models) for more details regarding this statistical tool.
+> This is the graphical output of `GLM_contrast.m`, where the design matrix has been set with the simulated agent's volatility estimate (plus a constant term). See [this page]({{ site.baseurl }}/wiki/statistical-models) for more details regarding this statistical tool.
 
 In brief, the VBA estimate of learning rate time series matches the trial-by-trial simulated agent's learning rate. This is reassuring, as the problem of estimating learning rates' stochastic dynamics from observed choices is not a priori trivial.
 
