@@ -68,7 +68,7 @@ This first re-sets the inputs in the `out` structure with the appropriate set (h
 
 # Example
 
-The script `demo_dynLearningRate.m` demonstrates the above procedure, in the context of the two-armed bandit problem. In brief, an agent has to choose between two alternative actions, each of which may yield positive or negative feedbacks. In our case, we reversed the action-outcome contingency every fifty trials.
+The script `demo_dynLearningRate.m` demonstrates the above procedure, in the context of the two-armed bandit problem. In brief, an agent has to choose between two alternative actions, each of which may yield positive or negative feedbacks. In our case, we reversed the action-outcome contingency every fifty trials. Below, we describe the analysis steps of the script `demo_dynLearningRate.m` (and its graphical outputs).
 
 ## Simulating agent's choices under a sophisticated learning model
 
@@ -81,15 +81,14 @@ Hidden states of this model include the mean and variance of the agent's probabi
 
 ## Inverting a stochastic variant of a Q-learning model
 
-The VBA toolbox is then used to invert a “dynamical” variant of a (much simpler) [reinforcement learning model]({{ site.baseurl }}/wiki/Reinforcement-learning). The only modification to the classical Q-learning model was that the learning rate was allowed to change over time. This was done by augmenting the state-space with a third state that played the role of the learning rate for the first two (native) states. At this point, we are agnostic about how the learning rate should evolve. Thus, its evolution function is set to be the identity mapping. When considering stochastic noise, this is equivalent to an AR(1) model (of learning rates). NB: the learning rate's state-noise precision was set hundred time smaller than that of action values. This is to ensure that stochastic deviations from deterministic learning dynamics originate from changes in learning rate.
+The VBA toolbox is then used to invert a “dynamical” variant of a (much simpler) [reinforcement learning model]({{ site.baseurl }}/wiki/Reinforcement-learning). The only modification to the classical Q-learning model was that the learning rate was allowed to change over time. This was done by augmenting the state-space with a third state that played the role of the learning rate for the first two (native) states. At this point, we are agnostic about how the learning rate should evolve. Thus, its evolution function is set to be the identity mapping. Without stochastic noise on the hidden states, this model is exactly identical to the classical Q-learning model (the learning rate does not change over time, and its value is entirely determined by the -unknown- initial conditions). However, when considering stochastic noise, the learning rate follows a [random walk](https://en.wikipedia.org/wiki/Random_walk). Unpredictable changes in the learning rate can be estimated a posteriori, given the agent's sequence of choices (which was simulated according to a shophisticated hierarchical -volatile- Bayesian learning rule).
 
-
-VBA is then used to invert this stochastic variant of the Q-learning model, given the agent's sequence of choices (which was simulated according to a shophisticated hierarchical -volatile- Bayesian learning rule):
+NB: the learning rate's state-noise precision was set hundred time smaller than that of action values. This is to ensure that stochastic deviations from deterministic learning dynamics originate from changes in learning rate (and not in action values). The graphical output of VBA's inversion of this stochastic variant of the Q-learning model is appended below.
 
 
 ![]({{ site.baseurl }}/images/wiki/volterra/invQlearning.jpg)
 
-The VBA inversion has identified some variability in the learning rate (cf. posterior estimate of the third states -in red-, on the top-left graph). A simple classical GLM test allows us to check that this variability correlates with the simulated agent's inferred volatility (F = 79.2, p<10−8):
+The VBA inversion has identified some variability in the learning rate (cf. posterior estimate of the third states -in red-, on the middle-left graph). A simple classical GLM test allows us to check that this variability correlates with the simulated agent's inferred volatility (F = 79.2, p<10−8):
 
 ![]({{ site.baseurl }}/images/wiki/volterra/glm_test.jpg)
 
@@ -99,7 +98,7 @@ In brief, the VBA estimate of learning rate time series matches the trial-by-tri
 
 ## Performing a Volterra decomposition of learning rates' dynamics
 
-We then perform a Volterra decomposition w.r.t. three specifically chosen input basis functions, namely: the agent's chosen action, the winning action (which might not be the chosen action), and the winning action instability. The latter input is one when the winning action has changed between the previous and the current trial, and is zero otherwise. NB: These three input basis functions can be derived without any knowledge of the underlying mechanism. The Q-learner's choice behaviour is driven by the difference in action values, which mainly responds to the history of winning actions (not shown). In contradistinction, the learning rate exhibits a stereotypical response to winning action instability:
+We then perform a Volterra decomposition w.r.t. three specifically chosen input basis functions, namely: the agent's last chosen action, the last winning action (which depends upon the outcome and might not be the chosen action), and the winning action instability. The latter is one when the winning action has changed between the previous and the current trial, and is zero otherwise. NB: These three input basis functions can be derived without any knowledge of the underlying learning mechanism. The Q-learner's choice behaviour is driven by the difference in action values, which mainly responds to the history of winning actions (not shown). In contradistinction, the learning rate exhibits a stereotypical response to winning action instability:
 
 ![]({{ site.baseurl }}/images/wiki/volterra/volterra1.jpg)
 
@@ -117,4 +116,4 @@ On can see that the deterministic inversion of the augmented Q-learning model ex
 ![]({{ site.baseurl }}/images/wiki/volterra/volterra2.jpg)
 
 
-This may be due to the high posterior uncertainty of the learning rate estimates under the stochastic Q-learning model. In fact, Bayesian model comparison yields overwhelming evidence in favour of the augmented Q-learning model, when compared to the standard (but stochstic) Q-learning model.
+This may be due to the high posterior uncertainty of the learning rate estimates under the stochastic Q-learning model. In fact, Bayesian model comparison yields overwhelming evidence in favour of the augmented Q-learning model, when compared to the standard (but stochastic) Q-learning model.
