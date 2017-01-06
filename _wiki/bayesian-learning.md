@@ -8,21 +8,31 @@ Bayesian decision theory (BDT) is a probabilistic framework that is concerned wi
 
 BDT relies on two processes: belief updating and decision making, which are related to the key elements of BDT; namely, prior distributions and utility functions, respectively. In the context of perceptual categorisation, prior beliefs are motivated by the inherent ambiguity of sensory information, which leads to uncertainty about the underlying causes of sensory signals. Priors effectively resolve this ambiguity and are thought to be the basis of most sensory illusions and multistable perceptual effects. In addition, BDT is bound to a perspective on preferences, namely “utility theory”, which was explored in length in the context of economic decisions. In this context, utility functions can be regarded as a surrogate for a task goal or, equivalently, a scoring of the subject’s preferences.
 
-Bayesian models can be used either to capture peoples' hidden priors beliefs (which shape the way they learn) and/or preferences (which map beliefs onto actions).
+Bayesian models can be used either to capture peoples' hidden priors beliefs (which shape the way they learn) and/or preferences (which map beliefs onto actions). Typically, they are used to model choices and/or reaction times. Many Bayesian learning models are available in the VBA toolbox. We refer interested readers to [Daunizeau et al. (2010a)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0015554) for details regarding the specificity of inverting BDT models. 
 
-Many Bayesian models are available in the VBA toolbox.
 
-The script `demo_AVL_recog.m` demonstrates a simple Bayesian learning model, which predicts trial-by-trial variations in reaction times during an associative learning task. The constituents of this model are:
+## A cue-outcome associative learning model for reaction times
 
-- a set of hierarchically organized states (3 per available action). The first level captures potential perceptual uncertainty in sensory feedbacks. The second level contains the moments (mean and variance) of peoples' posterior belief about the cue-outcome contingency.
+The script `demo_AVL_recog.m` demonstrates a simple Bayesian learning model, which predicts trial-by-trial variations in reaction times during an associative learning task. This script reprocudes the simulations of the companion paper [Daunizeau et al. (2010b)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0015555). 
+
+The model was designed to provide a normative way of solving participants' task, which we briefly describe here. At each trial, people were asked to categorize a visual outcome (face or house) as quickly as possible. Just prior to the visual stimulus presentation, they were exposed to an auditory cue (high-pitch or low-pitch tone) that was predictive of the visual outcome. Participants had to learn this association, which was changing over the course of the experiment.
+
+The constituents of the BDT model are:
+
+- a set of hierarchically organized states (3 per available action). The first hierarchical level captures potential perceptual uncertainty regarding visual outcomes. The second hierarchical level contains the moments (mean and variance: 2 states) of peoples' posterior belief about the cue-outcome contingency.
 - two evolution parameters that control the perceptual uncertainty and the prior variance of cue-action contingency, respectively.
 - two observation parameters that control the speed-accuracy trade-off during perceptual categorization.
 
-We refer the interested reader to [Daunizeau et al. 2010](http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0015555).
+The Bayesian learning rule consists in an trial-by-trial update of the cue-outcome contingency, which essentially approximates a [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter). 
 
-The script `demo_volatileVB.m` demonstrates a (hierarchical) Bayesian learning model in the context of operant learning (two-armed bandit task). The constituents of this model are:
 
-- a set of hierarchically organized states (6 per available action). The first two levels are similar to the above model. The third level contains the moments (mean and variance) of peoples' posterior belief about the the action-outcome contingency's volatility. Critically, the effective learning rate of such an agent follows his belief about the environmental volatility.
+## Associative learning in the context of volatile contingencies
+
+The script `demo_volatileVB.m` demonstrates a (hierarchical) Bayesian learning model in the context of volatile contingencies. Critically, the effective learning rate of such a Bayesian agent follows her belief about the environmental volatility, which is itself updated over trials. This endows the agent with the capacity to adapt to rapid changes in her environment.
+
+The constituents of this model are:
+
+- a set of hierarchically organized states (6 per available action). The first two levels are similar to the above model (3 states). The third level contains the moments (mean and variance: 2 states) of peoples' posterior belief about the the action-outcome contingency's volatility. 
 - three evolution parameters that control the dynamical changes of the agent's effective learning rate (volatility weight, base volatility, and volatility transition prior variance).
 - two observation parameters: bias and temmperature.
 
