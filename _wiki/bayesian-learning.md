@@ -39,4 +39,4 @@ The constituents of this model are:
 - two observation parameters: bias and temmperature.
 
 
-The script `demo_dynLearningRate.m` demonstrates how one can use inversion diagnostics (e.g., [Volterra kernels]({{ site.baseurl }}/wiki/Volterra-decomposition.md)) to detect systematic changes in learning rates that conform to volatile Bayesian learning. In turn, these diagnostics can be used to gradually increase the complexity of learning models to capture the sophistication of (hidden) computational mechanisms.
+The script `demo_dynLearningRate.m` demonstrates how one can use inversion diagnostics (e.g., [Volterra kernels]({{ site.baseurl }}/wiki/Volterra-decomposition)) to detect systematic changes in learning rates that conform to volatile Bayesian learning. In turn, these diagnostics can be used to gradually increase the complexity of learning models to capture the sophistication of (hidden) computational mechanisms.
