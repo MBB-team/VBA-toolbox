@@ -41,7 +41,7 @@ title: "home"
 ### Behavioural models
 
 - [Reinforcement learning](Reinforcement-learning)
-- [Bayesian learning (including, e.g., volatile systems)](bayesian-learning)
+- [Bayesian associative learning (including, e.g., volatile systems)](bayesian-learning)
 - [Bayesian mentalizing (k-ToM)](ktom)
 - [Bi-dimensional decisions (e.g., inter-temporal choices)](intertemporal-choice)
 - [Behavioural Dynamic Causal Modeling](behavioural-DCM)
