@@ -43,7 +43,7 @@ title: "home"
 - [Reinforcement learning](Reinforcement-learning)
 - [Bayesian learning](bayesian-learning)
 - [Bayesian mentalizing (k-ToM)](ktom)
-- [Intertemporal choice](intertemporal-choice)
+- [Bi-dimensional decisions (e.g., inter-temporal choices)](intertemporal-choice)
 - [Behavioural Dynamic Causal Modeling](behavioural-DCM)
 
 
