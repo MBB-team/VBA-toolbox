@@ -52,7 +52,7 @@ VBA can be used to derive the Fourier basis function set (cf. function `Fourier2
 Notes:
 
 - the order $$(n,m)$$ of the series controls the effective resolution of the reconstruction.
-- The so-called "discrete-cosine-transform" or DCT may be preferred to the above Fourier basis function set.
+- The so-called "discrete-cosine-transform" or [DCT](https://en.wikipedia.org/wiki/Discrete_cosine_transform) may be preferred to the above Fourier basis function set (the function `Fourier2DBF.m` also deals with DCT).
 
 
 
