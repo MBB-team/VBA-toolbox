@@ -36,7 +36,13 @@ Other forms of cost-benefit arbitrages have been proposed for, e.g., attitudes t
 
 Let $$U(x,y)$$ be the utility function defined over a 2D domain composed of two orthogonal choice features (e.g., reward and effort). Then, $$U(x,y)$$ can be decomposed onto a Fourier basis function set, as follows:
 
-$$U(x,y) = a_0 + sum_n sum_m (a_{nm} f_{nm}(x,y)+b_{nm} g_{nm}(x,y)+c_{nm} h_{nm}(x,y)+d_{nm} i_{nm}(x,y))$$
+$$U(x,y) = a_0 + \sum_n{ \sum_m{ (a_{nm} f_{nm}(x,y)+b_{nm} g_{nm}(x,y)+c_{nm} h_{nm}(x,y)+d_{nm} i_{nm}(x,y)) }}$$
+
+where the 2D Fourier basis functions are given by:
+$$f_{nm}(x,y) = cos(2n pi x/L1) cos(2m pi y/L1) $$
+$$g_{nm}(x,y) = cos(2n pi x/L1) sin(2m pi y/L1) $$
+$$h_{nm}(x,y) = sin(2n pi x/L1) cos(2m pi y/L1) $$
+$$i_{nm}(x,y) = sin(2n pi x/L1) sin(2m pi y/L1) $$
 
 
 
