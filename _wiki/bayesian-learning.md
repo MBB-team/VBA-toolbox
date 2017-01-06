@@ -1,5 +1,5 @@
 ---
-title: "Bayesian learning"
+title: "Bayesian associative learning"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
