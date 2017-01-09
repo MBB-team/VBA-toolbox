@@ -24,6 +24,7 @@ EC = RFT_expectedTopo(u,L,fwhm,1,type,dof);
 % EC =(L./fwhm).*(sqrt(4*log(2))./(2*pi)).*exp(-u.^2./2);
 beta = (gamma(3/2).*EC./(L.*normcdf(-u))).^2;
 Pnk = exp(-beta.*k.^2);
+if k == 0, Pnk = 1; end; % solves the numerical issue when normcdf output 0    
 Pw = 1;
 for i=0:c-1
     Pw = Pw - myPoissonPMF(i,EC.*Pnk);

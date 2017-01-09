@@ -6,4 +6,4 @@ function Z = RFT_Gtf(t,nu)
 %   - nu: d.o.f. of the t-score
 % OUT:
 %   - Z: Gaussianized t-score
-Z =  icdf('norm',tcdf(t,nu));
+Z =  icdf('norm',tcdf(t,nu),0,1);
