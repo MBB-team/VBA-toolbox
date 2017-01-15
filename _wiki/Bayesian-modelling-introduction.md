@@ -6,15 +6,15 @@ title: "Bayesian inference: introduction"
 
 # Derivation of the likelihood function
 
-One usually starts with a quantitative assumption or model of how observations y are generated. Without loss of generality, this model possesses unknown parameters $$\vartheta$$, which are mapped through an observation function g:
+One usually starts with a quantitative assumption or model of how observations y are generated. Without loss of generality, this model possesses unknown parameters $$\vartheta$$, which are mapped through an observation function $$g$$:
 
 $$y= g(\vartheta)+\epsilon$$
 
-where ε are model residuals or measurement noise. If the (physical) processes underlying ε were known, they would be included in the deterministic part of the model, i.e.: $$\varepsilon \in g(\vartheta)$$. Typically, we thus have to place statistical priors on $$\varepsilon$$, which eventually convey our lack of knowledge, as in “the noise is small”. This can be formalized as a probabilistic statement, such as: “the probability of observing big noise is small”. Under the central limit theorem, such prior would be equivalent to assuming the noise follows a normal distribution:
+where $$\epsilon$$ are model residuals or measurement noise. If the (physical) processes underlying $$\epsilon$$ were known, they would be included in the deterministic part of the model. Typically, we thus have to place statistical priors on $$\epsilon$$, which eventually convey our lack of knowledge, as in “the noise is small”. This can be formalized as a probabilistic statement, such as: “the probability of observing big noise is small”. Under the central limit theorem, such prior would be equivalent to assuming that the noise follows a normal distribution:
 
-$$p(\varepsilon\mid m)\propto exp\left(-\frac{1}{2\sigma^2}\varepsilon^2\right) \implies p(\lvert\epsilon\rvert>1.96\sigma\mid m) \approx 0.05$$
+$$p(\epsilon\mid m)\propto exp\left(-\frac{1}{2\sigma^2}\varepsilon^2\right) \implies p(\lvert\epsilon\rvert>1.96\sigma\mid m) \approx 0.05$$
 
-where $$\sigma$$ is the noise’ standard deviation (it determines how big is “big”) and m is the so-called generative model. Equations 1 and 2 are compiled to derive a likelihood function $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations y, given the unknown parameters $$\vartheta$$ of the model m :
+where $$\sigma$$ is the noise’ standard deviation (it determines how big is “big”) and m is the so-called generative model. Combining the two equations above yields the likelihood function $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
 
 $$p(y\mid\vartheta,m) = exp\left(-\frac{1}{2\sigma^2}(y-g(\vartheta))^2\right)$$
 
@@ -48,7 +48,7 @@ where $$K$$ is set to satisfy a controlled statistical risk.
 This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the 'Bayes factor', and is used whenever one wants to select between two models. 
 
 
-Practically speaking, the Bayes' factor induces three types of statistical decisions:
+Practically speaking, the **Bayes' factor** induces three types of statistical decisions:
 
 - $$K>20$$:      model $$m_1$$ is selected
 - $$0.05<K<20$$: no model is selected
