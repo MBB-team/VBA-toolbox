@@ -45,10 +45,10 @@ According to the Neyman-Pearson lemma, the most powerful test to compare such tw
 $$\frac{p(y\mid m_1)}{p(y\mid m_2)} > K$$
 
 where $$K$$ is set to satisfy a controlled statistical risk.
-This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the 'Bayes factor', and is used whenever one wants to select between two models. 
+This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the **Bayes' factor**, and is used whenever one wants to select between two models. 
 
 
-Practically speaking, the **Bayes' factor** induces three types of statistical decisions:
+Practically speaking, the Bayes' factor induces three types of statistical decisions:
 
 - $$K>20$$:      model $$m_1$$ is selected
 - $$0.05<K<20$$: no model is selected
@@ -57,9 +57,9 @@ Practically speaking, the **Bayes' factor** induces three types of statistical d
 
 More generally, the comparison of more than two models can be based upon their model evidence, which quantifies the plausibility of the data under any model.
 
-The critical thing to note is that the model evidence is not a simple measure of model fit: there is an inherent penalization for model complexity. Let us note that the model evidence is maximal whenever the information in the data about model parameters is the same as that of the prior density. In other words, a good model is a model that is confirmed by the data. A simple model has tight priors: to the limit, the simplest of all models has no unknown parameters (infinite precision priors). This means that there is a complexity cost to changing one's belief on parameters to explain data.
+The critical thing to note is that the model evidence $$p\big( y\mid m\big)$$ is not a simple measure of model fit: there is an inherent penalization for model complexity. This penalization is intimately related to the priors. In brief, a simple model has tight priors: at the limit, the simplest model has no unknown parameters (infinite prior precision). More complex models are equipped with vague priors, which will be updated to a larger extent once the data has been observed. However, this flexibility has a cost: that of confusing noise with variations in the data that are induced by $$g(\vartheta)$$. This is called "over-fitting" the data, and results in greater error when extrapolating the model predictions.
 
-In brief, the model evidence is nothing else than the data likelihood, given any model. Bayes' rule can then be used to perform inference on models, by deriving the posterior distribution over models, i.e.:
+This trade-off between model fit and model complexity is measured by the model evidence, which is but the marginal data likelihood, given any model. Bayes' rule can then be used to perform inference on models, by deriving the posterior distribution over models, i.e.:
 
 $$p(m\mid y)=\frac{p(y\mid m)p(m)}{p(y)}$$
 
