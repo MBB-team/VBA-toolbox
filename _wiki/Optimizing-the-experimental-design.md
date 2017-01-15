@@ -4,17 +4,21 @@ title: "Experimental design optimization"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-This section describes how to optimize the experimental design with the aim of either estimating model parameters or comparing models of neurobiological/behavioural data. First, we recall the definition of design optimality scores. Then, we suggest on-line extensions to the approach for adapative design strategies.
+This section describes how to optimize the experimental design with the aim of either estimating model parameters or comparing models. First, we recall the definition of design optimality scores. Then, we suggest on-line extensions to the approach for adapative design strategies.
 
 # Design optimality scores
 
-Optimizing the design in the context of, e.g., experimental psychology studies, amounts to identifying the subset of conditions and stimuli (`u`) that yields the highest statistical power, under a variety of practical constraints. This requires being able to predict experimental data under models' assumptions, including potential confounds that may mask the effects of interest. Design optimization can become a difficult issue whenever the impact of experimental factors onto measurements (through the model) is non-trivial and/or uncertain (cf. unknown model parameters). This motivates the use of automatic design optimization.
+Optimizing the design in the context of, e.g., experimental psychology studies, amounts to identifying the subset of conditions and stimuli ($$u$$) that yields the highest statistical power, under a variety of practical constraints. This requires being able to predict experimental data under models' assumptions, including potential confounds that may mask the effects of interest. Design optimization can become a difficult issue whenever the impact of experimental factors onto measurements (through the model) is non-trivial and/or uncertain (cf. unknown model parameters). This motivates the use of automatic design optimization.
 
-The VBA toolbox can handle two classes of problems, namely optimizing the system's input `u` with respect to either parameter estimation or model selection. These two problems correspond to two different objectives, which can be formalized in terms of statistical loss functions:
+The VBA toolbox can handle two classes of problems, namely optimizing the system's input $$u$$ with respect to either parameter estimation or model selection. These two problems correspond to two different objectives, which can be formalized in terms of statistical loss functions:
 
 ## Parameter estimation
 
-In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). This can be done by evaluating the design efficeincy for each design, as follows:
+How should one set the inputs $$u$$, such that measured experimental data eventually yield accurate parameter estimates? One first has to define "estimation accuracy". Let $$\theta^{\hat} = E[\theta|y]$$ be the posterior estimate of unknown model parmaeters $$\theta$$, given experimental data $$y$$. The expected estimation error is given by:
+
+$$ E[(\theta^{\hat}-\theta)|y] = V[\theta|y]$$
+
+In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). This can be done by evaluating the design efficiency for each design, as follows:
 
 ```matlab
 e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters')
