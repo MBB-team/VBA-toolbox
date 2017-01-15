@@ -17,7 +17,7 @@ where $$r_t$$ is the reward delivered to the subject at trial $$t$$, and $$\alph
 One usually complements Q-learning with a softmax decision rule, i.e. an equation that expresses the probability $$P_t(a_i)$$ of the subject to choose action $$a_{i}$$ at trial $$t%.$$:
 
 
-$$P_t(a_i) = \frac{exp \beta Q_t(a_i)}{\sum_j exp \beta Q_t(a_j)}$$
+$$P_t(a_i) = \frac{\exp \beta Q_t(a_i)}{\sum_j \exp \beta Q_t(a_j)}$$
 
 where $$\beta$$ is the (unknown) inverse temperature.
 
@@ -29,10 +29,11 @@ In fact, although they are not general enough to capture the range of models tha
 - any form of **learning** (including probabilistic - bayesian - belief update), can be written as an **evolution equation**, similar in form to the first equation above
 - any form of **decision making** can be understood as an **action emission law**, and thus written as an **observation mapping** (from internal states to actions), similar in form to the second equation above.
 
-More generally, most computational models for neurobiological and behavioural data share the above structure (evolution and/or observation mappings), which captures the response of relevant states (e.g. neural activity, beliefs and preferences, etc...) to experimentally controlled inputs.
-We will now describe the general structure of these models in finer details.
+More generally, most computational models for neurobiological and behavioural data share the same structure, i.e. are based on evolution and/or observation mappings that capture the response of relevant states (e.g. neural activity, beliefs and preferences, etc...) to experimentally controlled inputs. We will now describe the general structure of these models in more details.
 
 # Nonlinear state-space models
+
+VBA deals with a very general class of generative models, namely: "nonlinear state-space models". These are reviewed below.
 
 ## Definitions & Notations
 
