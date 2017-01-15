@@ -14,9 +14,9 @@ The VBA toolbox can handle two classes of problems, namely optimizing the system
 
 ## Parameter estimation
 
-How should one set the inputs $$u$$, such that measured experimental data eventually yield accurate parameter estimates? One first has to define "estimation accuracy". Let $$\theta^{\hat} = E[\theta|y]$$ be the posterior estimate of unknown model parmaeters $$\theta$$, given experimental data $$y$$. The expected estimation error is given by:
+How should one set the inputs $$u$$, such that measured experimental data eventually yield accurate parameter estimates? One first has to define "estimation accuracy". Let $$\theta^{\hat} = E[\theta\midy]$$ be the posterior estimate of unknown model parmaeters $$\theta$$, given experimental data $$y$$. The expected estimation error is given by:
 
-$$ E[(\theta^{\hat}-\theta)|y] = V[\theta|y]$$
+$$ E[(\theta^{\hat}-\theta)\midy] = V[\theta\midy]$$
 
 
 In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). This can be done by evaluating the design efficiency for each design, as follows:
