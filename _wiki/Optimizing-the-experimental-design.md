@@ -27,7 +27,7 @@ where `u` is the time series of experimental control variables (inputs) that def
 
 ## Model selection
 
-In this context, we argue that one should choose among experimental designs according to their induced model selection error rate. Note that the expected model selection error rate $$p\big(e=1 \mid u \big)$$ increases with the similarity of model predictions: 
+Now how should one set the inputs $$u$$, such that measured experimental data eventually best discriminates between candidate models? In this context, we argue that one should choose among experimental designs according to their induced model selection error rate. Note that the expected model selection error rate $$p\big(e=1 \mid u \big)$$ increases with the similarity of model predictions: 
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
