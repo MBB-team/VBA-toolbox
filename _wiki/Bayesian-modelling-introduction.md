@@ -71,5 +71,5 @@ The term $$p(m)$$ is the prior probability on model m. Typically, noninformative
 
 As for any statistical test, a threshold has to be set for deciding whether a model is "better" than another one. This threshold can be chosen similarly to classical statistics, i.e. on the basis of some acceptable statistical risk. It turns out that the probability of making a model selection error is 1 minus the posterior probability of the selected model. If this probability has to be controlled at e.g., 0.05, then one "selects" a model only if its posterior probability exceeds 0.95. When comparing two models with each other, this corresponds to a threshold of $$K=20$$ on the Bayes' factor.
 
-This logic applies for any set of models, given any data. The only constraint is that model evidences have to be evaluated on the same data  set.
+This reasoning applies for any set of models, given any data. The only constraint is that model evidences have to be evaluated on the same data  set.
 
