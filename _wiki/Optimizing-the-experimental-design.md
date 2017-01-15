@@ -31,16 +31,16 @@ In this context, we argue that one should choose among experimental designs acco
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
-Here, prior predictive densities (y-axis) of two different models are plotted over possible data values (x-axis; unidimensional data). The Laplace-Chernoff risk $$b_{LC}$$ measures the statistical similarity of the prior predictive densities, as a function of their 1st- and 2nd-order moments ([Daunizeau et al. 2011](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002280)):
+Here, prior predictive densities (y-axis) of two different models are plotted over possible data values (x-axis; unidimensional data). Although no analytical expression for the selection error rate exists, one can derive the the so-called "Laplace-Chernoff risk" $$b_{LC}$$, which measures the statistical similarity of the prior predictive densities, as a function of their 1st- and 2nd-order moments:
 
 $$b_{LC}(u) = 1-\frac{1}{2}\log\:\left(\frac{\Delta g(u)^2}{4\tilde Q(u)}+1\right) \quad \text{if}\; \tilde Q_1(u) \approx \tilde Q_2(u) \equiv \tilde Q_(u) $$
 
-Thus, optimizing the experimental design w.r.t. model selection reduces to choosing the input $$u$$ that minimizes the so-called "Laplace-Chernoff risk" $$b_{LC}$$. In VBA, the numerical derivation of design efficiency for model comparison can be done as follows:
+It turns out that the Laplace-Chernoff risk provides an upper bound on the selection error rate ([Daunizeau et al. 2011](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002280)). Thus, optimizing the experimental design w.r.t. model selection reduces to choosing the input $$u$$ that minimizes the Laplace-Chernoff risk $$b_{LC}$$. In VBA, the numerical derivation of design efficiency for model comparison can be done as follows:
 
 ```matlab
 [e,out] = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'models')
 ```
-where `f_fname`, `g_fname`, `dim`, `options` are nx1 cell arrays (n models), `e` is design efficiency (i.e. minus the Chernoff risk) and `out` is a structure containing diagnostic variables (e.g.: upper bound on selection error probability, 1st- and 2nd-order moments of the Laplace approximation to the prior predictive density..).
+where `f_fname`, `g_fname`, `dim`, `options` are nx1 cell arrays (n models), `e` is design efficiency (i.e. minus the Chernoff risk) and `out` is a structure containing diagnostic variables (e.g., 1st- and 2nd-order moments of the Laplace approximation to the prior predictive density..).
 
 One can then either compare different designs on the basis of their efficiency (e.g. on a predefined set of inputs $$u$$), or perform numerical optimization of the design efficiency w.r.t. $$u$$ (or some parametric form of it).
 
