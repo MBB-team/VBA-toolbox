@@ -18,7 +18,7 @@ How should one set the inputs $$u$$, such that measured experimental data eventu
 
 $$ E \big[( \hat{\theta} -\theta)^2 \mid y \big] = V \big[ \theta\mid y \big]$$
 
-where $$V \big[ \theta\mid y \big]$$ is the posterir variance over the unknown model parameter $$\theta$$. Thus, maximzing estimation accuracy reduces to minimizing a posteriori variance. This intuition generalizes to models with more than one parameter. In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). Note that, for non-linear generative models, the posterior variance will depend upon the (not yet observed) data $$y$$. One then needs to derive the expected posterior variance, where the expectation is taken under the marginal distribution of the data. This can be done by evaluating the design efficiency for each design, as follows:
+where $$V \big[ \theta\mid y \big]$$ is the posterior variance over the unknown model parameter $$\theta$$. Thus, maximzing estimation accuracy reduces to minimizing a posteriori variance. This intuition generalizes to models with more than one parameter. In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). Note that, for non-linear generative models, the posterior variance will depend upon the (not yet observed) data $$y$$. One then needs to derive the expected posterior variance, where the expectation is taken under the marginal distribution of the data. This can be done by evaluating the design efficiency for each design, as follows:
 
 ```matlab
 e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters')
