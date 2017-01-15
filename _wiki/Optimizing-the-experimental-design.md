@@ -18,6 +18,7 @@ How should one set the inputs $$u$$, such that measured experimental data eventu
 
 $$ E[(\theta^{\hat}-\theta)|y] = V[\theta|y]$$
 
+
 In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). This can be done by evaluating the design efficiency for each design, as follows:
 
 ```matlab
