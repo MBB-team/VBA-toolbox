@@ -27,7 +27,7 @@ where `u` is the time series of experimental control variables (inputs) that def
 
 ## Model selection
 
-In this context, we argue that one should choose among experimental designs according to their induced model selection error rate. This can be done by choosing the input $$u$$ that minimizes the so-called "Laplace-Chernoff risk"  (cf. [Daunizeau et al. 2011](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002280)) $$b_LC$$ , which yields a lower bound on the model selection error rate:
+In this context, we argue that one should choose among experimental designs according to their induced model selection error rate. This can be done by choosing the input $$u$$ that minimizes the so-called "Laplace-Chernoff risk" $$b_LC$$ (cf. [Daunizeau et al. 2011](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002280)), which yields a lower bound on the model selection error rate:
 
 $$b_{LC}(u) = 1-\frac{1}{2}\log\:\left(\frac{\Delta g(u)^2}{4\tilde Q(u)}+1\right) \quad \text{if}\; \tilde Q_1(u) \approx \tilde Q_2(u) \equiv \tilde Q_(u) $$
 
@@ -47,7 +47,7 @@ One can then either compare different designs on the basis of their efficiency (
 
 ## On-line adaptive designs
 
-In the context of experimental psychophysics, adaptive designs such as "stair-case" methods are used to, e.g., estimate some individual sensory detection or discrimination threshold. Such procedures operate in real-time in the sense that the next stimulation depends on the previous behavioral response and is computed in order to optimize model fitting. More generally, adaptive (on-line) designs can be used to improve on three problems: (i) model parameter estimation; (ii) hypothesis testing (or BMS); (iii) choosing the duration of the experiment (e.g., the number of trials).
+In the context of, e.g., experimental psychophysics, adaptive designs such as "stair-case" methods are typically used to estimate some individual sensory detection or discrimination threshold. Such procedures operate in real-time in the sense that the next stimulation depends on the previous behavioral response and is computed in order to optimize model fitting. More generally, adaptive (on-line) designs can be used to improve on three problems: (i) model parameter estimation; (ii) hypothesis testing (or BMS); (iii) choosing the duration of the experiment (e.g., the number of trials).
 
 We have implemented an example of on-line adaptive design in the demonstration script `demo_binomial_AdaptDesign.m`. This demo simulates a psychophysics paradigm similar to a signal detection task, whereby the detection probability is a sigmoidal function of the stimulus contrast (which is the design control variable). The gol of the experiment is to estimate the sigmoid inflexion point (detection threshold) and the sigmoid slope (d-prime). Here, the design is adapted online, in the aim of providing the most efficient estimate of these model parameters, given trial-by-trial subjects' binary choice data (`y=1`: "seen", `y=0`: "unseen").
 
