@@ -45,7 +45,17 @@ According to the Neyman-Pearson lemma, the most powerful test to compare such tw
 $$\frac{p(y\mid m_1)}{p(y\mid m_2)} > K$$
 
 where $$K$$ is set to satisfy a controlled statistical risk.
-This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the 'Bayes factor', and is used whenever one wants to select between two models. More generally, the comparison of more than two models can be based upon their model evidence, which quantifies the plausibility of the data under any model.
+This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the 'Bayes factor', and is used whenever one wants to select between two models. 
+
+
+Practically speaking, the Bayes' factor induces three types of statistical decisions:
+
+- $$K>20$$:      model $$m_1$$ is selected
+- $$0.05<K<20$$: no model is selected
+- $$K<0.05$$:    model $$m_2$$ is selected
+
+
+More generally, the comparison of more than two models can be based upon their model evidence, which quantifies the plausibility of the data under any model.
 
 The critical thing to note is that the model evidence is not a simple measure of model fit: there is an inherent penalization for model complexity. Let us note that the model evidence is maximal whenever the information in the data about model parameters is the same as that of the prior density. In other words, a good model is a model that is confirmed by the data. A simple model has tight priors: to the limit, the simplest of all models has no unknown parameters (infinite precision priors). This means that there is a complexity cost to changing one's belief on parameters to explain data.
 
@@ -63,8 +73,3 @@ As for any statistical test, a threshold has to be set for deciding whether a mo
 
 This logic applies for any set of models, given any data. The only constraint is that model evidences have to be evaluated on the same data  set.
 
-Practically speaking, the Bayes' factor induces three types of statistical decisions:
-
-- $$K>20$$:      model $$m_1$$ is selected
-- $$0.05<K<20$$: no model is selected
-- $$K<0.05$$:    model $$m_2$$ is selected
