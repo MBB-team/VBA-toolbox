@@ -45,29 +45,24 @@ According to the Neyman-Pearson lemma, the most powerful test to compare such tw
 $$\frac{p(y\mid m_1)}{p(y\mid m_2)} > K$$
 
 where $$K$$ is set to satisfy a controlled statistical risk.
-This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the **Bayes' factor**, and is used whenever one wants to select between two models. 
-
-
-Practically speaking, the Bayes' factor induces three types of statistical decisions:
+This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the **Bayes' factor**, and is used whenever one wants to select between two models. Practically speaking, the Bayes' factor induces three types of statistical decisions:
 
 - $$K>20$$:      model $$m_1$$ is selected
 - $$0.05<K<20$$: no model is selected
 - $$K<0.05$$:    model $$m_2$$ is selected
 
 
-More generally, the comparison of more than two models can be based upon their model evidence, which quantifies the plausibility of the data under any model.
+The critical thing to note is that the model evidence $$p\big( y\mid m\big)$$ is not a simple measure of model fit: there is an inherent penalization for model complexity. This penalization is intimately related to the priors. In brief, a simple model has tight priors: at the limit, the simplest model has no unknown parameters (infinite prior precision). More complex models are equipped with vague priors, which will be updated to a larger extent once the data has been observed. However, this flexibility has a cost: that of confusing noise $$\epsilon$$ with variations in the data that are induced by $$g(\vartheta)$$. This is called "over-fitting" the data, and results in greater error when extrapolating model predictions.
 
-The critical thing to note is that the model evidence $$p\big( y\mid m\big)$$ is not a simple measure of model fit: there is an inherent penalization for model complexity. This penalization is intimately related to the priors. In brief, a simple model has tight priors: at the limit, the simplest model has no unknown parameters (infinite prior precision). More complex models are equipped with vague priors, which will be updated to a larger extent once the data has been observed. However, this flexibility has a cost: that of confusing noise with variations in the data that are induced by $$g(\vartheta)$$. This is called "over-fitting" the data, and results in greater error when extrapolating the model predictions.
-
-This trade-off between model fit and model complexity is measured by the model evidence, which is but the marginal data likelihood, given any model. Bayes' rule can then be used to perform inference on models, by deriving the posterior distribution over models, i.e.:
+Model evidence is essentially a trade-off between fit accuracy and model complexity. It can be used to compare more than two models, simply because it quantifies the plausibility of the data under any model. In fact, Bayesian model comparison proceeds with the exact same logic than when performing inference on parameters. Here again, one relies upon Bayes' rule to derive the posterior distribution over models, i.e.:
 
 $$p(m\mid y)=\frac{p(y\mid m)p(m)}{p(y)}$$
 
-where $$p(y)$$ is the probability of data given all possible models
+where $$p(y)$$ is the probability of data given all possible models:
 
 $$p(y)=\sum _m p(y\mid m)p(m)$$
 
-The term $$p(m)$$ is the prior probability on model m. Typically, noninformative priors are used and the equation above is driven solely by the Bayes' factor.
+The term $$p(m)$$ is the prior probability on model $$m$$. Typically, non-informative priors are used and the equation above is driven solely by model evidences.
 
 As for any statistical test, a threshold has to be set for deciding whether a model is "better" than another one. This threshold can be chosen similarly to classical statistics, i.e. on the basis of some acceptable statistical risk. It turns out that the probability of making a model selection error is 1 minus the posterior probability of the selected model. If this probability has to be controlled at e.g., 0.05, then one "selects" a model only if its posterior probability exceeds 0.95. When comparing two models with each other, this corresponds to a threshold of $$K=20$$ on the Bayes' factor.
 
