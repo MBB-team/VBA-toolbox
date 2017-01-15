@@ -58,7 +58,7 @@ where $$\eta_t$$ is supposed to be iid Gaussian, with mean zero and precision (i
 
 - The observation mapping $$g$$ describes how observed data is generated from hidden states. When dealing with continuous data, the observation equation is given by:
 \\[y_t=g(x_t,u_t,\phi)+\epsilon_t\\]
-where $$\epsilon_t$$ is iid Gaussian, with mean zero and precision $$\sigma$$. In any case, the observation mapping $$g$$ specifies the likelihood data $$p(y_t|x_t,u_t,\phi,m)$$. In the example above, the likelihood of observed choices was given by the softmax mapping (categorical data).
+where $$\epsilon_t$$ is iid Gaussian, with mean zero and precision $$\sigma$$. In any case, the observation mapping $$g$$ specifies the data likelihood $$p(y_t|x_t,u_t,\phi,m)$$. In the example above, the likelihood of observed choices was given by the softmax mapping (categorical data).
 
 The following figure summarizes the model structure:
 
@@ -66,7 +66,7 @@ The following figure summarizes the model structure:
 
 The plate denotes repetitions over time or trials. Nodes represent variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.
 
-One may have to deal with deterministic systems ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is controlled by the inputs $$u$$, the evolution parameters $$\theta$$ and the initial conditions $$x_0$$.
+One may have to deal with deterministic systems ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$.
 
 Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters):
 
@@ -75,7 +75,7 @@ Note that the above class of generative models encompasses static models, i.e. m
 
 This simpler structure is closer to decision making models, whereby subject do not engage in learning (e.g., inter-temporal choices).
 
-In fact, (nonlinear) state-space models with unknown evolution, observation and precision parameters is very general. This is because the form of the evolution and observation mappings is arbitrary (e.g., nonlinear). Their inversion grand-fathers most causal models of the statistical literature, with the exception of "switch" models, i.e. models that include unknown categorical variables.
+Note: state-space models (with unknown evolution, observation and precision parameters) grand-father most causal models of the statistical literature (with the exception of "switch" models, i.e. models that include unknown categorical variables).
 
 
 ## Prior knowledge
