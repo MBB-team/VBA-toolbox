@@ -33,7 +33,7 @@ $$b_{LC}(u) = 1-\frac{1}{2}\log\:\left(\frac{\Delta g(u)^2}{4\tilde Q(u)}+1\righ
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
-Here, prior predictive densities (y-axis) of two different models are plotted over possible data values (x-axis; unidimensional data). The expected model selection error rate $$p(e=1|u)$$ increases with the similarity of the two probabilistic model predictions. In fact, the Laplace-Chernoff risk $$b_LC$$ measures the statistical similarity of the prior predictive densities, as a function of their 1st- and 2nd-order moments.
+Here, prior predictive densities (y-axis) of two different models are plotted over possible data values (x-axis; unidimensional data). The expected model selection error rate $$p(e=1\mid u)$$ increases with the similarity of the two probabilistic model predictions. In fact, the Laplace-Chernoff risk $$b_LC$$ measures the statistical similarity of the prior predictive densities, as a function of their 1st- and 2nd-order moments.
 
 The numerical derivation of the design efficiency for model comparison can be done as follows:
 
