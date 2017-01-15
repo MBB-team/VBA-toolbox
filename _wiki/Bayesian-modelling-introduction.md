@@ -14,11 +14,11 @@ where $$\epsilon$$ are model residuals or measurement noise. If the (physical) p
 
 $$p(\epsilon\mid m)\propto exp\left(-\frac{1}{2\sigma^2}\varepsilon^2\right) \implies p(\lvert\epsilon\rvert>1.96\sigma\mid m) \approx 0.05$$
 
-where $$\sigma$$ is the noise’ standard deviation (it determines how big is “big”) and m is the so-called generative model. Combining the two equations above yields the likelihood function $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
+where $$\sigma$$ is the noise’ standard deviation (it determines how big is “big”) and $$m$$ is the so-called generative model. Combining the two equations above yields the likelihood function $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
 
 $$p(y\mid\vartheta,m) = exp\left(-\frac{1}{2\sigma^2}(y-g(\vartheta))^2\right)$$
 
-The intuition underlying the above derivation of the likelihood function can be generalized to any generative model $$m$$, whose parameters $$\vartheta$$ simply control the statistical moments of the distribution $$p(y\mid\vartheta,m)$$. The key point here is that the likelihood function always derives from priors about observation mappings and measurement noise.
+This derivation of the likelihood function can be generalized to any generative model $$m$$, whose parameters $$\vartheta$$ simply control the statistical moments of the distribution $$p(y\mid\vartheta,m)$$. The key point here is that the likelihood function always derives from prior assumptionss about observation mappings $$g(\vartheta)$$ and measurement noise $$\epsilon$$.
 
 # Bayes' rule
 
