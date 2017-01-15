@@ -27,15 +27,15 @@ where `u` is the time series of experimental control variables (inputs) that def
 
 ## Model selection
 
-In this context, we argue that one should choose among experimental designs according to their induced model selection error rate. This can be done by choosing the input $$u$$ that minimizes the so-called "Laplace-Chernoff risk" $$b_LC$$ (cf. [Daunizeau et al. 2011](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002280)), which yields a lower bound on the model selection error rate:
-
-$$b_{LC}(u) = 1-\frac{1}{2}\log\:\left(\frac{\Delta g(u)^2}{4\tilde Q(u)}+1\right) \quad \text{if}\; \tilde Q_1(u) \approx \tilde Q_2(u) \equiv \tilde Q_(u) $$
+In this context, we argue that one should choose among experimental designs according to their induced model selection error rate. Note that the expected model selection error rate $$p\big(e=1 \mid u \big)$$ increases with the similarity of model predictions: 
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
-Here, prior predictive densities (y-axis) of two different models are plotted over possible data values (x-axis; unidimensional data). The expected model selection error rate $$p(e=1\mid u)$$ increases with the similarity of the two probabilistic model predictions. In fact, the Laplace-Chernoff risk $$b_LC$$ measures the statistical similarity of the prior predictive densities, as a function of their 1st- and 2nd-order moments.
+Here, prior predictive densities (y-axis) of two different models are plotted over possible data values (x-axis; unidimensional data). The Laplace-Chernoff risk $$b_{LC}$$ measures the statistical similarity of the prior predictive densities, as a function of their 1st- and 2nd-order moments ([Daunizeau et al. 2011](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002280)):
 
-The numerical derivation of the design efficiency for model comparison can be done as follows:
+$$b_{LC}(u) = 1-\frac{1}{2}\log\:\left(\frac{\Delta g(u)^2}{4\tilde Q(u)}+1\right) \quad \text{if}\; \tilde Q_1(u) \approx \tilde Q_2(u) \equiv \tilde Q_(u) $$
+
+Thus, optimizing the experimental design w.r.t. model selection reduces to choosing the input $$u$$ that minimizes the so-called "Laplace-Chernoff risk" $$b_{LC}$$. In VBA, the numerical derivation of design efficiency for model comparison can be done as follows:
 
 ```matlab
 [e,out] = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'models')
