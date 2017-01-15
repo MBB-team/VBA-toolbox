@@ -37,10 +37,10 @@ VBA deals with a very general class of generative models, namely: "nonlinear sta
 
 ## Definitions & Notations
 
-Let us first recall the notations that are used when experimentally observing the behaviour of a subject:
+Let us first recall the notations that are used in VBA:
 
-- $$y$$: experimentally measured **data**. These can be categorial or continuous. In the example above, data are composed of the observed choice at each trial.
-- $$x$$: **hidden states** at time or trial $$t$$. These are time-dependent, and their motion is controlled by the **evolution function** (see below). In the example above, hidden states are the value of each accessible action.
+- $$y$$: experimentally measured **data**. These can be categorial or continuous. In the Q-learning example above, data are composed of the sequence of observed trial-by-trial choices.
+- $$x$$: **hidden states**. These are time-dependent model variables, and their dynamics is controlled by the **evolution function** (see below). In the example above, hidden states are the value of each accessible action.
 - $$\theta$$: **evolution parameters**. These determine the evolution function of hidden states. In the example above, the only evolution parameter is the learning rate.
 - $$\phi$$: **observation parameters**.  These determine the **observation mapping**. In the example above, the only observation parameter is the inverse temperature.
 - $$u$$: experimentally controlled **inputs**. In the example above, the inputs are the reward delivered to the subject.
