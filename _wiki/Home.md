@@ -53,7 +53,7 @@ title: "home"
 - [Dynamic Causal Modeling](dcm)
 - [Behavioural Dynamic Causal Modeling](behavioural-DCM)
 - [Neural Fields](neural-fields)
-- [Spiking Neuron](spiking-neuron)
+- [Spiking Neurons](spiking-neuron)
 - [Calcium imaging using biophysical models](CaBBI)
 
 [comment]: # (- [Neurobiological models](Neurobiological-models))
