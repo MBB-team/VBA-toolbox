@@ -38,13 +38,12 @@ title: "home"
 
 > The VBA-toolbox already includes a large library of plug-and-play models. Below, we give a few examples of such models. We briefly expose the main theoretical and experimental issues, and point to the relevant functions of the VBA toolbox (demonstration scripts, evolution/observation functions, etc...).
 
-### Behavioural models
+### Behavioural/cognitive models
 
 - [Reinforcement learning](Reinforcement-learning)
 - [Bayesian associative learning (including, e.g., volatile systems)](bayesian-learning)
 - [Bayesian mentalizing (k-ToM)](ktom)
 - [Bi-dimensional decisions (e.g., inter-temporal choices)](intertemporal-choice)
-- [Behavioural Dynamic Causal Modeling](behavioural-DCM)
 
 
 [comment]: # (- [Behavioural/cognitive models](Behavioural-cognitive-models))
