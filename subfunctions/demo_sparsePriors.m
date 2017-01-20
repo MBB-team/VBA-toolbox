@@ -8,10 +8,10 @@
 % Note: using such "sparse transformation" makes the native GLM model
 % non-linear, which implies potential local minima.
 
-function demo_sparsePriors
+% function demo_sparsePriors
 
-% close all
-% clear all
+close all
+clear all
 
 
 % 0- look at the qualitative properties of the "sparse" transformation 
@@ -46,7 +46,7 @@ ha2 = subplot(3,2,5,'parent',hf,'nextplot','add');
 title(ha2,'sparse transformation')
 ha3 = subplot(3,2,6,'parent',hf,'nextplot','add');
 title(ha3,'effective regularization')
-gp = [1e-1,0.25,1];
+gp = [1e-1,0.25,1,10];
 str = cell(length(gp),1);
 col = 'brgm';
 for i=1:length(gp)
@@ -76,8 +76,8 @@ plot(ha3,-subgx(subgx<=0).^2,subgx(subgx<=0).^2,'k.')
 getSubplots
 
 % 1- simulate "sparse" GLM and invert
-p = 128;
-n = 256;
+p = 32;
+n = 64;
 A = randn(p,n);
 phi1 = sparseTransform(X(randperm(n)),1);
 sigma = 1;
@@ -89,7 +89,7 @@ dims.n_phi = n;
 options.inG.X = A;
 options.inG.sparseP = 1;
 % options.priors.muPhi = 1e-2*ones(n,1);
-options.checkGrads = 0;
+options.checkGrads = 1;
 [posterior,out] = VBA_NLStateSpaceModel(y1,[],[],@g_GLMsparse,dims,options);
 set(gcf,'tag','dummy','name','"sparse" sim, "sparse" priors')
 hf = figure('color',[1 1 1],'name','estimation accuracy');
@@ -112,6 +112,19 @@ plot(ha,[min(phi1),max(phi1)],[min(phi1),max(phi1)],'r')
 title(ha,['sparse sim, Gaussian priors, F=',num2str(out2.F),' ,r=',num2str(r)])
 xlabel(ha,'simulated')
 ylabel(ha,'estimated')
+
+% dims.n_phi = dims.n_phi + 1;
+% options.checkGrads = 0;
+% [posterior2,out2] = VBA_NLStateSpaceModel(y1,[],[],@g_GLMsparse2,dims,options);
+% set(gcf,'tag','dummy','name','"sparse" sim, Gaussian priors')
+% ha = subplot(2,3,3,'parent',hf,'nextplot','add');
+% plot(ha,phi1,posterior2.muPhi(1:end-1),'k.')
+% tmp = corrcoef(phi1,posterior2.muPhi(1:end-1));
+% r = tmp(2,1);
+% plot(ha,[min(phi1),max(phi1)],[min(phi1),max(phi1)],'r')
+% title(ha,['sparse sim, adaptive priors, F=',num2str(out2.F),' ,r=',num2str(r)])
+% xlabel(ha,'simulated')
+% ylabel(ha,'estimated')
 
 phi_pi = pinv(A'*A)*A'*y1;
 ha = subplot(2,3,3,'parent',hf,'nextplot','add');

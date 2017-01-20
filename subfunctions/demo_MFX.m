@@ -3,30 +3,31 @@
 clear all
 close all
 clc
+dbstop if error
 
 ns = 8; % #subjects
-dim.n_phi = 1;
+dim.n_phi = 2;
 dim.n = 1;
-dim.n_theta = 1;
+dim.n_theta = 2;
 dim.p = 1; % data dim (within-subject)
 dim.n_t = 16; % trials (within-subject)
 
 % simulate MFX
 y = cell(ns,1);
-nu = ones(3,1); % population mean
-alpha = 1; % population precision
+nu = ones(5,1); % population mean
+alpha = 100; % population precision
 sigmas = ones(ns,1); % within-subject residual variance
 g_fname = @g_vgo;
 f_fname = @f_vgo;
 for i=1:ns
     % draw within-subject effects from population distribution
-    params(:,i) = nu + randn(3,1)./sqrt(alpha);
+    params(:,i) = nu + randn(5,1)./sqrt(alpha);
     u{i} = randn(1,dim.n_t);
     options{i}.DisplayWin = 0;
     options{i}.verbose = 0;
     options{i}.dim = dim;
-    options{i}.binomial = 1;
-    [y{i}] = simulateNLSS(dim.n_t,f_fname,g_fname,params(1,i),params(2,i),u{i},Inf,[],options{i},params(3,i));
+    options{i}.binomial = 0;
+    [y{i}] = simulateNLSS(dim.n_t,f_fname,g_fname,params(1:2,i),params(2:3,i),u{i},Inf,Inf,options{i},params(3,i));
 end
 
 

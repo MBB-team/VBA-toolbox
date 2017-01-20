@@ -83,7 +83,7 @@ hA = [1 1];
 % === Basic settings =======================================
 
 f_fname = @f_DCMwHRFext ; 
-g_fname = @g_DCMwHRFext ; 
+g_fname = @g_DCMwHRFext2 ; 
                               
 TR = 1;                       % sampling period (in sec)
 microDT = .05;                % micro-time resolution (in sec)
@@ -92,14 +92,14 @@ reduced_f = 1;                % fix some HRF params
 lin = 1;                      % linearized variant of HRF Balloon model
 stochastic = 0;               % flag for stochastic DCM inversion
 alpha = Inf;                  % state noise precision
-sigma = 1/noise;              % measurement noise precision
+sigma = [1/noise;1e4];              % measurement noise precision
 
 % __________________________________________________________ 
 % === Build options and dim structures =====================
 
 %- specify distribution of observations
 sources(1) = struct('out',1:2,'type',0);  % two BOLD timeseries (gaussian) 
-sources(2) = struct('out',3,  'type',1);  % and a motor response(binomial)
+sources(2) = struct('out',3,  'type',0);  % and a motor response(binomial)
 
 %- prepare the DCM structure
 options = prepare_fullDCM(A,B,C,{},TR,microDT,homogeneous,hA,{[],[]},{},{},sources);
@@ -145,7 +145,9 @@ theta(options.inF.indhself) = log(1/options.inF.deltat); %/options.inF.deltat
 % === Simulate time series of hidden states and observations 
 
 disp('*** Simulation');
-y = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+[y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+
+[hf] = displaySimulations(y,x,eta,e)
 
 %% #########################################################
 %     Inversion 
