@@ -80,6 +80,7 @@ if isempty(priors) || ~isfield(priors,'a') || isempty(priors.a)
             priors.a(indf) = 1/length(indf);
         end
     end
+    priors.a = priors.a./sum(priors.a); % 1 prior count in total!
     options.priors = priors;
 end
 if ~isempty(options.families)
