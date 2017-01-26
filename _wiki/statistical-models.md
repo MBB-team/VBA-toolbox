@@ -190,8 +190,23 @@ The script `demo_classification.m` exemplifies this approach, and demonstrates t
 
 # Kalman filter/smoother
 
-The script `demo_KalmanSmoother.m` demonstrates the smoothing properties of the Kalman lagged filter.
-Here, hidden states follow a triangular wave, whose observation is perturbed with white noise. Critically, we render the inversion scheme blind during half a period of the oscillation. We then invert the model (under AR priors on hidden states), with and without large backward lag.
+A [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter) is an algorithm that uses a series of noisy measurements $$y$$ observed over time to produce estimates of underlying (hidden) states $$x$$ that are assumed to be correlatd over time. In its simplest form, the corresponding generative model is a twofold autoregressive model of the form:
+
+$$
+\left\{
+    \begin{array}{ll}
+        y_t = x_t + e_t \\
+        x_t = x_{t-1} + f_t
+    \end{array}
+\right.
+$$
+
+where $$e$$ and $$f$$ are residuals. The second equation essentially sets a [AR(1)](https://en.wikipedia.org/wiki/Autoregressive_model) prior on hidden states. 
+
+The objective of a Kalman filter is to operate on-line and yields an estimate of $$x_t$$ given all past observations $$y_{1,2,...,t}$$. Alternatively, a Kalman *smoother* operates off-line, and yields an estimate of $$x_t$$ given all obseravtions $$y_{1,2,...,t,...,T}$$. This can be useful, because the impact of hidden states may be delayed in time. *Lagged* Kalman filters provide a reasonable trade-off between the two perspectives, and yield estimates of $$x_t$$ given lagged observations $$y_{1,2,...,t,...,t+k}$$, where $$k$$ is the lag. VBA offer to directly control the backward lag $$k$$, by trading computational cost against estimation efficiency. 
+
+The script `demo_KalmanSmoother.m` demonstrates the smoothing properties of the Kalman lagged filter. Here, simulated hidden states follow a triangular wave, whose observation is perturbed with white noise. Critically, we render the inversion scheme blind during half a period of the oscillation. We then invert the model (under AR(1) priors on hidden states), with and without large backward lag.
+
 
 # Probabilistic clustering
 
