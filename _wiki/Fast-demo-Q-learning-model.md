@@ -115,9 +115,8 @@ Of course, analysis of experimental data does not allow one to evaluate the accu
 
 Note also that VBA also includes routines for performing other types of analyses. These include, but are not limited to:
 
-- **Bayesian model averaging**: Standard statistical practice ignores model uncertainty. Data analysts typically select a model from some class of models and then proceed as if the selected model had generated the data. This approach ignores the uncertainty in model selection, leading to over-confident inferences. Bayesian model averaging (BMA) provides a coherent mechanism for accounting for this model uncertainty when deriving parameter estimates.
-- **Empirical Bayes inversion**: Empirical Bayes methods are procedures for statistical inference in which the prior distribution is estimated from the data. This approach stands in contrast to standard Bayesian methods, for which the prior distribution is fixed before any data are observed. In VBA, the empirical Bayes approach is a fully Bayesian treatment of a hierarchical model wherein the parameters at the highest level of the hierarchy are summary statistics of the group, which are unknown but eventually constrain the likely range of subject-level parameters.
-- **group-level Bayesian model comparisons**: In this type of analysis, models are treated as random effects that could differ between subjects and have a fixed (unknown) distribution in the population. VBA inverts the ensuing hierarchical model to provide posterior estimates of the frequency with which any model prevails in the population. In particular, this approach can be adapted to perform between-condition and between-group comparisons.
+- **clustering analyses**: in this type of analysis, data are assumed to be sampled from a mixture of Gaussian or Binomial distributions.
+- **group-level Bayesian model comparisons**: In this type of analysis, models are treated as random effects that could differ between subjects and have a fixed (unknown) distribution in the population.
 
 Finally, note that VBA already includes a large library of models for behavioural and neurophysiological data...
 
