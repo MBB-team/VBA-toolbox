@@ -96,7 +96,18 @@ Missing data occur when the value of either the dependent or the independent var
 
 # Mediation analysis
 
-One may be willing to address questions about how key variables mediate the impact of (controlled) stimuli onto (measured) experimental outcomes. For example, one may want to assess the impact of brain activity onto behavioural outcomes above and beyond the effect of psychophysical manipulations. Statistical models of mediated effects place the mediator variable ($$M$$) at the interplay between the independent variable ($$X$$) and the dependent variable ($$Y$$).
+One may be willing to address questions about how key variables mediate the impact of (controlled) stimuli onto (measured) experimental outcomes. For example, one may want to assess the impact of brain activity onto behavioural outcomes above and beyond the effect of psychophysical manipulations. Statistical models of mediated effects place the mediator variable ($$M$$) at the interplay between the independent variable ($$X$$) and the dependent variable ($$Y$$). In its simplest form, mediation analysis reduces to inference on the following twofold regression model:
+
+$$
+\left\{
+    \begin{array}{ll}
+        M = X \beta_1 + e_M \\
+        Y = M \beta_2 + X \beta_3 + e_Y
+    \end{array}
+\right.
+$$
+
+where $$e_M$$ and $$e_Y$$ are model residuals, and $$\beta_{1,2,3}$$ are regression coefficients. Typically, there is a mediation effect if the product $$\beta_1 \beta_2$$ is different from zero.
 
 On the one hand, VBA proposes to approach such mediation analyses from a Bayesian perspective. The latter perspective reduces to a bayesian model comparison, whereby one evaluates the evidence in favour of a model that includes a serial chain of causality ($$X \rightarrow M \rightarrow Y$$) against a "common cause" model ($$X \rightarrow M$$ and $$X \rightarrow Y$$).
 
@@ -114,7 +125,7 @@ out = mediationAnalysis0(Y,X,M,[]);
 
 where `out` is a structure containing the summary statistics of mediation analysis. These are laid out in the matlab command window:
 
-```
+`
 Date: 26-Jan-2017 14:37:13
  
 -- Regression results --
@@ -135,7 +146,7 @@ Indirect effect X->M->Y: P(ab=0|H0)=0.03746
  
 -- Conjunction testing --
 Indirect effect X->M->Y: P(ab=0|H0)=0.045935
-```
+`
 
 with the following graphical output:
 
