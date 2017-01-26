@@ -105,7 +105,7 @@ VBA possesses an in-built function for data classfication, namely: `VBA_classifi
 
 ![]({{ site.baseurl }}/images/wiki/classification.jpg)
 
-> **Upper-left panel**: the distribution of correct classifications (X) under the null is compared with the actual number of classifier successes (x). This serves to perform classical inference on classification accuracy (p-value = $$P(X>xH0)$$). **Lower-left panel**: posterior distribution over the classification accuracy. This serves to perform Bayesian inference on classification accuracy (exceedance probability = $$P(r>0.5|x)$$). **Upper-right panel**: classifier weights estimates for each train fold. This can be used to eyball the estimation stability of classifier weights. **Lower-right panel**: Summary statistics of data classification.
+> **Upper-left panel**: the distribution of correct classifications (X) under the null is compared with the actual number of classifier successes (x). This serves to perform classical inference on classification accuracy (p-value = $$P(X>x|H0)$$). **Lower-left panel**: posterior distribution over the classification accuracy. This serves to perform Bayesian inference on classification accuracy (exceedance probability = $$P(r>0.5|x)$$). **Upper-right panel**: classifier weights estimates for each train fold. This can be used to eyball the estimation stability of classifier weights. **Lower-right panel**: Summary statistics of data classification.
 
 The script `demo_classification.m` exemplifies this approach, and demonstrates the relation between classical cross-validation approaches and Bayesian model comparison.
 
