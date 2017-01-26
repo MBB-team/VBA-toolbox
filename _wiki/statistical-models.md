@@ -213,9 +213,11 @@ The script `demo_KalmanSmoother.m` demonstrates the smoothing properties of the 
 Any Bayesian data analysis relies upon a generative model, i.e. a probabilistic description of the mechanisms by which observed data are generated. The main VBA functions deal with a certain class of generative models, namey: state-space models with unknown evolution/observation parameters. But it also offers a set of VB routines developped to invert **mixtures of Gaussian** -MoG- and of binomial -MoB- densities, which are described below. These can be used to perform data clustering (i.e., blind data classification). 
 The `\classification` folder contains the functions that deal with MoG and MoB data (see below).
 
-The MoG model has been widely used in the machine learning and statistics community. It assumes that the observed data $$y$$ is actually partitioned into K classes or subsets of points, each one of which can be well described with a multivariate Gaussian density. More formally, the MoG generative model assumes that n binomial vectors are sampled from a Dirichlet density. These binomial vectors have dimension K, and are such that their non-zero entry indicates which class each point belongs to. These so-called labels then switch on and off a set of K multivariate Gaussian densities with different first- and second- order moments, from which the observed data themselves are sampled. If these densities are sufficiently different, then the overall datasets enjoys a clustering structure, when projected onto an appropriate subspace.
-NB: Any arbitrary density over continuous data can be described in terms of a MoG, given a sufficient number of components or classes.
-The function `VBA_MoG.m` inverts, using a variational Bayesian scheme, the MoG model. Given the data $$y$$, and the maximum number of classes K, it estimates the most plausible number of classes, the labels, and the first- and second- order moments of each Gaussian density. In addition, it also returns the model evidence, which can be useful for model comparison purposes. Running the demo `demo_GMM.m` would produce the following graphical output of `VBA_MoG.m`:
+The [MoG model](https://en.wikipedia.org/wiki/Mixture_model) has been widely used in the machine learning and statistics community. It assumes that the observed data $$y$$ is actually partitioned into K classes or subsets of points, each one of which can be well described with a multivariate Gaussian density. If these components are sufficiently different, then the overall datasets enjoys a clustering structure, when projected onto an appropriate subspace.
+
+> Any arbitrary density over continuous data can be described in terms of a MoG, given a sufficient number of components or classes.
+
+The function `VBA_MoG.m` inverts, using a variational Bayesian scheme, the MoG model. Given the data $$y$$, and the maximum number of classes K, it estimates the most likely number of classes, and the ensuing data labels (as well as 1st- and 2nd- order moments of each Gaussian component). In addition, it also returns the model evidence, which can be useful for model comparison purposes. Running the demo `demo_GMM.m` would produce the following graphical output of `VBA_MoG.m`:
 
 ![]({{ site.baseurl }}/images/wiki/MoG.jpg)
 
@@ -224,7 +226,6 @@ along with the following analysis summary (displayed in the matlab command windo
 
 
 ```
----
 Initialing components' modes (hierarchical clustering)... OK.
 1 component's death: K = 11.
 2 component's death: K = 9.
@@ -243,10 +244,9 @@ Dimensions:
 Posterior probabilities:
      - MoG: p(H1|y)= 1.000
      - null: p(H0|y)= 0.000
----
 ```
 
-In this example, 4D data (sample size = 400) was simulated under a MoG model with two components. The inversion started with K=12 components, and eventually removed all unnecessary components (cf. "component's deaths"). This is called **automatic relevance determination** or ARD. As in any VBA inversion, convergence monitoring derives from iterative improvements over the model's free energy, which can be eyeballed on the upper-left panel. Other panels report summary statistics of the relevant posterior densities (e.g., estimated data labels, posterior estimates of 1st- and 2nd-order moments of the Gaussian modes, estimated mode frequencies, etc...). In addition, the clusters' separability can be eyeballed on the lower-right panel, which shows an eigen-projection of the data. This projection can be reproduced as follows: `VBA_projectMoG(posterior,out,y)`, with VBA's output structures.
+In this example, 4D data (sample size = 400) was simulated under a MoG model with two components. The inversion started with K=12 components, and eventually removed all unnecessary components (cf. "component's deaths"). This is called **automatic relevance determination** or ARD. As in any VBA inversion, convergence monitoring derives from iterative improvements over the model's free energy, which can be eyeballed on the upper-left panel. Other panels report summary statistics of the relevant posterior densities (including estimated data labels). In addition, the clusters' separability can be eyeballed on the lower-right panel, which shows an eigen-projection of the data. This projection can be reproduced as follows: `VBA_projectMoG(posterior,out,y)`, with VBA's output structures.
 
 
 Now suppose you design an experiment, in which n subjects are asked a number yes/no questions from a questionnaire. Suppose these subjects are grouped into K categories, which are defined in terms of how likely its member are to answer 'yes' to each of the questions. You have just defined a MoB model, which you can use to disclose the categories of subjects from their profile of responses to the questionnaire. This is what the function `MixtureOfBinomials.m` does, using either a Gibbs sampling algorithm or a variational Bayesian algorithm. In both cases, the function returns the data labels, the first- order moment profile for each category and the model evidence. NB: in the MoB case, the inversion schemes cannot automatically eliminate the unnecessary classes in the model. Therefore, (Bayesian) model comparison is mandatory to estimate the number of classes in the data, if it is unknown to the user. See the demo: `demo_BMM.m`.
