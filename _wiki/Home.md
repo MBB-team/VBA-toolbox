@@ -2,15 +2,15 @@
 title: "home"
 ---
 
-# How to use the toolbox
+# How to use VBA
 
-## Some theory
+## Some statistical theory
 
 - [Bayesian inference: introduction](Bayesian-modelling-introduction)
 - [The variational Bayes approach](The-variational-Bayesian-approach)
 - [VBA: structure of the generative model](Structure-of-VBA's-generative-model)
 
-## Getting Started
+## Getting Started with VBA
 
 - [VBA: model inversion in 4 steps](VBA-model-inversion-in-4-steps)
 - [VBA: a fast demo (Q-learning)](Fast-demo-Q-learning-model)
