@@ -12,7 +12,6 @@ This is a quote from [Palminteri et al. (2016)](http://www.biorxiv.org/content/e
 
 ```
 Candidate models should be compared by trading off their ability to predict the data as a function of their complexity. However, the importance of simulating candidate models has been (...) largely overlooked, which entails several drawbacks and leads to invalid conclusions. (...) The analysis of model simulations is often necessary to support the specific claims (...) that most of model-based studies make.
-
 ```
 
 We could not have said it better.
