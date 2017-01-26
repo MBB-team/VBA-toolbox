@@ -20,6 +20,7 @@ title: "home"
 
 - [VBA: results and diagnostics](VBA-output-structure)
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
+- [Experimental design optimization](Optimizing-the-experimental-design)
 
 
 ## Advanced VBA tricks
@@ -28,7 +29,6 @@ title: "home"
 - [Mixed observations (including multinomial and gaussian variables)](Multisources)
 - [Bayesian model selection for group studies](BMS-for-group-studies)
 - [Bayesian model selection with large model spaces](Comparing-large-spaces-of-models)
-- [Experimental design optimization](Optimizing-the-experimental-design)
 - [Volterra decompositions](Volterra-decomposition)
 - [Bayesian Model Averaging](VBA-BMA)
 - [Setting the priors through Empirical Bayes (group studies)](VBA-MFX)
