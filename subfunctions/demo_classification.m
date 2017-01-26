@@ -1,25 +1,62 @@
+% demo for binary data classification
+% This script first simulates binary data (y) under a simple logistic-like
+% model, i.e.: p(y=1) = sigmoid(X*b), where X is a feature matrix, and b
+% are arbitrary weights. VBA's classifier is then applied to the simulated
+% data, and performance is evaluated. In particular, cross-validation
+% classification accuracy is compared to bayesian model evidence, when
+% using different priors.
+
+clear
 close all
-clear all
 
-dim.p = 32;
-dim.n_t = 1;
-dim.n_phi = 16;
-dim.n_theta = 0;
-dim.n = 0;
+% simulate binary data
+n = 32; % data sample size
+p = 16; % number of features
+X = randn(n,p); % feature matrix
+b = 1+randn(p,1); % feature weights
+e = randn(n,1); % additional noise
+y = sig(X*b+e)>0.5;
 
+% classify data using default set-up
+k = n; % number of folds (k=n: leave-one-out cross-validation)
+verbose = 1; % verbose mode
+options = [];
+sparse = 0; % sparse mode
+[posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse);
+% evaluate estimated classification weights
+displayResults(posterior,out,y,[],[],[],b,[],[])
 
-g_fname = @g_classif;
-options.binomial = 1;
-options.priors.muPhi = zeros(dim.n_phi,1);
-options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
-options.isYout = zeros(dim.p,1);
-options.DisplayWin = 1;
-options.verbose = 0;
+% now change priors and compare class. accuracy VS bayes. model evidence
+v = 10.^[-4:4];
+verbose = 0;
+Nmc = 32; % number of Monte-Carlo simulations
+n = 16; % data sample size
+p = 4; % number of features
+k = n; % number of folds
+for i=1:Nmc
+    i
+    % simulate binary data
+    X = randn(n,p); % feature matrix
+    b = ones(p,1); % feature weights
+    e = randn(n,1); % additional noise
+    y = sig(X*b+e)>0.5;
+    % apply classifier
+    for j=1:length(v)
+        options.priors.SigmaPhi = v(j).*eye(p);
+        [posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse);
+        F(i,j) = out.F;
+        pa(i,j) = all.stat.bpa;
+    end
+end
+hf = figure('color',[1 1 1],'name','classification accuracy VS model evidence');
+ha = subplot(1,2,1);
+errorbar(v,mean(pa,1),std(pa,[],1)./sqrt(Nmc),'parent',ha)
+set(ha,'xscale','log','xlim',[10^-5,10^5],'box','off')
+xlabel(ha,'priors variance')
+ylabel(ha,'classification accuracy (cross-validation)')
+ha = subplot(1,2,2);
+errorbar(v,mean(F,1),std(F,[],1)./sqrt(Nmc),'parent',ha)
+set(ha,'xscale','log','xlim',[10^-5,10^5],'box','off')
+xlabel(ha,'priors variance')
+ylabel(ha,'log model evidence')
 
-options.inG.X = randn(dim.n_phi-1,dim.p);
-phi = randn(dim.n_phi,1);
-[y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,[],[],[],options,[]);
-g = y-e;
-g = g>0.5; % denoised data
-
-[posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);

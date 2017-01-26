@@ -91,9 +91,11 @@ end
 
 
 % randomly re-order the data (for k-fold partitioning)
-io = randperm(n);
-y = y(io);
-X = X(io,:);
+if k ~= n
+    io = randperm(n);
+    y = y(io);
+    X = X(io,:);
+end
 
 % specify options and priors for VBA inversion
 dim.p = n;
