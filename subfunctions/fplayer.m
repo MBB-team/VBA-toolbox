@@ -18,10 +18,10 @@ function DV=fplayer(P,beta,player,game)
 % end
 
 if player==2
-    Payoff= game(:,:,2);
+    Payoff = game(:,:,2);
     DV = P*(Payoff(1,1)-Payoff(1,2))+(1-P)*(Payoff(2,1)-Payoff(2,2));
 elseif player==1
-    Payoff= game(:,:,1);
+    Payoff = game(:,:,1);
     DV = P*(Payoff(1,1)-Payoff(2,1))+(1-P)*(Payoff(1,2)-Payoff(2,2));
 end
 DV = DV/beta;
