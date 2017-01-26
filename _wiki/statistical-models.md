@@ -6,11 +6,11 @@ title: "Statistical models"
 
 # Classical GLM data analysis
 
-The [**general linear model**](https://en.wikipedia.org/wiki/General_linear_model) (GLM) is a statistical linear model that relates a dependent variable $$y$$ to a linear combination of dependent variables as follows:
+The [general linear model](https://en.wikipedia.org/wiki/General_linear_model) (GLM) is a statistical linear model that relates a dependent variable $$y$$ to a linear combination of dependent variables as follows:
 
 $$ y = X \beta + e $$
 
-where $$e$$ are model residuals, $$\beta$$ are unknown regresion coefficients and $$X$$ is the so-called design matrix. GLMs of this sort are equivalent to so-called "multiple regression models", and typical questions of interest can be framed in terms of a [**contrast**](https://en.wikipedia.org/wiki/Contrast_(statistics)) of dependent variables. Inference on such contrasts in the context of a GLM is very general, and grand-fathers most classical statistical approaches, including ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. 
+where $$e$$ are model residuals, $$\beta$$ are unknown regresion coefficients and $$X$$ is the so-called design matrix. GLMs of this sort are equivalent to so-called "multiple regression models", and typical questions of interest can be framed in terms of a [contrast](https://en.wikipedia.org/wiki/Contrast_(statistics)) of dependent variables. Inference on such contrasts in the context of a GLM is very general, and grand-fathers most classical statistical approaches, including ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. 
 
 The following script demonstrates VBA's GLM classical test functionality:
 
