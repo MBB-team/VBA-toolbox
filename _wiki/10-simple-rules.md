@@ -4,7 +4,7 @@ title: "Ten simple rules for VBA"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-Although this section focuses on good VBA practice, almost all following "simple rules" actually apply to *any* model-based data analysis. 
+Although this section focuses on good practice with VBA, almost all following "simple rules" actually apply to *any* model-based data analysis. 
 
 # 1: Simulate your model(s)
 
@@ -50,7 +50,7 @@ A related issue is whether posterior inference critically depends upon the prior
 
 # 6: Optimize your experimental design
 
-Yes, this is a trivial advice. No comment (did you have a look [here](Optimizing-the-experimental-design)?).
+Yes, this is a trivial advice. No comment (did you have a look [here]({{ site.baseurl }}/wiki/Optimizing-the-experimental-design)?).
 
 
 # 7: Derive analytical gradients of evolution/observation functions
@@ -63,15 +63,15 @@ VBA is a grown-up: it can work out numerical gradients if you are too lazy to en
 
 # 8: Update your version of the VBA toolbox regularly
 
-We are making changes on VBA's content regularly. The only way to keep up is to update your version of the toolbox as regularly as we do. Luckily, GitHub can do this automatically for you :)
+We are making changes on VBA's content regularly. The only way to keep up is to update your version of the toolbox as regularly as we do. Luckily, [GitHub](https://github.com/MBB-team/VBA-toolbox) can do this automatically for you :)
 
 
 
 # 9: Post comments and questions on the forum
 
-Most questions and comments come up multiple times, simply because most people face the same sorts of issues. For us, a quick and efficient way of dealing with recurring issues is to keep track of them using the forum...
+Most questions and comments come up multiple times, simply because most people face the same sorts of issues. For us, a quick and efficient way of dealing with recurring issues is to keep track of them using the [forum](http://mbb-team.github.io/VBA-toolbox/forum/)...
 
 
 # 10: Contribute!
 
-You developed an exciting computational model for behavioural and/or neurobiological data? You designed an efficient pipeline analysis with existing VBA features? You wrote a cool VBA-compatible piece of code? Contribute!
+You developed an exciting computational model for behavioural and/or neurobiological data? You designed an efficient pipeline analysis with existing VBA features? You wrote a cool VBA-compatible piece of code? [Contribute](http://mbb-team.github.io/VBA-toolbox/about/)!
