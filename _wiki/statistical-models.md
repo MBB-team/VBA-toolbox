@@ -39,7 +39,7 @@ The function `GLM_contrast.m` can output more than just the p-value. In fact, al
 
 
 
-# 1D-RFT: Random Field Theory for the multiple comparison problem
+# 1D-RFT: solving the multiple comparison problem with *Random Field Theory*
 
 Statistical data analyses may require performing multiple tests, e.g., across time samples within a peri-stimulus time window.
 In neuroimpaging (e.g., fMRI), the problem of correcting for multiple comparisons across voxels has been solved using random field theory or RFT ([Friston et al. 1991](https://www.ncbi.nlm.nih.gov/pubmed/2050758), [Worsley et al. 1992](https://www.ncbi.nlm.nih.gov/pubmed/1400644), [Friston et al. 1994](https://www.ncbi.nlm.nih.gov/pubmed/24578041), [Friston et al. 1996](https://www.ncbi.nlm.nih.gov/pubmed/9345513)). RFT provides a general expression for the probability of topological features in statistical maps under the null hypothesis, such as the number of peaks above some threshold. It controls for the family-wise error rate or FWER, i.e. the probability of detecting one or more false positives across the entire search volume. This allows one to make valid peak-level and/or cluster-level inferences that account for spatial dependences between voxels, without having to compromise statistical power (as, e.g., a Bonferroni correction would). More precisely, RFT corrects p-values of local peaks in proportion to the estimated roughness of the underlying continuous random field ([Kiebel et al. 1999](https://www.ncbi.nlm.nih.gov/pubmed/10600421)). Intuitively, the rougher the field, the less dependant tests performed at neighbouring locations, the smaller the number of effective multiple comparisons. We refer the interested reader to the above publications for mathematical details regarding RFT.
