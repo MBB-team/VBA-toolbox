@@ -38,6 +38,7 @@ The VBA model inversion requires the user to specify some additional information
   - `n_theta` : number of evolution parameters
   - `n_phi` : number of observation parameters
   - `n_t` : number of time samples
+
 For example, setting:
 
 ```matlab
@@ -49,27 +50,10 @@ tells VBA that there are 1 hidden state, 2 evolution parameters and 3 observatio
 
 > **TIP:** other dimensions (`dim.p` and `dim.n_t`) are optional.
 
-- Other **options** (NB: all these can be left unspecified; cf. default values)
-Dealing with categorical (binary) data?
+- Other **options**
 
-```matlab
-options.binomial = 1 ;
-```
-Want to get rid of annoying graphical output figures?
+VBA allows the user to control the inversion using an `options` input structure, which is passed to `VBA_NLStateSpaceModel.m`. Thes eoptions include, but are not limited to: informaing VBA about categorical and/or missing data, setting "micro-time resolution", passing optional arguments to evolution and/or observation functions, etc... [This page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) provides an exhaustive list of these options.
 
-```matlab
-options.DisplayWin = 0 ;
-```
-When dealing with missing data, fill in `options.isYout`, which is a vector of same size as the data matrix `y`, whose entries are 1 if the corresponding sample is to be left out. For example:
-
-```matlab
-options.isYout      = zeros(size(y)) ;
-options.isYout(1,1) = 1 ;
-```
-
-forces VBA to ignore the first time sample of the first dimension of `y`.
-
-> **TIP:** advanced users may use these optional arguments to control the inversion (see [this page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) for an exhaustive list of options).
 
 # Step 3 : Defining priors
 
