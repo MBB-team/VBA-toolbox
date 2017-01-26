@@ -9,6 +9,7 @@ The task is the so-called two-armed bandit problem, which captures the essence o
 
 
 ```matlab
+% define evolution and observation functions (as well as feedback function)
 f_fname = @f_Qlearn2; % evolution function (Q-learning)
 g_fname = @g_softmax; % observation function (softmax mapping)
 h_fname = @h_randOutcome; % feedback function (reward schedule)
