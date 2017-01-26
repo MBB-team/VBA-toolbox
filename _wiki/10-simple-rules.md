@@ -33,13 +33,13 @@ Take our word: the temptation is strong to throw at the data one's most sophisti
 
 # 3: Perform confusion analyses
 
-VBA offers the possibility of performing principled (Bayesian) model comparisons. Nevertheless, you may not know in advance whether your data yields enough statistical power for discriminating between alternative models. Or do you? What about simulating data under different models, and then compare all models given each simulated dataset? This is the essence of *confusion analyses*, which aim at quantifying the expected model selection error rates (under your experimental design). We see this as yet another application of rule #1 :) For an example of how to do this, please see the supplementary materials of, e.g. [Devaine et al. (2014)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992).
+VBA offers the possibility of performing principled (Bayesian) model comparisons. Nevertheless, you may not know in advance whether your experimental design enables discriminating between candidate models. Or do you? What about simulating data under alternative models, and then comparing all models given each simulated dataset? This is the essence of *confusion analyses*, which aim at quantifying the expected model selection error rates (under your experimental design). We see this as yet another application of rule #1 :) For an example of how to perform and use confusion analyses, please refer to, e.g., the supplementary materials of [Devaine et al. (2014)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992).
 
 
 
 # 4: Check model identifiability
 
-Interesting models typically include a few unknown parameters, which can be adjusted to observed data in the aim of capturing, e.g., inter-individual differences or treatment effects. But do you know whether the impact of model parameters on predicted data is unambiguous? Can two parameters (or more) predict similar changes in the data? If yes, then the model is not (perfectly) identifiable. This may be an issue, if you are willing to interpret these parameters. Thus, in addition to knowing your model, you should know whether it is identifiable, i.e. whether you can recover its parameters of interest from experimental data. This, again, can be assessed using numerical simulations (rule #1).
+Interesting models typically include a few unknown parameters, which can be adjusted to observed data in the aim of capturing, e.g., inter-individual differences or treatment effects. But do you know whether the impact of model parameters on predicted data is unambiguous? Can two parameters (or more) predict similar changes in the data? If yes, then the model is not (perfectly) identifiable. This is an issue if you are willing to interpret parameter estimates. Thus, in addition to knowing your model, you should know whether it is identifiable, i.e. whether you can recover its parameters rom experimental data. This, again, can be assessed using numerical simulations (cf. rule #1).
 
 
 
