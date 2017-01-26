@@ -57,7 +57,7 @@ VBA allows the user to control the inversion using an `options` input structure,
 
 # Step 3 : Defining priors
 
-In addition to the evolution and observation functions, specifying the generative model requires the definition of **prior probability distributions** over model unknown variables. These are summarized by sufficient statistics (e.g., mean and variance), which are stored as a matlab structure that is itself added to the 'options' structure:
+In addition to the evolution and observation functions, specifying the generative model requires the definition of **prior probability distributions** over model unknown variables. These are summarized by sufficient statistics (e.g., mean and variance), which are stored as a matlab structure `priors` that is itself apended to the `options` structure:
 
 - **Observation parameters**
   - `priors.muPhi`
@@ -75,27 +75,31 @@ In addition to the evolution and observation functions, specifying the generativ
   - `priors.a_alpha`
   - `priors.b_alpha`
 
-For example, setting:
+
+If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities). For example, setting:
 
 ```matlab
 priors.muPhi    = zeros(dim.n_phi,1) ;
 priors.SigmaPhi = eye(dim.n_phi)     ;
 ```
-effectively defines a N(0,I) i.i.d. (zero mean, unit variance) normal density on observation parameters.
+effectively defines a $$N\left( 0,I \right)$$ i.i.d. (zero-mean, unit-variance) normal density on observation parameters.
 
-Note that when dealing with deterministic models, one has to specify the following prior for the state noise precision:
-
-```matlab
-priors.a_alpha = Inf ;
-priors.b_alpha = 0   ;
-```
-
-> **TIP:** one then fills in the `priors` field of the `options` structure, as follows:
+> **Tip:** By default, VBA assumes that dynamical systems are deterministic. This is done by forcing an infinite prior precision on state noise. However, identification of  **stochastic** systems can be performed by setting a finite state noise precision.
+>
+> For example, setting:
 >
 >```matlab
+priors.a_alpha = 1;
+priors.b_alpha = 1;
+```
+effectively assumes that state noise precision is a zero-mean and unit-variance [Gamma variable](https://en.wikipedia.org/wiki/Gamma_distribution).
+
+One then fills in the `priors` field of the `options` structure, as follows:
+
+```matlab
 options.priors = priors ;
 ```
-If left unspecified, this field is filled in with defaults (typically, i.i.d. zero-mean and unit variance Gaussian densities).
+
 
 # Step 4 : Inverting the model
 
