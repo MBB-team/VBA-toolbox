@@ -102,7 +102,48 @@ On the one hand, VBA proposes to approach such mediation analyses from a Bayesia
 
 On the other hand, VBA comprises self-contained routines for performing classical tests of mediation (e.g., Sobel tests). In brief, this consists in testsing for the significance of the product of path coefficients in the serial model above. Such test can be performed using VBA's function `mediationAnalysis0.m` (see the demo: `demo_mediation.m`).
 
-Note that mediation analyses of this sort can be generalized to multiple contrasts on experimental factors, where $$X$$ is now a full design matrix with more than one independent variable. In this case, one may want to ask whether $$M$$ mediates the effect of *any* linear combination of independent variables on $$Y$$. This can be done using the function `mediation_contrast.m`. 
+The following script demonstrates VBA's GLM classical test functionality:
+
+```matlab
+n = 32; % data sample size
+X = randn(n,1); % independent variable
+M = X + randn(n,1); % mediator variable
+Y = M + X + randn(n,1); % dependent variable (partial mediation)
+out = mediationAnalysis0(Y,X,M,[]);
+```
+
+where `out` is a structure containing the summary statistics of mediation analysis. These are laid out in the matlab command window:
+
+```
+Date: 26-Jan-2017 14:37:13
+ 
+-- Regression results --
+step 1) regress Y on X: R2=0.7% (p=0.65361)
+step 2) regress M on X: R2=12.6% (p=0.045935)
+step 3) regress Y on both X and M:
+   - X: R2[adj]=22.5% (p=0.0070265)
+   - M: R2[adj]=58.2% (p=6.1066e-07)
+ 
+-- Path analysis --
+Indirect effect X->M->Y: R2=7.3% (Sobel test: p=0.047847)
+Direct effect X->Y: R2=22.5% (p=0.0070265)
+Total effect: R2=7.6%
+Summary: no conclusion (no X->Y link in the absence of M)
+ 
+-- Monte-Carlo sampling --
+Indirect effect X->M->Y: P(ab=0|H0)=0.03746
+ 
+-- Conjunction testing --
+Indirect effect X->M->Y: P(ab=0|H0)=0.045935
+```
+
+with the following graphical output:
+
+![]({{ site.baseurl }}/images/wiki/mediation0.jpg)
+
+One can see that the direct regression of $$Y$$ onto $$X$$ (in the absence of the mediatior $$M$$) yields no significant result. However, the full model captures the partial mediation effect.
+
+> **Tip:** Note that mediation analyses of this sort can be generalized to multiple contrasts on experimental factors, where $$X$$ is now a full design matrix with more than one independent variable. In this case, one may want to ask whether $$M$$ mediates the effect of *any* linear combination of independent variables on $$Y$$. This can be done using the function `mediation_contrast.m`. 
 
 
 # Binary data classification
