@@ -1,8 +1,10 @@
 ---
-title: "Ten simple rules for good practice with VBA"
+title: "Ten simple rules for VBA"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
+
+Although this section focuses on good VBA practice, almost all following "simple rules" actually apply to *any* model-based data analysis. 
 
 # 1: Simulate your model(s)
 
@@ -32,7 +34,6 @@ Take our word: the temptation is strong to throw at the data one's most sophisti
 
 VBA offers the possibility of performing principled (Bayesian) model comparisons. Nevertheless, you may not know in advance whether your data yields enough statistical power for discriminating between alternative models. Or do you? What about simulating data under different models, and then compare all models given each simulated dataset? This is the essence of *confusion analyses*, which aim at quantifying the expected model selection error rates (under your experimental design). We see this as yet another application of rule #1 :) For an example of how to do this, please see the supplementary materials of, e.g. [Devaine et al. (2014)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992).
 
-> 
 
 
 # 4: Check model identifiability
@@ -49,12 +50,14 @@ A related issue is whether posterior inference critically depends upon the prior
 
 # 6: Optimize your experimental design
 
-Yes: it is a trivial advice. No comment.
+Yes, this is a trivial advice. No comment (did you have a look [here](Optimizing-the-experimental-design)?).
 
 
 # 7: Derive analytical gradients of evolution/observation functions
 
-VBA is a grown-up: it can work out numerical gradients if you are too lazy to endow evolution and/or observation functions with analytical gradients. But let's face it: you could speed up VBA model inversions by orders of magnitude. Maybe it's worth a little mathematical effort...
+VBA is a grown-up: it can work out numerical gradients if you are too lazy to endow evolution and/or observation functions with analytical gradients. But let's face it: by providing these gradients, you could speed up VBA model inversions by orders of magnitude. This is perhaps the simplest and most efficient way of improving your code...
+
+> **Tip:** VBA can help you to check whether your derivations are correct by comparing the analytical gradients with the numerical ones. This can be done by setting `options.checkGrads = 1`.
 
 
 
