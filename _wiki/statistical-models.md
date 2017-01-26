@@ -211,7 +211,7 @@ The script `demo_KalmanSmoother.m` demonstrates the smoothing properties of the 
 # Probabilistic clustering
 
 Any Bayesian data analysis relies upon a generative model, i.e. a probabilistic description of the mechanisms by which observed data are generated. The main VBA functions deal with a certain class of generative models, namey: state-space models with unknown evolution/observation parameters. But it also offers a set of VB routines developped to invert **mixtures of Gaussian** -MoG- and of binomial -MoB- densities, which are described below. These can be used to perform data clustering (i.e., blind data classification). 
-The `\classification` folder contains the functions that deal with MoG and MoB data (see below).
+The folder `\classification` contains the functions that deal with MoG and MoB data (see below).
 
 The [MoG model](https://en.wikipedia.org/wiki/Mixture_model) has been widely used in the machine learning and statistics community. It assumes that the observed data $$y$$ is actually partitioned into K classes or subsets of points, each one of which can be well described with a multivariate Gaussian density. If these components are sufficiently different, then the overall datasets enjoys a clustering structure, when projected onto an appropriate subspace.
 
