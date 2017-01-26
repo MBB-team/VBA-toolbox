@@ -18,7 +18,7 @@ We could not have said it better.
 Model simulations should be performed before and after data analysis:
 
 - before the analysis, simulations are useful to explore what models can and cannot do, given alternative parameter settings.
-- after the analysis, simulations are useful to predict yet unobserved data (maybe under different experimental conditions).
+- after the analysis, simulations are useful to predict yet unobserved data (maybe under different experimental conditions), for validation purposes.
 
 This **the** golden rule. Know your model(s).
 
