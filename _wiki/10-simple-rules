@@ -1,0 +1,17 @@
+---
+title: "Ten simple rules for good practice with VBA"
+---
+* Will be replaced with the ToC, excluding the "Contents" header
+{:toc}
+
+# 1: Simulate observable data under your model(s)
+
+# 2: Check model identifiability
+
+# 3: Perform confusion analyses
+
+# 4: Derive analytical gradients of evolution/observation functions
+
+# 5: Assess the susceptibility of posterior w.r.t. priors
+
+# 6: 
