@@ -91,7 +91,7 @@ One can see that, in this example, no peak or upcrossing cluster reaches statist
 
 # GLM with missing data
 
-Missing data occur when the value of either the dependent or the independent variables (or both) are unknown or lost. This is an issue because the GLM cannot be fitted using the usual procedure (cf. missing values in the design matrix). VBA relies on the variational Bayesian algorithm to estimate likely values for missing data in addition to fitting the GLM parameters. See the demo: `demo_GLM_missingData.m`.
+[Missing data](https://en.wikipedia.org/wiki/Missing_data) occur when the value of either the dependent or the independent variables (or both) are unknown or lost. This is an issue because the model cannot be fitted using the usual procedure (cf. missing values in the design matrix of a GLM). VBA relies on the variational Bayesian algorithm to estimate likely values for missing data in addition to fitting the GLM parameters. See the demo: `demo_GLM_missingData.m`.
 
 
 # Mediation analysis
@@ -201,9 +201,9 @@ $$
 \right.
 $$
 
-where $$e$$ and $$f$$ are residuals. The second equation essentially sets a [AR(1)](https://en.wikipedia.org/wiki/Autoregressive_model) prior on hidden states. 
+where $$e$$ and $$f$$ are stochastic residuals. The second equation essentially sets a [AR(1)](https://en.wikipedia.org/wiki/Autoregressive_model) prior on hidden states. 
 
-The objective of a Kalman filter is to operate on-line and yields an estimate of $$x_t$$ given all past observations $$y_{1,2,...,t}$$. Alternatively, a Kalman *smoother* operates off-line, and yields an estimate of $$x_t$$ given all obseravtions $$y_{1,2,...,t,...,T}$$. This can be useful, because the impact of hidden states may be delayed in time. *Lagged* Kalman filters provide a reasonable trade-off between the two perspectives, and yield estimates of $$x_t$$ given lagged observations $$y_{1,2,...,t,...,t+k}$$, where $$k$$ is the lag. VBA offer to directly control the backward lag $$k$$, by trading computational cost against estimation efficiency. 
+The objective of a Kalman filter is to operate on-line and yields an estimate of $$x_t$$ given all past observations $$y_{1,2,...,t}$$. Alternatively, a Kalman *smoother* operates off-line, and yields an estimate of $$x_t$$ given all observations $$y_{1,2,...,t,...,T}$$. This can be useful, because the impact of hidden states may be delayed in time. *Lagged* Kalman filters provide a reasonable trade-off between the two perspectives, and yield estimates of $$x_t$$ given lagged observations $$y_{1,2,...,t,...,t+k}$$, where $$k$$ is the lag. VBA offers to directly [control the backward lag $$k$$]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options), by trading computational cost against estimation efficiency. 
 
 The script `demo_KalmanSmoother.m` demonstrates the smoothing properties of the Kalman lagged filter. Here, simulated hidden states follow a triangular wave, whose observation is perturbed with white noise. Critically, we render the inversion scheme blind during half a period of the oscillation. We then invert the model (under AR(1) priors on hidden states), with and without large backward lag.
 
