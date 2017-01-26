@@ -6,7 +6,13 @@ title: "Statistical models"
 
 # Classical GLM data analysis
 
-The general linear model (GLM) is a statistical linear model. The GLM incorporates a number of different statistical models: ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. It is a generalization of multiple linear regression model to the case of more than one dependent variable. The following script demonstrates VBA's GLM classical test functionality:
+The [**general linear model**](https://en.wikipedia.org/wiki/General_linear_model) (GLM) is a statistical linear model that relates a dependent variable $$y$$ to a linear combination of dependent variables as follows:
+
+$$ y = X \beta + e $$
+
+where $$e$$ are model residuals, $$\beta$$ are unknown regresion coefficients and $$X$$ is the so-called design matrix. GLMs of this sort are equivalent to so-called "multiple regression models", and typical questions of interest can be framed in terms of a [**contrast**](https://en.wikipedia.org/wiki/Contrast_(statistics)) of dependent variables. Inference on such contrasts in the context of a GLM is very general, and grand-fathers most classical statistical approaches, including ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. 
+
+The following script demonstrates VBA's GLM classical test functionality:
 
 ```matlab
 X  = randn(32, 4)  ;
@@ -14,21 +20,23 @@ b  = [1.5; 0; 0; 0 ] ;
 y  = X*b ;
 y  = y + randn(size(y)) ;
 c  = [1; 0; 0; 0 ] ;
+type = 'F';
 pv = GLM_contrast(X, y, c, type) ;
 ```
-where `X` is the design matrix, `y` is the data matrix, `c` is the contrast matrix, `type` is flag for the test (t-test or F-test) and `pv` is the p-value of the corresponding test (in this example, the contrast effectively tests for the significance of the first regressor of the design matrix).
+where `c` is the contrast matrix, `type` is flag for the test (t-test or F-test) and `pv` is the p-value of the corresponding test (in this example, the contrast effectively tests for the significance of the first regressor of the design matrix).
 
 Let us eyeball the graphical output of the function `GLM_contrast.m`:
 
-![]({{ site.baseurl }}/images/wiki/tabs/glm1.jpg)
+![]({{ site.baseurl }}/images/wiki/tabs/glm_contrast.bmp)
 
-> **Upper-left panel**: observed data (y-axis) plotted against predicted data (x-axis). NB: The percentage of explained variance is indicated (the adjusted R^2 is the percentage of variance explained by the contrast of interest). **Middle-left panel**: observed and predicted data (y-axis) plotted against data dimensions (x-axis). **Lower-left panel**: parameter's correlation matrix. **Upper-right panel**: parameter estimates plus or minus one standard deviation. NB: Right-clicking on barplots allows one to access the results individual significance F-tests. **Middle-right panel**: contrast of interest. **Lower-right panel**: design matrix. Note that all descriptive statistics can be retrieved from optional output arguments.
-
-**Tip**: defining contrasts for, e.g., main effects of multi-level factors can be tedious. However, VBA has an in-built function for doing exactly this: `Contrast_MEbins.m`. It outputs the contrast matrix corresponding to an F-test of the main effect of a given experimental factor with n levels.
+> **Upper-left panel**: observed data (y-axis) plotted against predicted data (x-axis). NB: The total percentage of explained variance is indicated ($$R^2$$), as well as the percentage of variance explained by the contrast of interest. **Middle-left panel**: observed and predicted data (y-axis) plotted against data dimensions (x-axis). **Lower-left panel**: parameter's correlation matrix. **Upper-right panel**: GLM parameter estimates plus or minus one standard deviation. NB: Right-clicking on barplots allows one to access the results of  individual significance F-tests. **Middle-right panel**: contrast of interest. **Lower-right panel**: design matrix. Note: some GLM diagnoses (e.g., normality and homoscedasticity of model residuals $$e$$) can be eyeballed (cf. "inspect residuals" at the bottom of the figure).
 
 Note that t-tests effectively perform one-tailed tests (positive effects). This means that the sign of the contrast matters. In contradistinction, F-tests perform two-tailed tests.
 
-The function `GLM_contrast.m` can output more than just the p-value. In particular, it can be used to recover ordinary least-squares (OLS) estimates of GLM parameters and residual variance, as well as summary statistics such as t- or F- values and percentage of explained variance...
+The function `GLM_contrast.m` can output more than just the p-value. In fact, all descriptive statistics can be retrieved from optional output arguments to `GLM_contrast.m`. In particular, it can be used to recover ordinary least-squares (OLS) estimates of GLM parameters and residual variance, as well as summary statistics such as t- or F- values and percentages of explained variance...
+
+**Tip**: defining contrasts for, e.g., main effects of multi-level factors can be tedious. However, VBA has an in-built function for doing exactly this: `Contrast_MEbins.m`. It outputs the contrast matrix corresponding to an F-test of the main effect of a given experimental factor with n levels.
+
 
 
 # 1D-RFT: Random Field Theory for the multiple comparison problem
@@ -88,11 +96,13 @@ Missing data occur when the value of either the dependent or the independent var
 
 # Mediation analysis
 
-One may be willing to address questions about how key variables mediate the impact of (controlled) stimuli onto (measured) experimental outcomes. For example, one may want to assess the impact of brain activity onto behavioural outcomes above and beyond the effect of psychophysical manipulations. Statistical models of mediated effects place the mediator variable (M) at the interplay between the independent variable (X) and the dependent variable (Y).
+One may be willing to address questions about how key variables mediate the impact of (controlled) stimuli onto (measured) experimental outcomes. For example, one may want to assess the impact of brain activity onto behavioural outcomes above and beyond the effect of psychophysical manipulations. Statistical models of mediated effects place the mediator variable ($$M$$) at the interplay between the independent variable ($$X$$) and the dependent variable ($$Y$$).
 
-On the one hand, VBA proposes to approach such mediation analyses from a Bayesian perspective. The latter perspective reduces to a bayesian model comparison, whereby one evaluates the evidence in favour of a model that includes a serial chain of causality (X -> M -> Y) against a "common cause" model (X -> M and X-> Y).
+On the one hand, VBA proposes to approach such mediation analyses from a Bayesian perspective. The latter perspective reduces to a bayesian model comparison, whereby one evaluates the evidence in favour of a model that includes a serial chain of causality ($$X \rightarrow M \rightarrow Y$$) against a "common cause" model ($$X \rightarrow M$$ and $$X \rightarrow Y$$).
 
-On the other hand, VBA comprises self-contained routines for performing classical tests of mediation (e.g., Sobel tests). In brief, this consists in testsing for the significance of the product of path coefficients in the serial model above. Such test can be performed using the function `mediationAnalysis0.m` (see the demo: `demo_mediation.m`).
+On the other hand, VBA comprises self-contained routines for performing classical tests of mediation (e.g., Sobel tests). In brief, this consists in testsing for the significance of the product of path coefficients in the serial model above. Such test can be performed using VBA's function `mediationAnalysis0.m` (see the demo: `demo_mediation.m`).
+
+Note that mediation analyses of this sort can be generalized to multiple contrasts on experimental factors, where $$X$$ is now a full design matrix woth more than one independent variable. In this case, one may want to ask whether $$M$$ mediates the effect of *any* linear combination of independent variables on $$Y$$. This can be done using the function `mediation_contrast.m`. 
 
 
 # Binary data classification
@@ -105,7 +115,7 @@ VBA possesses an in-built function for data classfication, namely: `VBA_classifi
 
 ![]({{ site.baseurl }}/images/wiki/classification.jpg)
 
-> **Upper-left panel**: the distribution of correct classifications (X) under the null is compared with the actual number of classifier successes (x). This serves to perform classical inference on classification accuracy: p-value = $$P\left( X>x \mid H_0 \right)$$. **Lower-left panel**: posterior distribution over the classification accuracy. This serves to perform Bayesian inference on classification accuracy: exceedance probability = $$P\left( r>0.5 \mid x \right)$$. **Upper-right panel**: classifier weights estimates for each train fold. This can be used to eyball the estimation stability of classifier weights. **Lower-right panel**: Summary statistics of data classification.
+> **Upper-left panel**: the distribution of correct classifications ($$X$$) under the null is compared with the actual number of classifier successes ($$x$$). This serves to perform classical inference on classification accuracy: p-value = $$P\left( X>x \mid H_0 \right)$$. **Lower-left panel**: posterior distribution over the classification accuracy. This serves to perform Bayesian inference on classification accuracy ($$r$$): exceedance probability = $$P\left( r>0.5 \mid x \right)$$. **Upper-right panel**: classifier weights estimates for each train fold. This can be used to eyball the estimation stability of classifier weights. **Lower-right panel**: Summary statistics of data classification.
 
 The script `demo_classification.m` exemplifies this approach, and demonstrates the relation between classical cross-validation approaches and Bayesian model comparison.
 
