@@ -35,7 +35,7 @@ Note that t-tests effectively perform one-tailed tests (positive effects). This 
 
 The function `GLM_contrast.m` can output more than just the p-value. In fact, all descriptive statistics can be retrieved from optional output arguments to `GLM_contrast.m`. In particular, it can be used to recover ordinary least-squares (OLS) estimates of GLM parameters and residual variance, as well as summary statistics such as t- or F- values and percentages of explained variance...
 
-**Tip**: defining contrasts for, e.g., main effects of multi-level factors can be tedious. However, VBA has an in-built function for doing exactly this: `Contrast_MEbins.m`. It outputs the contrast matrix corresponding to an F-test of the main effect of a given experimental factor with n levels.
+> **Tip**: defining contrasts for, e.g., main effects of multi-level factors can be tedious. However, VBA has an in-built function for doing exactly this: `Contrast_MEbins.m`. It outputs the contrast matrix corresponding to an F-test of the main effect of a given experimental factor with n levels.
 
 
 
