@@ -22,7 +22,9 @@ Model simulations should be performed before and after data analysis:
 - before the analysis, simulations are useful to explore what models can and cannot do, given alternative parameter settings.
 - after the analysis, simulations are useful to predict yet unobserved data (maybe under different experimental conditions), for experimental validation purposes.
 
-This **the** golden rule. Know your model(s).
+> **Tip:** VBA is endowed with specific in-built functions for simulating generative models of any sort. In particular, you can use simulate data time series using `simulateNLSS.m` or `simulateNLSS_fb.m` (when on-line feedback is required for simulating the system) and eyeball them using `displaySimulations.m`. Full Monte-Carlo simulations can be derived with `get_MCMC_predictiveDensity.m` and explored using `plotDeensity.m`.
+
+Anyway, this **the** golden rule. Know. Your. Model(s).
 
 
 # 2: Start with simple models
