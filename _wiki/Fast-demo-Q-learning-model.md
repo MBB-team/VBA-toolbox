@@ -117,6 +117,7 @@ Note also that VBA also includes routines for performing other types of analyses
 
 - **clustering analyses**: in this type of analysis, data are assumed to be sampled from a mixture of Gaussian or Binomial distributions.
 - **group-level Bayesian model comparisons**: In this type of analysis, models are treated as random effects that could differ between subjects and have a fixed (unknown) distribution in the population.
+- **classical statistical analyses**: multiple regression, mediation analysis, cross-validated classification, etc...
 
 Finally, note that VBA already includes a large library of models for behavioural and neurophysiological data...
 
