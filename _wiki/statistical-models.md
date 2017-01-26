@@ -107,7 +107,7 @@ $$
 \right.
 $$
 
-where $$e_M$$ and $$e_Y$$ are model residuals, and $$\beta_{1,2,3}$$ are regression coefficients. Typically, there is a mediation effect if the product $$\beta_1 \beta_2$$ is different from zero.
+where $$e_M$$ and $$e_Y$$ are model residuals, and $$\beta_{1,2,3}$$ are unknown regression coefficients. Typically, there is a mediation effect if the product $$\beta_1 \times \beta_2$$ is different from zero.
 
 On the one hand, VBA proposes to approach such mediation analyses from a Bayesian perspective. The latter perspective reduces to a bayesian model comparison, whereby one evaluates the evidence in favour of a model that includes a serial chain of causality ($$X \rightarrow M \rightarrow Y$$) against a "common cause" model ($$X \rightarrow M$$ and $$X \rightarrow Y$$).
 
@@ -125,7 +125,7 @@ out = mediationAnalysis0(Y,X,M,[]);
 
 where `out` is a structure containing the summary statistics of mediation analysis. These are laid out in the matlab command window:
 
-`
+``
 Date: 26-Jan-2017 14:37:13
  
 -- Regression results --
@@ -146,7 +146,7 @@ Indirect effect X->M->Y: P(ab=0|H0)=0.03746
  
 -- Conjunction testing --
 Indirect effect X->M->Y: P(ab=0|H0)=0.045935
-`
+``
 
 with the following graphical output:
 
