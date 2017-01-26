@@ -30,7 +30,7 @@ Take our word: the temptation is strong to throw at the data one's most sophisti
 
 # 3: Perform confusion analyses
 
-VBA offers the possibility of performing principled (Bayesian) model comparisons. Nevertheless, you may not know in advance whether your data yields enough statistical power for discriminating between alternative models. Or do you? What about simulating data under different models, and then compare all models given each simulated dataset? This is the essence of *confusion analyses*, which aim at quantifying the expected model selection error rates (under your expeirmental design). We see this as yet another application of rule #1 :) For an example of how to do this, please see the supplementary materials of, e.g. [Devaine et al. (2014)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992).
+VBA offers the possibility of performing principled (Bayesian) model comparisons. Nevertheless, you may not know in advance whether your data yields enough statistical power for discriminating between alternative models. Or do you? What about simulating data under different models, and then compare all models given each simulated dataset? This is the essence of *confusion analyses*, which aim at quantifying the expected model selection error rates (under your experimental design). We see this as yet another application of rule #1 :) For an example of how to do this, please see the supplementary materials of, e.g. [Devaine et al. (2014)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992).
 
 > 
 
