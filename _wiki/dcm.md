@@ -24,6 +24,8 @@ spm_dcm_explore(DCM) % eyeball inversion results
 
 where `DCM` is the variable saved in the SPM DCM-file and `TR` is the fMRI repetition time.
 
+The graphical output of `spm_decm_explore.m` is appended below:
+
 ![]({{ site.baseurl }}/images/wiki/tabs/dcm1.jpg)
 
 A number of VBA demonstration scripts have been written for DCM:
