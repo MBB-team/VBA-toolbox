@@ -72,9 +72,9 @@ We are making changes on VBA's content regularly. The only way to keep up is to 
 
 # 9: Post comments and questions on the forum
 
-Most questions and comments come up multiple times, simply because most people face the same sorts of issues. For us, a quick and efficient way of dealing with recurring issues is to keep track of them using the [forum](http://mbb-team.github.io/VBA-toolbox/forum/)...
+Most questions and comments come up multiple times, simply because most people face similar issues. For us, a quick and efficient way of dealing with recurring issues is to keep track of them using the [forum](http://mbb-team.github.io/VBA-toolbox/forum/)...
 
 
 # 10: Contribute!
 
-You developed an exciting computational model for behavioural and/or neurobiological data? You designed an efficient pipeline analysis with existing VBA features? You wrote a cool VBA-compatible piece of code? [Contribute](http://mbb-team.github.io/VBA-toolbox/about/)!
+You developed a novel computational model for behavioural and/or neurobiological data? You designed an efficient pipeline analysis with existing VBA features? You wrote a cool VBA-compatible piece of code? [Contribute](http://mbb-team.github.io/VBA-toolbox/about/)!
