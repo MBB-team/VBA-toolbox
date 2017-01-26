@@ -11,7 +11,7 @@ Although this section focuses on good practice with VBA, almost all following "s
 This is a quote from [Palminteri et al. (2016)](http://www.biorxiv.org/content/early/2016/10/07/079798):
 
 ```
-Cognitive neuroscience, especially in the fields of learning and decision-making, is witnessing the blossoming of computational model-based analyses. [...] Candidate models should be compared by trading off their ability to predict the data as a function of their complexity. However, the importance of simulating candidate models has been so far largely overlooked, which entails several drawbacks and leads to invalid conclusions. Here we argue that the analysis of model simulations is often necessary to support the specific claims about behavioral function that most of model-based studies make.
+Candidate models should be compared by trading off their ability to predict the data as a function of their complexity. However, the importance of simulating candidate models has been so far largely overlooked, which entails several drawbacks and leads to invalid conclusions. Here we argue that the analysis of model simulations is often necessary to support the specific claims (...) that most of model-based studies make.
 
 ```
 
