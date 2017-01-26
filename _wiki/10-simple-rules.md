@@ -28,7 +28,7 @@ Anyway, this **the** golden rule. Know. Your. Model.
 
 # 2: Start with simple models
 
-Take our word: the temptation is strong to throw at the data one's most sophisticated model. But this may not be a good idea. First, if you are an unexperienced user of VBA, you may make mistakes (bugs), which may be eventually difficult to correct. Second, your favorite model will benefit from a comparison with simpler models, which will serve as reference points. Third, maybe, who knows, a simple model will do?
+Take our word: the temptation is strong to throw at the data one's most sophisticated model. But this may not be a good idea. First, if you are an unexperienced user of VBA, you may make mistakes (bugs), which may be eventually difficult to correct. Second, your favorite model will benefit from a comparison with simpler models, which will serve as reference points. Third, maybe a simple model will do?
 
 
 # 3: Perform confusion analyses
