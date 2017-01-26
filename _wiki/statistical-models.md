@@ -29,7 +29,7 @@ Let us eyeball the graphical output of the function `GLM_contrast.m`:
 
 ![]({{ site.baseurl }}/images/wiki/tabs/glm_contrast.bmp)
 
-> **Upper-left panel**: observed data (y-axis) plotted against predicted data (x-axis). NB: The total percentage of explained variance is indicated ($$R^2$$), as well as the percentage of variance explained by the contrast of interest. **Middle-left panel**: observed and predicted data (y-axis) plotted against data dimensions (x-axis). **Lower-left panel**: parameter's correlation matrix. **Upper-right panel**: GLM parameter estimates plus or minus one standard deviation. NB: Right-clicking on barplots allows one to access the results of  individual significance F-tests. **Middle-right panel**: contrast of interest. **Lower-right panel**: design matrix. Note: some GLM diagnoses (e.g., normality and homoscedasticity of model residuals $$e$$) can be eyeballed (cf. "inspect residuals" at the bottom of the figure).
+> **Upper-left panel**: observed data (y-axis) plotted against predicted data (x-axis). NB: The total percentage of explained variance is indicated ($$R^2$$), as well as the percentage of variance explained by the contrast of interest. **Middle-left panel**: observed and predicted data (y-axis) plotted against data dimensions (x-axis). **Lower-left panel**: parameter's correlation matrix. **Upper-right panel**: GLM parameter estimates plus or minus one standard deviation. NB: Right-clicking on barplots allows one to access the results of  individual significance F-tests. **Middle-right panel**: contrast of interest. **Lower-right panel**: design matrix. Note: some GLM diagnoses (e.g., normality and homoscedasticity of model residuals) can be eyeballed (cf. "inspect residuals" at the bottom of the figure).
 
 Note that t-tests effectively perform one-tailed tests (positive effects). This means that the sign of the contrast matters. In contradistinction, F-tests perform two-tailed tests.
 
@@ -102,7 +102,7 @@ On the one hand, VBA proposes to approach such mediation analyses from a Bayesia
 
 On the other hand, VBA comprises self-contained routines for performing classical tests of mediation (e.g., Sobel tests). In brief, this consists in testsing for the significance of the product of path coefficients in the serial model above. Such test can be performed using VBA's function `mediationAnalysis0.m` (see the demo: `demo_mediation.m`).
 
-Note that mediation analyses of this sort can be generalized to multiple contrasts on experimental factors, where $$X$$ is now a full design matrix woth more than one independent variable. In this case, one may want to ask whether $$M$$ mediates the effect of *any* linear combination of independent variables on $$Y$$. This can be done using the function `mediation_contrast.m`. 
+Note that mediation analyses of this sort can be generalized to multiple contrasts on experimental factors, where $$X$$ is now a full design matrix with more than one independent variable. In this case, one may want to ask whether $$M$$ mediates the effect of *any* linear combination of independent variables on $$Y$$. This can be done using the function `mediation_contrast.m`. 
 
 
 # Binary data classification
@@ -111,13 +111,30 @@ Strictly speaking, VBA's default generative model copes with continuous data, fo
 
 However, the typical objective of classification is not to perform inference ion feature weights. Rather, one simply asks how well would the classifier predict the label of a new (yet unseen) data point. In particular, one is interested in whether the classfier operates better than chance. The established approach here is to use **cross-validation**. One first partition the data into "train" and "test" datasets. The former is used to fit the classifier weights (this is called "training the classifier"). An example of this is "leave-one-out" procedures, whereby each data point serves as the test set in turn. So-called "k-fold" partitionings generalize this idea, in that  the original sample is randomly partitioned into k equal sized subsets, each of which serves as the test set in turn. The **generalization error** is derived by comparing the predicted and actual labels of the "test" data, for each test set. Classical inference can then be used to ask whether the number of correct classification could be explained by chance.
 
-VBA possesses an in-built function for data classfication, namely: `VBA_classification.m`. It can be used to perform both classical (p-value) and Bayesian (exceedance probability) inference on classifier accuracy using k-fold cross-validation approaches. Its graphical output is exempleified below:
+VBA possesses an in-built function for classfication, namely: `VBA_classification.m`. It can be used to perform both classical (p-value) and Bayesian (exceedance probability) inference on classifier accuracy using k-fold cross-validation approaches. The following script demonstrates VBA's GLM classical test functionality:
+
+```matlab
+% simulate binary data
+n = 32; % data sample size
+p = 16; % number of features
+X = randn(n,p); % feature matrix
+b = 1+randn(p,1); % feature weights
+e = randn(n,1); % additional noise
+y = sig(X*b+e)>0.5;
+% classify data using default set-up
+sparse = 0; % sparse mode
+[posterior,out,all] = VBA_classification(X,y,n,1,[],sparse);
+```
+where `sparse`is a flag that can be used to perform sparse estimation of classifier weights. 
+
+Let us eyeball the graphical output of the function `VBA_classification.m`:
 
 ![]({{ site.baseurl }}/images/wiki/classification.jpg)
 
 > **Upper-left panel**: the distribution of correct classifications ($$X$$) under the null is compared with the actual number of classifier successes ($$x$$). This serves to perform classical inference on classification accuracy: p-value = $$P\left( X>x \mid H_0 \right)$$. **Lower-left panel**: posterior distribution over the classification accuracy. This serves to perform Bayesian inference on classification accuracy ($$r$$): exceedance probability = $$P\left( r>0.5 \mid x \right)$$. **Upper-right panel**: classifier weights estimates for each train fold. This can be used to eyball the estimation stability of classifier weights. **Lower-right panel**: Summary statistics of data classification.
 
 The script `demo_classification.m` exemplifies this approach, and demonstrates the relation between classical cross-validation approaches and Bayesian model comparison.
+
 
 # Kalman filter/smoother
 
