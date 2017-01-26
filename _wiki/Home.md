@@ -21,7 +21,7 @@ title: "home"
 - [VBA: results and diagnostics](VBA-output-structure)
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
 - [Experimental design optimization](Optimizing-the-experimental-design)
-- [Ten simple rules for good practice with VBA](10-simple-rules)
+- [Ten simple rules for VBA](10-simple-rules)
 
 
 ## Advanced VBA tricks
