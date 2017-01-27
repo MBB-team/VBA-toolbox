@@ -14,14 +14,14 @@ This is a quote from [Palminteri et al. (2016)](http://www.biorxiv.org/content/e
 The importance of simulating candidate models has been (...) largely overlooked, which entails several drawbacks and leads to invalid conclusions. (...) The analysis of model simulations is often necessary to support the specific claims (...) that most of model-based studies make.
 ```
 
-We could not have said it better.
+We could not have said it better. How else can you know your model?
 
 Model simulations should be performed before and after data analysis:
 
 - before the analysis, simulations are useful to explore what models can and cannot do, under alternative parameter settings.
 - after the analysis, simulations are useful to predict yet unobserved data (maybe under different experimental conditions), for experimental validation purposes.
 
-> **Tip:** VBA is endowed with specific in-built functions for simulating generative models of any sort. In particular, you can use simulate data time series using `simulateNLSS.m` or `simulateNLSS_fb.m` (when on-line feedback is required for simulating the system) and eyeball them using `displaySimulations.m`. Full Monte-Carlo simulations can be derived with `get_MCMC_predictiveDensity.m` and explored using `plotDensity.m`.
+> **Tip:** VBA is endowed with specific in-built functions for simulating generative models of any sort. In particular, you can simulate data time series using `simulateNLSS.m` or `simulateNLSS_fb.m` (when on-line feedback is required for simulating the system) and eyeball them using `displaySimulations.m`. Also, full-fledged Monte-Carlo simulations can be derived with `get_MCMC_predictiveDensity.m` and eyeballed using `plotDensity.m`.
 
 Anyway, this **the** golden rule. Know. Your. Model.
 
