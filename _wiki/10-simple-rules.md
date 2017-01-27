@@ -47,7 +47,7 @@ Interesting models typically include a few unknown parameters, which can be adju
 
 A related issue is whether posterior inference critically depends upon the priors. This, in itself, is a sign that the data is not very informative. In other words, your data do not afford your model. Too bad. Recall that if the data was informative enough, then the posterior would be dominated by the likelihood, i.e. it would be insensitive to the priors. Thus, you may want to know whether you reach the same (posterior) conclusion when using different priors...
 
-> **Tip:** In case posterior inference *is* susceptible to the priors, you can resort to [Bayesian model averaging]({{ site.baseurl }}/wiki/VBA-BMA) or BMA. Recall that different priors effectively induce different generative models. One would then perform model inversion under different priors, and then use BMA to derive posterior estimates that are marginalized over these priors. 
+> **Tip:** In case posterior inference is highly susceptible to the priors, you can resort to [Bayesian model averaging]({{ site.baseurl }}/wiki/VBA-BMA) or BMA. Recall that different priors effectively induce different generative models. One would then perform model inversion under different priors, and then use BMA to derive posterior estimates that are marginalized over these priors. 
 
 
 
