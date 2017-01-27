@@ -1,5 +1,5 @@
 function Z = RFT_Gtf(x,df,type)
-% derives the Gaussianized Z RF from t-field with nu d.o.f.
+% derives the Gaussianized Z RF from t- or F- field
 % function Z = RFT_Gtf(x,dof,type)
 % IN:
 %   - x: t-score or F-score
@@ -13,6 +13,8 @@ switch type
         Z =  icdf('norm',tcdf(x,df),0,1);
     case 'F'
         Z =  icdf('norm',fcdf(x,df(1),df(2)),0,1);
+    case 'norm'
+        Z = x; % trivial case (no transform)
     otherwise
         disp('Error: RFT_Gtf: type is either ''t'' or ''F''!')
         Z = [];
