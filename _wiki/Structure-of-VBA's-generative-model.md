@@ -88,6 +88,6 @@ Priors can vary in how informative they are. This is important because highly in
 
 - $$p(\theta\mid m)$$ and $$p(\phi\mid m)$$: priors on evolution and observation parameters are Gaussian distributions that are fully parameterized by their first two moments.
 
-- $$p(\alpha\mid m)$$ and $$p(\sigma\mid m)$$: priors on state and observation noise precisions are Gamma distributions that are fully parameterized by their scale ($$a$$) and shape ($$b$$) hyperparameters. For example, a deterministic system has no state noise $$\eta_t$$, which follows from assuming a priori that $$\alpha$$ is 0 with infinite precision $$(a_{\alpha}=0$$ and $$b_{\alpha}\rightarrow  \infty)$$.
+- $$p(\alpha\mid m)$$ and $$p(\sigma\mid m)$$: priors on state and observation noise precisions are Gamma distributions that are fully parameterized by their scale ($$a$$) and shape ($$b$$) hyperparameters. For example, a deterministic system has no state noise $$\eta$$, which follows from assuming a priori that $$\alpha$$ is 0 with infinite precision $$(a_{\alpha}=0$$ and $$b_{\alpha}\rightarrow  \infty)$$.
 
 In brief, the generative model $$m$$ includes the evolution and observation functions as well as the above priors on evolution, observation and precision parameters. All these are required to perform a bayesian analysis of experimental data.
