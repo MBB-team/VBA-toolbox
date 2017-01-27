@@ -39,7 +39,7 @@ VBA offers the possibility of performing principled (Bayesian) model comparisons
 
 # 4: Check model identifiability
 
-Interesting models typically include a few unknown parameters, which can be adjusted to observed data in the aim of capturing, e.g., inter-individual differences or treatment effects. But do you know whether the impact of model parameters on predicted data is unambiguous? Can two parameters (or more) predict similar changes in the data? If yes, then the model is not (perfectly) identifiable. This is an issue if you are willing to interpret parameter estimates. Thus, in addition to knowing your model, you should know whether it is identifiable, i.e. whether you can recover its parameters rom experimental data. This, again, can be assessed using numerical simulations (cf. rule #1).
+Interesting models typically include a few unknown parameters, which can be adjusted to observed data in the aim of capturing, e.g., inter-individual differences or treatment effects. But do you know whether the impact of model parameters on predicted data is unambiguous? Can two parameters (or more) predict similar changes in the data? If yes, then the model is not (perfectly) identifiable. This is an issue if you are willing to interpret parameter estimates. Thus, in addition to knowing your model, you should know whether it is identifiable, i.e. whether you can recover its parameters from experimental data. This, again, can be assessed using numerical simulations (cf. rule #1).
 
 
 
