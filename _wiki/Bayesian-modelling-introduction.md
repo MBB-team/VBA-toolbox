@@ -71,7 +71,7 @@ This reasoning applies for any set of models, given any data. The only constrain
 
 # Statistical inference: classical versus Bayesian approaches
 
-Let us first summarize how classical (frequentist) testing proceeds. One starts with defining *the null*, e.g., some parameter of interest has no effect ($$H_0$: \theta = 0$). One then construct a test statistic $$t$$ (e.g., Student's t-test), for which the distribution under the null $$p\left(t \mid H_0 \right)$$ is known. One then evaluates the test statistic given one's data ($$t^\ast$$) and compare it to the distribution $$p\left(t \mid H_0 \right)$$. Typically, one wants to control the [false positive rate](https://en.wikipedia.org/wiki/False_positive_rate), i.e. the probability of rejecting the null while it is true. This is why the classical decision rule is something like this: if $$P\left(t>t^\ast \mid H_0 \right) < \alpha$$, then reject the null (implicitly: accept the alternative, i.e.: $$H_1$: \theta \neq 0$). This is exmplified in the figure below:
+Let us first summarize how classical (frequentist) testing proceeds. One starts with defining *the null*, e.g., some parameter of interest has no effect ($$H_0: \theta = 0$$). One then construct a test statistic $$t$$ (e.g., Student t-test), for which the distribution under the null $$p\left(t \mid H_0 \right)$$ is known. One then evaluates the test statistic given one's data ($$t^\ast$$) and compare it to the distribution $$p\left(t \mid H_0 \right)$$. Typically, one wants to control the [false positive rate](https://en.wikipedia.org/wiki/False_positive_rate), i.e. the probability of rejecting the null while it is true. This is why the classical decision rule is something like this: if $$P\left(t>t^\ast \mid H_0 \right) < \alpha$$, then reject the null (implicitly: accept the alternative, i.e.: $$H_1$: \theta \neq 0$). This is exmplified in the figure below:
 
 ![]({{ site.baseurl }}/images/wiki/pval.jpg)
 
@@ -83,7 +83,7 @@ Recall that Bayesian hypothesis testing is a special case of Bayesian model comp
 
 ![]({{ site.baseurl }}/images/wiki/bmc.jpg)
 
-
+The distribution of possible data samples $$y$$ under the null ($$p\left(y \mid H_0 \right)$$) and under the alternative ($$p\left(y \mid H_1 \right)$$) are shown in red and in green, respectively. Under uninformative priors on models, Bayesian model comparison would favour $$H_0$$ whenever $$p\left(y \mid H_0 \right) > p\left(y \mid H_1 \right)$$
 
 
 
