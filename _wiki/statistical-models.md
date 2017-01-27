@@ -83,7 +83,7 @@ In brief, `RFT_GLM_contrast` (i) computes a 1D statistical field composed of Stu
 
 > **Upper panel**: The statistical t-field (y-axis) is plotted against time (x-axis). Local peaks are highlighted in red (if the corrected p-value does not reach significance, here: FWER=5%) or in green (if the corrected p-value reaches significance). The same colour-coding applies to upcrossing clusters (for cluster-level inference). **Middle panel**: RFT analysis summary (essentially: expectations, under the null, of features of the sample field). **Lower panel**: list of corrected p-values (set-, cluster- and peak- level inferences). NB: the column "location" relates to local peaks.
 
-One can see that, in this example, no peak or upcrossing cluster reaches statistical significance. This is in fact expected, given that we simulated data under the null. Note: all summary statistics are stored in the `out` structure, and the sampled statistical field is stored in the variable `statfield`.
+One can see that, in this example, no peak or upcrossing cluster reaches statistical significance, when properly corrected for multiple comparisons (compare with uncorrected p-values). This is in fact expected, given that we simulated data under the null. Note: all summary statistics are stored in the `out` structure, and the sampled statistical field is stored in the variable `statfield`.
 
 > **Tip**: The RFT results can be explored by right-clicking on either local peaks or upcrossing clusters, which provides a summary of corrected and uncorrected p-values!
 
