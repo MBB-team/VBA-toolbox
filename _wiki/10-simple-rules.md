@@ -11,7 +11,7 @@ Although this section focuses on good practice with VBA, almost all following "s
 This is a quote from [Palminteri et al. (2016)](http://www.biorxiv.org/content/early/2016/10/07/079798):
 
 ```
-Candidate models should be compared by trading off their ability to predict the data as a function of their complexity. However, the importance of simulating candidate models has been (...) largely overlooked, which entails several drawbacks and leads to invalid conclusions. (...) The analysis of model simulations is often necessary to support the specific claims (...) that most of model-based studies make.
+The importance of simulating candidate models has been (...) largely overlooked, which entails several drawbacks and leads to invalid conclusions. (...) The analysis of model simulations is often necessary to support the specific claims (...) that most of model-based studies make.
 ```
 
 We could not have said it better.
