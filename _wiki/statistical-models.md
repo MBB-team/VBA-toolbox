@@ -56,7 +56,7 @@ X = kron(eye(4),ones(8,1));
 c = [1;-1;1;-1];
 ```
 
-For the sake of demonstrating 1D-RFT, tet us simulate data under the null (we smooth the noise to take adavntage of RFT's power):
+For the sake of demonstrating 1D-RFT, let us simulate data under the null (we smooth the noise to take adavntage of RFT's power):
 
 ```matlab
 L = 1e3; % size of the 1D field
