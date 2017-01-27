@@ -32,7 +32,7 @@ for j=1:length(v)
 %         end
         % apply RFT
         c = [1;zeros(k-1,1)];
-        [stat,out] = RFT_GLM_contrast(X,y,c,'t',0);
+        [stat,out] = RFT_GLM_contrast(X,y,c,'t',[],0);
         hpeak(j,ii) = length(find(out.peaks.prft<0.05))>=1;
         hclu(j,ii) = length(find(out.clusters.prft<0.05))>=1;
         f(j,ii) = out.fwhm;
