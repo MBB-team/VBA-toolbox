@@ -52,7 +52,7 @@ tells VBA that there are 1 hidden state, 2 evolution parameters and 3 observatio
 
 - Other **options**
 
-VBA allows the user to control the inversion using an `options` input structure, which is passed to `VBA_NLStateSpaceModel.m`. Thes eoptions include, but are not limited to: informaing VBA about categorical and/or missing data, setting "micro-time resolution", passing optional arguments to evolution and/or observation functions, etc... [This page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) provides an exhaustive list of these options.
+VBA allows the user to control the inversion using an `options` input structure, which is passed to `VBA_NLStateSpaceModel.m`. These options include, but are not limited to: informing VBA about categorical and/or missing data, setting "micro-time resolution", passing optional arguments to evolution and/or observation functions, etc... [This page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) provides an exhaustive list of these options.
 
 
 # Step 3 : Defining priors
