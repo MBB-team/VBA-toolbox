@@ -83,7 +83,16 @@ Recall that Bayesian hypothesis testing is a special case of Bayesian model comp
 
 ![]({{ site.baseurl }}/images/wiki/bmc.jpg)
 
-The distribution of possible data samples $$y$$ under the null ($$p\left(y \mid H_0 \right)$$) and under the alternative ($$p\left(y \mid H_1 \right)$$) are shown in red and in green, respectively. Under uninformative priors on models, Bayesian model comparison would favour $$H_0$$ whenever $$p\left(y \mid H_0 \right) > p\left(y \mid H_1 \right)$$, and $$H_1$$ otherwise. The ensuing Bayesian decision criterion is depicted using the black solid line, which minimizes the total error rate (grey area under the cruve). In this example, Bayesian model comparison would yield more false positives than classical hypothesis testing (cf. dotted black line). However, one can see that classical hypothesis testing would 
+The distribution of possible data samples $$y$$ under the null ($$p\left(y \mid H_0 \right)$$) and under the alternative ($$p\left(y \mid H_1 \right)$$) are shown in red and in green, respectively. Under uninformative priors on models, Bayesian model comparison would favour $$H_0$$ whenever $$p\left(y \mid H_0 \right) > p\left(y \mid H_1 \right)$$, and $$H_1$$ otherwise. The ensuing Bayesian decision criterion is depicted using the black solid line, which minimizes the total error rate (grey area under the cruve). In this example, Bayesian model comparison would yield more false positives than classical hypothesis testing (cf. dotted black line). However, one can see that this is more than compensated by the higher sensitivity of Bayesian approaches, which yield much smaller false negative rate than classical hypothesis testing.
+
+Note that Bayesian model comparison is not necessarily more liberal than classical hypothesis testing:
+
+![]({{ site.baseurl }}/images/wiki/bmc2.jpg)
+
+In this example, the alternative hypothesis $$H_1$$ is further away from $$H_0$$, and Bayesian model comparison would yield less false positives than clssical hypothesis testing. This example is in fact typical of situations where, although a given data sample may be unlikely under the null (according to classical hypothesis testing), it may still be even more unlikely under the alternative...
+
+
+
 
 
 
