@@ -79,7 +79,7 @@ Now let's apply RFT to solve the multiple comparison problem (across time sample
 
 In brief, `RFT_GLM_contrast` (i) computes a 1D statistical field composed of Student's t summary statistic for the contrast `c` sampled at each peri-stimulus time point, and (ii) applies RFT to correct for the multiple comparison problem across time samples (on the field). Note: the rougness of the statistical field is evaluated using the fitted residuals of the GLM, as described in [Kiebel et al. 1999](https://www.ncbi.nlm.nih.gov/pubmed/10600421). Let us eyeball the ensuing graphical output :
 
-![]({{ site.baseurl }}/images/wiki/1D-RFT.jpg)
+![]({{ site.baseurl }}/images/wiki/1D-RFT.bmp)
 
 
 > **Upper panel**: The statistical t-field (y-axis) is plotted against time (x-axis). Local peaks are highlighted in red (if the corrected p-value does not reach significance, here: FWER=5%) or in green (if the corrected p-value reaches significance). The same colour-coding applies to upcrossing clusters (for cluster-level inference). **Middle panel**: RFT analysis summary (essentially: expectations, under the null, of features of the sample field). **Lower panel**: list of corrected p-values (set-, cluster- and peak- level inferences). NB: the column "location" relates to local peaks.
