@@ -23,7 +23,7 @@ Model simulations can (and should) be performed before and after data analysis:
 
 > **Tip:** VBA is endowed with specific in-built functions for simulating generative models of any sort. In particular, you can simulate data time series using `simulateNLSS.m` or `simulateNLSS_fb.m` (when on-line feedback is required for simulating the system) and eyeball them using `displaySimulations.m`. Also, in the context of strong non-linearities, full-fledged Monte-Carlo simulations can be derived with `get_MCMC_predictiveDensity.m` and eyeballed using `plotDensity.m`.
 
-Anyway, this **the** golden rule. Know. Your. Model.
+Anyway, this *the* golden rule. Know. Your. Model.
 
 
 # 2: Start with simple models
