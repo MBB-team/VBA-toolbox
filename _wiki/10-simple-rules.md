@@ -8,15 +8,15 @@ Although this section focuses on good practice with VBA, almost all following "s
 
 # 1: Simulate your model(s)
 
-This is a quote from [Palminteri et al. (2016)](http://www.biorxiv.org/content/early/2016/10/07/079798):
+Most computational models cannot be fully understood from the mathematical equations they entail. So how do you know whether you *know* your model? This is a quote from [Palminteri et al. (2016)](http://www.biorxiv.org/content/early/2016/10/07/079798):
 
 ```
 The importance of simulating candidate models has been (...) largely overlooked, which entails several drawbacks and leads to invalid conclusions. (...) The analysis of model simulations is often necessary to support the specific claims (...) that most of model-based studies make.
 ```
 
-We could not have said it better. How else can you know your model?
+We could not have said it better.
 
-Model simulations should be performed before and after data analysis:
+Model simulations can (and should) be performed before and after data analysis:
 
 - before the analysis, simulations are useful to explore what models can and cannot do, under alternative parameter settings.
 - after the analysis, simulations are useful to predict yet unobserved data (maybe under different experimental conditions), for experimental validation purposes.
