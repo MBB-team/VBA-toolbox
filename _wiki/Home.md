@@ -20,12 +20,12 @@ title: "home"
 
 - [VBA: results and diagnostics](VBA-output-structure)
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
-- [Experimental design optimization](Optimizing-the-experimental-design)
 - [Ten simple rules for VBA](10-simple-rules)
 
 
 ## Advanced VBA tricks
 
+- [Experimental design optimization](Optimizing-the-experimental-design)
 - [Multisession inversions](Multisession)
 - [Mixed observations (including multinomial and gaussian variables)](Multisources)
 - [Bayesian model selection for group studies](BMS-for-group-studies)
