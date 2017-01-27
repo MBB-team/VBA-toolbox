@@ -200,7 +200,7 @@ $$
 \right.
 $$
 
-where $$e$$ and $$f$$ are stochastic residuals. The second equation essentially sets a [AR(1)](https://en.wikipedia.org/wiki/Autoregressive_model) prior on hidden states. 
+where $$e$$ and $$f$$ are i.i.d. stochastic residuals. The second equation essentially sets a [AR(1)](https://en.wikipedia.org/wiki/Autoregressive_model) prior on hidden states. 
 
 The objective of a Kalman filter is to operate on-line and yields an estimate of $$x_t$$ given all past observations $$y_{1,2,...,t}$$. Alternatively, a Kalman *smoother* operates off-line, and yields an estimate of $$x_t$$ given all observations $$y_{1,2,...,t,...,T}$$. This can be useful, because the impact of hidden states may be delayed in time. *Lagged* Kalman filters provide a reasonable trade-off between the two perspectives, and yield estimates of $$x_t$$ given lagged observations $$y_{1,2,...,t,...,t+k}$$, where $$k$$ is the lag. VBA offers to directly [control the backward lag $$k$$]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options), by trading computational cost against estimation efficiency. 
 
