@@ -72,7 +72,7 @@ We are making changes on VBA's content regularly. The only way to keep up is to 
 
 # 9: Post comments and questions on the forum
 
-Most questions and comments come up multiple times, simply because most people face similar issues. For us, a quick and efficient way of dealing with recurring issues is to keep track of them using the [forum](http://mbb-team.github.io/VBA-toolbox/forum/)...
+Most questions and comments come up multiple times, simply because most people face similar issues. For us, a quick and efficient way of dealing with recurring issues is to keep track of them using the [forum](http://mbb-team.github.io/VBA-toolbox/forum/). Note that many recent VBA developments were motivated by such recurring issues and/or comments...
 
 
 # 10: Contribute!
