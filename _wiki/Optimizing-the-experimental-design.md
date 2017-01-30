@@ -4,30 +4,33 @@ title: "Experimental design optimization"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-This section describes how to optimize the experimental design with the aim of either estimating model parameters or comparing models. First, we recall the definition of design optimality scores. Then, we suggest on-line extensions to the approach for adapative design strategies.
+This section describes how to optimize the [experimental design](https://en.wikipedia.org/wiki/Design_of_experiments) with the aim of either estimating model parameters or comparing models. First, we recall the definition of [design optimality](https://en.wikipedia.org/wiki/Optimal_design) scores. Then, we suggest on-line extensions to the approach for adapative design strategies.
 
 # Design optimality scores
 
 Optimizing the design in the context of, e.g., experimental psychology studies, amounts to identifying the subset of conditions and stimuli ($$u$$) that yields the highest statistical power, under a variety of practical constraints. This requires being able to predict experimental data under models' assumptions, including potential confounds that may mask the effects of interest. Design optimization can become a difficult issue whenever the impact of experimental factors onto measurements (through the model) is non-trivial and/or uncertain (cf. unknown model parameters). This motivates the use of automatic design optimization.
 
-The VBA toolbox can handle two classes of problems, namely optimizing the system's input $$u$$ with respect to either parameter estimation or model selection. These two problems correspond to two different objectives, which can be formalized in terms of statistical loss functions:
+The VBA toolbox can handle two classes of problems, namely optimizing the system's input $$u$$ with respect to either parameter estimation or model selection. These two problems correspond to two different objectives, which can be formalized in terms of [statistical loss functions](https://en.wikipedia.org/wiki/Loss_function):
 
 ## Parameter estimation
 
-How should one set the inputs $$u$$, such that measured experimental data eventually yield accurate parameter estimates? One first has to define "estimation accuracy". Let $$\hat{\theta} = E \big[ \theta\mid y \big]$$ be the posterior estimate of unknown model parmaeters $$\theta$$, given experimental data $$y$$. The expected estimation error is given by:
+How should one set the inputs $$u$$, such that measured experimental data eventually yield accurate parameter estimates? One first has to define "estimation accuracy". Let $$\hat{\theta} = E \big[ \theta\mid y \big]$$ be the posterior estimate of unknown model parameters $$\theta$$, given experimental data $$y$$. The expected squared estimation error is given by:
 
 $$ E \big[( \hat{\theta} -\theta)^2 \mid y \big] = V \big[ \theta\mid y \big]$$
 
-where $$V \big[ \theta\mid y \big]$$ is the posterior variance over the unknown model parameter $$\theta$$. Thus, maximzing estimation accuracy reduces to minimizing a posteriori variance. This intuition generalizes to models with more than one parameter. In this case, one usually minimizes the trace of the expected posterior matrix (cf. so-called "A-optimality"). Note that, for non-linear generative models, the posterior variance will depend upon the (not yet observed) data $$y$$. One then needs to derive the expected posterior variance, where the expectation is taken under the marginal distribution of the data. This can be done by evaluating the design efficiency for each design, as follows:
+where $$V \big[ \theta\mid y \big]$$ is the posterior variance over the unknown model parameter $$\theta$$. Thus, maximzing estimation accuracy reduces to minimizing a posteriori variance. This intuition generalizes to models with more than one parameter. In this case, one usually minimizes the [trace](https://en.wikipedia.org/wiki/Trace_(linear_algebra)) of the expected posterior matrix (cf. so-called "A-optimality"). Note that, for non-linear generative models, the posterior variance will depend upon the (not yet observed) data $$y$$. One then needs to derive the expected posterior variance, where the expectation is taken under the marginal distribution of the data. This can be done by evaluating the design efficiency for each design, as follows:
 
 ```matlab
 e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters')
 ```
 where `u` is the time series of experimental control variables (inputs) that defines the design and `e` is the design efficiency (minus the trace of the expected posterior covariance matrix).
 
+> **Tip**: in the context of classical GLM hypothesis testing, the statistical power can be derived using the function `testPower.m`.
+
+
 ## Model selection
 
-Now how should one set the inputs $$u$$, such that measured experimental data eventually best discriminates between candidate models? In this context, we argue that one should choose among experimental designs according to their induced model selection error rate. Note that the expected model selection error rate $$p\big(e=1 \mid u \big)$$ increases with the similarity of model predictions: 
+Now how should one set the inputs $$u$$, such that measured experimental data eventually best discriminates between candidate models? In this context, one should choose among experimental designs according to their induced model selection error rate. Note that the expected model selection error rate $$p\big(e=1 \mid u \big)$$ increases with the similarity of model predictions: 
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
@@ -49,7 +52,7 @@ One can then either compare different designs on the basis of their efficiency (
 
 In the context of, e.g., experimental psychophysics, adaptive designs such as "stair-case" methods are typically used to estimate some individual sensory detection or discrimination threshold. Such procedures operate in real-time in the sense that the next stimulation depends on the previous behavioral response and is computed in order to optimize model fitting. More generally, adaptive (on-line) designs can be used to improve on three problems: (i) model parameter estimation; (ii) hypothesis testing (or BMS); (iii) choosing the duration of the experiment (e.g., the number of trials).
 
-We have implemented an example of on-line adaptive design in the demonstration script `demo_binomial_AdaptDesign.m`. This demo simulates a psychophysics paradigm similar to a signal detection task, whereby the detection probability is a sigmoidal function of the stimulus contrast (which is the design control variable). The gol of the experiment is to estimate the sigmoid inflexion point (detection threshold) and the sigmoid slope (d-prime). Here, the design is adapted online, in the aim of providing the most efficient estimate of these model parameters, given trial-by-trial subjects' binary choice data (`y=1`: "seen", `y=0`: "unseen").
+We have implemented an example of on-line adaptive design in the demonstration script `demo_binomial_AdaptDesign.m`. This demo simulates a psychophysics paradigm similar to a signal detection task, whereby the detection probability is a sigmoidal function of the stimulus contrast (which is the design control variable). The goal of the experiment is to estimate the sigmoid's [inflexion point](https://en.wikipedia.org/wiki/Inflection_point) ([detection threshold](https://en.wikipedia.org/wiki/Sensory_threshold)) and the sigmoid's slope ([d-prime](https://en.wikipedia.org/wiki/Sensitivity_index)). Here, the design is adapted online, in the aim of providing the most efficient estimate of these model parameters, given trial-by-trial subjects' binary choice data (`y=1`: "seen", `y=0`: "unseen").
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim1.jpg)
 
