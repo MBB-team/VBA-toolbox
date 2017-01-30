@@ -147,7 +147,7 @@ Assessing between-group model comparison in terms of random effects amounts to a
 
 Under $$H_=$$ , the group-specific datasets can be pooled to perform a standard RFX-BMS, yielding a single evidence $$p(y\mid H_{=})$$:
 
-  ```matlab
+```matlab
 L = [L1, L2] ;
 [posterior, out] = VBA_groupBMC(L) ;
 Fe = out.F ;
@@ -157,13 +157,13 @@ where `L1` (resp. `L2`) is the subject-level log-evidence matrix of the first -r
 
 Under $$H_{\neq}$$, datasets are marginally independent. In this case, the evidence $$p(y\mid H_{\neq})$$ is the product of group-specific evidences:
 
-  ```matlab
+```matlab
 [posterior1, out1] = VBA_groupBMC(L1) ;
 [posterior2, out2] = VBA_groupBMC(L2) ;
 Fd = out1.F + out2.F ;
 ```
 
-where `Fe` is the log-evidence of the group-hypothesis $$H_{\neq}$$.
+where `Fd` is the log-evidence of the group-hypothesis $$H_{\neq}$$.
 
 
 The posterior probability $$P\left(H_= \mid y \right)$$ that the two groups have the same model frequencies is thus simply given by:
