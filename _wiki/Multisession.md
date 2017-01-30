@@ -4,9 +4,9 @@ title: "Multisession"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-In some experiments, a given subject may perform multiple blocks of the same task. It this case, one may want to fit all data at once to maximize the precision of the parameter estimates. However, some parameters can differ accross the sessions, like the initial hidden states that should be reinitialized at the beginning of each block.
+In some experiments, a given subject may perform multiple blocks of the same task. It this case, one may want to fit all data at once to maximize the precision of the parameter estimates. However, some parameters can differ accross the sessions, such as the initial hidden states (these should be reinitialized at the beginning of each block). More generally, one may want to let some parameters vary over sessions, while others are kept constant (e.g., to test for a specific session effect).
 
-The toolbox offers a simple way to deal with this situation, as demonstrated in the ```demo_multisession``` script.
+The toolbox offers a simple way to deal with situations of this sort, as demonstrated in the ```demo_multisession``` script.
 
 # Spliting data into sessions
 
@@ -24,9 +24,9 @@ options.multisession.split = [40 40 40] ;
 
 # Fixing parameters across sessions
 
-By default, spliting your data into multiple sessions will duplicate all parameters (evolution $$\theta$$, observation $$\phi$$ and initial hidden state $$X0$$) such that each session has its own set (with identical priors). In this case, there is no assimilation of information from one session (or block) to the next. However, you can tell VBA to fix some parameters, i.e. to keep them constant across all sessions. In turn, these parameters will be estimated given all the available sessions.
+By default, spliting your data into multiple sessions will duplicate all parameters (evolution $$\theta$$, observation $$\phi$$ and initial hidden state $$x_0$$) such that each session has its own set (with identical priors). In this case, there is no assimilation of information from one session (or block) to the next. However, you can tell VBA to fix some parameters, i.e. to keep them constant across all sessions. In turn, these parameters will be estimated given all the available sessions.
 
-For example, let's say that the first observation parameter (corresponding, e.g., to the choice temperature) is not expected to vary across blocks:
+For example, let's say that the first observation parameter (corresponding, e.g., to the choice temperature) is not expected to vary across sessions:
 
 ```matlab
 % fix the first observation parameter
