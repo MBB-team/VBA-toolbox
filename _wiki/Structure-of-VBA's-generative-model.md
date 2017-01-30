@@ -75,14 +75,14 @@ Note that the above class of generative models encompasses static models, i.e. m
 
 This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning.
 
-Note: state-space models (with unknown evolution, observation and precision parameters) grand-father most causal models of the statistical literature. A notable exception are "switch" models, i.e. models that include unknown categorical variables.
+Note: state-space models (with unknown evolution, observation and precision parameters) grand-father most causal models of the statistical literature. A notable exception are "switch" models, i.e. models that include unknown [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable).
 
 
 ## Prior knowledge
 
 Any data analysis relies upon prior knowledge. For example, the form of the evolution and/or observation mappings is a prior. Within a bayesian framework, the subjective aspect of the inference is made further explicit in the definition of a prior probability distribution $$p(x,\theta,\phi,\alpha,\sigma\mid m)$$ over unknown model variables.
 
-Priors can vary in how informative they are. This is important because highly informative priors have a strong influence on the posterior. Here, the informativeness is related to how tight the prior probability density is. For Gaussian densities, this is controlled with the covariance matrix (informative = low variance, uninformative = high variance). Note: the contribution of the priors to the posterior tends to be null as the size of data tends to infinity.
+Priors can vary in how "informative" they are. This is important because highly informative priors have a strong influence on the posterior. Here, the informativeness is related to how tight the prior probability density is. For Gaussian densities, this is controlled with the covariance matrix (informative = low variance, uninformative = high variance). Note: the contribution of the priors to the posterior tends to be null as the size of data tends to infinity.
 
 - $$p(x\mid \theta,\alpha,m)$$: priors on hidden states are provided through the form of the evolution function $$f$$, which induces a (gaussian) transition probability density $$p(x_{t+1}\mid x_t,\theta,\alpha,m)$$ with mean $$f(x_t,\theta,u_t)$$ and precision $$\alpha$$
 
