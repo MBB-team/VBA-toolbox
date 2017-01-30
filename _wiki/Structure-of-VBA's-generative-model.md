@@ -64,7 +64,7 @@ The following figure summarizes the model structure:
 
 ![]({{ site.baseurl }}/images/wiki/graph_models.png)
 
-The plate denotes repetitions over time or trials. Nodes represent model variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.
+> The plate denotes repetitions over time or trials. Nodes represent model variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.
 
 One may have to deal with deterministic systems ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$.
 
