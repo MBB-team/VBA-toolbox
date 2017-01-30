@@ -149,7 +149,9 @@ Fe = out.F ;
 where `L1` (resp. `L2`) is the subject-level log-evidence matrix of the first -resp. second) group of subjects, and `Fe` is the log-evidence of the group-hypothesis $$H_=$$.
 
 - $$H_{\neq}$$: subjects' data `y` come from different populations, i.e. they have distinct model frequencies:
+
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbmsbtw2.jpg)
+
 Under $$H_{\neq}$$, datasets are marginally independent. In this case, the evidence $$p(y|H_{\neq})$$ is the product of group-specific evidences:
 
   ```matlab
