@@ -76,7 +76,7 @@ This reasoning applies for any set of models, given any data. The only constrain
 
 Let us first summarize how [classical (frequentist) testing proceeds](https://en.wikipedia.org/wiki/Statistical_hypothesis_testing). One starts with defining *the null*, e.g., some parameter of interest is zero ($$H_0: \theta = 0$$). One then construct a [test statistic](https://en.wikipedia.org/wiki/Test_statistic) $$t$$ (e.g., Student t-test), for which the distribution under the null $$p\left(t \mid H_0 \right)$$ is known. One then evaluates the test statistic given one's data ($$t^\ast$$) and compare it to the distribution $$p\left(t \mid H_0 \right)$$. Typically, one wants to control the [false positive rate](https://en.wikipedia.org/wiki/False_positive_rate), i.e. the probability of rejecting the null while it is true. This is why the classical decision rule is something like this:
 
-if $$P\left(t>t^\ast \mid H_0 \right) < \alpha$$, then reject the null $$H_0$$.
+CLASSICAL HYPOTHESIS TESTING: if $$P\left(t>t^\ast \mid H_0 \right) < \alpha$$, then reject the null $$H_0$$.
 
 This is exemplified in the figure below:
 
