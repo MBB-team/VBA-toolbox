@@ -9,7 +9,7 @@ Here, we address the problem of Bayesian model selection (BMS) at the group leve
 - **fixed-effect analysis (FFX)**: a single model best describes all subjects
 - **random-effect analysis (RFX)**: models are treated as random effects that could differ between subjects, with an unknown population distribution (described in terms of model frequencies/proportions).
 
-> Note: In classical statistics, [random effects models](https://en.wikipedia.org/wiki/Random_effects_model) refer to situations in which data have two sources of variability: within-subjcet variance and between-subject variance. The latter is typically captured in terms of the spread (over subjects) of within-subject parameter estimates. This is not equivalent to RFX-BMS, where one assumes that the model that best describes a given subject may depend upon the subject.
+> Note: In classical statistics, [random effects models](https://en.wikipedia.org/wiki/Random_effects_model) refer to situations in which data have two sources of variability: within-subject variance and between-subject variance, respectively. The latter is typically captured in terms of the spread (over subjects) of within-subject parameter estimates. This is not equivalent to RFX-BMS, where one assumes that the model that best describes a given subject may depend upon the subject.
 
 We first recall how to perform an FFX analysis. We then expose how to perform a RFX analysis. Finally, we address the problem of between-groups and between-conditions model comparisons. The key idea here is to quantify the evidence for a difference in model labels or frequencies across groups or conditions.
 
@@ -25,7 +25,7 @@ $$ p(m\mid y_1,\dots,y_n )\propto p(y_1,\dots,y_n\mid m)p(m)= p(y_1\mid m)\dots 
 
 **Thus, FFX-BMS simply proceeds as a subject-level BMS, having summed the model log-evidences over subjects**.
 
-FFX-BMS is valid whenever one may safely assume that the group of subjects is homogeneous.
+FFX-BMS is valid whenever one may safely assume that the group of subjects is homogeneous (i.e., subjects are best described by the same model $$m$$).
 
 ## RFX-BMS
 
@@ -47,12 +47,24 @@ where the I/O arguments of `VBA_groupBMC` are summarized as follows:
 - `posterior`: a structure containing the sufficient statistics (moments) of the posterior distributions over unknown model variables (i.e. subjects' labels and model frequencies).
 - `out`: a structure containing inversion diagnostics, e.g.: RFX log-evidence, exceedance probabilities (see below), etc...
 
-In [Stephan et al. (2009)](https://www.ncbi.nlm.nih.gov/pubmed/19306932), we introduced the notion of exceedance probability (EP), which measures how likely it is that any given model is more frequent than all other models in the comparison set. Estimated model frequencies and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
+In [Stephan et al. (2009)](https://www.ncbi.nlm.nih.gov/pubmed/19306932), we introduced the notion of **exceedance probability** (EP), which measures how likely it is that any given model is more frequent than all other models in the comparison set:
+
+$$ EP_i = P\left(r_i > r_j|y) $$ where $$j\neq i$$.
+
+Estimated model frequencies $$r_hat$$ and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
 
 ```matlab
 f  = out.Ef ;
 EP = out.ep ;
 ```
+
+*Protected* exceedance probabilities (PEPs) are an extention of this notion. They correct EPs for the possiblity that observed differences in model evidences (over subjects) are due to chance ([Rigoux et al., 2014](https://www.ncbi.nlm.nih.gov/pubmed/24018303)). They can be retieved as follows:
+
+```matlab
+PEP = (1-out.bor)*out.ep + out.bor/length(out.ep);
+```
+
+where `out.bor` is the Bayesian Omnibus Risk (BOR), i.e. the posterior probability that model frequencies are all equal.
 
 The graphical output of `VBA_groupBMC.m` is appended below (with random log-evidences, with `K=4` and `n=16`):
 
@@ -67,7 +79,7 @@ options.families = {[1,2], [3,4]} ;
 [posterior, out] = VBA_groupBMC(L, options) ;
 ```
 
-The above script effectively forces RFX-BMS to perform family inference at the group-level, where the first (resp. second) family contains the first and second (resp., third and fourth) model. Queering the family frequencies and EPs can be done as follows:
+The above script effectively forces RFX-BMS to perform family inference at the group-level, where the first (resp. second) family contains the first and second (resp., third and fourth) model. Querying the family frequencies and EPs can be done as follows:
 
 ```matlab
 ff  = out.families.Ef ;
@@ -83,7 +95,7 @@ fep = out.families.ep ;
 
 Now what if we are interested in the difference between treatment conditions; for example, when dealing with one group of subjects measured under two conditions? One could think that it would suffice to perform RFX-BMS independently for the different conditions, and then check to see whether the results of RFX-BMS were consistent. However, this approach is limited, because it does not test the hypothesis that the same model describes the two conditions. In this section, we address the issue of evaluating the evidence for a difference - in terms of models - between conditions.
 
-Let us assume that the experimental design includes `p` conditions, to which a group of `n` subjects were exposed. Subject-level model inversions were performed prior to the group-level analysis, yielding the log-evidence of each model, for each subject under each condition. One can think of the conditions as inducing an augmented model space composed of model "tuples" that encode all combinations of candidate models and conditions. Here, each tuple identifies which model underlies each condition (e.g., tuple 1: model 1 in both conditions 1 and 2, tuple 2: model 1 in condition 1 and model 2 in condition 2, etc...). The log-evidence of each tuple (for each subject) can be derived by appropriately summing up the log evidences over conditions.
+Let us assume that the experimental design includes `p` conditions, to which a group of `n` subjects were exposed. Subject-level model inversions were performed prior to the group-level analysis, yielding the log-evidence of each model, for each subject under each condition. One can think of the conditions as inducing an augmented model space composed of model "[tuples](https://en.wikipedia.org/wiki/Tuple)" that encode all combinations of candidate models and conditions. Here, each tuple identifies which model underlies each condition (e.g., tuple 1: model 1 in both conditions 1 and 2, tuple 2: model 1 in condition 1 and model 2 in condition 2, etc...). The log-evidence of each tuple (for each subject) can be derived by appropriately summing up the log evidences over conditions.
 
 Note that the set of induced tuples can be partitioned into a first subset, in which the same model underlies all conditions, and a second subset containing the remaining tuples (with distinct condition-specific models). One can the use family RFX-BMS to ask whether the same model underlies all conditions. This is the essence of between-condition RFX-BMS, which is performed automatically as follows:
 
