@@ -15,15 +15,15 @@ where $$e$$ are model residuals, $$\beta$$ are unknown regresion coefficients an
 Let us consider a toy example, where the GLM reduces to four independant (and arbitrary) variables. We simulate dummy data where only the first dependant variable actually induces variability across the 32 samples, and then use the function `GLM_contrast.m` to perform classical inference on the contrast of interest:
 
 ```matlab
-X  = randn(32, 4)  ;
-b  = [1.5; 0; 0; 0 ] ;
-y  = X*b ;
-y  = y + randn(size(y)) ;
-c  = [1; 0; 0; 0 ] ;
-type = 'F';
-pv = GLM_contrast(X, y, c, type) ;
+X  = randn(32, 4); % simulate dummy independent variables
+b  = [1.5; 0; 0; 0 ]; % only the first independent variable has an effect
+y  = X*b; % simulate the dependent variable under the GLM
+y  = y + randn(size(y)); % add random noise
+c  = [1;0;0;0]; % contrast vector --> testing for the first independent variable
+type = 'F'; % use F-test
+pv = GLM_contrast(X, y, c, type); % classical hypothesis testing
 ```
-where `c` is the contrast matrix, `type` is flag for the test (t-test or F-test) and `pv` is the p-value of the corresponding test (in this example, the contrast effectively tests for the significance of the first regressor of the design matrix).
+where `c` is the contrast matrix, `type` is a flag for the test (t-test or F-test) and `pv` is the p-value of the corresponding test (in this example, the contrast effectively tests for the significance of the first regressor of the design matrix).
 
 Let us eyeball the graphical output of the function `GLM_contrast.m`:
 
@@ -60,7 +60,7 @@ For the sake of demonstrating 1D-RFT, let us simulate data under the null (we sm
 
 ```matlab
 L = 1e3; % size of the 1D field
-kernel = exp(-0.5.*([1:L]-L/2).^2/(8*2.355)^2); % smoothing kernel (here: FWHM = 8 time samples)
+kernel = exp(-0.5.*([1:L]-L/2).^2/(8*2.355)^2); % smoothing kernel
 kernel = kernel./sum(kernel);
 e = zeros(L,8*4);
 for i=1:8*4
@@ -124,7 +124,7 @@ out = mediationAnalysis0(Y,X,M,[]);
 
 where `out` is a structure containing the summary statistics of mediation analysis. These are laid out in the matlab command window:
 
-```
+``
 Date: 26-Jan-2017 14:37:13
  
 -- Regression results --
@@ -145,7 +145,7 @@ Indirect effect X->M->Y: P(ab=0|H0)=0.03746
  
 -- Conjunction testing --
 Indirect effect X->M->Y: P(ab=0|H0)=0.045935
-```
+``
 
 with the following graphical output:
 
