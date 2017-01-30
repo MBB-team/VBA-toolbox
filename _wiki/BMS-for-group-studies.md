@@ -9,6 +9,8 @@ Here, we address the problem of Bayesian model selection (BMS) at the group leve
 - **fixed-effect analysis (FFX)**: a single model best describes all subjects
 - **random-effect analysis (RFX)**: models are treated as random effects that could differ between subjects, with an unknown population distribution (described in terms of model frequencies/proportions).
 
+> Note: In classical statistics, [random effects models](https://en.wikipedia.org/wiki/Random_effects_model) refer to situations in which data have two sources of variability: within-subjcet variance and between-subject variance. The latter is typically captured in terms of the spread (over subjects) of within-subject parameter estimates. This is not equivalent to RFX-BMS, where one assumes that the model that best describes a given subject may depend upon the subject.
+
 We first recall how to perform an FFX analysis. We then expose how to perform a RFX analysis. Finally, we address the problem of between-groups and between-conditions model comparisons. The key idea here is to quantify the evidence for a difference in model labels or frequencies across groups or conditions.
 
 ## FFX-BMS
