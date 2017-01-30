@@ -6,13 +6,13 @@ title: "Statistical models"
 
 # Classical GLM data analysis
 
-The [general linear model](https://en.wikipedia.org/wiki/General_linear_model) (GLM) is a statistical linear model that relates a dependent variable $$y$$ to a linear combination of dependent variables as follows:
+The [general linear model](https://en.wikipedia.org/wiki/General_linear_model) (GLM) is a statistical linear model that relates a dependent variable $$y$$ to a linear combination of independent variables $$X$$ as follows:
 
 $$ y = X \beta + e $$
 
-where $$e$$ are model residuals, $$\beta$$ are unknown regresion coefficients and $$X$$ is the so-called design matrix. GLMs of this sort are equivalent to so-called "multiple regression models", and typical questions of interest can be framed in terms of a [contrast](https://en.wikipedia.org/wiki/Contrast_(statistics)) of dependent variables. Inference on such contrasts in the context of a GLM is very general, and grand-fathers most classical statistical approaches, including ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. 
+where $$e$$ are model residuals, $$\beta$$ are unknown regresion coefficients and $$X$$ is the so-called [design matrix](https://en.wikipedia.org/wiki/Design_matrix). GLMs of this sort are equivalent to "[multiple regression models](https://en.wikipedia.org/wiki/Regression_analysis)", and typical questions of interest can be framed in terms of a [contrast](https://en.wikipedia.org/wiki/Contrast_(statistics)) of independent variables. This is equivalent to testing for the significance of $$c^T \beta$$, where $$c$$ is the contrast vector or matrix. Inference on such contrasts in the context of a GLM is very general, and grand-fathers most classical statistical approaches, including ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. 
 
-The following script demonstrates VBA's GLM classical test functionality:
+Let us consider a toy example, where the GLM reduces to four independant (and arbitrary) variables. We simulate dummy data where only the first dependant variable actually induces variability across the 32 samples, and then use the function `GLM_contrast.m` to perform classical inference on the contrast of interest:
 
 ```matlab
 X  = randn(32, 4)  ;
