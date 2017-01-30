@@ -49,7 +49,7 @@ where the I/O arguments of `VBA_groupBMC` are summarized as follows:
 
 In [Stephan et al. (2009)](https://www.ncbi.nlm.nih.gov/pubmed/19306932), we introduced the notion of **exceedance probability** (EP), which measures how likely it is that any given model is more frequent than all other models in the comparison set:
 
-$$ EP_i = P\left(r_i > r_j|y) $$ where $$j\neq i$$.
+$$ EP_i = P\left(r_i > r_j \mid y\right) $$ where $$j\neq i$$.
 
 Estimated model frequencies $$r_hat$$ and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
 
