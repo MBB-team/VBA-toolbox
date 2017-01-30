@@ -124,7 +124,7 @@ out = mediationAnalysis0(Y,X,M,[]);
 
 where `out` is a structure containing the summary statistics of mediation analysis. These are laid out in the matlab command window:
 
-``
+```ABNF
 Date: 26-Jan-2017 14:37:13
  
 -- Regression results --
@@ -145,7 +145,7 @@ Indirect effect X->M->Y: P(ab=0|H0)=0.03746
  
 -- Conjunction testing --
 Indirect effect X->M->Y: P(ab=0|H0)=0.045935
-``
+```
 
 with the following graphical output:
 
