@@ -72,7 +72,9 @@ The graphical output of `VBA_groupBMC.m` is appended below (with random log-evid
 
 > **Upper-left panel**: log-evidences (y-axis) over each model (x-axis). NB: Each line/colour identifies one subjects within the group. **Middle-left panel**: exceedance probabilities (y-axis) over models (x-axis). **Lower-left panel**: RFX free energy (y-axis) over VB iterations (x-axis). The log-evidence (+/- 3) of the FFX (resp., "null") model is shown in blue (resp. red) for comparison purposes. NB: here, the observed log-evidence are better explained by chance than by the RFX generative model (cf. simulated random log-evidences)! **Upper-right panel**: model attributions (subjects' labels), in terms of the posterior probability (colour code) of each model (x-axis) to best explain each subject (y-axis). **Middle-right panel**: estimated model frequencies (y-axis) over models (x-axis). NB: the red line shows the "null" frequency profile over models.
 
-Optional arguments can be passed to the function, which can be used to control the convergence of the VB scheme. Importantly, information Re: **model families** are passed through an `options` variable (see header of `VBA_groupBMC.m`):
+Optional arguments can be passed to the function, which can be used to control the convergence of the VB scheme.
+
+Importantly, one may want to partition the model space into distinct subsets (i.e. model *families*). For example, a given family of models would contain all models that share a common feature (e.g., some non-zero parameter). Information Re: model families are passed through the `options` variable (see header of `VBA_groupBMC.m`):
 
 ```matlab
 options.families = {[1,2], [3,4]} ;
