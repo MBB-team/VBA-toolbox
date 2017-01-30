@@ -53,20 +53,20 @@ bayesianP = 1./(1+exp(dF)) ;
 ```
 
   where `out.diagnostics.LLH0` is the evidence for the "null" (i.e. a model that assumes that data are random samples). The above "Bayesian p-value" is in fact the posterior probability of the null...
-- **Fit accuracy metrics**:
+- **Goodness-of-fit metrics**:
   - percentage of variance explained: `out.fit.R2`. NB: when dealing with categorical (binary) data, `out.fit.R2` is the balanced classification accuracy, i.e. the percentage of correct classifications (based upon a 0.5 threshold).
   - log-likelihood: `out.fit.LL`.
-  - AIC: `out.fit.AIC`
-  - BIC: `out.fit.BIC`
+  - [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion): `out.fit.AIC`
+  - [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion): `out.fit.BIC`
 
 > **TIP**: here AIC and BIC scores are defined as the log-likelihood, minus a model complexity penalty term (typically related to the number of unknown model variables). This means that for all model quality metrics, the higher the score, the better the model.
-All these are given under the 'summary' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
+All these are given under the `summary` tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).
 
 # Inversion diagnostics
 
 Typically, three types of diagnostics can be eyeballed in a systematic manner:
 
-- **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential non-identifiability issues, which would express as non-zero posterior correlation between model parameters.
+- **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express as non-zero posterior correlation between model parameters.
 - **residuals empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
 - **residuals empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: residuals should be normally distributed. Note: although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
 - **micro-time resolution hidden states and predicted data**: this can be used to eyeball the model predictions interpolated outside the sampling grid. Note: this only applies to models that rely on (almost) continuous dynamical systems, whereby the evolution function is applied more than one time in between two time samples.
