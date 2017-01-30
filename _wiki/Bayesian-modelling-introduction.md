@@ -6,58 +6,58 @@ title: "Bayesian inference: introduction"
 
 # Derivation of the likelihood function
 
-One usually starts with a quantitative assumption or model of how observations y are generated. Without loss of generality, this model possesses unknown parameters $$\vartheta$$, which are mapped through an observation function $$g$$:
+One usually starts with a quantitative assumption or model of how observations $$y$$ are generated. Without loss of generality, this model possesses unknown parameters $$\vartheta$$, which are mapped through an observation function $$g$$:
 
 $$y= g(\vartheta)+\epsilon$$
 
-where $$\epsilon$$ are model residuals or measurement noise. If the (physical) processes underlying $$\epsilon$$ were known, they would be included in the deterministic part of the model. Typically, we thus have to place statistical priors on $$\epsilon$$, which eventually convey our lack of knowledge, as in “the noise is small”. This can be formalized as a probabilistic statement, such as: “the probability of observing big noise is small”. Under the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem), such prior would be equivalent to assuming that the noise follows a [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution):
+where $$\epsilon$$ are [model residuals](https://en.wikipedia.org/wiki/Errors_and_residuals) or measurement noise. If the (physical) processes underlying $$\epsilon$$ were known, they would be included in the deterministic part of the model. Typically, we thus have to place statistical priors on $$\epsilon$$, which eventually convey our lack of knowledge, as in “the noise is small”. This can be formalized as a probabilistic statement, such as: “the probability of observing big noise is small”. Under the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem), such prior would be equivalent to assuming that the noise follows a [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution):
 
 $$p(\epsilon\mid m)\propto exp\left(-\frac{1}{2\sigma^2}\varepsilon^2\right) \implies P(\lvert\epsilon\rvert>1.96\sigma\mid m) \approx 0.05$$
 
-where $$\sigma$$ is the noise’ standard deviation (it determines how big is “big”) and $$m$$ is the so-called generative model. Combining the two equations above yields the likelihood function $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
+where $$\sigma$$ is the noise’ [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation) (it determines how big is “big”) and $$m$$ is the so-called generative model. Combining the two equations above yields the [likelihood function](https://en.wikipedia.org/wiki/Likelihood_function) $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
 
 $$p(y\mid\vartheta,m) = exp\left(-\frac{1}{2\sigma^2}(y-g(\vartheta))^2\right)$$
 
-This derivation of the likelihood function can be generalized to any generative model $$m$$, whose parameters $$\vartheta$$ simply control the statistical moments of the distribution $$p(y\mid\vartheta,m)$$. The key point here is that the likelihood function always derives from prior assumptionss about observation mappings $$g(\vartheta)$$ and measurement noise $$\epsilon$$.
+This derivation of the likelihood function can be generalized to any [generative model](https://en.wikipedia.org/wiki/Generative_model) $$m$$, whose parameters $$\vartheta$$ simply control the statistical moments of the likelihood $$p(y\mid\vartheta,m)$$. The key point here is that the likelihood function always derives from prior assumptions about observation mappings $$g(\vartheta)$$ and measurement noise $$\epsilon$$.
 
 > Note: one does not have to resort to the central limit theorem to justify the assumption of Gaussian errors. In fact, a simpler and more legitimate approach is that of the [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy). In brief, if one only knows the 1st- and 2nd- order moments of the error, then the normal density is the least informative assumption one can make...
 
 
 # Bayes' rule
 
-The likelihood function is the statistical construct that is common to both frequentist (classical) and bayesian inference approaches. However, bayesian approaches also require the definition of a prior distribution $$p(\vartheta\mid m)$$ on model parameters $$\vartheta$$, which reflects knowledge about their likely range of values, before having observed the data y. As for priors about measurement noise, such priors can be (i) principled (e.g. certain parameters cannot have negative values), (ii) conservative (e.g. “shrinkage” priors that express the assumption that coupling parameters are small), or (iii) empirical (based on previous, independent measurements).
-Combining the priors and the likelihood function allows one, via Bayes' Theorem, to derive both the marginal likelihood of the model (the so-called model evidence):
+The likelihood function is the statistical construct that is common to both frequentist (classical) and bayesian inference approaches. However, bayesian approaches also require the definition of a [prior distribution](https://en.wikipedia.org/wiki/Prior_probability) $$p(\vartheta\mid m)$$ on model parameters $$\vartheta$$, which reflects knowledge about their likely range of values, before having observed the data $$y$$. As for priors about measurement noise, such priors can be (i) principled (e.g. certain parameters cannot have negative values), (ii) conservative (e.g. “shrinkage” priors that express the assumption that coupling parameters are small), or (iii) empirical (based on previous, independent measurements).
+Combining the priors and the likelihood function allows one, via [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes'_theorem), to derive both the marginal likelihood of the model (the so-called [model evidence](https://en.wikipedia.org/wiki/Marginal_likelihood)):
 
 $$p(y\mid m)=\int p(y\mid \vartheta,m)p(\vartheta\mid m)d\vartheta$$
 
-and the posterior probability density function $$p(\vartheta\mid,m)$$ over model parameters $$\vartheta$$:
+and the [posterior probability density function](https://en.wikipedia.org/wiki/Posterior_probability) $$p(\vartheta\mid,m)$$ over model parameters $$\vartheta$$:
 
 $$p(\vartheta\mid,m)=\frac{p(y\mid\vartheta,m)p(\vartheta\mid m)}{p(y\mid m)}$$
 
-This is called “model inversion” or “solving the inverse problem”. The posterior density $$p(\vartheta\mid y, m)$$  quantifies how likely is any value of $$\vartheta$$, given the observed data y and the generative model $$m$$. It is used for inferring on “interesting” model parameters, by marginalizing over “nuisance” parameters. The model evidence $$p(y\mid m)$$  quantifies how likely is the observed data y under the generative model $$m$$. Another perspective on this is that $$-\log p(y\mid m)$$ measures statistical surprise, i.e. how unpredictable was the observed data $$y$$ under the model $$m$$. The model evidence accounts for model complexity, and thus penalizes models, whose predictions do not generalize easily (this is referred to as “Occam’s razor”). Under flat priors over models, it is used for model selection (by comparison with other models that differ in terms of either their likelihood or their prior density).
+This is called “model inversion” or “solving the [inverse problem](https://en.wikipedia.org/wiki/Inverse_problem)”. The posterior density $$p(\vartheta\mid y, m)$$  quantifies how likely is any value of $$\vartheta$$, given the observed data y and the generative model $$m$$. It is used for inferring on “interesting” model parameters, by marginalizing over [“nuisance” parameters](https://en.wikipedia.org/wiki/Nuisance_parameter). The model evidence $$p(y\mid m)$$  quantifies how likely is the observed data y under the generative model $$m$$. Another perspective on this is that $$-\log p(y\mid m)$$ measures statistical surprise, i.e. how unpredictable was the observed data $$y$$ under the model $$m$$. The model evidence accounts for model complexity, and thus penalizes models, whose predictions do not generalize easily (this is referred to as “[Occam’s razor](https://en.wikipedia.org/wiki/Occam's_razor)”). Under flat priors over models, it is used for model selection (by comparison with other models that differ in terms of either their likelihood or their prior density).
 
 
 # Statistical tests and Bayesian model comparison
 
 Moments of the posterior density $$p(\vartheta\mid y,m)$$ can be used to define parameter estimates (e.g., the posterior mean). Typically, as the quantity of available data increases, Bayesian parameter estimates effectively converge to frequentist (e.g. maximum likelihood) estimators. This is because the weight of the prior on any moment of the posterior distribution becomes negligible.
 
-However, this (asymptotic) equivalence does not hold for model comparison. This is important, because model comparison has many application within a Bayesian framework. For example, when testing whether a parameter is zero, one effectively compares two hypotheses: the 'null', in which the parameter is fixed to zero, against the 'alternative', in which the parameter is allowed to vary.
+However, this (asymptotic) equivalence does not hold for model comparison. This is important, because model comparison has many application within a Bayesian framework. For example, when testing whether a parameter is zero, one effectively compares two hypotheses: the "[null](https://en.wikipedia.org/wiki/Null_hypothesis)", in which the parameter is fixed to zero, against the "alternative", in which the parameter is allowed to vary.
 
-According to the Neyman-Pearson lemma, the most powerful test to compare such two hypotheses or models is the likelihood-ratio test, i.e.:
+According to the [Neyman-Pearson lemma](https://en.wikipedia.org/wiki/Neyman%E2%80%93Pearson_lemma), the most powerful test to compare such two hypotheses or models is the likelihood-ratio test, i.e.:
 
 $$\frac{p(y\mid m_1)}{p(y\mid m_2)} > K$$
 
 where $$K$$ is set to satisfy a controlled statistical risk.
-This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the **Bayes' factor**, and is used whenever one wants to select between two models. Practically speaking, the Bayes' factor induces three types of statistical decisions:
+This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the [Bayes' factor](https://en.wikipedia.org/wiki/Bayes_factor), and is used whenever one wants to select between two models. Practically speaking, the Bayes' factor induces three types of statistical decisions:
 
 - $$K>20$$:      model $$m_1$$ is selected
 - $$0.05<K<20$$: no model is selected
 - $$K<0.05$$:    model $$m_2$$ is selected
 
 
-The critical thing to note is that the model evidence $$p\big( y\mid m\big)$$ is not a simple measure of model fit: there is an inherent penalization for model complexity. This penalization is intimately related to the priors. In brief, a simple model has tight priors: at the limit, the simplest model has no unknown parameters (infinite prior precision). More complex models are equipped with vague priors, which will be updated to a larger extent once the data has been observed. However, this flexibility has a cost: that of confusing noise $$\epsilon$$ with variations in the data that are induced by $$g(\vartheta)$$. This is called "over-fitting" the data, and results in greater error when extrapolating model predictions.
+The critical thing to note is that the model evidence $$p\big( y\mid m\big)$$ is not a simple measure of model fit: there is an inherent **penalization for model complexity**. This penalization is intimately related to the priors. In brief, a simple model has tight priors: at the limit, the simplest model has no unknown parameters (infinite prior [precision](https://en.wikipedia.org/wiki/Precision_(statistics))). More complex models are equipped with vague priors, which will be updated to a larger extent once the data has been observed. However, this flexibility has a cost: that of confusing noise $$\epsilon$$ with variations in the data that are induced by $$g(\vartheta)$$. This is called "[over-fitting](https://en.wikipedia.org/wiki/Overfitting)" the data, and results in greater error when extrapolating model predictions.
 
-Model evidence is essentially a trade-off between fit accuracy and model complexity. It can be used to compare more than two models, simply because it quantifies the plausibility of the data under any model. In fact, Bayesian model comparison proceeds with the exact same logic than when performing inference on parameters. Here again, one relies upon Bayes' rule to derive the posterior distribution over models, i.e.:
+Model evidence is essentially a trade-off between [goodness-of-fit](https://en.wikipedia.org/wiki/Goodness_of_fit) and model complexity. It can be used to compare more than two models, simply because it quantifies the plausibility of the data under any model. In fact, Bayesian model comparison proceeds with the exact same logic than when performing inference on parameters. Here again, one relies upon Bayes' rule to derive the posterior distribution over models, i.e.:
 
 $$p(m\mid y)=\frac{p(y\mid m)p(m)}{p(y)}$$
 
@@ -67,9 +67,9 @@ $$p(y)=\sum _m p(y\mid m)p(m)$$
 
 The term $$p(m)$$ is the prior probability on model $$m$$. Typically, non-informative priors are used and the equation above is driven solely by model evidences.
 
-As for any statistical test, a threshold has to be set for deciding whether a model is "better" than another one. This threshold can be chosen similarly to classical statistics, i.e. on the basis of some acceptable statistical risk. It turns out that the probability of making a model selection error is 1 minus the posterior probability of the selected model. If this probability has to be controlled at e.g., 0.05, then one "selects" a model only if its posterior probability exceeds 0.95. When comparing two models with each other, this corresponds to a threshold of $$K=20$$ on the Bayes' factor.
+As for any statistical test, a threshold has to be set for deciding whether a model is "better" than another one. This threshold can be chosen similarly to classical statistics, i.e. on the basis of some acceptable [statistical risk](https://en.wikipedia.org/wiki/Risk_(statistics)). It turns out that the probability of making a model selection error is $$1-P\left(m^\ast \mid y \right))$$, where $$m^\ast$ is the selected model. If this probability has to be controlled at e.g., 0.05, then one "selects" a model only if its posterior probability exceeds 0.95. When comparing two models with each other, this corresponds to a threshold of $$K=20$$ on the Bayes' factor (or, equivalently, 3 on the log- Bayes factor).
 
-This reasoning applies for any set of models, given any data. The only constraint is that model evidences have to be evaluated on the same data  set.
+This reasoning applies for any set of models, given any data. The only constraint is that model evidences have to be evaluated on the same data set.
 
 
 # Classical versus Bayesian hypothesis testing
