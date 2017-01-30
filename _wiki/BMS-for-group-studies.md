@@ -138,27 +138,31 @@ Note that the ensuing computational cost scales linearly with the number of dime
 Assessing between-group model comparison in terms of random effects amounts to asking whether model frequencies are the same or different between groups. In other words, one wants to compare the two following hypotheses (at the group level):
 
 - $$H_=$$: data `y` come from the same population, i.e. model frequencies are the same for all subgroups:
+
 ![]({{ site.baseurl }}/images/wiki/bms/rfxbmsbtw0.jpg)
-Under $$H_=$$ , the group-specific datasets can be pooled to perform a standard RFX-BMS, yielding a single evidence $$p(y|H_{=})$$:
+
+- $$H_{\neq}$$: subjects' data `y` come from different populations, i.e. they have distinct model frequencies:
+
+![]({{ site.baseurl }}/images/wiki/bms/rfxbmsbtw2.jpg)
+
+Under $$H_=$$ , the group-specific datasets can be pooled to perform a standard RFX-BMS, yielding a single evidence $$p(y\mid H_{=})$$:
 
   ```matlab
 L = [L1, L2] ;
 [posterior, out] = VBA_groupBMC(L) ;
 Fe = out.F ;
 ```
+
 where `L1` (resp. `L2`) is the subject-level log-evidence matrix of the first -resp. second) group of subjects, and `Fe` is the log-evidence of the group-hypothesis $$H_=$$.
 
-- $$H_{\neq}$$: subjects' data `y` come from different populations, i.e. they have distinct model frequencies:
-
-![]({{ site.baseurl }}/images/wiki/bms/rfxbmsbtw2.jpg)
-
-Under $$H_{\neq}$$, datasets are marginally independent. In this case, the evidence $$p(y|H_{\neq})$$ is the product of group-specific evidences:
+Under $$H_{\neq}$$, datasets are marginally independent. In this case, the evidence $$p(y\mid H_{\neq})$$ is the product of group-specific evidences:
 
   ```matlab
 [posterior1, out1] = VBA_groupBMC(L1) ;
 [posterior2, out2] = VBA_groupBMC(L2) ;
 Fd = out1.F + out2.F ;
 ```
+
 where `Fe` is the log-evidence of the group-hypothesis $$H_{\neq}$$.
 
 
