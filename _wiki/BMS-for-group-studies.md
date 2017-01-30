@@ -51,7 +51,7 @@ In [Stephan et al. (2009)](https://www.ncbi.nlm.nih.gov/pubmed/19306932), we int
 
 $$ EP_i = P\left(r_i > r_j \mid y\right) $$ where $$j\neq i$$.
 
-Estimated model frequencies $$r_hat$$ and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
+Estimated model frequencies and EPs are the two summary statistics that typically constitute the results of RFX-BMS. They can be retrieved as follows:
 
 ```matlab
 f  = out.Ef ;
