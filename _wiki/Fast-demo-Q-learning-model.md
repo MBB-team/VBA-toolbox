@@ -32,7 +32,7 @@ options.binomial = 1; % choice data = 0 or 1
 options.skipf = [1,zeros(1,n_t-1)]; % apply identity mapping from x0 to x1.
 
 % simulate Q-learner and plot choices
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
+[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,[0;0],Inf,Inf,options,x0,fb);
 hf = figure('color',[1 1 1]);
 ha = axes('parent',hf,'nextplot','add');
 plot(ha,y,'kx')
@@ -61,7 +61,7 @@ All VBA's graphical outputs (parameter estimation, model accuracy, inversion dia
 > **Upper-left panel**: posterior mean (grey bar) and standard deviation (red errorbar) of the model's evolution parameter (theta = learning rate, here). The simulated parameter is shown using a green dot. **Upper-right panel**: same for the observation parameter (phi = behavioural log-temperature). **Middle-up-right panel**: same for initial conditions (options values). **Middle-down-left panel**: same for hidden states (2 option values plotted as a function of time or trials). **Middle-down-right panel**: same for observed data. **Lower-left panel**: estimated hidden states (y-axis) are plotted against simulated hidden states (x-axis). **Lower-left panel**: fitted data (y-axis) are plotted against simulated data (x-axis).
 
 Recall the unknown parameters of the [Q-learning model]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model): 1 evolution parameter (learning rate), 1 observation parameter (temperature) and 2 initial conditions (initial action values).
-One can see that the posterior credible intervals (red errorbars) contain the simulated parameter values (green dots). In turn, estimated and simulated action values (as well as choices) dynamics tightly correlate with each other.
+One can see that the posterior [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) (red errorbars) contain the simulated parameter values (green dots). In turn, estimated and simulated action values dynamics tightly correlate with each other.
 
 Of course, analysis of experimental data does not allow one to evaluate the accuracy of parameter estimation, as was done here using simulated data. However, VBA provides a number of [inversion diagnostics]({{ site.baseurl }}/wiki/VBA-output-structure) that are useful to review, such as the structure of model residuals, the parameter posterior correlation matrix, Volterra kernels, etc...
 
