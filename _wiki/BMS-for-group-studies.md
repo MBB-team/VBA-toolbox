@@ -160,18 +160,19 @@ Fd = out1.F + out2.F ;
 where `Fe` is the log-evidence of the group-hypothesis $$H_{\neq}$$.
 
 
-The posterior probability $$p$$ that the two groups have the same model frequencies is thus simply given by:
+The posterior probability $$P\left(H_= \mid y \right)$$ that the two groups have the same model frequencies is thus simply given by:
 
 ```matlab
 p = 1/(1+exp(Fd-Fe)) 
 ```
 
-Note that you can directly test for a group difference with the function `VBA_groupBMC_btwGroups` which directly performs the above analysis:
+Note that one can directly test for a group difference with the function `VBA_groupBMC_btwGroups` which directly performs the above analysis:
 
 ```matlab
 [h, p] = VBA_groupBMC_btwGroups({L1, L2})
 ```
 
+where `p` is $$P\left(H_= \mid y \right)$$.
 
 
 
