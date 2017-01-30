@@ -5,9 +5,9 @@ title: "Setting the priors through Empirical Bayes"
 {:toc}
 
 
-Empirical Bayes methods are procedures for statistical inference in which the prior distribution is estimated from the data. This approach stands in contrast to standard Bayesian methods, for which the prior distribution is fixed before any data are observed. In VBA, the empirical Bayes approach is a fully Bayesian treatment of a hierarchical model wherein the parameters at the highest level of the hierarchy are summary statistics of the group, which are unknown but eventually constrain the likely range of subject-level parameters. 
+[Empirical Bayes methods](https://en.wikipedia.org/wiki/Empirical_Bayes_method) are procedures for statistical inference in which the prior distribution is estimated from the data. This approach stands in contrast to standard Bayesian methods, for which the prior distribution is fixed before any data are observed. In VBA, the empirical Bayes approach is a fully Bayesian treatment of a [hierarchical model](https://en.wikipedia.org/wiki/Bayesian_hierarchical_modeling) wherein the parameters at the highest level of the hierarchy are [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) of the group, which are unknown but eventually constrain the likely range of subject-level parameters. 
 
-In other terms, VBA's empirical Bayes approach is formally identical to mixed-effect modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be sampled from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution.
+In other terms, VBA's empirical Bayes approach is formally identical to [mixed-effect](https://en.wikipedia.org/wiki/Mixed_model) modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be [sampled](https://en.wikipedia.org/wiki/Sample_(statistics)) from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution.
 
 The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 
@@ -20,7 +20,7 @@ The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 2) update group-level summary statistics from posterior within-subject summary statistics
 ```
 
-Over the iterations, within-subject priors are refined and matched to the inferred parent population distribution. Empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually shrinks the within-subject posterior estimate around the estimated group mean...
+Over the algorithm iterations, within-subject priors are refined and matched to the inferred parent population distribution. Empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually [shrinks](https://en.wikipedia.org/wiki/Shrinkage_estimator) the within-subject posterior estimate around the estimated group mean...
 
 Of course, there is no need to write specific functions, and VBA performs this analysis automatically. One simply calls the function `VBA_MFX.m`, as follows:
 
