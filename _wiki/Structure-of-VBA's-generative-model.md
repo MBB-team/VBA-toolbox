@@ -75,7 +75,7 @@ Note that the above class of generative models encompasses static models, i.e. m
 
 This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning.
 
-Note: state-space models (with unknown evolution, observation and precision parameters) grand-father most causal models of the statistical literature. A notable exception are "switch" models, i.e. models that include unknown [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable).
+Note: state-space models (with unknown evolution, observation and precision parameters) grand-father most [causal models](https://en.wikipedia.org/wiki/Causal_model) of the statistical literature. A notable exception are models that include unknown "switch" or [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable).
 
 
 ## Prior knowledge
