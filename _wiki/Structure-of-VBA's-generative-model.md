@@ -4,36 +4,36 @@ title: "Structure of VBA's generative models"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-This section exposes the structure of generative models that underpin VBA data analysis.
+This section exposes the structure of generative models that underpin VBA data analysis. But let us start with a simple example.
 
 # Example: Q-learning model
 
-Reinforcement learning models are typically used to interpret changes in behavioural responses that arise from subject's exposure to reward and/or punishment. Among these, Q-learning models simply assume that subjects update the value of possible actions. In its simplest form, the Q-learning algorithm expresses the change in value $$Q_{t+1}-Q_t$$ from trial $$t$$ to trial $$t+1$$ as being linearly proportional to the reward prediction error. This yields the following update rule:
+[Reinforcement learning models](https://en.wikipedia.org/wiki/Reinforcement_learning) are typically used to interpret changes in behavioural responses that arise from subject's exposure to reward and/or punishment. Among these, [Q-learning models](https://en.wikipedia.org/wiki/Q-learning) simply assume that subjects update the value of possible actions. In its simplest form, the Q-learning algorithm expresses the change in value $$Q_{t+1}-Q_t$$ from trial $$t$$ to trial $$t+1$$ as being linearly proportional to the [reward prediction error]((http://www.scholarpedia.org/article/Reward_signals)). This yields the following [learning rule](https://en.wikipedia.org/wiki/Learning_rule):
 
 $$Q_{t+1} = Q_t + \alpha (r_{t+1}-Q_t)$$
 
-where $$r_t$$ is the reward delivered to the subject at trial $$t$$, and $$\alpha$$ is the (unknown) learning rate of the subject.
+where $$r_t$$ is the reward delivered to the subject at trial $$t$$, and $$\alpha$$ is the (unknown) "learning rate" of the subject.
 
-One usually complements Q-learning with a softmax decision rule, i.e. an equation that expresses the probability $$P_t(a_i)$$ of the subject to choose action $$a_{i}$$ at trial $$t%.$$:
+One usually complements Q-learning with a [softmax](https://en.wikipedia.org/wiki/Softmax_function) decision rule, i.e. an equation that expresses the probability $$P_t(a_i)$$ of the subject to choose action $$a_{i}$$ at trial $$t%.$$:
 
 
 $$P_t(a_i) = \frac{\exp \beta Q_t(a_i)}{\sum_j \exp \beta Q_t(a_j)}$$
 
-where $$\beta$$ is the (unknown) inverse temperature.
+where $$\beta$$ is the (unknown) inverse "temperature".
 
 
 Given a series of experienced reward $$r_{t}$$ at each trial, these equations can be used to predict the choices of the subject. Fitting the above Q-learning model to behavioural data means finding estimates of the learning rate $$\alpha$$, the inverse temperature $$\beta$$, and the initial values $$Q_{0}$$ that best explains the observed choices (see [this page]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model) for a demonstration).
 
-In fact, although they are not general enough to capture the range of models that the toolbox can deal with, these equations convey the basic structure of models of learning and decision making. This is because:
+Although they are not general enough to capture the range of models that VBA can deal with, these equations convey the basic structure of [learning](https://en.wikipedia.org/wiki/Learning) and/or [decision making](https://en.wikipedia.org/wiki/Decision-making) models. This is because:
 
 - any form of **learning** (including probabilistic - bayesian - belief update), can be written as an **evolution equation**, similar in form to the first equation above
 - any form of **decision making** can be understood as an **action emission law**, and thus written as an **observation mapping** (from internal states to actions), similar in form to the second equation above.
 
-More generally, most computational models for neurobiological and behavioural data share the same structure, i.e. are based on evolution and/or observation mappings that capture the response of relevant states (e.g. neural activity, beliefs and preferences, etc...) to experimentally controlled inputs. We will now describe the general structure of these models in more details.
+More generally, most [computational models](https://en.wikipedia.org/wiki/Computational_model) for neurobiological and behavioural data share the same structure, i.e. are based on evolution and/or observation mappings that capture the response of relevant "states" (e.g. neural activity, beliefs and preferences, etc...) to experimentally controlled inputs. We will now describe the general structure of these models in more details.
 
 # Nonlinear state-space models
 
-VBA deals with a very general class of generative models, namely: "nonlinear state-space models". These are reviewed below.
+VBA deals with a very general class of generative models, namely: "nonlinear [state-space models](https://en.wikipedia.org/wiki/State-space_representation)". These are reviewed below.
 
 ## Definitions & Notations
 
@@ -54,17 +54,17 @@ We consider so-called "state-space models", which essentially consist of two map
 
 - The evolution function $$f$$ describes how hidden states change from one time sample to the next:
 \\[x_{t+1}=f(x_t,u_t,\theta)+\eta_t\\]
-where $$\eta_t$$ is supposed to be iid Gaussian, with mean zero and precision (inverse variance) $$\alpha$$.  In the example above, the evolution function was given by the Q-learning equation, and the state noise precision was infinite (deterministic dynamics, i.e.: $$\eta \rightarrow 0$$).
+where $$\eta_t$$ are stochastic perturbations, which VBA supposes to be [i.i.d.](https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables) Gaussian, with mean zero and precision (inverse variance) $$\alpha$$.  In the example above, the evolution function was given by the Q-learning equation, and the state noise precision was infinite ([deterministic](https://en.wikipedia.org/wiki/Deterministic_system) dynamics, i.e.: $$\eta \rightarrow 0$$).
 
 - The observation mapping $$g$$ describes how observed data is generated from hidden states. When dealing with continuous data, the observation equation is given by:
 \\[y_t=g(x_t,u_t,\phi)+\epsilon_t\\]
-where $$\epsilon_t$$ is iid Gaussian, with mean zero and precision $$\sigma$$. In any case, the observation mapping $$g$$ specifies the data likelihood $$p(y_t|x_t,u_t,\phi,m)$$. In the example above, the likelihood of observed choices was given by the softmax mapping (categorical data).
+where $$\epsilon_t$$ are model residuals, which VBA supposes to be i.i.d. Gaussian, with mean zero and precision $$\sigma$$. In any case, the observation mapping $$g$$ specifies the data likelihood $$p(y_t|x_t,u_t,\phi,m)$$. In the example above, the likelihood of observed choices was given by the softmax mapping (categorical data).
 
 The following figure summarizes the model structure:
 
 ![]({{ site.baseurl }}/images/wiki/graph_models.png)
 
-The plate denotes repetitions over time or trials. Nodes represent variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.
+The plate denotes repetitions over time or trials. Nodes represent model variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.
 
 One may have to deal with deterministic systems ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$.
 
