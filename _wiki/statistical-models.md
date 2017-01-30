@@ -224,7 +224,7 @@ The function `VBA_MoG.m` inverts, using a variational Bayesian scheme, the MoG m
 along with the following analysis summary (displayed in the matlab command window):
 
 
-```
+```ABNF
 Initialing components' modes (hierarchical clustering)... OK.
 1 component's death: K = 11.
 2 component's death: K = 9.
