@@ -4,9 +4,9 @@ title: "Mixed observations"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-The toolbox allows to develop models of multiple concurrent observations. For example [behavioural-DCM]({{ site.baseurl }}/wiki/behavioural-DCM) can fit both behavioural responses _and_ BOLD timeseries. You may also want to develop a single model explaining both binary button responses _and_ reaction times (e.g., diffusion-drift models). In fact, you can combine virtually as many recordings as you want in a unique generative model where some parameters will impact on multiple observations. In VBA, one can invert such models using the ```multisources``` option. The estimation procedure will then try to estimate the parameter values that best explain all data simultaneously.
+The toolbox allows to develop models of multiple concurrent observations. For example [behavioural-DCM]({{ site.baseurl }}/wiki/behavioural-DCM) can fit both behavioural responses _and_ BOLD timeseries. You may also want to develop a single model explaining both binary button responses _and_ reaction times (e.g., [diffusion-drift models](https://en.wikipedia.org/wiki/Two-alternative_forced_choice#Drift-diffusion_model)). In fact, you can combine virtually as many recordings as you want in a unique generative model where some parameters will impact on multiple observations. In VBA, one can invert such models using the ```multisources``` option. The estimation procedure will then try to estimate the parameter values that best explain all data simultaneously.
 
-Please refer to the ```demo_multisource``` for an interactive example.
+Please refer to the script ```demo_multisource.m``` for an interactive example.
 
 # Creating the observation matrix
 
