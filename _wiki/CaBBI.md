@@ -65,11 +65,12 @@ Calcium_basal = 50;
 Detection_threshold  = 0;
 ```
 
-- **Step 10**: To deal with neural noise, an artificial refractory period is enforced after each detected spike event (i.e. all up-crossing fluctuations within the refractory period will be discarded). You can specify this refractory period as follows:
+- **Step 10**: To deal with neural noise, an artificial refractory period is enforced after each detected spike event (i.e. all up-crossing fluctuations within the refractory period will be discarded). You can specify this refractory period by modifying the following lines of code:
 
   ```matlab
 refracPeriod = 6; % here: 6 msec
 if (count > 1) && ( (j-indices(count-1)) > ceil(refracPeriod/dt) )
+...
 ```
 
 - **Step 11**: save the variables of interest. For example, the estimated decay time-constant of the calcium transients (see also Eq. 17 in [Rahmati et al. 2016](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004736) can be accessed as follows:
