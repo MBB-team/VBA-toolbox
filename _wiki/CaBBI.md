@@ -22,7 +22,7 @@ CaBBI can be used with different spiking models. In what follows, we demonstrate
 
 
 ## CaBBI demo codes step by step
-The demonstration scripts `demo_CaIBB_FHN` and `demo_CaIBB_QGIF` show how to invert the FHN and QGIF generative models, respectively, given a measured fluorescence trace. By default, the demonstration scripts automatically [download the clacium imaging data](https://figshare.com/s/e524c1d214d411e5869c06ec4b8d1f61) that was processed in Rahmati et al. (2016). These *in-vitro* data were recorded from *neonatal* hippocampal tissues with a temporal precision of 22.6 Hz (the sampling rate; see `Step 2`). Note that the ensuing fluorescence transients have relatively very slow rising phases, which render model inversions particularly difficult. This is why recorded data are pre-processed (slow temporal drifts removal) prior to model inversion.
+The demonstration scripts `demo_CaIBB_FHN` and `demo_CaIBB_QGIF` show how to invert the FHN and QGIF generative models, respectively, given a measured fluorescence trace. By default, the demonstration scripts automatically [download the clacium imaging data](https://figshare.com/s/e524c1d214d411e5869c06ec4b8d1f61) that was processed in Rahmati et al. (2016). These *in-vitro* data were recorded from *neonatal* hippocampal tissues with a sampling rate of 22.6 Hz. Note that the ensuing fluorescence transients have relatively very slow rising phases, which render model inversions particularly difficult. This is why recorded data are pre-processed (slow temporal drifts removal) prior to model inversion.
 
 The Figure below is an example of the graphical output of `demo_CaIBB_FHN`:
 
