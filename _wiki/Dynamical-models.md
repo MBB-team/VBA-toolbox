@@ -1,8 +1,9 @@
 ---
-title: "Dynamical models"
+title: "Attractors and oscillators"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
+
 
 # Van der Pol oscillator
 
