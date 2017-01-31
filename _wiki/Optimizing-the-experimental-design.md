@@ -25,7 +25,7 @@ e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters')
 ```
 where `u` is the time series of experimental control variables (inputs) that defines the design and `e` is the design efficiency (minus the trace of the expected posterior covariance matrix).
 
-> **Tip**: in the context of classical GLM hypothesis testing, the statistical power can be derived using the function `testPower.m`.
+> **Tip**: in the context of classical GLM hypothesis testing, the statistical power can be derived using the function `testPower.m`. 
 
 
 ## Model selection
