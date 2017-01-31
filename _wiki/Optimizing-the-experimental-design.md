@@ -44,9 +44,9 @@ $$
 
 As for parameter estimation, one can derive a posterior estimate of this error, i.e.: $$P\big(e=1 \mid y,u \big)$$. In turn, prior to the experiment, on can derive the *expected* model selection error rate:
 
-$$P\big(e=1 \mid u \big) = \int{ P\big(e=1 \mid y,u \big) P\big(y \mid u \big) dy }$$
+$$P\big(e=1 \mid u \big) = \int{ P\big(e=1 \mid y,u \big) p\big(y \mid u \big) dy }$$
 
-Of course, the expected model selection error rate increases with the similarity of model predictions: 
+where the expectation is taken under the marginal likelihood $$p\big(y \mid u \big)$$. Of course, the expected model selection error rate increases with the similarity of model predictions: 
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
