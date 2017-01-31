@@ -20,7 +20,7 @@ The core of bDCM is identical to classical DCM. In the next section, we will bri
 
 First, one needs to extract fMRI timeseries from relevant ROIs. This can be done easily in SPM:
 
-* Locate the central voxel of aech ROI, e.g., by selecting the peak of activation in the corresponding significant cluster.
+* Locate the central voxel of each ROI, e.g., by selecting the peak of activation in the corresponding significant cluster.
 * Click on SPM's 'eigenvariate' button. 
 * Define the ROI geometry.
 * Adjust for effects of interest, e.g., to correct for movement/physio artifacts. 
