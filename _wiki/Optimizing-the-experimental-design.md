@@ -14,7 +14,7 @@ The VBA toolbox can handle two classes of problems, namely optimizing the system
 
 ## Parameter estimation
 
-How should one set the inputs $$u$$, such that measured experimental data eventually yield accurate parameter estimates? One first has to define "estimation accuracy". Let $$\hat{\theta} = E \big[ \theta\mid y \big]$$ be the posterior estimate of unknown model parameters $$\theta$$, given experimental data $$y$$. The expected squared estimation error is given by:
+How should one set the inputs $$u$$, such that measured experimental data eventually yield accurate parameter estimates? One first has to define "estimation accuracy". Let $$\hat{\theta} = E \big[ \theta\mid y \big]$$ be the posterior estimate of unknown model parameters $$\theta$$, given experimental data $$y$$. Estimation error induces a statistical loss, which increases with the distance between $$\hat{\theta}$$ and $$\theta$$. The expected squared estimation error is given by:
 
 $$ E \big[( \hat{\theta} -\theta)^2 \mid y \big] = V \big[ \theta\mid y \big]$$
 
@@ -30,7 +30,19 @@ where `u` is the time series of experimental control variables (inputs) that def
 
 ## Model selection
 
-Now how should one set the inputs $$u$$, such that measured experimental data eventually best discriminates between candidate models? In this context, one should choose among experimental designs according to their induced model selection error rate. Note that the expected model selection error rate $$p\big(e=1 \mid u \big)$$ increases with the similarity of model predictions: 
+Now how should one set the inputs $$u$$, such that measured experimental data eventually best discriminates between candidate models? In this context, one should choose among experimental designs according to their induced model selection error rate. Let $$m\hat$$ be the selected model (according to the criterion of Bayesian model comparison). The statistical loss of a model selection can be defined as the binary error $$e$$:
+
+$$
+e =
+\left\{
+    \begin{array}{ll}
+        1 if m\hat=m \\
+        0 otherwise
+    \end{array}
+\right.
+$$
+
+As for parameter estimation, one can derive a posterior estimate of this error, i.e.: $$P\big(e=1 \mid u \big)$$. This is the expected model selection error rate, which increases with the similarity of model predictions: 
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
