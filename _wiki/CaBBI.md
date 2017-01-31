@@ -28,7 +28,7 @@ In [Rahmati et al. (2016)](http://journals.plos.org/ploscompbiol/article?id=10.1
 CaBBI can be used with different spiking models. In [Rahmati et al. (2016)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004736), authors demonstrate the well-known Fitzhugh-Nagumo (FHN) model and the so-called "Quadratic-Gaussian Integrate-and-Fire model" (QGIF), which does not require any reset condition (neither for producing the upstroke phase of the spike nor for its re-polarization phase).
 
 
-## CaBBI demo codes step by step
+# CaBBI demonstration codes step by step
 The demonstration scripts `demo_CaIBB_FHN` and `demo_CaIBB_QGIF` show how to invert the FHN and QGIF generative models, respectively, given a measured fluorescence trace. By default, the demonstration scripts automatically [download the clacium imaging data](https://figshare.com/s/e524c1d214d411e5869c06ec4b8d1f61) that was processed in Rahmati et al. (2016). These *in-vitro* data were recorded from *neonatal* hippocampal tissues with a sampling rate of 22.6 Hz. Note that the ensuing fluorescence transients have relatively very slow rising phases, which render model inversions particularly difficult. This is why recorded data are pre-processed (slow temporal drifts removal) prior to model inversion.
 
 The Figure below is an example of the graphical output of `demo_CaIBB_FHN`:
@@ -36,7 +36,7 @@ The Figure below is an example of the graphical output of `demo_CaIBB_FHN`:
 <!-- insert an image -->
 ![]({{ site.baseurl }}/images/wiki/CaBBI/Sampel_DemoFHN.png)
 
-> First row: the  pre-processed fluorescence trace, Second row: estimated [Ca2+] kinetics, Third row: estimated membrane potentials, Fourth row: estimated spiking event times (obtained by thresholding the inferred membrane potentials, see "step 10" below). Note: all these variables are automatically saved in `CaBBI`.
+> First row: the  pre-processed fluorescence trace, Second row: estimated [Ca2+] kinetics, Third row: estimated membrane potentials, Fourth row: estimated spiking event times (obtained by thresholding the inferred membrane potentials, see Step 9 below). Note: all these variables are automatically saved in `CaBBI`.
 
 Below, we comment the demonstration scripts step by step:
 
@@ -88,7 +88,7 @@ inferred_Tau_Ca = inF.Tau_Ca0 * exp(posterior.muTheta(1)) * (1/sampling_rate)/dt
 ```
 
 
-## You want to adapt CaBBI demos to your data?
+# You want to adapt CaBBI demos to your data?
 
 Simply specify the directory where your fluorescence trace is saved, as well as your data sampling rate (in Hz). Running the demo scripts will automatically remove the low frequency drifts from your data, and invert the corresponding generative model. The parameters and states estimates will be stored in `CaBBI` (see Step 11).
 
