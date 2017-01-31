@@ -80,7 +80,9 @@ inferred_Tau_Ca = inF.Tau_Ca0 * exp(posterior.muTheta(1)) * (1/sampling_rate)/dt
 ```
 
 
-> **You want to adapt CaBBI demos to your data?** Simply specify the directory where your fluorescence trace is saved, as well as your data sampling rate (in Hz). Running the demo scripts will automatically remove the low frequency drifts from your data, and invert the corresponding generative model. The parameters and states estimates will be stored in `CaBBI` (see Step 11 above).
+## You want to adapt CaBBI demos to your data?
+
+Simply specify the directory where your fluorescence trace is saved, as well as your data sampling rate (in Hz). Running the demo scripts will automatically remove the low frequency drifts from your data, and invert the corresponding generative model. The parameters and states estimates will be stored in `CaBBI` (see Step 11).
 
 
 # References
