@@ -30,19 +30,23 @@ where `u` is the time series of experimental control variables (inputs) that def
 
 ## Model selection
 
-Now how should one set the inputs $$u$$, such that measured experimental data eventually best discriminates between candidate models? In this context, one should choose among experimental designs according to their induced model selection error rate. Let $$m\hat$$ be the selected model (according to the criterion of Bayesian model comparison). The statistical loss of a model selection can be defined as the binary error $$e$$:
+Now how should one set the inputs $$u$$, such that measured experimental data eventually best discriminates between candidate models? In this context, one should choose among experimental designs according to their induced model selection error rate. Let $$\hat{m}$$ be the selected model (according to the criterion of Bayesian model comparison). The statistical loss of a model selection can be defined as the binary error $$e$$:
 
 $$
 e =
 \left\{
     \begin{array}{ll}
-        1 if m\hat=m \\
-        0 otherwise
+        1 \textrm{ if } \hat{m}=m \\
+        0 \textrm{ otherwise}
     \end{array}
 \right.
 $$
 
-As for parameter estimation, one can derive a posterior estimate of this error, i.e.: $$P\big(e=1 \mid u \big)$$. This is the expected model selection error rate, which increases with the similarity of model predictions: 
+As for parameter estimation, one can derive a posterior estimate of this error, i.e.: $$P\big(e=1 \mid y,u \big)$$. In turn, prior to the experiment, on can derive the *expected* model selection error rate:
+
+$$P\big(e=1 \mid u \big) = \int{ P\big(e=1 \mid y,u \big) P\big(y \mid u \big) dy$$
+
+Of course, the expected model selection error rate increases with the similarity of model predictions: 
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
