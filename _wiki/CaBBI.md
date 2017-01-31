@@ -35,10 +35,10 @@ Below, we comment the demonstration scripts step by step:
 
 - **Step 1**: The downloaded data contains eight traces: pick the trace you want, e.g.:
 
-```` matlab
+  ```matlab
 % file name of the fluorescence trace
 Fluor_trace_name = 'fluorescence_data7';
-````
+```
 
 - **Step 2**: specify the sampling rate (in Hz) of the fluorescence trace.
 
@@ -65,23 +65,18 @@ Calcium_basal = 50;
 Detection_threshold  = 0;
 ```
 
-> This parameter has to be adapted to one's data!
-
-- **Step 10**: specify the refractory period for the inferred spiking events, e.g.:
+- **Step 10**: To deal with neural noise, an artificial refractory period is enforced after each detected spike event (i.e. all up-crossing fluctuations within the refractory period will be discarded). You can specify this refractory period as follows:
 
   ```matlab
-if (count > 1) && ( (j-indices(count-1)) > ceil(6/dt) )
+refracPeriod = 6; % here: 6 msec
+if (count > 1) && ( (j-indices(count-1)) > ceil(refracPeriod/dt) )
 ```
-
-> By default, it has been set to 6msec. This means that after each detected spike event, all the threshold crossing fluctuations within 6msec will be discarded.
 
 - **Step 11**: save the variables of interest. For example, the estimated decay time-constant of the calcium transients (see also Eq. 17 in [Rahmati et al. 2016](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004736) can be accessed as follows:
 
   ```matlab
 % in [sec]
-inferred_Tau_Ca = inF.Tau_Ca0               ...
-                  * exp(posterior.muTheta(1)) ...
-                  * (1/sampling_rate)/dt
+inferred_Tau_Ca = inF.Tau_Ca0 * exp(posterior.muTheta(1)) * (1/sampling_rate)/dt
 ```
 
 
