@@ -61,7 +61,7 @@ Note that the contents of the fields`options.inF` and `options.inG` are entirely
 
 # Controlling the lagged Kalman forward pass
 
-The VBA update of the hidden states is very similar in form to a [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter). More precisely, the scheme derives an approximation to the lagged posterior density, which contains the information about states at time `t` given all observed data up to time `t+k`, where `k` is the lag. This lag can be chosen arbitrarily, which allows one to infer on hidden states, whose changes impact observed data a few time samples later in time (e.g. due to some form of convolution operation). For example, the following sets the lag to 10:
+The VBA update of the hidden states is very similar in form to a [Kalman filter](https://en.wikipedia.org/wiki/Kalman_filter). More precisely, the scheme derives an approximation to the lagged posterior density $$p\left(x_t \mid y_{1:t+k}\right)$$, which contains the information about states at time $$t$$ given all observed data up to time $$t+k$$, where $$k$$ is the so-called **backward lag**. By default, this lag is set to 0. But it can be chosen arbitrarily, which allows one to infer on hidden states, whose changes impact observed data a few time samples later in time (e.g. due to some form of convolution operation). For example, the following sets the lag to 10:
 
 ```matlab
 options.backwardLag = 10 ;
@@ -69,7 +69,8 @@ options.backwardLag = 10 ;
 
 The main effect of increasing the lag is to average across more data points when deriving the hidden states, hence improving the precision (and the temporal smoothness) of the estimate.
 
-> **TIP:** The ensuing [computational cost](https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations) scales with `k^2`.
+> **TIP:** The ensuing [computational cost](https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations) scales with $$k^2$$. This means that the backward lag induces a trade-off between estimation efficiency and computational load. When setting the backward lag, one may aim at finding the minimal value that still yields robust inference.
+
 
 # Controlling VBA's algorithmic convergence
 
