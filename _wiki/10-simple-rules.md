@@ -53,7 +53,7 @@ A related issue is whether posterior inference critically depends upon the prior
 
 # 6: Optimize your experimental design
 
-Yes, this is a trivial advice. No comment (just in case: did you have a look [here]({{ site.baseurl }}/wiki/Optimizing-the-experimental-design)?).
+Yes, this is a trivial advice. Just in case: did you have a look [here]({{ site.baseurl }}/wiki/Optimizing-the-experimental-design)?
 
 
 # 7: Derive analytical gradients of evolution/observation functions
