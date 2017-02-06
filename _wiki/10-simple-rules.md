@@ -58,7 +58,7 @@ Yes, this is a trivial advice. Just in case: did you have a look [here]({{ site.
 
 # 7: Derive analytical gradients of evolution/observation functions
 
-VBA is a grown-up: it can work out numerical gradients if you are too lazy to endow evolution and/or observation functions with analytical gradients. But let's face it: by providing these gradients, you could speed up VBA model inversions by orders of magnitude..
+VBA is a grown-up: it can work out numerical gradients if you are too lazy to endow evolution and/or observation functions with analytical gradients. But let's face it: by providing these gradients, you could speed up VBA model inversions by orders of magnitude...
 
 > **Tip:** VBA can help you to check whether your derivations are correct by comparing the analytical gradients with the numerical ones. This can be done by setting `options.checkGrads = 1`.
 
@@ -66,7 +66,7 @@ VBA is a grown-up: it can work out numerical gradients if you are too lazy to en
 
 # 8: Update your version of the VBA toolbox regularly
 
-We are making changes on VBA's content regularly. The only way to keep up is to update your version of the toolbox as regularly as we do. Luckily, [GitHub](https://github.com/MBB-team/VBA-toolbox) can do this automatically for you :)
+We are making changes on VBA's contents regularly. The only way to keep up is to update your version of the toolbox as regularly as we do. Luckily, [GitHub](https://github.com/MBB-team/VBA-toolbox) can do this automatically for you :)
 
 
 
