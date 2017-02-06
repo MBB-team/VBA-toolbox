@@ -12,7 +12,7 @@ $$ y = X \beta + e $$
 
 where $$e$$ are model residuals, $$\beta$$ are unknown regresion coefficients and $$X$$ is the so-called [design matrix](https://en.wikipedia.org/wiki/Design_matrix). GLMs of this sort are equivalent to "[multiple regression models](https://en.wikipedia.org/wiki/Regression_analysis)", and typical questions of interest can be framed in terms of a [contrast](https://en.wikipedia.org/wiki/Contrast_(statistics)) of independent variables. This is equivalent to testing for the significance of $$c^T \beta$$, where $$c$$ is the contrast vector or matrix. Inference on such contrasts in the context of a GLM is very general, and grand-fathers most classical statistical approaches, including ANOVA, ANCOVA, MANOVA, MANCOVA, ordinary linear regression, t-test and F-test. 
 
-Let us consider a toy example, where the GLM reduces to four dependant (and, here, arbitrary) variables $$X_i$$ (where $$i=1,...,4$$). We simulate dummy data where only the first dependant variable actually induces variability across the 32 samples of the dependent variable $$y$$, and then use the function `GLM_contrast.m` to perform classical inference on the contrast of interest:
+Let us consider a toy example, where the GLM reduces to four dependant (and, here, arbitrary) variables $$X_i$$ (where $$i=1,...,4$$). We simulate dummy data where only the first dependant variable actually induces variability across the 32 samples of the dependant variable $$y$$, and then use the function `GLM_contrast.m` to perform classical inference on the contrast of interest:
 
 ```matlab
 X  = randn(32, 4); % simulate dummy independent variables
