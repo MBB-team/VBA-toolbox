@@ -8,4 +8,6 @@ function [fx] = f_kToM(x,P,u,inF)
 %   - inF: input structure (see prepare_kToM.m)
 % OUT:
 %   - fx: updated hidden states
+% [see RecToMfunction.m]
+
 [fx,indlev] =RecToMfunction(x,P,u,inF);

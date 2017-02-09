@@ -20,7 +20,7 @@ inF.b           = 0.9e-2;
 inG.G0          = 2;
 inG.beta        = 1;
 inG.y0          = -1;
-inG.ind         = 1;
+inG.ind         = 1; % only x(1) is partially observable 
 options.inF     = inF;
 options.inG     = inG;
 
@@ -40,6 +40,11 @@ priors.a_alpha = 1e0;
 priors.b_alpha = 1e0;
 priors.a_sigma = 1e0;
 priors.b_sigma = 1e0;
+
+for t=1:n_t
+    priors.iQx{t} = eye(2);
+    priors.iQx{t}(1,1) = 1e2;
+end
 
 % Build options and dim structures for model inversion
 options.priors      = priors;
@@ -63,7 +68,7 @@ displaySimulations(y,x,eta,e)
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 % Display results
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 
 % Make predictions
 try
