@@ -23,7 +23,7 @@ end
 if doFig
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.85*pos0(4)];
-    handles.hf = figure('position',pos,'color',[1 1 1],'name','group-level Bayesian model comparison','tag','groupBMC');
+    handles.hf = figure('position',pos,'color',[1 1 1],'name',out.options.figName,'tag','groupBMC');
     handles.ha(1) = subplot(3,2,1,'parent',handles.hf,'nextplot','add');
     handles.ha(2) = subplot(3,2,2,'parent',handles.hf,'nextplot','add','clim',[0,1]);
     colormap(handles.ha(2),flipud(bone))
@@ -47,6 +47,9 @@ if doFig
     end
     xlabel(handles.ha(1),'models')
     set(handles.ha(1),'xtick',1:K,'xlim',[0.5,K+0.5],'ygrid','on')
+    if ~isempty(out.options.modelNames)
+        set(handles.ha(1),'xticklabel',out.options.modelNames)
+    end
     title(handles.ha(1),'log- model evidences')
     % display families partition
     if ~isempty(out.options.families)
@@ -57,6 +60,9 @@ if doFig
         ylabel(handles.ha(7),'families')
         title(handles.ha(7),'families'' partition')
         set(handles.ha(7),'xlim',[0.5,K+0.5],'xtick',[1:K],'ylim',[0.5,nf+0.5],'ytick',[1:nf],'ydir','reverse','clim',[0 1])
+        if ~isempty(out.options.modelNames)
+            set(handles.ha(7),'xticklabel',out.options.modelNames)
+        end
     end
 end
 
@@ -70,6 +76,9 @@ xlabel(handles.ha(2),'models')
 ylabel(handles.ha(2),'subjects')
 title(handles.ha(2),'model attributions')
 set(handles.ha(2),'xlim',[0.5,K+0.5],'xtick',[1:K],'ylim',[0.5,n+0.5],'ytick',[1:n],'ydir','reverse','clim',[0 1])
+if ~isempty(out.options.modelNames)
+    set(handles.ha(2),'xticklabel',out.options.modelNames)
+end
 set(handles.hc,'visible','on')
 
 % display model frequencies
@@ -85,6 +94,9 @@ if ~isempty(out.options.families)
 end
 xlabel(handles.ha(3),'models')
 set(handles.ha(3),'xtick',1:K,'xlim',[0.5,K+0.5],'ylim',[0 1],'ygrid','on')
+if ~isempty(out.options.modelNames)
+    set(handles.ha(3),'xticklabel',out.options.modelNames)
+end
 title(handles.ha(3),'estimated model frequencies')
 
 % display exceedance probabilities
@@ -93,6 +105,9 @@ bar(handles.ha(4),out.ep,'facecolor',0.8*[1 1 1])
 plot(handles.ha(4),[0.5,K+0.5],[0.95,0.95],'r')
 xlabel(handles.ha(4),'models')
 set(handles.ha(4),'xtick',1:K,'xlim',[0.5,K+0.5],'ylim',[0 1],'ygrid','on')
+if ~isempty(out.options.modelNames)
+    set(handles.ha(4),'xticklabel',out.options.modelNames)
+end
 title(handles.ha(4),'exceedance probabilities')
 
 % display VB algorithm convergence

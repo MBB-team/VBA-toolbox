@@ -33,45 +33,33 @@ if all.in.sparse
     figname = [figname,' (sparse inversion)'];
 end
 figname = [figname,': cross-validation results'];
-all.hf = figure('color',[1 1 1],'name',figname,'menubar','none');
+all.handles.hf = figure('color',[1 1 1],'name',figname,'menubar','none');
 
 % display # observed accurate predictions (and its distribution under H0)
-ha = subplot(2,2,1,'parent',all.hf,'nextplot','add');
+all.handles.ha = subplot(2,2,1,'parent',all.handles.hf,'nextplot','add');
 [pH0] = VBA_binomial(0:n,n,r);
-bar(0:nok-1,pH0(1:nok),'parent',ha,'facecolor',0.8*[1 1 1]);
-bar(nok:n,pH0(nok+1:n+1),'parent',ha,'facecolor',0.8*[1 0.75 0.75]);
-plot(nok*[1 1],get(ha,'ylim'),'r')
-set(ha,'xlim',[-0.5,n+1.5])
-xlabel(ha,'x = number of accurate predictions')
-ylabel(ha,'p(x|H_0)')
-title(ha,'classical inference')
+bar(0:nok-1,pH0(1:nok),'parent',all.handles.ha,'facecolor',0.8*[1 1 1]);
+bar(nok:n,pH0(nok+1:n+1),'parent',all.handles.ha,'facecolor',0.8*[1 0.75 0.75]);
+plot(nok*[1 1],get(all.handles.ha,'ylim'),'r')
+set(all.handles.ha,'xlim',[-0.5,n+1.5])
+xlabel(all.handles.ha,'x = number of accurate predictions')
+ylabel(all.handles.ha,'p(x|H_0)')
+title(all.handles.ha,'classical inference')
 
 % display classification weights
-ha = subplot(2,2,2,'parent',all.hf,'nextplot','add');
-plot(ha,all.P,'marker','.')
-set(ha,'xlim',[1,size(all.P,1)])
-xlabel(ha,'weights'' dimensions')
-title(ha,'weights'' estimates')
-
-% % display correlation among k-folds
-% C = corrcoef(all.P);
-% ha = subplot(2,2,3,'parent',all.hf,'nextplot','add');
-% imagesc(C,'parent',ha);
-% colorbar('peer',ha)
-% set(ha,'clim',[-1,1])
-% axis(ha,'equal')
-% axis(ha,'tight')
-% title(ha,'estimation stability (among k-folds)')
-% xlabel(ha,'k-folds')
-% ylabel(ha,'k-folds')
+all.handles.ha(2) = subplot(2,2,2,'parent',all.handles.hf,'nextplot','add');
+plot(all.handles.ha(2),all.P,'marker','.')
+set(all.handles.ha(2),'xlim',[1,size(all.P,1)])
+xlabel(all.handles.ha(2),'weights'' dimensions')
+title(all.handles.ha(2),'weights'' estimates')
 
 % display bayesian posterior pdf on classification accuracy
-ha = subplot(2,2,3,'parent',all.hf,'nextplot','add');
-VBA_PPM(nok,n-nok,0.5,'beta',1,ha);
-set(ha,'ytick',[])
-xlabel(ha,'r = classifier accuracy')
-ylabel(ha,'p(r|x)')
-title(ha,'Bayesian inference')
+all.handles.ha(3) = subplot(2,2,3,'parent',all.handles.hf,'nextplot','add');
+VBA_PPM(nok,n-nok,0.5,'beta',1,all.handles.ha(3));
+set(all.handles.ha(3),'ytick',[])
+xlabel(all.handles.ha(3),'r = classifier accuracy')
+ylabel(all.handles.ha(3),'p(r|x)')
+title(all.handles.ha(3),'Bayesian inference')
 
 % display summary of results
 if floor(all.dt./60) == 0
@@ -84,7 +72,7 @@ str{2} = sprintf(['Cross-validation complete (took ~',timeString,')']);
 str{3} = sprintf(['Dimensions of the analysis:','\n ',...
     '    - data: n=',num2str(n),'\n ',...
     '    - classification weights: p=',num2str(p),'\n ',...
-    '    - # folds: k=',num2str(k),' (training sets overlap = ',num2str((k-2)/(k-1),2),')']);
+    '    - folds: k=',num2str(k),' (training sets overlap = ',num2str((k-2)/(k-1),2),')']);
 str{4} = sprintf(['Summary statistics:','\n ',...
     '    - Classical inference: p-val. = ',num2str(pv,3),'\n ',...
     '    - Bayesian inference: exc. prob. = ',num2str(pBayes,3),'\n ',...
@@ -92,7 +80,7 @@ str{4} = sprintf(['Summary statistics:','\n ',...
     '    - balanced class. acc. = ',num2str(bpa,3)]);
 VBA_disp(str(2:4),struct('verbose',1))
 disp(' ')
-uicontrol('parent',all.hf,'style','text','units','normalized','position',[0.52,0.05,0.5,0.4],'backgroundcolor',[1,1,1],'HorizontalAlignment','left','fontsize',9,'string',str);
+all.handles.huic = uicontrol('parent',all.handles.hf,'style','text','units','normalized','position',[0.52,0.05,0.5,0.4],'backgroundcolor',[1,1,1],'HorizontalAlignment','left','fontsize',9,'string',str);
 
 try,getSubplots;end
 

@@ -16,6 +16,8 @@ function [posterior,out] = VBA_groupBMC(L,options)
 %       the models that belong to each of the nf families. NB: using
 %       families change the default prior (uniform prior on families), and
 %       hence the model evidence...
+%       .figName: figure name
+%       .modelNames: model names
 % OUT:
 %   - posterior: a structure containg the following fields:
 %       .r: Kxn matrix of model attributions, i.e. the posterior
@@ -113,6 +115,16 @@ if ~isempty(options.families)
         posterior = [];
         out = [];
         return
+    end
+end
+if ~isfield(options,'figName')
+    options.figName = 'RFX-BMS';
+end
+if ~isfield(options,'modelNames')
+    options.modelNames = [];
+else
+    if ~iscell(options.modelNames) || ~isequal(length(options.modelNames),K)
+        options.modelNames = [];
     end
 end
 

@@ -1,7 +1,7 @@
 function [pdf,cdf] = VBA_binomial(x,n,p)
 % PDF and CDF of binomial distribution
 % function [pdf,cdf] = VBA_binomial(x,n,p)
-% Note: CDF is P(X<x), i.e. it excludes x!
+% Note: CDF is P(X<x), i.e. it excludes x, whereas PDF is P(X=x)!
 % IN:
 %   - x: number of successes
 %   - n: total number of draws

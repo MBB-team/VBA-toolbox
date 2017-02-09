@@ -42,6 +42,8 @@ function [posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse)
 %       .in: structure storing the inputs to VBA_classification
 %       .date: date stamp
 %       .dt: computing time
+%       .handles: a structure containing the handles of the graphical
+%       objects (filled-in by VBA_classication_display.m)
 % Note: cross-validation results can be displayed using the following
 % command line: VBA_classification_display(all).
 
@@ -159,7 +161,6 @@ end
 % performing full-data inversion
 if verbose
     fprintf(1,'Performing whole-data inversion...')
-    options.DisplayWin = 1;
     et0 = clock; % get time
 end
 options.isYout = zeros(n,1);
@@ -171,8 +172,8 @@ if verbose
     if sparse
         figname = [figname,' (sparse inversion)'];
     end
-    figname = [figname,': whole-data inversion results'];
-    set(out.options.hf,'name',figname)
+    out.options.figName = [figname,': whole-data inversion results'];
+    VBA_ReDisplay(posterior,out,1);
 end
 
 % wrap-up

@@ -71,8 +71,6 @@ if disp
         title(ha,['P(x<',num2str(t(1),3),' or x>',num2str(t(2),3),') = ',num2str(p,3)])
     end
     plot(ha,gridx,f,'k')
-%     grid(ha,'on')
-%     axis(ha,'tight')
     box(ha,'off')
     xlabel(ha,'effect of interest: x')
     ylabel(ha,'probability density function: p(x)')
