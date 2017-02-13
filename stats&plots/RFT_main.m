@@ -151,7 +151,14 @@ end
 peaks.ind = RFT_localmax(X);
 peaks.val = X(peaks.ind);
 peaks.prft = RFT_Pval(peaks.val,0,1,out.fwhm,L,options.type,options.dof);
-peaks.punc = 1-cdf('norm',peaks.val,0,1);
+switch options.type
+    case 'norm'
+        peaks.punc = 1-normcdf(peaks.val,0,1);
+    case 't'
+        peaks.punc = 1-tcdf(peaks.val,options.dof);
+    case 'F'
+        peaks.punc = 1-fcdf(peaks.val,options.dof(1),options.dof(2));
+end
 
 % cluster-level inference
 [clusters.ind,clusters.imax] = RFT_clusters(X,options.u,0);
@@ -174,7 +181,15 @@ set.prft = RFT_Pval(options.u,options.k,set.c,out.fwhm,L,options.type,options.do
 
 % E[number of voxel per cluster] and E[number of clusters]
 out.Em = RFT_expectedTopo(options.u,L,out.fwhm,1,options.type,options.dof);
-out.En = L.*(1-cdf('norm',options.u,0,1))./out.Em;
+switch options.type
+    case 'norm'
+        P0 = 1-normcdf(u,0,1);
+    case 't'
+        P0 = 1-tcdf(options.u,options.dof);
+    case 'F'
+        P0 = 1-fcdf(options.u,options.dof(1),options.dof(2));
+end
+out.En = L.*P0./out.Em;
 
 OUTSTR{6} = ['Expected voxels per cluster [cluster-level]: E[k|H0]=',num2str(out.En,'%3.1f'),' (height threshold: X>',num2str(options.u,'%3.2f'),').'];
 OUTSTR{7} = ['Expected number of clusters [set-level]: E[c|H0]=',num2str(out.Em,'%3.1f'),' (extent threshold: k>',num2str(options.k),').'];

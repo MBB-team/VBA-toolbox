@@ -32,7 +32,7 @@ switch type
             *(dof(1)*u/dof(2)).^(1/2*(dof(1)-1)).*(1+dof(1)*u/dof(2)).^(-1/2*(sum(dof)-2));
         HC = c*P + EC;
     otherwise
-        disp('Error: unknown type. Please use ''norm'', ''t'' or ''F''.')
+        disp('Error: RFT_expectedTopo: unknown type. Please use ''norm'', ''t'' or ''F''.')
         HC = [];
         EC = [];
 end

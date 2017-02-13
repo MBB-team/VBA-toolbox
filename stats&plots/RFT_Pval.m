@@ -21,10 +21,17 @@ function [Pw] = RFT_Pval(u,k,c,fwhm,L,type,dof)
 %   - Pw: the ensuing p-value
 
 EC = RFT_expectedTopo(u,L,fwhm,1,type,dof);
-% EC =(L./fwhm).*(sqrt(4*log(2))./(2*pi)).*exp(-u.^2./2);
-beta = (gamma(3/2).*EC./(L.*normcdf(-u))).^2;
+switch type
+    case 'norm'
+        P0 = 1-normcdf(u,0,1);
+    case 't'
+        P0 = 1-tcdf(u,dof);
+    case 'F'
+        P0 = 1-fcdf(u,dof(1),dof(2));
+end
+beta = (gamma(3/2).*EC./(L.*P0)).^2;
 Pnk = exp(-beta.*k.^2);
-if k == 0, Pnk = 1; end; % solves the numerical issue when normcdf output 0    
+if k == 0, Pnk = 1; end; % solves the numerical issue when P0=0    
 Pw = 1;
 for i=0:c-1
     Pw = Pw - myPoissonPMF(i,EC.*Pnk);

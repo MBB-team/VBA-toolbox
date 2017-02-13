@@ -1,4 +1,4 @@
-function [stat,out] = RFT_GLM_contrast(X,y,c,type,verbose)
+function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
 % applies RFT to GLM-based contrast inference
 % function [out] = RFT_GLM_contrast(X,y,c,type,verbose)
 % In brief, this function uses RFT to test linear mixtures of effects,
@@ -22,6 +22,7 @@ function [stat,out] = RFT_GLM_contrast(X,y,c,type,verbose)
 %   - y: nXL data matrix
 %   - c: kXm contrast matrix (default is eye(k) -> omnibus F-test)
 %   - type: flag for t- or F- test. Can be set to 't' (default) or 'F'
+%   - u: set-inducing threshold (for cluster inference)
 %   - verbose: flag for displaying results (default is 0)
 % OUT:
 %   - out: RFT output structure (see RFT_main.m).
@@ -33,6 +34,7 @@ out = [];
 [k0,m] = size(c);
 try;c;catch;c=eye(k);type='F';end
 try;type;catch;type='t';end
+try;u;catch;u=[];end
 try;verbose;catch;verbose=0;end
 
 % check basic numerical requirements
@@ -105,20 +107,20 @@ switch type
         end
         if verbose
             fprintf(1,'Computing F-statistics...')
-            if p>1
+            if L>1
                 fprintf(1,'%6.2f %%',0)
             end
         end
         stat = zeros(L,1);
         for i=1:L
             stat(i) = ((yhat(:,i)'*M*yhat(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trM);
-            if verbose && p>1
+            if verbose && L>1
                 fprintf(1,repmat('\b',1,8))
-                fprintf(1,'%6.2f %%',100*i/p)
+                fprintf(1,'%6.2f %%',100*i/L)
             end
         end
         if verbose
-            if p>1
+            if L>1
                 fprintf(1,repmat('\b',1,8))
             end
             fprintf(1,[' OK.'])
@@ -134,7 +136,9 @@ end
 options.R = (y-yhat)';
 options.type = type;
 options.dof = df;
-options.u = icdf('norm',0.99);
+if ~isempty(u)
+    options.u = u;
+end
 [out] = RFT_main(stat,options,verbose);
 
 
