@@ -1,21 +1,19 @@
 function [fx] = f_VBvolatile0(x,P,u,in)
-% computes Laplace-VB update rules for hidden states sufficient statistics
+% computes Laplace-VB update rule of HGF learner
 % [fx] = f_VBvolatile0(x,P,u,in)
 % This is the one-step Markovian update rule for the posterior sufficient
 % statistics of a volatile environment, as derived in [Mathys et al. 2010].
-% Note: the state space of the response model also contains the previous
-% posterior on x2, for predictions of the next input u.
+% Note: HGF stands for "Hierarchical Gaussian Filter".
 % IN:
-%   - x: the previous posterior sufficient statistics. These include, using
-%   the notation of [Mathys et al. 2010]:
-%   mu1 = x(1);
-%   mu2 = x(2);
-%   sa2 = x(3);
-%   mu3 = x(4);
-%   sa3 = x(5);
+%   - x: the previous posterior sufficient statistics:
+%   x(1)= u [U is the outcome, wose probability is tracked]
+%   x(2)= E[log-odds of P(u=1)]
+%   x(3)= log V[log-odds of P(u=1)]
+%   x(4)= E[log-volatility]
+%   x(5)= log V[log-volatility]
 %   - P: the perceptual model parameters vector, ie. P = [ka;om;th], using
 %   the notation of [Mathys et al. 2010].
-%   - u: the current input to the learner.
+%   - u: the outcome, whose probability is tracked over trials.
 %   - in: options set in options.inF
 % OUT:
 %   - fx: the updated posterior sufficient statistics (having observed u),

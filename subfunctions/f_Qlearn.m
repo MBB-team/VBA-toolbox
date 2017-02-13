@@ -1,29 +1,36 @@
-function  [ fx,dfdx,dfdP ] = f_Qlearn( x_t,P,u_t,in )
+function  [fx,dfdx,dfdP] = f_Qlearn(x,P,u,in)
+% Reinforcement-learning model for a 2-armed bandit task
+% function  [fx,dfdx,dfdP] = f_Qlearn(x,P,u,in)
+% An RL agent learns by trial and error. A bandit task is such that, after
+% each action, the agent receives a feedback (reward if positive,
+% punishment if negative). The RL agent updates its action values as
+% follows:
+% V(chosen action) = V(chosen action) + alpha*(feedback-V(chosen action))
+% V(unchosen action) = V(unchosen action)
 % IN: 
-% - x_t : Q-values (2*1)
-% - P : learning rate (1*1)
-% - u_t : previous action and feedback
-% - in : []
+%	- x: action values
+%	- P: (invsigmoid-) learning rate
+%	- u: previous action (u(1)) and feedback (u(2))
+%	- in: [useless]
+% OUT:
+%   - fx: updated action values
+%   - dfdx/dfdP: gradients for VBA inversion
 
-alpha = 1./(1+exp(-P));
-a = u_t(1)+1;
-r = u_t(2);
-fx = x_t;
-fx(a) = x_t(a) + alpha*(r-x_t(a));
+alpha = sig(P(1)); % learning rate
+a = 2-u(1); % index of agent's last chosen action
+r = u(2); % feedback
+fx = x; % identity mapping
+fx(a) = x(a) + alpha*(r-x(a)); % update chosen value
 
+% compute gradients
 if a == 1
-%dfdx = [df1dx1 , df1dx2;
-%        df2dx1 , df2dx2]
     dfdx = [1-alpha, 0;
             0, 1];
-    dfdP = [alpha*(1-alpha)*(r-x_t(a)),0];
-    
-
+    dfdP = [alpha*(1-alpha)*(r-x(a)),0];
 elseif a == 2                   
     dfdx = [1, 0;
             0, 1-alpha];
-    dfdP = [0,alpha*(1-alpha)*(r-x_t(a))];
-    
+    dfdP = [0,alpha*(1-alpha)*(r-x(a))];
 end
 
 % dfdx = dfdx';
