@@ -89,6 +89,10 @@ end
 for k = 1:p
     y = out.y(k,:)';
     if var(y)>eps % only if var(y)>0
+        if ~opt.binomial
+            opt.priors.a_sigma = 1;
+            opt.priors.b_sigma = var(y);
+        end
         [pk,ok] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,opt);
         kernels.y.R2(k) = ok.fit.R2;
         if out.options.verbose
@@ -117,6 +121,8 @@ kernels.g.R2 = zeros(p,1);
 for k = 1:p
     y = out.suffStat.gx(k,:)';
     if var(y)>eps % only if var(y)>0
+        opt.priors.a_sigma = 1;
+        opt.priors.b_sigma = var(y);
         [pk,ok] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,opt);
         kernels.g.R2(k) = ok.fit.R2;
         if out.options.verbose
@@ -154,12 +160,10 @@ kernels.x.R2 = zeros(p,1);
 for k = 1:n
     y = posterior.muX(k,:)';
     if var(y)>eps % only if var(y)>0
+        opt.priors.a_sigma = 1;
+        opt.priors.b_sigma = var(y);
         [pk,ok] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,opt);
         kernels.x.R2(k) = ok.fit.R2;
-        if ok.fit.R2<0
-            VBA_ReDisplay(pk,ok,1)
-            pause
-        end
         if out.options.verbose
             fprintf(1,repmat('\b',1,8))
             fprintf(1,'%6.2f %%',floor(100*(k+2*p)/(2*p+n)))
