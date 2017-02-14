@@ -195,6 +195,6 @@ E0 = Par_k(indMu); % prior mean
 Eu = E0 + Pu.*Vu.*(ot-Proba).*df; % posterior mean
 fPar_k = zeros(size(Par_k)); % = [...,E[param_i];V[param_i];...]
 fPar_k(indV) = log(Vu);
-fPar_k(indMu) = Eu;
+fPar_k(indMu) = invsigmoid(sigmoid(Eu)); % for numerical purposes
 end
 

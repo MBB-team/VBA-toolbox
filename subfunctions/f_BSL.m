@@ -28,7 +28,7 @@ yb = u(2:K+1); % previous outcomes
 
 m0 = x(1:2^K); % current E[log-odds]
 V0 = exp(x((2^K)+1:2^(K+1))); % current V[log-odds]
-volatility = exp(theta(1)); % postivity constraint
+volatility = exp(theta(1)); % positivity constraint
 
 m = m0; % by default: no change in E[log-odds]
 if ~any(isnan(u)) % trial OK
@@ -44,7 +44,7 @@ if ~any(isnan(u)) % trial OK
 else
     V = V0;
 end
-fx = [m;log(V)]; % wrap-up
+fx = [invsigmoid(sigmoid(m));log(V)]; % wrap-up
 
 
  

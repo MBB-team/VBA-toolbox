@@ -61,6 +61,6 @@ if K > 0 % for k-ToM with k>0
         options.priors.muX0(indTemp) = -1;
     end
 end
-options.priors.SigmaX0 = zeros(dim.n);
+% options.priors.SigmaX0 = zeros(dim.n);
 
 

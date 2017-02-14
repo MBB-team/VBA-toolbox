@@ -61,7 +61,7 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (invsigmoid-) prior volatility
+        theta = -1; % (log-) prior volatility
         phi = [-1;0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
@@ -72,7 +72,7 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (invsigmoid-) prior volatility
+        theta = -1; % (log-) prior volatility
         phi = [-1;0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
@@ -83,7 +83,7 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (invsigmoid-) prior volatility
+        theta = -1; % (log-) prior volatility
         phi = [-1;0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
@@ -94,7 +94,7 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (invsigmoid-) prior volatility
+        theta = -1; % (log-) prior volatility
         phi = [-1;0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;

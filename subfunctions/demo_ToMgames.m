@@ -12,7 +12,7 @@ payoffTable = cat(3,[1,-1;-1,1],[-1,1;1,-1]); % game payoff matrix
 nt = 50; % number of trials
 
 
-Nmc = 16; % # Monte-Carlo simulations
+Nmc = 256; % # Monte-Carlo simulations
 Perf = zeros(length(models),length(models),Nmc);
 for imc = 1:Nmc
     imc

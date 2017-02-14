@@ -5,7 +5,7 @@ close all
 clc
 
 % simulation parameters
-K = 2;
+K = 1;
 options.inF = struct('K',K);
 options.inG = struct('K',K);
 dim.n = 2^(K+1);
@@ -16,11 +16,12 @@ dim.n_phi = 2;
 
 %% simulate sequence of BSL choices
 x0 = 1*ones(dim.n,1); % log-odds of P(o=1)
-theta = [-2]; % BSL's prior volatility
-phi = [-2;0]; % (log-) temperature, bias
+theta = [-1]; % BSL's prior volatility
+phi = [2;0]; % (log-) inverse-temperature, bias
 N = 150; % number of trials
-p = 0.9;
-P = repmat([p,1-p,1-p,p],1,N); % probabilistic repetition of [1 0 0 1]
+p = 0.65;
+% P = repmat([p,1-p,1-p,p],1,N); % probabilistic repetition of [1 0 0 1]
+P = repmat(p,1,N); % probabilistic repetition of [1 0 0 1]
 for i=1:N
     tmp = VBA_sample('multinomial',struct('p',[P(i);1-P(i)],'n',1),1,0);
     y(i) = tmp(1);
