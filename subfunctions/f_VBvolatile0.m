@@ -23,10 +23,9 @@ function [fx] = f_VBvolatile0(x,P,u,in)
 x(3) = exp(x(3)); % variance on second-level states is in log-space
 x(5) = exp(x(5)); % variance on third-level states is in log-space
 ka = in.lev2*sgm(P(1),in.kaub);
-om = P(2);
+om = P(2); 
 th = sgm(P(3),in.thub);
-rf = in.rf;
-
+vol = exp(ka*x(4)+om);
 fx = zeros(size(x));
 
 % 1st level
@@ -35,29 +34,23 @@ fx(1) = u(1); % trivial first-level states
 % 2nd level
 s1h = sgm(x(2),1)*(1-sgm(x(2),1)); % likelihood precision
 pe1 = fx(1) - sgm(x(2),1); % prediction error
-s2h = x(3) + exp(ka*x(4)+om); % 2nd-level prediction variance
+s2h = x(3) + vol; % 2nd-level prediction variance
 fx(3) = 1/(s2h^-1 + s1h); % posterior variance
-fx(2) = x(2) +fx(3)*pe1; % 2nd-level update
+fx(2) = x(2) + fx(3)*pe1; % 2nd-level update
 
 % 3rd level
 pi3h = 1/(x(5)+th);
-w2 = exp(ka*x(4)+om)/(x(3)+exp(ka*x(4)+om));
-r2 = (exp(ka*x(4)+om)-x(3))/(exp(ka*x(4)+om)+x(3));
-pe2 = (fx(3)+(fx(2)-x(2))^2)/(exp(ka*x(4)+om)+x(3)) -1;
-fx(5) = 1/(pi3h + .5*ka^2*w2*(w2+r2*pe2));
-if fx(5) <= 0
-    if rf <= 0
-        fx(4:5) = NaN;
-    else
-        fx(5) = x(5)/rf;
-        fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
-    end
-else
-    fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
-end
+w2 = 1./(1+x(3)/vol);
+r2 = (1-x(3)/vol)./(1+x(3)/vol);
+pe2 = (fx(3)+(fx(2)-x(2))^2)/(vol+x(3)) -1;
+pl = max([0,.5*ka^2*w2*(w2+r2*pe2)]); % for numerical reasons
+fx(5) = 1/(pi3h + pl);
+fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
 
 % retransform states
 fx(3) = log(fx(3));
 fx(5) = log(fx(5));
 
-
+if isweird(fx)
+    keyboard
+end
