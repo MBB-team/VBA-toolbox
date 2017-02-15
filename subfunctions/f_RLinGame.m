@@ -21,6 +21,11 @@ function fx = f_RLinGame(x,P,u,in)
 %   - fx: updated action values
 %   - dfdx/dfdP: gradients for VBA inversion
 
+if isweird(u) % e.g., 1st trial
+    fx = x;
+    return
+end
+
 % derive feedback from payoff table
 player = in.player; % 1 or 2: role of the player
 game = in.game; % payoff table

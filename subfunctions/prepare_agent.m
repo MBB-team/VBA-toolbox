@@ -16,7 +16,7 @@ switch model
         f = @f_wslsinGame;
         g = @g_softmax;
         theta = [];
-        phi = 1; % inverse (-log) temperature
+        phi = [log(2);0]; % inverse (-log) temperature & bias
         inF = struct('game',game,'player',role);
         inG = [];
         x0 = [0;0];
@@ -24,23 +24,23 @@ switch model
         f = @f_RLinGame;
         g = @g_softmax;
         theta = 0; % learning rate = 0.5
-        phi = 1; % inverse (-log) temperature
+        phi = [log(2);0]; % inverse (-log) temperature & bias
         inF = struct('game',game,'player',role);
         inG = [];
         x0 = [0;0];
     case 'BSL'
         f = @f_BSLinGame;
         g = @g_BSLinGame;
-        theta = [-1]; % (log-) prior volatility
-        phi = [-1;0]; % (log-) temperature & bias
+        theta = [-log(2)]; % (log-) prior volatility
+        phi = [-log(2);0]; % (log-) temperature & bias
         inF.K = 1; % sequence length
         inG = struct('K',inF.K,'game',game,'player',role);
         x0 = zeros(2^(inF.K+1),1);
     case 'HGF'
-        f = @f_VBvolatile0;
+        f = @f_HGFinGame;
         g = @g_HGFinGame;
         theta = [0;-2;0];
-        phi = [-1;0]; % (log-) temperature & bias
+        phi = [-log(2);0]; % (log-) temperature & bias
         inF.lev2 = 1; % 3rd level (volatility learning)
         inF.kaub = 1.4;
         inF.thub = 1;
@@ -50,52 +50,50 @@ switch model
     case 'Inf'
         f = @f_Hampton;
         g = @g_Hampton;
-        theta = [-1;-1;0]; % weight (PE1), weight (PE2), opponent's temp
-        phi = [-1;0]; % (-log) temperature and bias
+        theta = [invsigmoid(0.25);invsigmoid(0.25);0]; % (invsigmoid-) weight (PE1), (invsigmoid-) weight (PE2), (log-) opponent's temp
+        phi = [-log(2);0]; % (-log) temperature and bias
         inF = struct('game',game,'player',role);
         inG = struct('game',game,'player',role);
         x0 = 0;
     case '0-ToM'
         K = 0; % depth of k-ToM's recursive beliefs
-        diluteP = 0; % partial forgetting of opponent's level (only for 2-ToM and above)?
-        [options,dim] = prepare_kToM(K,game,role,diluteP);
+        [options,dim] = prepare_kToM(K,game,role,0);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (log-) prior volatility
-        phi = [-1;0]; % (log-) temperature and bias
+        theta = -log(2); % (log-) prior volatility
+        phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
         x0 = options.priors.muX0;
     case '1-ToM'
         K = 1; % depth of k-ToM's recursive beliefs
-        diluteP = 0; % partial forgetting of opponent's level (only for 2-ToM and above)?
-        [options,dim] = prepare_kToM(K,game,role,diluteP);
+        [options,dim] = prepare_kToM(K,game,role,0);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (log-) prior volatility
-        phi = [-1;0]; % (log-) temperature and bias
+        theta = -log(2); % (log-) prior volatility
+        phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
         x0 = options.priors.muX0;
     case '2-ToM'
         K = 2; % depth of k-ToM's recursive beliefs
-        diluteP = 0; % partial forgetting of opponent's level (only for 2-ToM and above)?
+        diluteP = 0; % partial forgetting of opponent's level
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (log-) prior volatility
-        phi = [-1;0]; % (log-) temperature and bias
+        theta = -log(2); % (log-) prior volatility
+        phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
         x0 = options.priors.muX0;
     case '3-ToM'
         K = 3; % depth of k-ToM's recursive beliefs
-        diluteP = 0; % partial forgetting of opponent's level (only for 2-ToM and above)?
+        diluteP = 0; % partial forgetting of opponent's level
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -1; % (log-) prior volatility
-        phi = [-1;0]; % (log-) temperature and bias
+        theta = -log(2); % (log-) prior volatility
+        phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
         x0 = options.priors.muX0;

@@ -23,4 +23,9 @@ function [fx] = f_kToM(x,P,u,inF)
 %   - fx: updated hidden states
 % [see RecToMfunction.m]
 
+if isweird(u) % e.g., 1st trial
+    fx = x;
+    return
+end
+
 [fx,indlev] = RecToMfunction(x,P,u,inF); % indlev is used recursively by RecToMfunction.m

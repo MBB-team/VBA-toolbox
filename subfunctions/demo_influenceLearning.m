@@ -26,7 +26,7 @@ dim.n_phi = 2;
 
 %% simulate sequence of k-ToM choices
 x0 = [0]; % log-odds of P(o=1)
-theta = [-1;-1;0]; % weight (PE1), weight (PE2), opponent's temp
+theta = [1;1;0]; % weight (PE1), weight (PE2), opponent's temp
 phi = [-1;0]; % (log-) temperature, bias
 N = 50; % number of trials
 o = bernoulli(.75,N)'; % opponent's choices (here dummy binomial sampling)

@@ -60,7 +60,7 @@ for imc = 1:Nmc
     
 end
 
-save ToMgames2.mat
+save ToMgames3.mat
 
 mP = mean(Perf,3);
 hf = figure('color',[1 1 1],'name','mean Perf');

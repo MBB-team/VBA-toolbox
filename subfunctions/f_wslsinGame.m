@@ -1,4 +1,4 @@
-function  [fx,dfdx,dfdP] = f_wslsinGame(x,P,u,in)
+function  [fx] = f_wslsinGame(x,P,u,in)
 % "win/stay - lose/switch" strategy in a dyadic game
 % function  [fx,dfdx,dfdP] = f_wslsinGame(x,P,u,in)
 % The "win/stay - lose/switch" strategy is encoded in terms of the
@@ -18,6 +18,11 @@ function  [fx,dfdx,dfdP] = f_wslsinGame(x,P,u,in)
 %       u.player= agent's index (player's role)
 % OUT:
 %   - fx: evolved pseudo q-values (2x1)
+
+if isweird(u) % e.g., 1st trial
+    fx = x;
+    return
+end
 
 % derive feedback from payoff table
 player = in.player; % 1 or 2: role of the player

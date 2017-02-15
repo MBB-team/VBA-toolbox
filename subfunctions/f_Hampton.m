@@ -26,6 +26,11 @@ function [fx] = f_Hampton(x,P,u,in)
 % OUT:
 %   - fx: updated hidden states
 
+if isweird(u) % e.g., 1st trial
+    fx = x;
+    return;
+end
+
 o = u(1); % opponent's last choice (o)
 a = u(2); % agent's last choice (a)
 p0 = sigmoid(x(1)); % previous estimate of P(o=1)
@@ -38,7 +43,7 @@ PE1 = o-p0;
 
 % derive second-order prediction error
 game = in.game; % game's payoff table
-player = in.player; % agent's role --> opponent's role = 3-player
+player = in.player; % agent's role (opponent's role = 3-player)
 if player==2
     Payoff = game(:,:,1);
     k1 = Payoff(1,1)-Payoff(2,1)-Payoff(1,2)+Payoff(2,2);
@@ -53,5 +58,6 @@ PE2 = a-q0;
 
 % "influence" learning rule
 p = p0 + eta*PE1 + lambda*k1*p0*(1-p0)*PE2; % P(o=1)
-fx = invsigmoid(p); % bound p between 0 and 1
+p = max([min([p,1]),0]); % bound p between 0 and 1
+fx = invsigmoid(p); % for numerical reasons
 

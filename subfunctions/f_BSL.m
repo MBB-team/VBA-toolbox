@@ -22,6 +22,11 @@ function [fx] = f_BSL(x,theta,u,in)
 % OUT:
 %   - fx: updated sufficient statistics of log-odds of P(y=1)
 
+if isweird(u) % e.g., 1st trial
+    fx = x;
+    return
+end
+
 K = in.K; % sequence depth
 y = u(1); % current outcome
 yb = u(2:K+1); % previous outcomes
@@ -31,19 +36,16 @@ V0 = exp(x((2^K)+1:2^(K+1))); % current V[log-odds]
 volatility = exp(theta(1)); % positivity constraint
 
 m = m0; % by default: no change in E[log-odds]
-if ~any(isnan(u)) % trial OK
-    if K >0
-        indSeq = bin2dec(num2str(yb'))+1; % index of sequence of previous outcomes
-    else
-        indSeq = 1;
-    end
-    V = V0 + volatility; % by default: inflated V[log-odds]
-    p0 = sigmoid(m0(indSeq)); % current estimate of P(y=1)
-    V(indSeq) = 1./((1./V(indSeq))+p0*(1-p0)); % updated V[log-odds]
-    m(indSeq) = m0(indSeq) + V(indSeq)*(y-p0); % updated E[log-odds] (Laplace-Kalman update rule)
+if K >0
+    indSeq = bin2dec(num2str(yb'))+1; % index of sequence of previous outcomes
 else
-    V = V0;
+    indSeq = 1;
 end
+V = V0 + volatility; % by default: inflated V[log-odds]
+p0 = sigmoid(m0(indSeq)); % current estimate of P(y=1)
+V(indSeq) = 1./((1./V(indSeq))+p0*(1-p0)); % updated V[log-odds]
+m(indSeq) = m0(indSeq) + V(indSeq)*(y-p0); % updated E[log-odds] (Laplace-Kalman update rule)
+
 fx = [invsigmoid(sigmoid(m));log(V)]; % wrap-up
 
 

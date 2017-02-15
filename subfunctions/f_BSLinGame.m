@@ -22,5 +22,10 @@ function [ fx ] = f_BSLinGame(x,theta,u,in)
 % OUT:
 %   - fx: updated sufficient statistics of log-odds of P(o=1)
 
+if isweird(u) % e.g., 1st trial
+    fx = x;
+    return
+end
+
 u(2) = []; % remove previous agent's move
 [fx] = f_BSL(x,theta,u,in);

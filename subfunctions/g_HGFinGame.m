@@ -33,9 +33,6 @@ Po = sigmoid(mx/(sqrt(1+a*Vx))); % P(o=1)
 
 % Make decision based upon the likely opponent's next move
 DV = fplayer(Po,exp(P(1)),player,game); % incentive for a=1
-if length(P)==1
-    gx = sigmoid(DV); % P(a=1)
-else % P(2) = bias
-    gx = sigmoid(DV+P(2)); % P(a=1) with bias
-end
+gx = sigmoid(DV+P(2)); % P(a=1) with bias
+
 
