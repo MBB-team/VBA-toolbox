@@ -5,6 +5,7 @@
 
 close all
 clear variables
+clc
 
 
 
@@ -24,13 +25,12 @@ fb.indfb = 2;
 
 % simulate VB volatile learner in a 2-armed bandit task
 theta = [0;-2;0]; % [1;-3;-1];
-phi = [3;0]; % inverse temperature & bias
+phi = [0;0]; % inverse (log-) temperature & bias
 inF.lev2 = 1; % 3rd level (volatility learning)
 inF.kaub = 1.4;
 inF.thub = 1;
 inF.rf = 1;
-inG.respmod = 'taylor';
-% x0 = repmat([0.5;0;0;1;log(4)],2,1);
+inG.respmod = 'fixedForm'; % or 'taylor';
 x0 = repmat([0;0;0;0;0],2,1);
 u = zeros(2,size(fb.inH.u0,2)+1);
 options.binomial = 1;
@@ -38,7 +38,7 @@ options.inF = inF;
 options.inG = inG;
 options.skipf = zeros(1,length(u));
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
-[y,x,x0,eta,e,u] = simulateNLSS(length(u),f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0,fb);
+[y,x,x0,eta,e,u] = simulateNLSS_fb(length(u),f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0,fb);
 
 figure
 plot(y-e,'r')
@@ -67,7 +67,7 @@ priors.b_alpha = 0;
 options.priors = priors;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
-displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf);
+displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf)
 
 
 [ha,hf] = unwrapVBvolatileOTO(posterior,out);

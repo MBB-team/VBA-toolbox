@@ -16,7 +16,7 @@ phi = [1;-1;2];
 sigma = 1e1;
 flag = 2;
 
-n_t     = 300; % number of trials
+n_t = 300; % number of trials
 
 
 switch flag
@@ -171,19 +171,19 @@ priors.a_sigma = 1e0;
 priors.b_sigma = 1e0;
 
 % Build options and dim structures for model inversion
-options.priors      = priors;
-dim.n_phi           = length(priors.muPhi);
-dim.n_theta         = 2;
+options.priors = priors;
+dim.n_phi = length(priors.muPhi);
+dim.n_theta = 2;
 switch options.inF.flag
     case 1
-        dim.n               = 4;
+        dim.n = 4;
     case 2
-        dim.n               = 4;
+        dim.n = 4;
     case 3
-        dim.n               = 6;
+        dim.n = 6;
 end
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 
 % Display results
-displayResults(posterior,out,y,x,x0,theta,phi,Inf,sigma);
+displayResults(posterior,out,y,x,x0,theta,phi,Inf,sigma)

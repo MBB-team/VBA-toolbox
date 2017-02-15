@@ -14,28 +14,31 @@ function [fx] = f_Hampton(x,P,u,in)
 % p0, the the game's payoff table and the opponent's temperature.
 % IN:
 %   - x: hidden states:
-%       x(1)= log-odds of p
-%   - P: parameters:
-%       P(1)= (log-) weight of agent's prediction error (~=learning rate)
-%       P(2)= (log-) weight of other's prediction error
-%       P(3)= other's (log-) temperature
-%   - u: inputs:
-%       u(1)= y2 (other's last choice)
-%       u(2)= y1 (agent's last choice)
-%   - in: cell-array:
-%       u{1}= 2x2x2 payoff table
-%       u{2}= agent's index (player's role)
+%       x(1)= log-odds of P(o=1)
+%   - P: learning parameters:
+%       P(1)= (invsigmoid-) weight of agent's prediction error (invsigmoid-)
+%       P(2)= (invsigmoid-) weight of other's prediction error
+%       P(3)= (log-) other's temperature
+%   - u: u(1) = opponent's previous move, u(2) = agent's previous move
+%   - in: structure:
+%       u.game = 2x2x2 payoff table
+%       u.player= agent's index (player's role)
+% OUT:
+%   - fx: updated hidden states
 
-y2=u(1);% choice Other pmayer
-y1=u(2); % choice Player 1
-p0=sigmoid(x(1));
-eta = exp(P(1));
-lambda = exp(P(2));
-beta = exp(P(3));
-PE1 = y2-p0;
+o = u(1); % opponent's last choice (o)
+a = u(2); % agent's last choice (a)
+p0 = sigmoid(x(1)); % previous estimate of P(o=1)
+eta = sig(P(1)); % weight of PE1
+lambda = sig(P(2)); % weight of PE2
+beta = exp(P(3)); % opponent's temperature
 
-game = in{1};
-player = in{2};
+% derive first-order prediction error
+PE1 = o-p0;
+
+% derive second-order prediction error
+game = in.game; % game's payoff table
+player = in.player; % agent's role --> opponent's role = 3-player
 if player==2
     Payoff = game(:,:,1);
     k1 = Payoff(1,1)-Payoff(2,1)-Payoff(1,2)+Payoff(2,2);
@@ -46,14 +49,9 @@ elseif player==1
     k2 = Payoff(1,2)-Payoff(2,2);
 end
 q0 = (beta.*x(1) - k2)./k1;
-PE2 = y1-q0;
+PE2 = a-q0;
 
-p = p0 + eta*PE1 + lambda*k1*p0*(1-p0)*PE2;
-
-% % q_2=max(min( .5*(1-x(1)*exp(P(3))),1),0);
-% q_2 = .5*(1-x(1)*exp(P(3)));
-% p=p0+ exp(P(1))*(y2-p0)-2*exp(P(2))*p0*(1-p0)*(y1-q_2)
-% pause
-
-fx = min([max([p,0]),1]); % bound p between 0 and 1
+% "influence" learning rule
+p = p0 + eta*PE1 + lambda*k1*p0*(1-p0)*PE2; % P(o=1)
+fx = invsigmoid(p); % bound p between 0 and 1
 

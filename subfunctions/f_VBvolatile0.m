@@ -1,21 +1,19 @@
 function [fx] = f_VBvolatile0(x,P,u,in)
-% computes Laplace-VB update rules for hidden states sufficient statistics
+% computes Laplace-VB update rule of HGF learner
 % [fx] = f_VBvolatile0(x,P,u,in)
 % This is the one-step Markovian update rule for the posterior sufficient
 % statistics of a volatile environment, as derived in [Mathys et al. 2010].
-% Note: the state space of the response model also contains the previous
-% posterior on x2, for predictions of the next input u.
+% Note: HGF stands for "Hierarchical Gaussian Filter".
 % IN:
-%   - x: the previous posterior sufficient statistics. These include, using
-%   the notation of [Mathys et al. 2010]:
-%   mu1 = x(1);
-%   mu2 = x(2);
-%   sa2 = x(3);
-%   mu3 = x(4);
-%   sa3 = x(5);
+%   - x: the previous posterior sufficient statistics:
+%   x(1)= u [U is the outcome, wose probability is tracked]
+%   x(2)= E[log-odds of P(u=1)]
+%   x(3)= log V[log-odds of P(u=1)]
+%   x(4)= E[log-volatility]
+%   x(5)= log V[log-volatility]
 %   - P: the perceptual model parameters vector, ie. P = [ka;om;th], using
 %   the notation of [Mathys et al. 2010].
-%   - u: the current input to the learner.
+%   - u: the outcome, whose probability is tracked over trials.
 %   - in: options set in options.inF
 % OUT:
 %   - fx: the updated posterior sufficient statistics (having observed u),
@@ -25,10 +23,9 @@ function [fx] = f_VBvolatile0(x,P,u,in)
 x(3) = exp(x(3)); % variance on second-level states is in log-space
 x(5) = exp(x(5)); % variance on third-level states is in log-space
 ka = in.lev2*sgm(P(1),in.kaub);
-om = P(2);
+om = P(2); 
 th = sgm(P(3),in.thub);
-rf = in.rf;
-
+vol = exp(ka*x(4)+om);
 fx = zeros(size(x));
 
 % 1st level
@@ -37,29 +34,23 @@ fx(1) = u(1); % trivial first-level states
 % 2nd level
 s1h = sgm(x(2),1)*(1-sgm(x(2),1)); % likelihood precision
 pe1 = fx(1) - sgm(x(2),1); % prediction error
-s2h = x(3) + exp(ka*x(4)+om); % 2nd-level prediction variance
+s2h = x(3) + vol; % 2nd-level prediction variance
 fx(3) = 1/(s2h^-1 + s1h); % posterior variance
-fx(2) = x(2) +fx(3)*pe1; % 2nd-level update
+fx(2) = x(2) + fx(3)*pe1; % 2nd-level update
 
 % 3rd level
 pi3h = 1/(x(5)+th);
-w2 = exp(ka*x(4)+om)/(x(3)+exp(ka*x(4)+om));
-r2 = (exp(ka*x(4)+om)-x(3))/(exp(ka*x(4)+om)+x(3));
-pe2 = (fx(3)+(fx(2)-x(2))^2)/(exp(ka*x(4)+om)+x(3)) -1;
-fx(5) = 1/(pi3h + .5*ka^2*w2*(w2+r2*pe2));
-if fx(5) <= 0
-    if rf <= 0
-        fx(4:5) = NaN;
-    else
-        fx(5) = x(5)/rf;
-        fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
-    end
-else
-    fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
-end
+w2 = 1./(1+x(3)/vol);
+r2 = (1-x(3)/vol)./(1+x(3)/vol);
+pe2 = (fx(3)+(fx(2)-x(2))^2)/(vol+x(3)) -1;
+pl = max([0,.5*ka^2*w2*(w2+r2*pe2)]); % for numerical reasons
+fx(5) = 1/(pi3h + pl);
+fx(4) = x(4) + .5*ka*w2*fx(5)*pe2;
 
 % retransform states
 fx(3) = log(fx(3));
 fx(5) = log(fx(5));
 
-
+if isweird(fx)
+    keyboard
+end

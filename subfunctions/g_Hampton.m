@@ -1,21 +1,24 @@
 function [gx] = g_Hampton(x,P,u,in)
 % Hampton's "influence learning" model: observation function
 % function [gx] = f_Hampton(x,P,u,in)
-% Hereafter, the learner is referred to as the "agent", whereas her
-% opponent is referred to as the "other".
+% Let P(o=1) be the agent's prediction of the other's next move, ie the
+% probability that the other will pick the first alternative option. The
+% "influence learner" bases her decision (a=1 or a=0) upon P(o=1), given
+% the game payoff table.
 % IN:
 %   - x: hidden states:
-%       x(1)= estimated proba of other (needs to be sigmoid-mapped)
-%       x(2)= FIXED temperature parameter (used for influence and choice)
+%       x(1)= log-odds of P(o=1)
 %   - P: parameters:
 %       P(1)= (log-) temperature
 %       P(2)= bias towards the first alternative option
 %   - u: [useless]
-%   - in: cell-array:
-%       u{1}= 2x2x2 payoff table
-%       u{2}= agent's index (player's role)
+%   - in: structure:
+%       u.game = 2x2x2 payoff table
+%       u.player= agent's index (player's role)
+% OUT:
+% - gx: proba that the agent will pick the first option, i.e. gx=P(a=1).
 
-game=in{1};
-player=in{2};
-Pi=sigmoid(x(1));
-gx=sigmoid(fplayer(Pi,exp(P(1)),player,game)+P(2) );
+game = in.game; % game's payoff table
+player = in.player; % agent's role
+Po = sigmoid(x(1)); % P(o=1)
+gx = sigmoid(fplayer(Po,exp(P(1)),player,game)+P(2)); % P(a=1)
