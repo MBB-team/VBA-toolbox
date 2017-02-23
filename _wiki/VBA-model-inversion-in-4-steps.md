@@ -4,14 +4,14 @@ title: "Model inversion in 4 steps"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-This page summarizes the steps required for performing a model inversion with the core VBA routines of the toolbox. Recall that the main model inversion routine is `VBA_NLStateSpaceModel.m`, whose inputs/outputs are defined below. It implements a variational Bayesian approach to the inversion of a very generic class of generative models, namely: "nonlinear state-space models". This class of models is described [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
+This page summarizes the steps required for performing a model inversion with the core routines of the VBA toolbox. Recall that the main model inversion routine is `VBA_NLStateSpaceModel.m`, whose inputs/outputs are defined below. It implements a variational Bayesian approach to the inversion of a very generic class of generative models, namely: "nonlinear state-space models". This class of models is described [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
 
-In brief, to perform a model-based analysis of data:
+In brief, in the aim of performing a model-based data analysis using VBA:
 
-- one **needs** to define evolution and observation functions, as well as creating the `dim` matlab structure.
+- one **needs** to define evolution and observation functions, as well as creating the `dim` matlab structure (see below).
 - one **can** provide further information about the model and/or its inversion (e.g. priors).
 
-> **TIP:** Many demonstration scripts are provided with the toolbox (e.g., see this [fast demo]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model)).
+> **TIP:** Many demonstration scripts are provided with the toolbox (e.g., see this [fast demo]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model)). We suggest you to go through some of these to get started.
 
 # Step 1: Defining observation/evolution functions
 
@@ -24,7 +24,7 @@ z = function_name(x_t, P, u_t, in) ;
 - `x_t` : the vector of hidden states at time `t`
 - `P` : the vector of parameters (evolution parameters for the evolution function, observation parameters for the observation function)
 - `u_t` : the input (experimenter control variable) at time `t`.
-- `in` : may contain any extra relevant information
+- `in` : may contain any extra relevant information (arbitrary)
 - `z`: the predicted state (evolution function) or data (observation function).
 The definition of hidden states, parameters and inputs, as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
 
@@ -52,7 +52,7 @@ tells VBA that there are 1 hidden state, 2 evolution parameters and 3 observatio
 
 - Other **options**
 
-VBA allows the user to control the inversion using an `options` input structure, which is passed to `VBA_NLStateSpaceModel.m`. These options include, but are not limited to: informing VBA about categorical and/or missing data, setting "micro-time resolution", passing optional arguments to evolution and/or observation functions, etc... [This page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) provides an exhaustive list of these options.
+VBA allows the user to control the inversion using an `options` input structure, which is passed to `VBA_NLStateSpaceModel.m`. These options include, but are not limited to: informing VBA about categorical and/or missing data, setting "micro-time resolution", passing optional arguments to evolution and/or observation functions, etc... [This page]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options) provides an (almost) exhaustive list of these options.
 
 
 # Step 3 : Defining priors
@@ -60,20 +60,20 @@ VBA allows the user to control the inversion using an `options` input structure,
 In addition to the evolution and observation functions, specifying the generative model requires the definition of **prior probability distributions** over model unknown variables. These are summarized by sufficient statistics (e.g., mean and variance), which are stored as a matlab structure `priors` that is itself apended to the `options` structure:
 
 - **Observation parameters**
-  - `priors.muPhi`
-  - `priors.SigmaPhi`
+  - `priors.muPhi`: prior mean on $$/phi$$
+  - `priors.SigmaPhi`: prior covariance on $$/phi$$
 - **Evolution parameters** (only for dynamical systems)
-  - `priors.muTheta`
-  - `priors.SigmaTheta`
+  - `priors.muTheta`: prior mean on $$/theta$$
+  - `priors.SigmaTheta`: prior covariance on $$/theta$$
 - **Initial conditions** (only for dynamical systems)
-  - `priors.muX0`
-  - `priors.SigmaX0`
+  - `priors.muX0`: prior mean on $$x_0$$
+  - `priors.SigmaX0`: prior covariance on $$x_0$$
 - **Measurement noise precision** (only for continuous data)
-  - `priors.a_sigma`
-  - `priors.b_sigma`
+  - `priors.a_sigma`: prior scale parameter for the measurement noise precision $$/sigma$$
+  - `priors.b_sigma`: prior shape parameter for the measurement noise precision $$/sigma$$
 - **State noise precision** (only for dynamical systems)
-  - `priors.a_alpha`
-  - `priors.b_alpha`
+  - `priors.a_alpha`: prior scale parameter for the state noise precision $$/alpha$$
+  - `priors.b_alpha`: prior shape parameter for the state noise precision $$/alpha$$
 
 
 If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities). For example, setting:
