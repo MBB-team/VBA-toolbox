@@ -32,5 +32,5 @@ where we have used a bi-partition of the parameter space ($$\vartheta={\vartheta
 
 In addition to the mean-field trick, VBA relies upon a further parametric approximation, which essentially consists in summarizing the marginal posterior by their two first-order moments (mean and variance). This local gaussian approximation is known as the **variational-Laplace approach** ([Friston et al. 2007](https://www.ncbi.nlm.nih.gov/pubmed/17055746)).
 
-The statistical properties of the variationa-Laplace approach (e.g., in terms of the qualityof the ensuing approximation), for the class of models considered in VBA, are described in [Daunizeau et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0167278909002425).
+The statistical properties of the variational-Laplace approach (e.g., in terms of the quality of the ensuing approximation), for the class of models considered in VBA, are described in [Daunizeau et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0167278909002425).
 
