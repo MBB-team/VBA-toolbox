@@ -10,17 +10,17 @@ One usually starts with a quantitative assumption or model of how observations $
 
 $$y= g(\vartheta)+\epsilon$$
 
-where $$\epsilon$$ are [model residuals](https://en.wikipedia.org/wiki/Errors_and_residuals) or measurement noise. If the (physical) processes underlying $$\epsilon$$ were known, they would be included in the deterministic part of the model. Typically, we thus have to place statistical priors on $$\epsilon$$, which eventually convey our lack of knowledge, as in “the noise is small”. This can be formalized as a probabilistic statement, such as: “the probability of observing big noise is small”. Under the [central limit theorem](https://en.wikipedia.org/wiki/Central_limit_theorem), such prior would be equivalent to assuming that the noise follows a [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution):
+where $$\epsilon$$ are [model residuals](https://en.wikipedia.org/wiki/Errors_and_residuals) or measurement noise. If the (physical) processes underlying $$\epsilon$$ were known, they would be included in the deterministic part of the model. Typically, we thus have to place statistical priors on $$\epsilon$$, which eventually convey our lack of knowledge, as in “the noise is small”. This can be formalized as a probabilistic statement, such as: “the probability of observing big noise is small” (and, reciprocally: "the probability of observing small noise is big"). It follows that the probability density function of such "small" noise should be bell-shaped (with most of its mass on small values of $$\epsilon$$, and decaying quickly for large values of $$\epsilon$$). At this point, one could assume that the noise follows a [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution), simply because it provides a parametric form for bell-shaped probability densities:
 
 $$p(\epsilon\mid m)\propto exp\left(-\frac{1}{2\sigma^2}\varepsilon^2\right) \implies P(\lvert\epsilon\rvert>1.96\sigma\mid m) \approx 0.05$$
 
 where $$\sigma$$ is the noise’ [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation) (it determines how big is “big”) and $$m$$ is the so-called generative model. Combining the two equations above yields the [likelihood function](https://en.wikipedia.org/wiki/Likelihood_function) $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
 
-$$p(y\mid\vartheta,m) = exp\left(-\frac{1}{2\sigma^2}(y-g(\vartheta))^2\right)$$
+$$p(y\mid\vartheta,m) \propto exp\left(-\frac{1}{2\sigma^2}(y-g(\vartheta))^2\right)$$
 
 This derivation of the likelihood function can be generalized to any [generative model](https://en.wikipedia.org/wiki/Generative_model) $$m$$, whose parameters $$\vartheta$$ simply control the statistical moments of the likelihood $$p(y\mid\vartheta,m)$$. The key point here is that the likelihood function always derives from prior assumptions about observation mappings $$g(\vartheta)$$ and measurement noise $$\epsilon$$.
 
-> Note: one does not have to resort to the central limit theorem to justify the assumption of Gaussian errors. In fact, a simpler and more legitimate approach is that of the [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy). In brief, if one only knows the 1st- and 2nd- order moments of the error, then the normal density is the least informative assumption one can make...
+> Note: There is a slightly more formal justification of the normality assumption (on errors $$\epsilon$$), namely: the [principle of maximum entropy](https://en.wikipedia.org/wiki/Principle_of_maximum_entropy). In brief, if one only knows the 1st- and 2nd- order moments of the error, then the normal density is the least informative assumption one can make...
 
 
 # Bayes' rule
