@@ -60,20 +60,20 @@ VBA allows the user to control the inversion using an `options` input structure,
 In addition to the evolution and observation functions, specifying the generative model requires the definition of **prior probability distributions** over model unknown variables. These are summarized by sufficient statistics (e.g., mean and variance), which are stored as a matlab structure `priors` that is itself apended to the `options` structure:
 
 - **Observation parameters**
-  - `priors.muPhi`: prior mean on $$/phi$$
-  - `priors.SigmaPhi`: prior covariance on $$/phi$$
+  - `priors.muPhi`: prior mean on $$\phi$$
+  - `priors.SigmaPhi`: prior covariance on $$\phi$$
 - **Evolution parameters** (only for dynamical systems)
-  - `priors.muTheta`: prior mean on $$/theta$$
-  - `priors.SigmaTheta`: prior covariance on $$/theta$$
+  - `priors.muTheta`: prior mean on $$\theta$$
+  - `priors.SigmaTheta`: prior covariance on $$\theta$$
 - **Initial conditions** (only for dynamical systems)
   - `priors.muX0`: prior mean on $$x_0$$
   - `priors.SigmaX0`: prior covariance on $$x_0$$
 - **Measurement noise precision** (only for continuous data)
-  - `priors.a_sigma`: prior scale parameter for the measurement noise precision $$/sigma$$
-  - `priors.b_sigma`: prior shape parameter for the measurement noise precision $$/sigma$$
+  - `priors.a_sigma`: prior scale parameter for the measurement noise precision $$\sigma$$
+  - `priors.b_sigma`: prior shape parameter for the measurement noise precision $$\sigma$$
 - **State noise precision** (only for dynamical systems)
-  - `priors.a_alpha`: prior scale parameter for the state noise precision $$/alpha$$
-  - `priors.b_alpha`: prior shape parameter for the state noise precision $$/alpha$$
+  - `priors.a_alpha`: prior scale parameter for the state noise precision $$\alpha$$
+  - `priors.b_alpha`: prior shape parameter for the state noise precision $$\alpha$$
 
 
 If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities). For example, setting:
