@@ -69,14 +69,14 @@ In addition to the evolution and observation functions, specifying the generativ
   - `priors.muX0`: prior mean on $$x_0$$
   - `priors.SigmaX0`: prior covariance on $$x_0$$
 - **Measurement noise precision** (only for continuous data)
-  - `priors.a_sigma`: prior scale parameter for the measurement noise precision $$\sigma$$
-  - `priors.b_sigma`: prior shape parameter for the measurement noise precision $$\sigma$$
+  - `priors.a_sigma`: prior shape parameter for the measurement noise precision $$\sigma$$
+  - `priors.b_sigma`: prior rate parameter for the measurement noise precision $$\sigma$$
 - **State noise precision** (only for dynamical systems)
-  - `priors.a_alpha`: prior scale parameter for the state noise precision $$\alpha$$
-  - `priors.b_alpha`: prior shape parameter for the state noise precision $$\alpha$$
+  - `priors.a_alpha`: prior shape parameter for the state noise precision $$\alpha$$
+  - `priors.b_alpha`: prior rate parameter for the state noise precision $$\alpha$$
 
 
-If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities). For example, setting:
+If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities, except for $$\sigma$$ and $$\alpha$$). For example, setting:
 
 ```matlab
 priors.muPhi    = zeros(dim.n_phi,1) ;
@@ -92,7 +92,7 @@ effectively defines a $$N\left( 0,I \right)$$ i.i.d. (zero-mean, unit-variance) 
 priors.a_alpha = 1;
 priors.b_alpha = 1;
 ```
-effectively assumes that state noise precision is a zero-mean and unit-variance [Gamma variable](https://en.wikipedia.org/wiki/Gamma_distribution).
+effectively assumes that state noise precision $$\alpha$$ is a unit-mean and unit-variance [Gamma variable](https://en.wikipedia.org/wiki/Gamma_distribution).
 
 One then fills in the `priors` field of the `options` structure, as follows:
 
@@ -115,11 +115,11 @@ Its input arguments are:
 
 - the input `u` (can be left empty)
 
-- the name/handle of the observation function g
+- `f_fname`: the name/handle of the evolution function (left empty for static models)
 
-- the name/handle of the evolution function f (empty for static models)
+- `g_fname`: the name/handle of the observation function
 
-- `dim` : the dimensions of the model variables
+- `dim`: the dimensions of the model variables
 
 - `options` (can be left empty)
 
