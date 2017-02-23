@@ -11,7 +11,7 @@ In brief, in the aim of performing a model-based data analysis using VBA:
 - one **needs** to define evolution and observation functions, as well as creating the `dim` matlab structure (see below).
 - one **can** provide further information about the model and/or its inversion (e.g. priors).
 
-> **TIP:** Many demonstration scripts are provided with the toolbox (e.g., see this [fast demo]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model)). We suggest you to go through some of these to get started.
+> **TIP:** Many demonstration scripts are provided with the toolbox (e.g., see this [fast demo]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model)). We suggest you go through some of these to get started.
 
 # Step 1: Defining observation/evolution functions
 
