@@ -26,7 +26,8 @@ z = function_name(x_t, P, u_t, in) ;
 - `u_t` : the input (experimenter control variable) at time `t`.
 - `in` : may contain any extra relevant information (arbitrary)
 - `z`: the predicted state (evolution function) or data (observation function).
-The definition of hidden states, parameters and inputs, as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
+
+> The definition of hidden states ($$x$$), parameters ($$\theta$$ and $$\phi$$), hyperparameters ($$\sigma$$ and $$\alpha$$) and inputs ($$u$$), as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
 
 # Step 2 : Setting model inversion options
 
