@@ -70,11 +70,11 @@ In addition to the evolution and observation functions, specifying the generativ
   - `priors.muX0`: prior mean on $$x_0$$
   - `priors.SigmaX0`: prior covariance on $$x_0$$
 - **Measurement noise precision** (only for continuous data)
-  - `priors.a_sigma`: prior shape parameter for the measurement noise precision $$\sigma$$
-  - `priors.b_sigma`: prior rate parameter for the measurement noise precision $$\sigma$$
+  - `priors.a_sigma`: prior shape for the measurement noise precision $$\sigma$$
+  - `priors.b_sigma`: prior rate for the measurement noise precision $$\sigma$$
 - **State noise precision** (only for dynamical systems)
-  - `priors.a_alpha`: prior shape parameter for the state noise precision $$\alpha$$
-  - `priors.b_alpha`: prior rate parameter for the state noise precision $$\alpha$$
+  - `priors.a_alpha`: prior shape for the state noise precision $$\alpha$$
+  - `priors.b_alpha`: prior rate for the state noise precision $$\alpha$$
 
 
 If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities, except for $$\sigma$$ and $$\alpha$$). For example, setting:
