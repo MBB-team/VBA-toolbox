@@ -24,9 +24,9 @@ qq(\vartheta) & = q(\vartheta_1)q(\vartheta_2) \\
 \frac{\partial F}{\partial q} & = 0
  \end{array}
 \right\}
-\implies q(\vartheta_1) \propto \exp\langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}$$
+\implies \ln q(\vartheta_1) = K + \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}$$
 
-where we have used a bi-partition of the parameter space ($$\vartheta=\big\{\vartheta_1,\vartheta_2\big\}$$) and the equation's right-hand term can be broken down into a weighted sum of the moments of the distribution $$q(\vartheta_2)$$. The equation above can be generalized to any arbitrary mean-field partition and captures the essence of the variational Bayesian approach. The resulting VB algorithm is amenable to analytical treatment (the free energy optimization is made with respect to the moments of the marginal densities), which makes it generic, quick and efficient.
+where $$K$$ is a normalization constant and we have used a bi-partition of the parameter space ($$\vartheta=\big\{\vartheta_1,\vartheta_2\big\}$$). Critically, the equation's right-hand term can be broken down into a weighted sum of the moments of the distribution $$q(\vartheta_2)$$. This means that one can update the moments of $$q(\vartheta_1)$$ from those of $$q(\vartheta_2)$$, and reciprocally. The equation above can be generalized to any arbitrary mean-field partition and captures the essence of the variational Bayesian approach. The resulting VB algorithm is amenable to analytical treatment (the free energy optimization is made with respect to the moments of the marginal densities), which makes it generic, quick and efficient.
 
 ![]({{ site.baseurl }}/images/wiki/VBA/vb1.jpg)
 
