@@ -4,7 +4,7 @@ title: "Bayesian inference: introduction"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-# Derivation of the likelihood function
+# Deriving the likelihood function
 
 One usually starts with a quantitative assumption or model of how observations $$y$$ are generated. Without loss of generality, this model possesses unknown parameters $$\vartheta$$, which are mapped through an observation function $$g$$:
 
