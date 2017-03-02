@@ -203,6 +203,12 @@ if exist('in','var')
             VBA_disp('Skipping initialization.',options)
             VBA_disp('Main VB inversion...',options)
         end
+        if dim.n > 0 && isinf(options.priors.a_alpha) && isequal(options.priors.b_alpha,0)
+            % special case: ODE-like inversion
+            posterior = suffStat.ODE_posterior;
+            suffStat = suffStat.ODE_suffStat;
+            [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
+        end
     catch
         disp('Error: the ''in'' structure was flawed...')
         return
