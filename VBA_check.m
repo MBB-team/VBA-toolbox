@@ -99,7 +99,7 @@ end
 
 % Deal with micro-resolution input
 u = VBA_getU(u,options,dim,'2macro');
-VBA_disp(' ',options)
+% VBA_disp(' ',options)
 
 %% ________________________________________________________________________
 %  check priors

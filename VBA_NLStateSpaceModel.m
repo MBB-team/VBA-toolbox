@@ -218,7 +218,6 @@ else
    
     % Check input arguments consistency (and fill in priors if necessary)
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
-    VBA_disp(' ',options)
     
     if isweird(y(~options.isYout))
         disp('Error: there is a numerical trouble with provided data!')

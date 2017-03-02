@@ -3,7 +3,9 @@ function [posterior,out] = VBA_hyperparameters(y,u,f_fname,g_fname,dim,options)
 % [posterior,out] = VBA_hyperparameters(y,u,f_fname,g_fname,dim,options)
 % This function embeds the usual VBA model inversion into a further VB
 % algorithmic loop, which adjusts precision hyperparameters for evolution
-% and observation parameters.
+% and observation parameters (as well as initial conditions).
+% Note: the ensuing free energy is corrected for the hierarchical extension
+% to the generative model.
 % IN: [see VBA_NLStateSpaceModel.m] with a unique change:
 %   - options.priors: this structure may contain additional scale and shape
 %   parameters for precision hyperparameters, namely:
@@ -45,6 +47,8 @@ end
 if ~isfield(options,'verbose')
     options.verbose = 1;
 end
+
+VBA_disp('--- VBA with hyperparameters adjustment... ---',options)
 
 % Initialize priors
 try
@@ -101,7 +105,8 @@ if dim.n >0
 end
 
 % perform vanilla VBA inversion
-VBA_disp('--- VBA with hyperparameters adjustment... ---',options)
+VBA_disp(' ',options)
+VBA_disp(['VBA hyperparameter adjustment: initialization (using prior hyperparameters)'],options)
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 F = out.F;
 if nphi>0
@@ -122,7 +127,7 @@ end
 
 % initialize display
 if options.DisplayWin
-    hf = figure('color',[1 1 1],'name','VBA: adjustment of precision hyperparameters','menubar','none');
+    hf = figure('color',[1 1 1],'name','VBA hyperparameter adjustment','menubar','none');
     ha(1) = subplot(2,2,1,'parent',hf,'nextplot','add');
     title(ha(1),'F = log p(y|m)')
     plot(ha(1),0,F,'ko')
@@ -171,6 +176,7 @@ it = 1;
 while ~stop
     
     % adjust precision hyperparameters
+    VBA_disp(['VBA hyperparameter adjustment: iteration #',num2str(it)],options)
     if nphi >0
          posterior.a_phi = options.priors.a_phi + 0.5*nphi;
          Edphi = out.suffStat.dphi'*iQphi*out.suffStat.dphi + trace(iQphi*posterior.SigmaPhi);
