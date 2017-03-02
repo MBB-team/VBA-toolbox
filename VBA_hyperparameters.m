@@ -114,7 +114,7 @@ if ntheta>0
     lEp = log(options.priors.a_theta/options.priors.b_theta);
     F = F + 0.5*ntheta*(Elp-lEp);
 end
-if ntheta>0
+if nx0>0
     Elp = VBA_psi(options.priors.a_x0) - log(options.priors.b_x0);
     lEp = log(options.priors.a_x0/options.priors.b_x0);
     F = F + 0.5*nx0*(Elp-lEp);

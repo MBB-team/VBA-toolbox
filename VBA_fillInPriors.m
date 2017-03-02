@@ -63,9 +63,9 @@ if ~isempty(priors)
     priors.muPhi = priors.muPhi(:);
     priors.muTheta = priors.muTheta(:);
     priors.muX0 = priors.muX0(:);
-    if isfield(options.priors,'a_sigma')
-        priors.a_sigma = options.priors.a_sigma(:);
-        priors.b_sigma = options.priors.b_sigma(:);
+    if isfield(priors,'a_sigma')
+        priors.a_sigma = priors.a_sigma(:);
+        priors.b_sigma = priors.b_sigma(:);
     end
     
 else % Build default (non-informative) priors
