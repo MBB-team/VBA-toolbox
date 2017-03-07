@@ -1,6 +1,6 @@
 function [posterior,out] = VBA_hyperparameters(y,u,f_fname,g_fname,dim,options)
 % VB estimation of precision hyperparameters
-% [posterior,out] = VBA_hyperparameters(y,u,f_fname,g_fname,dim,options)
+% FORMAT: [posterior,out] = VBA_hyperparameters(y,u,f_fname,g_fname,dim,options)
 % This function embeds vanilla VBA model inversion into a further VB
 % algorithmic loop, which adjusts precision hyperparameters for evolution
 % and observation parameters (as well as initial conditions).
@@ -106,8 +106,8 @@ end
 
 % perform vanilla VBA inversion
 VBA_disp(' ',options)
-VBA_disp(['VBA hyperparameter adjustment: initialization (using prior hyperparameters)'],options)
-options.figName = 'VBA hyperparameter adjustment: initialization';
+VBA_disp(['VBA with hyperparameters adjustment: initialization (using prior hyperparameters)'],options)
+options.figName = 'VBA with hyperparameters adjustment: initialization';
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 F = out.F;
 if nphi>0
@@ -128,7 +128,7 @@ end
 
 % initialize display
 if options.DisplayWin
-    hf = figure('color',[1 1 1],'name','VBA hyperparameter adjustment...','menubar','none');
+    hf = figure('color',[1 1 1],'name','VBA with hyperparameters adjustment...','menubar','none');
     ha(1) = subplot(2,2,1,'parent',hf,'nextplot','add');
     title(ha(1),'F = log p(y|m)')
     plot(ha(1),0,F,'ko')
@@ -178,7 +178,7 @@ while ~stop
     
     % adjust precision hyperparameters
     VBA_disp(' ',options)
-    VBA_disp(['VBA hyperparameter adjustment: iteration #',num2str(it)],options)
+    VBA_disp(['VBA with hyperparameters adjustment: iteration #',num2str(it)],options)
     if nphi >0
          posterior.a_phi = options.priors.a_phi + 0.5*nphi;
          Edphi = out.suffStat.dphi'*iQphi*out.suffStat.dphi + trace(iQphi*posterior.SigmaPhi);
@@ -259,7 +259,7 @@ while ~stop
     in.posterior = posterior;
     in.out = out;
     in.out.options.priors = options.priors;
-    in.out.options.figName = ['VBA hyperparameter adjustment: iteration #',num2str(it)];
+    in.out.options.figName = ['VBA with hyperparameters adjustment: iteration #',num2str(it)];
     [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in);
 
     % check convergence
@@ -290,13 +290,14 @@ end
 out.options.tStart = options.tStart;
 out.dt = toc(options.tStart);
 out.F = F(it);
+out.options.figName = 'VBA with hyperparameters adjustment';
 
 VBA_disp('--- VBA with hyperparameters adjustment: done. ---',options)
 VBA_disp(['[Corrected Free Energy: log p(y|m) > F=',num2str(out.F,'%4.3e'),']'],options)
 VBA_disp(' ',out.options)
 if options.DisplayWin
-    set(out.options.hf,'name','VBA hyperparameter adjustment: done');
-    set(hf,'name','VBA hyperparameter adjustment: done');
+    out.options.hf(2) = hf;
+    set(out.options.hf,'name',out.options.figName);
     getSubplots
 end
 

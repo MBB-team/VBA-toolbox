@@ -193,7 +193,8 @@ end
 
 if exist('in','var')
     
-    try  % Skip checking and replace prior initialization
+    try  % Skip initialization
+        
         dim = in.out.dim;
         posterior = in.posterior;
         suffStat = in.out.suffStat;
@@ -209,6 +210,10 @@ if exist('in','var')
             suffStat = suffStat.ODE_suffStat;
             [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
         end
+        
+        % re-initialize iteration counter
+        it = in.out.it; % index of VB iterations
+        
     catch
         disp('Error: the ''in'' structure was flawed...')
         return
@@ -238,6 +243,9 @@ else
     
     % Store free energy after the initialization step
     suffStat.F = [suffStat.F,options.init.F];
+    
+    % initialize iteration counter
+    it = 0; % index of VB iterations
     
     if ~options.OnLine
         [st,i] = dbstack;
@@ -272,9 +280,7 @@ end
 %----------------- Main VB learning scheme ------------------%
 %------------------------------------------------------------%
 
-it = 0; % index of VB iterations
 stop = it>=options.MaxIter; % flag for exiting VB scheme
-
 while ~stop
     
     it = it +1; % iteration index
