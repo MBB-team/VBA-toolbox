@@ -1,7 +1,7 @@
 function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group)
 % VB treatment of mixed-effects analysis
 % function [posterior,out] = VBA_MFX(y,u,f_fname,g_fname,dim,options)
-% This function approach model inversion from an empirical Bayes
+% This function approaches model inversion from an empirical Bayes
 % perspective, whereby within-subject priors are iteratively refined and
 % matched to the inferred parent population distribution.
 %  Note: all subjects must use the same model
