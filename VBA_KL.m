@@ -20,7 +20,7 @@ if isequal(m1,m2) && isequal(full(v1),full(v2))
     return
 end
 
-try, distrib; catch, distrib = 'Normal'; end
+try, distrib; catch distrib='Normal'; end
 DJS = [];
 
 switch distrib

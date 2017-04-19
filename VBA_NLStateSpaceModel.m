@@ -193,7 +193,8 @@ end
 
 if exist('in','var')
     
-    try  % Skip checking and replace prior initialization
+    try  % Skip initialization
+        
         dim = in.out.dim;
         posterior = in.posterior;
         suffStat = in.out.suffStat;
@@ -203,6 +204,16 @@ if exist('in','var')
             VBA_disp('Skipping initialization.',options)
             VBA_disp('Main VB inversion...',options)
         end
+        if dim.n > 0 && isinf(options.priors.a_alpha) && isequal(options.priors.b_alpha,0)
+            % special case: ODE-like inversion
+            posterior = suffStat.ODE_posterior;
+            suffStat = suffStat.ODE_suffStat;
+            [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
+        end
+        
+        % re-initialize iteration counter
+        it = in.out.it; % index of VB iterations
+        
     catch
         disp('Error: the ''in'' structure was flawed...')
         return
@@ -212,7 +223,6 @@ else
    
     % Check input arguments consistency (and fill in priors if necessary)
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
-    VBA_disp(' ',options)
     
     if isweird(y(~options.isYout))
         disp('Error: there is a numerical trouble with provided data!')
@@ -233,6 +243,9 @@ else
     
     % Store free energy after the initialization step
     suffStat.F = [suffStat.F,options.init.F];
+    
+    % initialize iteration counter
+    it = 0; % index of VB iterations
     
     if ~options.OnLine
         [st,i] = dbstack;
@@ -267,9 +280,7 @@ end
 %----------------- Main VB learning scheme ------------------%
 %------------------------------------------------------------%
 
-it = 0; % index of VB iterations
 stop = it>=options.MaxIter; % flag for exiting VB scheme
-
 while ~stop
     
     it = it +1; % iteration index
