@@ -20,7 +20,6 @@ posterior0 = posterior;
 suffStat0 = suffStat;
 options0 = options;
 suffStat.ODE_posterior = posterior;
-suffStat.ODE_suffStat = suffStat;
 
 % recover dimensions and options
 dim = options.inG.old.dim;

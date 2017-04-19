@@ -65,7 +65,7 @@ if ~options.OnLine
         str = VBA_summary(out,1);
         VBA_disp(str(setdiff(1:6,1:2)),options)
     end
-%     VBA_disp(' ',options)
+    VBA_disp(' ',options)
     drawnow
 end
 
