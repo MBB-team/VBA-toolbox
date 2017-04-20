@@ -34,6 +34,8 @@ title: "home"
 - [Bayesian Model Averaging](VBA-BMA)
 - [Setting the priors through Empirical Bayes (group studies)](VBA-MFX)
 - [Setting "hard constraints" through parameter transformations](param-transform)
+- [A few useful stand-alone VBA functions](a-few-VBA-functions)
+
 
 # Library of models
 
