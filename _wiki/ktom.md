@@ -43,6 +43,8 @@ Once the model has been inverted, one may be willing to recover and interpret th
 -	then `f` (where `sigm(f)` is the probability that the agent's virtual opponent will pick the first option) and its partial derivatives w.r.t. learning parameters (typically volatility and behavioural temperature). Note: we keep track of the latter only to limit the computational burden of k-ToM learning. The corresponding indices are stored in `options.inG.indlev(2).f` and `options.inG.indlev(2).df` (for a 2-ToM virtual opponent).
 - Finally, the [sufficient statistics](https://en.wikipedia.org/wiki/Sufficient_statistic) of the agent's posterior belief about his virtual opponents' learning parameters (mean and variance for each learning parameter: [M1,V1,M2,V2,...]). The corresponding indices are stored in `options.inG.indlev(2).Par` (for a 2-ToM virtual opponent).
 
+> The hidden states of a k-ToM agent can be eyeballed using the function `unwrapKTOM.m`, which uses the states indexing stored in VBA's optional input structure `options.inG`. The latter can be set automatically using the function `prepare_kToM.m`.
+
 
 Below are optional inputs that can be changed to adapt the model to one's specific experiment:
 
