@@ -92,6 +92,28 @@ The predicted residual error sum of squares ([PRESS](https://en.wikipedia.org/wi
 Have a look at `VBA_PRESS.m`!
 
 
+## 15: Want to derive Savage-Dickey ratios?
+
+[Savage-Dickey ratios](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0059655) can be used to compute the free energy and posterior moments of a reduced model, given the prior and posterior densities of a full model. The key added-value of this scheme is that one does not need to perform the corresponding model inversion!
+Have a look at `VBA_SavageDickey.m`...
+
+
+## 16: Tools for classical contrast testing.
+
+VBA include a function (`GLM_contrast.m`) that enables classical (i.e. frequentist) statistical testing in the context of a [GLM](https://en.wikipedia.org/wiki/General_linear_model). Below is a set of related useful functions:
+
+- `Contrast_MEbins.m`: derives the contrast matrix for an F-test of group mean differences (useful when the number of groups or conditions is bigger than 2).
+- `FtoR2.m`: converts an F-statistic into a coefficient of determination (R2)
+- `findCI.m`: finds confidence intervals for given t or F statistics
+- `GLM_tolerance.m`: computes regression tolerance of a given design matrix
+- `lev_GLM.m`: computes the log-evidence of a GLM (frequentist limit)
+- `PRESS_GLM`.m`: evaluates the PRESS-R2 cross-validation metric for a GLM
+- `removeOutliers.m`: removes outliers based upon robust moment-matched Gaussian distribution
+- `spm_autocorr.m`: computes simple autocorrelation function of an arbitrary time series
+- `testPower.m`: returns the statistical power of a test, given the expected effect size
+
+
+
 
 
 
