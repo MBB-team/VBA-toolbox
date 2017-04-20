@@ -102,7 +102,7 @@ Have a look at `VBA_SavageDickey.m`...
 
 VBA include a function (`GLM_contrast.m`) that enables classical (i.e. frequentist) statistical testing in the context of a [GLM](https://en.wikipedia.org/wiki/General_linear_model). Below is a set of related useful functions:
 
-- `Contrast_MEbins.m`: derives the contrast matrix for an F-test of group mean differences (useful when the number of groups or conditions is bigger than 2).
+- `Contrast_MEbins.m`: derives the [contrast matrix](https://en.wikipedia.org/wiki/Contrast_(statistics)) for an F-test of group mean differences (useful when the number of groups or conditions is bigger than 2).
 - `FtoR2.m`: converts an F-statistic into a [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) (R2).
 - `findCI.m`: finds [confidence intervals](https://en.wikipedia.org/wiki/Confidence_interval) for given t or F statistics.
 - `GLM_tolerance.m`: computes [regression tolerance](https://en.wikipedia.org/wiki/Multicollinearity) of a given design matrix.
