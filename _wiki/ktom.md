@@ -34,7 +34,7 @@ Constraints and comments for applying the existing VBA's k-ToM models are as fol
 - the game has to be a 2X2 game.
 - the structure of the utillity table of k-ToM's opponent is fixed, but does not need to be identical to k-ToM's.
 - states indexing has to be set according to a standard. In the demo, this is done using the function `defIndlev.m`.
-- some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed exploration) may be easily inserted in k-ToM's observation function.
+- some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
 
 Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. The indexing is a bit tricky here, essentially because it depends upon k (`f_kToM.m` is recursive):
 
