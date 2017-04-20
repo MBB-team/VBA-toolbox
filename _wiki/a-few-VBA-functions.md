@@ -1,5 +1,5 @@
 ---
-title: "A few hidden but useful VBA stand-alone functions"
+title: "A few useful VBA stand-alone functions"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
@@ -63,7 +63,7 @@ Note: this is problem of [combinatorics](https://en.wikipedia.org/wiki/Combinato
 Just have a look at `VBA_getVar.m` :)
 
 
-## 10: Deriving the Kullback-Leibler divergence for Normal or Gamma densities?
+## 10: Deriving the Kullback-Leibler divergence for Normal or Gamma densities
 
 Just have a look at `VBA_KL.m` :)
 
@@ -103,15 +103,15 @@ Have a look at `VBA_SavageDickey.m`...
 VBA include a function (`GLM_contrast.m`) that enables classical (i.e. frequentist) statistical testing in the context of a [GLM](https://en.wikipedia.org/wiki/General_linear_model). Below is a set of related useful functions:
 
 - `Contrast_MEbins.m`: derives the contrast matrix for an F-test of group mean differences (useful when the number of groups or conditions is bigger than 2).
-- `FtoR2.m`: converts an F-statistic into a coefficient of determination (R2)
-- `findCI.m`: finds confidence intervals for given t or F statistics
-- `GLM_tolerance.m`: computes regression tolerance of a given design matrix
-- `lev_GLM.m`: computes the log-evidence of a GLM (frequentist limit)
-- `PRESS_GLM`.m`: evaluates the [PRESS-R2](https://en.wikipedia.org/wiki/PRESS_statistic) cross-validation metric for a GLM
-- `removeOutliers.m`: removes outliers based upon robust moment-matched Gaussian distribution
-- `spm_autocorr.m`: computes simple autocorrelation function of an arbitrary time series
-- `testPower.m`: returns the statistical power of a test, given the expected effect size
-- `GLM_2pieces.m`: fits a piece-wise linear model (2 pieces)
+- `FtoR2.m`: converts an F-statistic into a coefficient of determination (R2).
+- `findCI.m`: finds confidence intervals for given t or F statistics.
+- `GLM_tolerance.m`: computes regression tolerance of a given design matrix.
+- `lev_GLM.m`: computes the log-evidence of a GLM (frequentist limit).
+- `PRESS_GLM`.m`: evaluates the [PRESS-R2](https://en.wikipedia.org/wiki/PRESS_statistic) cross-validation metric for a GLM.
+- `removeOutliers.m`: removes outliers based upon robust moment-matched Gaussian distribution.
+- `spm_autocorr.m`: computes simple autocorrelation function of an arbitrary time series.
+- `testPower.m`: returns the statistical power of a test, given the expected effect size.
+- `GLM_2pieces.m`: fits a piece-wise linear model (2 pieces).
 
 
 
