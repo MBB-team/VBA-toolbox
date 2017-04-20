@@ -29,9 +29,14 @@ Just have a look at `sampleFromarbitraryP.m` :)
 
 Let $$x(t)$$ be the response of a system to a sequence of inputs $$u(t)$$, which can be described as a convolution operation, i.e.:
 
-$$ x(t) = x_0 + \sum_{\tau} h\left(\tau\right) u\left(t-tau)\right) + \epsilon$$
+$$ x(t) = x_0 + \sum_{\tau} h\left(\tau\right) u\left(t-\tau\right) + \epsilon$$
 
-where $$h\left(\tau\right)$$ is an unknown finite [impulse response function](https://en.wikipedia.org/wiki/Impulse_response).
+where $$h\left(\tau\right)$$ is an unknown finite [impulse response function](https://en.wikipedia.org/wiki/Impulse_response) and $$\epsilon$$ are model residuals.
+
+The function `VBA_conv2glm.m` allows you to transform a sequence of inputs into a design matrix that, when fitted using a [GLM](https://en.wikipedia.org/wiki/General_linear_model), provides an estimate of the finite impulse response function...
+
+
+
 
 
 
