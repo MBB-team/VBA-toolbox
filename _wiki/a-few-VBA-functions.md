@@ -31,11 +31,11 @@ Just have a look at `sampleFromarbitraryP.m` :)
 
 ## 5: Want to estimate impulse responses to a sequence of inputs?
 
-Let $$x(t)$$ be the response of a system to a sequence of inputs $$u(t)$$, which can be described as a convolution operation, i.e.:
+Let $$x(t)$$ be the response of a system to a sequence of inputs $$u(t)$$, which can be described as a [convolution](https://en.wikipedia.org/wiki/Convolution) operation, i.e.:
 
 $$ x(t) = x_0 + \sum_{\tau} h\left(\tau\right) u\left(t-\tau\right) + \epsilon$$
 
-where $$h\left(\tau\right)$$ is an unknown [impulse response function](https://en.wikipedia.org/wiki/Impulse_response) and $$\epsilon$$ are model residuals.
+where $$h\left(\tau\right)$$ is an unknown [impulse response function](https://en.wikipedia.org/wiki/Impulse_response), $$\tau$$ is the convolution lag and $$\epsilon$$ are model residuals.
 
 The function `VBA_conv2glm.m` allows you to transform a sequence of inputs into a design matrix that, when fitted using a [GLM](https://en.wikipedia.org/wiki/General_linear_model), provides an estimate of the finite impulse response function...
 
