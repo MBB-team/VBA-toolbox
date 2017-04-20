@@ -107,11 +107,11 @@ VBA include a function (`GLM_contrast.m`) that enables classical (i.e. frequenti
 - `findCI.m`: finds confidence intervals for given t or F statistics
 - `GLM_tolerance.m`: computes regression tolerance of a given design matrix
 - `lev_GLM.m`: computes the log-evidence of a GLM (frequentist limit)
-- `PRESS_GLM`.m`: evaluates the PRESS-R2 cross-validation metric for a GLM
+- `PRESS_GLM`.m`: evaluates the [PRESS-R2](https://en.wikipedia.org/wiki/PRESS_statistic) cross-validation metric for a GLM
 - `removeOutliers.m`: removes outliers based upon robust moment-matched Gaussian distribution
 - `spm_autocorr.m`: computes simple autocorrelation function of an arbitrary time series
 - `testPower.m`: returns the statistical power of a test, given the expected effect size
-
+- `GLM_2pieces.m`: fits a piece-wise linear model (2 pieces)
 
 
 
