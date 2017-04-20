@@ -103,15 +103,15 @@ Have a look at `VBA_SavageDickey.m`...
 VBA include a function (`GLM_contrast.m`) that enables classical (i.e. frequentist) statistical testing in the context of a [GLM](https://en.wikipedia.org/wiki/General_linear_model). Below is a set of related useful functions:
 
 - `Contrast_MEbins.m`: derives the contrast matrix for an F-test of group mean differences (useful when the number of groups or conditions is bigger than 2).
-- `FtoR2.m`: converts an F-statistic into a coefficient of determination (R2).
-- `findCI.m`: finds confidence intervals for given t or F statistics.
-- `GLM_tolerance.m`: computes regression tolerance of a given design matrix.
+- `FtoR2.m`: converts an F-statistic into a [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) (R2).
+- `findCI.m`: finds [confidence intervals](https://en.wikipedia.org/wiki/Confidence_interval) for given t or F statistics.
+- `GLM_tolerance.m`: computes [regression tolerance](https://en.wikipedia.org/wiki/Multicollinearity) of a given design matrix.
 - `lev_GLM.m`: computes the log-evidence of a GLM (frequentist limit).
 - `PRESS_GLM`.m`: evaluates the [PRESS-R2](https://en.wikipedia.org/wiki/PRESS_statistic) cross-validation metric for a GLM.
-- `removeOutliers.m`: removes outliers based upon robust moment-matched Gaussian distribution.
-- `spm_autocorr.m`: computes simple autocorrelation function of an arbitrary time series.
-- `testPower.m`: returns the statistical power of a test, given the expected effect size.
-- `GLM_2pieces.m`: fits a piece-wise linear model (2 pieces).
+- `removeOutliers.m`: detects [outliers](https://en.wikipedia.org/wiki/Outlier) based upon robust moment-matched Gaussian distribution.
+- `spm_autocorr.m`: computes simple [autocorrelation function](https://en.wikipedia.org/wiki/Autocorrelation) of an arbitrary time series.
+- `testPower.m`: returns the [statistical power](https://en.wikipedia.org/wiki/Statistical_power) of a test, given the expected [effect size](https://en.wikipedia.org/wiki/Effect_size) and the corresponding degrees-of-freedom.
+- `GLM_2pieces.m`: fits a [piece-wise linear model](https://en.wikipedia.org/wiki/Piecewise_linear_function).
 
 
 
