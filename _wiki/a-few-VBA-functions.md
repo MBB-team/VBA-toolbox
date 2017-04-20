@@ -50,10 +50,10 @@ Just have a look at `VBA_getISqrtMat.m` :)
 Let $$m$$ be a simple generative model of the form: $$y=g(\phi)+\epsilon$$, where $$y$$ are observed data, $$g$$ is the observation function, $$\phi$$ ar eunknown model parameters and $$\epsilon$$ are model residuals. When inverting the model (i.e. deriving the posterior density $$p\left(\theta\mid y\right)$$), VBA provides point estimates of model residuals, but does not provide the full posterior density $$p\left(\epsilon\mid y\right)$$. This can be retrieved using the function `VBA_getNoise.m`.
 
 
-## 8: [Combinatorics](https://en.wikipedia.org/wiki/Combinatorics): deriving all n-draws from a k-urn (with replacement)
+## 8: Deriving all n-draws from a k-urn (with replacement)
 
 Just have a look at `VBA_getNtuples.m` :)
-Note: this problem typically arises in the context of, e.g., between-condition model comparison. This is because here, one wants to evaluate the model evidences of all possible pairings of condition-specific models...
+Note: this is problem of [combinatorics](https://en.wikipedia.org/wiki/Combinatorics), which typically arises in the context of, e.g., between-condition model comparison. This is because here, one wants to evaluate the model evidences of all possible pairings of condition-specific models...
 
 
 ## 9: Want to extract the states' time-dependent variances from VBA's posterior structure?
@@ -82,9 +82,14 @@ This can be done using the function `VBA_orth.m`.
 Just have a look at `VBA_PP0.m` :)
 Note: this function works for both evolution and observation parameters...
 
-> The function `VBA_PPM.m` can be used to derive $$P\left(\phi>a\mid y\right)$$ or $$P\left(a<\phi<b\mid y\right)$$...
+> The function `VBA_PPM.m` can be used to derive $$P\left(\phi\geq\mid y\right)$$ or $$P\left(a\leq\phi\leq b\mid y\right)$$. It also can be used to eyeball the corresponding posterior density...
 
-## 14: Want to derive the posterior probability $$P\left(\phi=0\mid y\right)?
+## 14: Deriving a simple cross-validation measure of model generalizability
+
+The predicted residual error sum of squares ([PRESS](https://en.wikipedia.org/wiki/PRESS_statistic)) statistic is a form of cross-validation used in regression analysis to provide a summary measure of the fit of a model to a sample of observations that were not themselves used to estimate the model. It is calculated as the sums of squares of the prediction residuals for those observations.
+Have a look at `VBA_PRESS.m`!
+
+
 
 
 
