@@ -26,6 +26,8 @@ Numerical variables can be "weird", e.g. be complex-valued, be infinite or conta
 
 Just have a look at `sampleFromarbitraryP.m` :)
 
+> Alternatively, the function `VBA_sample.m` can be used to sample from gaussian, gamma, dirichlet, or multinomial densities...
+
 
 ## 5: Want to estimate impulse responses to a sequence of inputs?
 
