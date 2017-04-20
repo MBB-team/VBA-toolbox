@@ -27,22 +27,26 @@ Numerical variables can be "weird", e.g. be complex-valued, be infinite or conta
 Just have a look at `sampleFromarbitraryP.m` :)
 
 
-## 5: Want to estimate finite impulse responses to a sequence of inputs?
+## 5: Want to estimate impulse responses to a sequence of inputs?
 
 Let $$x(t)$$ be the response of a system to a sequence of inputs $$u(t)$$, which can be described as a convolution operation, i.e.:
 
 $$ x(t) = x_0 + \sum_{\tau} h\left(\tau\right) u\left(t-\tau\right) + \epsilon$$
 
-where $$h\left(\tau\right)$$ is an unknown finite [impulse response function](https://en.wikipedia.org/wiki/Impulse_response) and $$\epsilon$$ are model residuals.
+where $$h\left(\tau\right)$$ is an unknown [impulse response function](https://en.wikipedia.org/wiki/Impulse_response) and $$\epsilon$$ are model residuals.
 
 The function `VBA_conv2glm.m` allows you to transform a sequence of inputs into a design matrix that, when fitted using a [GLM](https://en.wikipedia.org/wiki/General_linear_model), provides an estimate of the finite impulse response function...
 
-
-## 5: Want to estimate finite impulse responses to a sequence of inputs?
-
+> The function `VBA_VolterraKernels.m` can be used to estimate the [Volterra kernels]({{ site.baseurl }}/wiki/VBA-graphical-output/) of both observed data and systems' states, given the `posterior` and `out` output VBA structures. This function exemplifies the use of `VBA_conv2glm.m`...
 
 
+## 6: Want to get the square-root of a matrix?
+
+Just have a look at `VBA_getISqrtMat.m` :)
 
 
+## 7:  Want to get errorbars on estimated model residuals?
+
+Let $$m$$ be a simple generative model of the form: $$y=g(\phi)+\epsilon$$, where $$y$$ are observed data, $$g$$ is the observation function, $$\phi$$ ar eunknown model parameters and $$\epsilon$$ are model residuals. When inverting the model (i.e. deriving the posterior density $$p\left(\theta\mid y\right)$$), 
 
 
