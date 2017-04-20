@@ -47,6 +47,45 @@ Just have a look at `VBA_getISqrtMat.m` :)
 
 ## 7:  Want to get errorbars on estimated model residuals?
 
-Let $$m$$ be a simple generative model of the form: $$y=g(\phi)+\epsilon$$, where $$y$$ are observed data, $$g$$ is the observation function, $$\phi$$ ar eunknown model parameters and $$\epsilon$$ are model residuals. When inverting the model (i.e. deriving the posterior density $$p\left(\theta\mid y\right)$$), 
+Let $$m$$ be a simple generative model of the form: $$y=g(\phi)+\epsilon$$, where $$y$$ are observed data, $$g$$ is the observation function, $$\phi$$ ar eunknown model parameters and $$\epsilon$$ are model residuals. When inverting the model (i.e. deriving the posterior density $$p\left(\theta\mid y\right)$$), VBA provides point estimates of model residuals, but does not provide the full posterior density $$p\left(\epsilon\mid y\right)$$. This can be retrieved using the function `VBA_getNoise.m`.
+
+
+## 8: [Combinatorics](https://en.wikipedia.org/wiki/Combinatorics): deriving all n-draws from a k-urn (with replacement)
+
+Just have a look at `VBA_getNtuples.m` :)
+Note: this problem typically arises in the context of, e.g., between-condition model comparison. This is because here, one wants to evaluate the model evidences of all possible pairings of condition-specific models...
+
+
+## 9: Want to extract the states' time-dependent variances from VBA's posterior structure?
+
+Just have a look at `VBA_getVar.m` :)
+
+
+## 10: Deriving the Kullback-Leibler divergence for Normal or Gamma densities?
+
+Just have a look at `VBA_KL.m` :)
+
+
+## 11: Want to evaluate the log-evidence of the null model ($$H_0$$)?
+
+Just have a look at `VBA_LMEH0.m` :)
+
+
+## 12: Want to orthogonalize a matrix?
+
+Sometimes, e.g. in the context of a [GLM](https://en.wikipedia.org/wiki/General_linear_model), one may want to [orthogonalize](https://en.wikipedia.org/wiki/Orthogonalization) the (design) matrix (prior to model fitting). 
+This can be done using the function `VBA_orth.m`.
+
+
+## 13: Want to derive the posterior probability $$P\left(\phi=0\mid y\right)$$?
+
+Just have a look at `VBA_PP0.m` :)
+Note: this function works for both evolution and observation parameters...
+
+> The function `VBA_PPM.m` can be used to derive $$P\left(\phi>a\mid y\right)$$ or $$P\left(a<\phi<b\mid y\right)$$...
+
+## 14: Want to derive the posterior probability $$P\left(\phi=0\mid y\right)?
+
+
 
 
