@@ -101,7 +101,7 @@ Have a look at `VBA_SavageDickey.m` :)
 
 ## Tools for classical contrast testing.
 
-VBA includes a function (`GLM_contrast.m`) that enables classical (i.e. frequentist) statistical testing in the context of a [GLM](https://en.wikipedia.org/wiki/General_linear_model). Below is a set of related useful functions:
+VBA includes a function (`GLM_contrast.m`) that enables [classical (i.e. frequentist) statistical testing]({{ site.baseurl }}/wiki/statistical-models) in the context of a [GLM](https://en.wikipedia.org/wiki/General_linear_model). Below is a set of related useful functions:
 
 - `Contrast_MEbins.m`: derives the [contrast matrix](https://en.wikipedia.org/wiki/Contrast_(statistics)) for an F-test of group mean differences (useful when the number of groups or conditions is bigger than 2).
 - `FtoR2.m`: converts an F-statistic into a [coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) (R2).
