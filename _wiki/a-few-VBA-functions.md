@@ -51,7 +51,7 @@ Let $$m$$ be a simple generative model of the form: $$y=g(\phi)+\epsilon$$, wher
 
 Have a look at `VBA_getNtuples.m` :)
 
-Note: this is problem of [combinatorics](https://en.wikipedia.org/wiki/Combinatorics), which typically arises in the context of, e.g., between-condition model comparison. This is because here, one wants to evaluate the model evidences of all possible pairings (n-tuples, where $$n$$ is the number of conditions) of condition-specific models (where there are $$k$$ models)...
+> This is problem of [combinatorics](https://en.wikipedia.org/wiki/Combinatorics), which arises, e.g., in the context of [between-condition model comparison]({{ site.baseurl }}/wiki/BMS-for-group-studies). This is because here, one wants to evaluate the model evidences of all possible pairings (n-tuples, where $$n$$ is the number of conditions) of condition-specific models (where there are $$k$$ models)...
 
 
 ## Want to extract the states' time-dependent variances from VBA's posterior structure?
@@ -64,9 +64,11 @@ Have a look at `VBA_getVar.m` :)
 Have a look at `VBA_KL.m` :)
 
 
-## Want to evaluate the log-evidence of the null model ($$H_0$$)?
+## Want to evaluate the log-evidence of the null model?
 
 Have a look at `VBA_LMEH0.m` :)
+
+> The 'null model' here is such that the data is entirely random. It may or may not directly correspond to a given 'null assumption' ($$H_0$$) used in classical testing procedures.
 
 
 ## Want to orthogonalize a matrix?
