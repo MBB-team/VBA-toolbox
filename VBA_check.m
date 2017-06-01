@@ -14,13 +14,31 @@ function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
 %% ________________________________________________________________________
 %  check model dimension
 
-try
-    dim.n;
-    dim.n_theta;
-    dim.n_phi;
-catch
-    error('Provide dimensions of the model!')
-end
+
+% check if hidden state dimension:
+assert( ...
+     isfield(dim,'n')          ... exists,
+  && isscalar(dim.n)           ... is a scalar value
+  && mod(dim.n,1) == 0         ... that is integer
+  && dim.n >= 0                ... and non negative
+, '*** Please provide the dimension of the hidden state in dim.n');
+
+% check if evolution parameters dimension:
+assert( ...
+     isfield(dim,'n_theta')    ... exists
+  && isscalar(dim.n_theta)     ... is a scalar value
+  && mod(dim.n_theta,1) == 0   ... that is integer
+  && dim.n_theta >= 0          ... and non negative
+, '*** Please provide the dimension of the evolution parameters in dim.n_theta');
+
+% check if observation parameters dimension:
+assert( ...
+     isfield(dim,'n_phi')      ... exists
+  && isscalar(dim.n_phi)       ... is a scalar value
+  && mod(dim.n_phi,1) == 0     ... that is integer
+  && dim.n_phi >= 0            ... and non negative
+, '*** Please provide the dimension of the observation parameters in dim.n_phi');
+
 
 dim = check_struct(dim, ...
     'n_t'   , size(y,2), ...
