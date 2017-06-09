@@ -15,20 +15,16 @@ mu = P(1);
 sig = exp(P(2));    % positivity constraint
 A = exp(P(3));      % [id]
 k = exp(P(4));
-
 try
     grid = in.grid;
 catch
     grid = -100:0.1:100;
 end
 grid = grid(:);
-
 gx = A.*exp(-0.5.*(grid-mu).^2./sig);
-
 try
     gx = gx + k.*in.input;
 end
-
 gx = convolve(gx);
 gx = gx(:);
 

@@ -97,30 +97,34 @@ if ~out.options.OnLine && out.dim.n >= 1 && ~isinf(out.options.priors.a_alpha) &
 end
 % str{5} = [str{5}, '\n'];
 
-R2str={'',''};
-LLstr={'',''};
-
 gsi = find([out.options.sources.type]==0);
-if ~isempty(gsi)
-    R2str{1} = ['     - coefficient of determination (R2):  ',catnum2str(out.fit.R2,gsi) '\n'];
-    LLstr{1} = ['     - log-likelihood: ',catnum2str(out.fit.LL,gsi) '\n'];
-end
 bsi = find([out.options.sources.type]~=0);
-if ~isempty(bsi)
-    R2str{2} = ['     - balanced classification accuracy: ',catnum2str(out.fit.acc,bsi) '\n'];
-    LLstr{2} = ['     - log-likelihood: ',catnum2str(out.fit.LL,bsi) '\n'];
-    
+R2str = ['     - determin. coeff. (R2):  '];
+CAstr = ['     - balanced classif. acc.:  '];
+LLstr = ['     - log-likelihood: '];
+AICstr = ['     - AIC: '];
+BICstr = ['     - BIC: '];
+if ~isempty(gsi)
+    R2str = [R2str,catnum2str(out.fit.R2,gsi,'gauss.')];
+    CAstr = [];
+    LLstr = [LLstr,catnum2str(out.fit.LL,gsi,'gauss.')];
+    AICstr = [AICstr,catnum2str(out.fit.AIC,gsi,'gauss.')];
+    BICstr = [BICstr,catnum2str(out.fit.BIC,gsi,'gauss.')];
 end
-R2str = [R2str{1} R2str{2}];
-LLstr = [LLstr{1} LLstr{2}];
-
-
-AICstr = ['     - AIC: ',num2str(out.fit.AIC,'%4.3e'),'\n'];
-% BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e'),'\n'];
-BICstr = ['     - BIC: ',num2str(out.fit.BIC,'%4.3e')];
-
-str{6} = sprintf(['Classical fit accuracy metrics:','\n',...
+if  ~isempty(bsi)
+    R2str = [R2str,catnum2str(out.fit.R2,bsi,'mult.')];
+    CAstr = [CAstr,catnum2str(out.fit.bacc,bsi,'mult.'),'\n'];
+    LLstr = [LLstr,catnum2str(out.fit.LL,bsi,'mult.')];
+    AICstr = [AICstr,catnum2str(out.fit.AIC,bsi,'mult.')];
+    BICstr = [BICstr,catnum2str(out.fit.BIC,bsi,'mult.')];
+end
+R2str = [R2str,'\n'];
+LLstr = [LLstr,'\n'];
+AICstr = [AICstr,'\n'];
+BICstr = [BICstr,'\n'];
+str{6} = sprintf(['Classical goodness-of-fit metrics:','\n',...
     R2str,...
+    CAstr,...
     LLstr,...
     AICstr,...
     BICstr]);
@@ -133,11 +137,11 @@ if newlines
 end
 
 
-function str = catnum2str(x,ind)
+function str = catnum2str(x,ind,type_str)
 str = [];
 for i=1:length(ind)
     si=ind(i);
-    str = [str,', ',num2str(x(si),'%4.3f'),' (source #',num2str(si),')'];
+    str = [str,', ',num2str(x(si),'%4.3e'),' (',type_str,'source #',num2str(si),')'];
 end
 str(1:2) = [];
 
