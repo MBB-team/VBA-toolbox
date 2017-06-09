@@ -14,6 +14,7 @@ function fit = VBA_fit(posterior,out)
 %       .ny: effective sample size (total data dimension - #excluded data points)
 %       .np: effective number of unknown model variables (total #params - #fixed params)
 %
+% [Note]: there was a change in this function on 09-06-2017. Before, the
 % field .R2 used to report the coef of determination for continuous data
 % and the balanced accuracy for binary data...
 

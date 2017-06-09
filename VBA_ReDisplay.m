@@ -117,6 +117,9 @@ cleanPanel(hf);
 ud = get(hf,'userdata');
 out = ud.out;
 str = VBA_summary(out,1);
+for i=1:length(str)
+    str{i} = sprintf(str{i});
+end
 str{7} = sprintf(['Estimation efficiency (minus posterior entropies):','\n ']);
 if ~isnan(out.diagnostics.efficiency.X)
     str{7} = sprintf([str{7},'    - hidden states: ',num2str(out.diagnostics.efficiency.X,'%4.3e'),'\n ']);

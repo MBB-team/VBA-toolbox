@@ -26,6 +26,8 @@ sparse = 0; % sparse mode
 % evaluate estimated classification weights
 displayResults(posterior,out,y,[],[],[],b,[],[])
 
+return
+
 % now change priors and compare class. accuracy VS bayes. model evidence
 v = 10.^[-4:4];
 verbose = 0;

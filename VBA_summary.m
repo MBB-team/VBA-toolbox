@@ -105,15 +105,15 @@ LLstr = ['     - log-likelihood: '];
 AICstr = ['     - AIC: '];
 BICstr = ['     - BIC: '];
 if ~isempty(gsi)
-    R2str = [R2str,catnum2str(out.fit.R2,gsi,'gauss.')];
+    R2str = [R2str,catnum2str(out.fit.R2,gsi,'gauss.','%')];
     CAstr = [];
     LLstr = [LLstr,catnum2str(out.fit.LL,gsi,'gauss.')];
     AICstr = [AICstr,catnum2str(out.fit.AIC,gsi,'gauss.')];
     BICstr = [BICstr,catnum2str(out.fit.BIC,gsi,'gauss.')];
 end
 if  ~isempty(bsi)
-    R2str = [R2str,catnum2str(out.fit.R2,bsi,'mult.')];
-    CAstr = [CAstr,catnum2str(out.fit.bacc,bsi,'mult.'),'\n'];
+    R2str = [R2str,catnum2str(out.fit.R2,bsi,'mult.','%')];
+    CAstr = [CAstr,catnum2str(out.fit.bacc,bsi,'mult.','%'),'\n'];
     LLstr = [LLstr,catnum2str(out.fit.LL,bsi,'mult.')];
     AICstr = [AICstr,catnum2str(out.fit.AIC,bsi,'mult.')];
     BICstr = [BICstr,catnum2str(out.fit.BIC,bsi,'mult.')];
@@ -121,27 +121,31 @@ end
 R2str = [R2str,'\n'];
 LLstr = [LLstr,'\n'];
 AICstr = [AICstr,'\n'];
-BICstr = [BICstr,'\n'];
-str{6} = sprintf(['Classical goodness-of-fit metrics:','\n',...
+% BICstr = [BICstr,'\n'];
+str{6} = ['Classical goodness-of-fit metrics:','\n',...
     R2str,...
     CAstr,...
     LLstr,...
     AICstr,...
-    BICstr]);
-
+    BICstr];
 
 if newlines
     for i=1:length(str)
-        str{i} = sprintf([str{i},'\n']);
+        str{i} = [str{i},'\n'];
     end
 end
 
 
-function str = catnum2str(x,ind,type_str)
+function str = catnum2str(x,ind,type_str,flag)
+try,flag;catch,flag=[];end
 str = [];
 for i=1:length(ind)
     si=ind(i);
-    str = [str,', ',num2str(x(si),'%4.3e'),' (',type_str,'source #',num2str(si),')'];
+    if isequal(flag,'%')
+        str = [str,', ',num2str(100*x(si),'%2.1f%%'),'% (',type_str,'source #',num2str(si),')'];
+    else
+        str = [str,', ',num2str(x(si),'%4.3e'),' (',type_str,'source #',num2str(si),')'];
+    end
 end
 str(1:2) = [];
 
