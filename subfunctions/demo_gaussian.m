@@ -3,7 +3,8 @@
 % position and width are then estimated using VBA.
 
 close all
-% clear all
+clear all
+clc
 
 %---- simulate noisy gbf ----%
 
@@ -41,9 +42,9 @@ dim.n=0;                        % nb of hidden states
 
 
 % Call inversion routine
-[posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
+[posterior,out] = VBA_hyperparameters(y,[],[],g_fname,dim,options);
 
 
 %---- Display results ----%
-displayResults(posterior,out,y,[],[],[],phi,[],sigma)
+displayResults(posterior,out,y,[],[],[],phi,[],sigma);
 

@@ -177,7 +177,7 @@ it = 1;
 while ~stop
     
     % adjust precision hyperparameters
-    VBA_disp(' ',options)
+%     VBA_disp(' ',options)
     VBA_disp(['VBA with hyperparameters adjustment: iteration #',num2str(it)],options)
     if nphi >0
          posterior.a_phi = options.priors.a_phi + 0.5*nphi;
