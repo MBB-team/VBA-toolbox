@@ -121,12 +121,10 @@ u = VBA_getU(u,options,dim,'2macro');
 
 %% ________________________________________________________________________
 %  check priors
-if ~isfield(options,'priors')
-    priors = [];
-else
-    priors = options.priors;
-end
-[priors,options.params2update] = VBA_fillInPriors(priors,dim,options.verbose);
+[options,options.params2update] = VBA_fillInPriors(dim,options);
+priors = options.priors;
+
+% TODO remove the two tests below as they should be already taken care of
 if options.binomial
     priors = rmfield(priors,{'a_sigma','b_sigma'});
 end

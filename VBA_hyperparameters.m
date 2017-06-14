@@ -51,12 +51,9 @@ end
 VBA_disp('--- VBA with hyperparameters adjustment... ---',options)
 
 % Initialize priors
-try
-    priors = options.priors;
-catch
-    priors = [];
-end
-[options.priors,params2update] = VBA_fillInPriors(priors,dim,options.verbose);
+[options,params2update] = VBA_fillInPriors(dim,options);
+
+
 nphi = 0;
 ntheta = 0;
 nx0 = 0;
