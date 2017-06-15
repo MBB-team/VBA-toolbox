@@ -38,21 +38,15 @@ catch
     dim.p = size(y,1);
 end
 
-% specify default options
+% specify minimal default options
 options.tStart = tic;
-% VB display window
-if ~isfield(options,'DisplayWin')
-    options.DisplayWin = 1;
-end
-if ~isfield(options,'verbose')
-    options.verbose = 1;
-end
+options = check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1);
+
 
 VBA_disp('--- VBA with hyperparameters adjustment... ---',options)
 
 % Initialize priors
 [options,params2update] = VBA_fillInPriors(dim,options);
-
 
 nphi = 0;
 ntheta = 0;
@@ -174,7 +168,6 @@ it = 1;
 while ~stop
     
     % adjust precision hyperparameters
-%     VBA_disp(' ',options)
     VBA_disp(['VBA with hyperparameters adjustment: iteration #',num2str(it)],options)
     if nphi >0
          posterior.a_phi = options.priors.a_phi + 0.5*nphi;
@@ -294,12 +287,15 @@ VBA_disp(['[Corrected Free Energy: log p(y|m) > F=',num2str(out.F,'%4.3e'),']'],
 VBA_disp(' ',out.options)
 if options.DisplayWin
     out.options.hf(2) = hf;
-    set(out.options.hf,'name',out.options.figName);
+%     set(out.options.hf,'name',out.options.figName);
+    VBA_ReDisplay(posterior,out)
     getSubplots
 end
 
 % subfunctions
 function dF = deltaF(a,a0,b,b0,n)
+% corrects VBA Free Energy for uncertainty in prior precision
+% hyperparameters
 m1 = a/b;
 v1 = m1/b;
 m2 = a0/b0;

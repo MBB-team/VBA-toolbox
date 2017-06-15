@@ -41,8 +41,8 @@ assert( ...
 
 
 dim = check_struct(dim, ...
-    'n_t'   , size(y,2), ...
-    'p'     , size(y,1)  ...
+    'n_t'   , size(y,2), ... % number of trials or time samples
+    'p'     , size(y,1)  ... % data dimension
 );
 
 if isempty(u)
@@ -53,7 +53,7 @@ end
 dim.u = size(u,1);
 
 %% ________________________________________________________________________
-%  check option structure
+%  check VBA's options structure
 
 % set defaults 
 options = check_struct(options, ...
@@ -88,13 +88,13 @@ options = check_struct(options, ...
 
 options = check_struct(options, ...
     'isYout'    , zeros(dim.p,dim.n_t)            , ... % excluded data
-    'skipf'     , zeros(1,dim.n_t)                , ... 
+    'skipf'     , zeros(1,dim.n_t)                , ... % steady evolution
     'sources'   , struct('type', options.binomial , ... % multisource
                          'out' , 1:dim.p  )         ...
 ) ;
                          
 options = check_struct(options, ...
-    'extended'  , numel(options.sources)>1 || options.sources(1).type==2 ...          % multisource
+    'extended'  , numel(options.sources)>1 || options.sources(1).type==2 ... % multisource
 ) ;
 
 options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
@@ -117,17 +117,24 @@ end
 
 % Deal with micro-resolution input
 u = VBA_getU(u,options,dim,'2macro');
-% VBA_disp(' ',options)
+
 
 %% ________________________________________________________________________
 %  check priors
 [options,options.params2update] = VBA_fillInPriors(dim,options);
 priors = options.priors;
+% check consistency of priors and model dimensions
+assert(size(priors.muX0,1)==dim.n,'*** Dimension of options.priors.muX0 does not match dim.n!')
+assert(isequal(size(priors.SigmaX0),dim.n*[1,1]),'*** Dimension of options.priors.SigmaX0 does not match dim.n!')
+assert(size(priors.muPhi,1)==dim.n_phi,'*** Dimension of options.priors.muPhi does not match dim.n_phi!')
+assert(isequal(size(priors.SigmaPhi),dim.n_phi*[1,1]),'*** Dimension of options.priors.SigmaPhi does not match dim.n_phi!')
+assert(size(priors.muTheta,1)==dim.n_theta,'*** Dimension of options.priors.muTheta does not match dim.n_theta!')
+assert(isequal(size(priors.SigmaTheta),dim.n_theta*[1,1]),'*** Dimension of options.priors.SigmaTheta does not match dim.n_theta!')
 
 % TODO remove the two tests below as they should be already taken care of
-if options.binomial
-    priors = rmfield(priors,{'a_sigma','b_sigma'});
-end
+% if options.binomial
+%     priors = rmfield(priors,{'a_sigma','b_sigma'});
+% end
 if isempty(options.params2update.x0)
     options.updateX0 = 0;
 end
@@ -147,17 +154,21 @@ end
 
 % ensure excluded data consistency
 gsi = find([options.sources.type]==0);
-for i=1:numel(gsi) 
-        for t=1:dim.n_t
-            diQ = diag(priors.iQy{t,i}).*~options.isYout(options.sources(gsi(i)).out,t);
-            options.isYout(options.sources(gsi(i)).out,t) = ~diQ;
-            priors.iQy{t,i} = diag(diQ)*priors.iQy{t,i}*diag(diQ);
-        end
+for i=1:numel(gsi)
+    for t=1:dim.n_t
+        diQ = diag(priors.iQy{t,i}).*~options.isYout(options.sources(gsi(i)).out,t);
+        options.isYout(options.sources(gsi(i)).out,t) = ~diQ;
+        priors.iQy{t,i} = diag(diQ)*priors.iQy{t,i}*diag(diQ);
+    end
 end
 
 % store evolution/observation function handles
 options.f_fname = f_fname;
 options.g_fname = g_fname;
+
+
+%% ________________________________________________________________________
+%  check inversion specific cases
 
 % split-MoG sufficient statistics
 if options.nmog > 1
@@ -226,7 +237,7 @@ options.g_nout = nargout(options.g_fname);
 options.priors = priors;
 options.dim = dim;
 
-% Special cases check
+% Special case: DCM check
 if isequal(options.f_fname,@f_DCMwHRF) && isequal(options.g_fname,@g_HRF3)
     % DCM for fMRI
     [options] = VBA_check4DCM(options);
@@ -278,7 +289,7 @@ if dim.n > 0
         options.inG.dim = dim;
         options.priors = priors;
         options.dim = dim;
-    else
+    else % stochastic inversion
         % Derive marginalization operators for the lagged Kalman filter
         n = dim.n;
         lag = options.backwardLag + 1;
@@ -287,6 +298,8 @@ if dim.n > 0
         options.lagOp.E = [eye(n*(lag-1)),zeros(n*(lag-1),n)];
         options.lagOp.Eu = [zeros(n*(lag-1),n),eye(n*(lag-1))];
         options.lagOp.M = [eye(n),zeros(n,n*(lag-1))];
+        % check compatibility with multi-source mode
+        assert(~options.extended,'*** Stochastic inversion is not available for multi-source inversion!');
     end
 end
 
