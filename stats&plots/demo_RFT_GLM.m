@@ -9,8 +9,8 @@ clc
 L = 1e3; % size of the 1D field
 n = 64; % number of GLM data samples
 k = 8; % number of GLM parameters
-N = 1e3; % number of Monte-Carlo simulations
-v = ([1:5:50]/2.355).^2; % smoothing kernel variances
+N = 1;%1e3; % number of Monte-Carlo simulations
+v = 10;%([1:5:50]/2.355).^2; % smoothing kernel variances
 % v = v(end);
 for j=1:length(v)
     j
@@ -32,7 +32,7 @@ for j=1:length(v)
 %         end
         % apply RFT
         c = [1;zeros(k-1,1)];
-        [stat,out] = RFT_GLM_contrast(X,y,c,'t',[],0);
+        [stat,out] = RFT_GLM_contrast(X,y,c,'t',[],1);
         hpeak(j,ii) = length(find(out.peaks.prft<0.05))>=1;
         hclu(j,ii) = length(find(out.clusters.prft<0.05))>=1;
         f(j,ii) = out.fwhm;

@@ -124,7 +124,7 @@ switch type
             disp('Error: cannot have contrast matrices for ''t''-tests!')
             return
         end
-        df = trR.^2./sum(sum(R.^2,1));
+        df = trR.^2./sum(sum(R.^2,1)); % Satterthwaite approx.
         if verbose
             fprintf(1,'Computing t-statistics...')
             if p>1
@@ -167,7 +167,7 @@ switch type
 %         yhat_a = R0*yhat;
         M = R0 - R;
         trM = trace(M);
-        df = [trM.^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];
+        df = [trM.^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];  % Satterthwaite approx.
         if verbose
             fprintf(1,' OK.')
             fprintf(1,'\n')
@@ -420,6 +420,7 @@ plot(ha,ge,pe*sc,'r')
 xlabel(ha,'residual bins')
 ylabel(ha,'# samples per bin')
 legend(ha,{'histogram of residuals','empirical distribution of residuals','gaussian approximation'})
+title(ha,'residuals'' normality')
 xl = get(ha,'xlim');
 yl = get(ha,'ylim');
 ht = text(xl(1)+dx/2,yl(2),['Kolmogorov-Smirnov test: p=',num2str(ud.all.ks(ind),3)],'color','r','parent',ha);
@@ -438,6 +439,7 @@ ht = text(mih+(mah-mih)/32,yl(2)-0.1*diff(yl),['V[residuals]=',num2str(ve,3)],'c
 set(ha,'xlim',[mih,mah])
 xlabel(ha,'predicted data')
 ylabel(ha,'residuals'' moments')
+title(ha,'residuals'' homoscedasticity')
 try;getSubplots;end
 
 function myData(e1,e2)

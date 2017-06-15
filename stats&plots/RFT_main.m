@@ -128,9 +128,9 @@ if ~isempty(options.R)
 else
     out.fwhm = RFT_smoothness(X);
 end
-OUTSTR{2} = ['Search volume: L=',num2str(L),'.'];
-OUTSTR{3} = ['Estimated smoothness: FWHM=',num2str(out.fwhm,'%3.1f'),'.'];
-OUTSTR{4} = ['Number of resels: R=',num2str(L./out.fwhm,'%3.1f'),'.'];
+OUTSTR{2} = ['Search volume: L=',num2str(L)];
+OUTSTR{3} = ['Estimated smoothness: FWHM=',num2str(out.fwhm,'%3.1f')];
+OUTSTR{4} = ['Number of resels: R=',num2str(L./out.fwhm,'%3.1f')];
 if verbose
     disp(OUTSTR{2})
     disp(OUTSTR{3})
@@ -142,7 +142,7 @@ gridu = 0:1e-3:10;
 pgrid = RFT_Pval(gridu',0,1,out.fwhm,L,options.type,options.dof);
 d = abs(options.FWER-pgrid);
 out.xc = gridu(find(d==min(d)));
-OUTSTR{5} = ['Critical height threshold [peak-level]: X_c=',num2str(out.xc,'%3.2f'),' (test size: FWER=',num2str(round(options.FWER*100)),'%).'];
+OUTSTR{5} = ['Critical height threshold [peak-level]: X>',num2str(out.xc,'%3.2f'),' (test size: FWER=',num2str(round(options.FWER*100)),'%)'];
 if verbose
     disp(OUTSTR{5})
 end
@@ -191,16 +191,16 @@ switch options.type
 end
 out.En = L.*P0./out.Em;
 
-OUTSTR{6} = ['Expected voxels per cluster [cluster-level]: E[k|H0]=',num2str(out.En,'%3.1f'),' (height threshold: X>',num2str(options.u,'%3.2f'),').'];
-OUTSTR{7} = ['Expected number of clusters [set-level]: E[c|H0]=',num2str(out.Em,'%3.1f'),' (extent threshold: k>',num2str(options.k),').'];
+OUTSTR{6} = ['Expected voxels per cluster [cluster-level]: E[k|H0]=',num2str(out.En,'%3.1f')];
+OUTSTR{7} = ['Expected number of clusters [set-level]: E[c|H0]=',num2str(out.Em,'%3.1f')];
 if verbose
     disp(OUTSTR{6})
     disp(OUTSTR{7})
 end
 
-OUTSTR{8} = ['Number of local peaks =',num2str(length(peaks.prft)),'.'];
-OUTSTR{9} = ['Number of upcrossing clusters =',num2str(nc),' (X>',num2str(options.u,'%3.2f'),').'];
-OUTSTR{10} = ['RFT [set-level]: p=',num2str(set.prft,'%3.3f'),' (c=',num2str(set.c),').'];
+OUTSTR{8} = ['Number of local peaks =',num2str(length(peaks.prft)),];
+OUTSTR{9} = ['Number of upcrossing clusters =',num2str(nc),' (X>',num2str(options.u,'%3.2f'),')'];
+OUTSTR{10} = ['RFT [set-level]: p=',num2str(set.prft,'%3.3f'),' (c=',num2str(set.c),')'];
 if verbose
     disp(OUTSTR{8})
     disp(OUTSTR{9})
