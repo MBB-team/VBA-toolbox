@@ -45,6 +45,7 @@ title: "home"
 
 - [Reinforcement learning](Reinforcement-learning)
 - [Bayesian associative learning (including, e.g., volatile systems)](bayesian-learning)
+- [Bayesian sequence learning (BSL)](BSL)
 - [Bayesian mentalizing (k-ToM)](ktom)
 - [Bi-dimensional decisions (e.g., inter-temporal choices)](intertemporal-choice)
 
