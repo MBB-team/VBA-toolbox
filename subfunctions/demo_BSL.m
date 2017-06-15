@@ -16,12 +16,12 @@ dim.n_phi = 2;
 
 %% simulate sequence of BSL choices
 x0 = 1*ones(dim.n,1); % log-odds of P(o=1)
-theta = [-1]; % BSL's prior volatility
+theta = [-32]; % BSL's prior volatility
 phi = [2;0]; % (log-) inverse-temperature, bias
 N = 150; % number of trials
-p = 0.65;
-% P = repmat([p,1-p,1-p,p],1,N); % probabilistic repetition of [1 0 0 1]
-P = repmat(p,1,N); % probabilistic repetition of [1 0 0 1]
+p = 0.75;
+P = repmat([p,1-p,p,1-p],1,N); % probabilistic repetition of [1 0 0 1]
+% P = repmat(p,1,N); % probabilistic repetition of [1 0 0 1]
 for i=1:N
     tmp = VBA_sample('multinomial',struct('p',[P(i);1-P(i)],'n',1),1,0);
     y(i) = tmp(1);
@@ -31,8 +31,8 @@ gx = NaN(1,N);
 x = zeros(dim.n,N);
 x(:,1:K) = repmat(x0,1,K); %initialize hidden states
 u(:,1:K) = NaN(K+1,K);
-for i=K+1:N
-    u(:,i) = flipud(vec(y(i-K:i)));
+for i=K+2:N
+    u(:,i) = flipud(vec(y(i-K-1:i-1)));
     if K==0 && i==1 % the issue only arises for 0-BSL (degenerated!)
         x(:,i) = f_BSL(x0,theta,u(:,i),options.inF);
     else
@@ -41,18 +41,20 @@ for i=K+1:N
     gx(i) = g_BSL(x(:,i),phi,u(:,i),options.inG); 
     a(i) = gx(i)>.5;
 end
-figure,
-subplot(2,1,1),plot(x')
-subplot(2,1,2),plot(gx)
+hf = figure('color',[1 1 1]);
+ha = subplot(2,1,1,'parent',hf);
+plot(ha,x')
+ha = subplot(2,1,2,'parent',hf);
+plot(ha,gx)
 hold on, plot([1,N],[0.5,0.5],'color',0.2*[1 1 1])
 ic = find(a(1:N)==y(1:N));
-plot(ic,a(ic),'g.')
+plot(ha,ic,a(ic),'g.')
 ii = find(a(1:N)~=y(1:N));
-plot(ii,a(ii),'r.')
-title(['perf=',num2str(100*length(ic)./N,3),'%'])
+plot(ha,ii,a(ii),'r.')
+title(ha,['perf=',num2str(100*length(ic)./N,3),'%'])
 
 
-%% invert "influence learning" model given sequence of agent's choices
+%% invert BSL model given sequence of agent's choices
 options.skipf = zeros(1,N);
 options.skipf(1:K+1) = 1;
 options.binomial = 1;
@@ -61,5 +63,5 @@ f_fname = @f_BSL;
 g_fname = @g_BSL;
 [posterior,out] = VBA_NLStateSpaceModel(a,u,f_fname,g_fname,dim,options);
 
-
+hf = unwrapKBSL(posterior.muX,posterior.muPhi,u,options.inG);
 

@@ -17,7 +17,7 @@ function [fx] = f_BSL(x,theta,u,in)
 %       x(1:2^K)= E[log-odds]
 %       x((2^K)+1:2^(K+1))= log V[log-odds]
 %   - theta: BSL's prior volatity
-%   - u: u(1)= current outcome, u(2:K+1)= sequence of past outcomes
+%   - u: u(1)= current outcome, u(2:K+1)= sequence of K past outcomes
 %   - in: depth of sequence learning
 % OUT:
 %   - fx: updated sufficient statistics of log-odds of P(y=1)
@@ -27,14 +27,21 @@ if isweird(u) % e.g., 1st trial
     return
 end
 
+% -- deal with superceding competition with other generative models --
+% [See, e.g., f_metaTom.m]
+try
+    w = inF.metaweight;
+catch
+    w = 1;
+end
+
+% -- learning rule --
 K = in.K; % sequence depth
 y = u(1); % current outcome
 yb = u(2:K+1); % previous outcomes
-
 m0 = x(1:2^K); % current E[log-odds]
 V0 = exp(x((2^K)+1:2^(K+1))); % current V[log-odds]
 volatility = exp(theta(1)); % positivity constraint
-
 m = m0; % by default: no change in E[log-odds]
 if K >0
     indSeq = bin2dec(num2str(yb'))+1; % index of sequence of previous outcomes
@@ -43,9 +50,8 @@ else
 end
 V = V0 + volatility; % by default: inflated V[log-odds]
 p0 = sigmoid(m0(indSeq)); % current estimate of P(y=1)
-V(indSeq) = 1./((1./V(indSeq))+p0*(1-p0)); % updated V[log-odds]
-m(indSeq) = m0(indSeq) + V(indSeq)*(y-p0); % updated E[log-odds] (Laplace-Kalman update rule)
-
+V(indSeq) = 1./((1./V(indSeq))+ w*p0*(1-p0)); % updated V[log-odds]
+m(indSeq) = m0(indSeq) + w*V(indSeq)*(y-p0); % updated E[log-odds] (Laplace-Kalman update rule)
 fx = [invsigmoid(sigmoid(m));log(V)]; % wrap-up
 
 

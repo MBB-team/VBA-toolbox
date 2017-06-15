@@ -31,7 +31,7 @@ switch model
     case 'BSL'
         f = @f_BSLinGame;
         g = @g_BSLinGame;
-        theta = [-log(2)]; % (log-) prior volatility
+        theta = -4;%[-log(2)]; % (log-) prior volatility
         phi = [-log(2);0]; % (log-) temperature & bias
         inF.K = 1; % sequence length
         inG = struct('K',inF.K,'game',game,'player',role);
@@ -39,7 +39,7 @@ switch model
     case 'HGF'
         f = @f_HGFinGame;
         g = @g_HGFinGame;
-        theta = [0;-2;0];
+        theta = [0;0;0];%[0;-2;0];
         phi = [-log(2);0]; % (log-) temperature & bias
         inF.lev2 = 1; % 3rd level (volatility learning)
         inF.kaub = 1.4;
@@ -60,7 +60,7 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,0);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -log(2); % (log-) prior volatility
+        theta = -4;%-log(2); % (log-) prior volatility
         phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
@@ -70,7 +70,7 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,0);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -log(2); % (log-) prior volatility
+        theta = -4;%-log(2); % (log-) prior volatility
         phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
@@ -81,7 +81,7 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -log(2); % (log-) prior volatility
+        theta = -4;%-log(2); % (log-) prior volatility
         phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
@@ -92,9 +92,15 @@ switch model
         [options,dim] = prepare_kToM(K,game,role,diluteP);
         f = @f_kToM;
         g = @g_kToM;
-        theta = -log(2); % (log-) prior volatility
+        theta = -4;%-log(2); % (log-) prior volatility
         phi = [-log(2);0]; % (log-) temperature and bias
         inF = options.inF;
         inG = options.inG;
         x0 = options.priors.muX0;
+    case 'metaToM'
+        kToM_level = 1;
+        seq_length = 1;
+        [theta,phi,inF,inG,x0] = prepare_metaToM(kToM_level,seq_length,game,role);
+        f = @f_metaToM;
+        g = @g_metaToM;
 end
