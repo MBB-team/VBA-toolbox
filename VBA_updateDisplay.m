@@ -21,14 +21,12 @@ display = options.display;
 % check whether 'pause' button is toggled on
 VBA_pause(options)
 
-% First check whether this is standard DCM or ODE limit
+% 0- Check whether this is a deterministic dynamical system inversion
 if isequal(options.g_fname,@VBA_odeLim)
-   
     % Rebuild posterior from dummy 'ODE' posterior
     options0 = options;
     [posterior,options,dim,suffStat] = VBA_odeLim2NLSS(posterior,options,options.dim,suffStat,[],0);
     options.display = options0.display;
-   
     % Then call VBA_updateDisplay again
     if ~isempty(it)
         VBA_updateDisplay(posterior,suffStat,options,y,it,'precisions')
@@ -42,9 +40,7 @@ if isequal(options.g_fname,@VBA_odeLim)
     if dim.n_theta > 0
         VBA_updateDisplay(posterior,suffStat,options,y,it,'theta')
     end
-   
     return
-   
 end
 
 

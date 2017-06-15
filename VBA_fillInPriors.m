@@ -25,3 +25,8 @@ end
 options.priors = check_struct(options.priors,default_priors);
 
 
+
+    
+        
+
+

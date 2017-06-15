@@ -225,7 +225,7 @@ else
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     
     if isweird(y(~options.isYout))
-        disp('Error: there is a numerical trouble with provided data!')
+        disp('Error: VBA detected a numerical issue with provided data!')
         return
     end
     
@@ -236,7 +236,7 @@ else
         % state-space model.
     catch e
         VBA_disp(' ',options)
-        VBA_disp('Error: Program stopped during initialisation',options)
+        VBA_disp('Error: VBA could not initialize summary statistics',options)
         VBA_disp(e.message,options)
         return
     end

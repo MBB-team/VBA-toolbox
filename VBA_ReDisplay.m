@@ -467,14 +467,20 @@ if ~isempty(diagnostics.MT_x)
     axis(display.ha(2),'tight')
 end
 
+if ud.out.options.extended
+    vis = 'on';
+else
+    vis = 'off';
+end
 ds = numel(ud.out.diagnostics.dy);
 snames = cell(ds,1);
 for i=1:ds %dim s
     snames{i} = ['#',num2str(i)];
 end
-handles(1) = uicontrol('style','popupmenu','parent',hf,'tag','VBLaplace','units','normalized','position',[0.55 0.5 0.10 0.02],'fontsize',12,'string',snames,'callback',@myDiagnosticsi);
-handles(2) = uicontrol('style','text','parent',hf,'tag','VBLaplace','BackgroundColor',get(hf,'color'),'units','normalized','position',[0.52 0.53 0.16 0.02],'fontsize',12,'string','source:');
+handles(1) = uicontrol('style','popupmenu','parent',hf,'tag','VBLaplace','units','normalized','position',[0.55 0.5 0.10 0.02],'fontsize',12,'string',snames,'callback',@myDiagnosticsi,'visible',vis);
+handles(2) = uicontrol('style','text','parent',hf,'tag','VBLaplace','BackgroundColor',get(hf,'color'),'units','normalized','position',[0.52 0.53 0.16 0.02],'fontsize',12,'string','source:','visible',vis);
 feval(@myDiagnosticsi,handles(1),[])
+
 
 % display state noise
 if ~isempty(diagnostics.dx.dx)
@@ -497,7 +503,6 @@ if ~isempty(diagnostics.dx.dx)
     title(display.ha(8),'state noise time series','fontsize',11)
     xlabel(display.ha(8),'time','fontsize',8)
     ylabel(display.ha(8),'eta(t) = x(t+1)-f(x(t))','fontsize',8)
-    
 end
 
 % display parameters posterior correlation matrix
@@ -521,7 +526,7 @@ try
     getSubplots
 end
 
-function myDiagnosticsi(hObject,evt)
+function myDiagnosticsi(hObject,evt,si)
 hf = get(hObject,'parent');
 ind = get(hObject,'Value');
 ud = get(hf,'userdata');
