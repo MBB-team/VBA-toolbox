@@ -26,6 +26,36 @@ end
 % fill in VBA's priors structure with default priors
 options.priors = check_struct(options.priors,default_priors);
 
+% check dimension and infinite precision priors
+if dim.n_theta > 0 % This finds which evolution params to update
+    dpc = diag(options.priors.SigmaTheta);
+    iz = find(dpc==0);
+    if ~isempty(iz)
+        params2update.theta = setdiff(1:dim.n_theta,iz);
+    end
+end
+if dim.n_phi > 0 % This finds which observation params to update
+    dpc = diag(options.priors.SigmaPhi);
+    iz = find(dpc==0);
+    if ~isempty(iz)
+        params2update.phi = setdiff(1:dim.n_phi,iz);
+    end
+end
+if dim.n > 0  % This finds which initial conditions to update
+    dpc = diag(options.priors.SigmaX0);
+    iz = find(dpc==0);
+    if ~isempty(iz)
+        params2update.x0 = setdiff(1:dim.n,iz);
+    end
+    for t=1:dim.n_t
+        dpc = diag(options.priors.iQx{t});
+        iz = find(isinf(dpc));
+        if ~isempty(iz)
+            params2update.x{t} = setdiff(1:dim.n,iz);
+        end
+    end
+end
+
 
 
     

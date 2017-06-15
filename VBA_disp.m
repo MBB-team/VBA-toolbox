@@ -1,4 +1,5 @@
 function VBA_disp(str,options)
+% display string or cell-arry of strings
 try
     verbose = options.verbose;
 catch
