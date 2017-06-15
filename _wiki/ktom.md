@@ -17,8 +17,8 @@ Second, according to Bayesian [decision theory](https://en.wikipedia.org/wiki/De
 
 - **0-ToM** tracks her opponent's probability of picking any alternative option, as it changes over time or trials. 0-ToM does not mentalize: her learning rule essentially operates a (nonlinear) [Kalman filter](http://en.wikipedia.org/wiki/Kalman_filter) on her opponent's moves. This is a slightly more sophisticated variant of so-called "[fictitious play](https://en.wikipedia.org/wiki/Fictitious_play)" strategy, which best responds to the opponent's frequency of play.
 - **1-ToM** assumes she is facing a 0-ToM agent. She mentalizes, i.e. (in Bayesian terms) she holds an uncertain belief about her opponent's prediction about her own actions. To update this belief, she has to learn how her opponent learns, by estimating (online) hidden parameters of 0-ToM. This makes 1-ToM a meta-Bayesian agent ([Daunizeau et al. 2010](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0015554)), i.e. a Bayesian observer of a Bayesian agent. 
-- **2-ToM** assumes she is facing either a 0-ToM or a 1-ToM, and learns her opponent's hidden parameters, as well as her opponent's ToM sophistication level. The difference between 2-ToM and 1-ToM is that 2-ToM can deal with mentalizing agents. 
-- More generally, **k-ToM** assumes she is facing a k'-ToM agent with $$k>k'$$, and learns her opponent's hidden parameters and sophistication. 
+- **2-ToM** mentalizes also, and assumes she is facing either a 0-ToM or a 1-ToM, and learns her opponent's hidden parameters, as well as her opponent's ToM sophistication level. The difference between 2-ToM and 1-ToM is that 2-ToM can deal with mentalizing agents. 
+- More generally, **k-ToM** mentalizes and assumes she is facing a k'-ToM agent with $$k>k'$$, and learns her opponent's hidden parameters and sophistication. 
 
 Here, the recursion depth ($$k$$) induces distinct ToM sophistication levels, which differ in how they update their (recursive) beliefs and the ensuing trial-by-trial predictions about their opponent's next move. Note that one can derive the learning rule of any k-ToM agent recursively, from the learning rule of 0-ToM.
 
@@ -31,28 +31,27 @@ In VBA, there is a pair of generic evolution and observation functions for k-ToM
 
 Constraints and comments for applying the existing VBA's k-ToM models are as follows:
 
-- the game has to be a 2X2 game.
+- the game has to be a 2X2 game (2 agents, 2 actions)
 - the structure of the utillity table of k-ToM's opponent is fixed, but does not need to be identical to k-ToM's.
 - states indexing has to be set according to a standard. In the demo, this is done using the function `defIndlev.m`.
 - some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
 
-Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. The indexing is a bit tricky here, essentially because it depends upon k (`f_kToM.m` is recursive):
+Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. The indexing is a bit tricky here, essentially because it depends upon k (`f_kToM.m` is recursive). Note that `prepare_kToM.m` stores the state sindexing in the structure `options.inG.indlev`. In brief:
 
-- k-1 first hidden states : sufficient statistics of the agent's posterior belief about her opponent's sophistication level. More precisely, passing these states through `sigm.m` yields the posterior probability that the opponent's sophistication is k'=0,1,...,k-2 (by construction, the probability for k'=k-1 is `1-sum(sigm(posterior.muX(1:k-2)))`).
+- k-1 first hidden states : sufficient statistics (truncated log-odds) of the agent's posterior belief about her opponent's sophistication level. More precisely, passing these states through `sigm.m` yields the posterior probability that the opponent's sophistication is k'=0,1,...,k-2 (by construction, the probability for k'=k-1 is `1-sum(sigm(posterior.muX(1:k-2)))`).
 - the next hidden states are the represented hidden states of the agent's vitual opponents, for all admissible sophistication level. The corresponding indices are stored in the structure `options.inG.indlevel`. For example, `options.inG.indlev(2).X` contains the indices of the represented hidden states of a virtual 2-ToM opponent (only posible if the agent is himself at least 3-ToM). Note that the number of these indices is increasing with the sophistication level (because of the recursive nature of k-ToM beliefs).
 -	then `f` (where `sigm(f)` is the probability that the agent's virtual opponent will pick the first option) and its partial derivatives w.r.t. learning parameters (typically volatility and behavioural temperature). Note: we keep track of the latter only to limit the computational burden of k-ToM learning. The corresponding indices are stored in `options.inG.indlev(2).f` and `options.inG.indlev(2).df` (for a 2-ToM virtual opponent).
 - Finally, the [sufficient statistics](https://en.wikipedia.org/wiki/Sufficient_statistic) of the agent's posterior belief about his virtual opponents' learning parameters (mean and variance for each learning parameter: [M1,V1,M2,V2,...]). The corresponding indices are stored in `options.inG.indlev(2).Par` (for a 2-ToM virtual opponent).
 
 > The hidden states of a k-ToM agent can be eyeballed using the function `unwrapKTOM.m`, which uses the states indexing stored in [VBA's optional input structure]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/) `options.inG`. The latter can be set automatically using the function `prepare_kToM.m`.
 
+Many optional features of k-ToM learners can be changed to adapt the model to one's specific experiment. Some of these features are in fact inputs to the function `prepare_kToM.m`:
 
-Below are optional inputs that can be changed to adapt the model to one's specific experiment:
+- the recursion depth $$k$$ of k-ToM learners
+- the game's payoff table $$U(a,b)$$
+- the possibility to include belef dilution effects (e.g. forgetting effects)
 
-- `options.InF.game`: 2x2x2 payoff table (`game(:,:,1)` is the first player's payoff, whereas `game(:,:,2)` is the second player's payoff).
-- `options.inF.player`: this specifies which 2x2 entry of `options.InF.game` refers to the k-ToM agent (1 or 2).
-- `options.inF.lev`: this is the player's ToM sophistication level ($$k$$).
-- `options.inF.dummyPar`: this is a 3x1 binary vector that specifies which hidden parameter(s) of her opponent k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to `[1;0;0]`, which means that only k-ToM's opponent's volatility is assumed to change across trials. The impact of setting any of these entries to 1 is that the induced learning rule includes some form of "forgetting effect" which results from the dilution of belief precision from one trial to the next.
-
+Other features have to be reset by modifying the function `prepare_kToM.m`, or directly the appropriate optional inputs stored in `options.inF` and `options.inG`. For example, one can reset the field `options.inF.dummyPar`, which is a 3x1 binary vector that specifies which hidden parameter(s) of her opponent k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to `[1;0;0]`, which means that only k-ToM's opponent's volatility is assumed to change across trials. The impact of setting any of these entries to 1 is that the induced learning rule includes some form of "forgetting effect" which results from the dilution of belief precision from one trial to the next.
 
 > Practical experience with k-ToM models show that the statistical power, in terms of both estimating unknown model parameters and/or comparing different learning models, critically depends upon the experimental design. In [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992), we had participants play "hide-and-seek" against on-line k-ToM artificial learners. This was shown to yield much better model discriminability than, e.g., if participants had played cooperative and/or coordination games (e.g., "[battle-of-the-sexes](https://en.wikipedia.org/wiki/Battle_of_the_sexes_(game_theory))"). We encourage users of k-ToM models to perform some form of a [confusion analysis](https://en.wikipedia.org/wiki/Confusion_matrix) to chack that their intended experimental design eventully provide reasonable statistical power.
 
