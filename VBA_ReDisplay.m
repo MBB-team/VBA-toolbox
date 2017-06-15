@@ -136,8 +136,11 @@ end
 if ~isnan(out.diagnostics.efficiency.alpha)
     str{7} = sprintf([str{7},'    - state noise precision hyperparameter: ',num2str(out.diagnostics.efficiency.alpha,'%4.3e'),'\n ']);
 end
-if ~isnan(out.diagnostics.efficiency.sigma)
-    str{7} = sprintf([str{7},'    - data noise precision hyperparameter: ',num2str(out.diagnostics.efficiency.sigma,'%4.3e'),'\n ']);
+if ~any(isnan(out.diagnostics.efficiency.sigma))
+    gsi = find([out.options.sources.type]==0);
+    sig_str = catnum2str(out.diagnostics.efficiency.sigma,gsi,length(gsi)>1);
+    str{7} = sprintf([str{7},'    - data noise precision hyperparameter: ',sig_str,'\n ']);
+%     str{7} = sprintf([str{7},'    - data noise precision hyperparameter: ',num2str(out.diagnostics.efficiency.sigma,'%4.3e'),'\n ']);
 end
 uicontrol('parent',hf,'style','text','tag','VBLaplace','units','normalized','position',[0.1,0.05,0.8,0.85],'backgroundcolor',[1,1,1],'HorizontalAlignment','left','fontsize',11,'string',str);
 
@@ -438,7 +441,6 @@ function myDiagnostics()
 hf = get(gco,'parent');
 cleanPanel(hf);
 
-
 % Second: display diagnostics
 ud = get(hf,'userdata');
 out = ud.out;
@@ -465,17 +467,14 @@ if ~isempty(diagnostics.MT_x)
     axis(display.ha(2),'tight')
 end
 
-
 ds = numel(ud.out.diagnostics.dy);
 snames = cell(ds,1);
 for i=1:ds %dim s
     snames{i} = ['#',num2str(i)];
 end
-
 handles(1) = uicontrol('style','popupmenu','parent',hf,'tag','VBLaplace','units','normalized','position',[0.55 0.5 0.10 0.02],'fontsize',12,'string',snames,'callback',@myDiagnosticsi);
 handles(2) = uicontrol('style','text','parent',hf,'tag','VBLaplace','BackgroundColor',get(hf,'color'),'units','normalized','position',[0.52 0.53 0.16 0.02],'fontsize',12,'string','source:');
 feval(@myDiagnosticsi,handles(1),[])
-
 
 % display state noise
 if ~isempty(diagnostics.dx.dx)
@@ -501,7 +500,6 @@ if ~isempty(diagnostics.dx.dx)
     
 end
 
-
 % display parameters posterior correlation matrix
 display.ha(6) = subplot(4,2,8,'parent',hPanel);
 imagesc(diagnostics.C,'parent',display.ha(6))
@@ -524,12 +522,10 @@ try
 end
 
 function myDiagnosticsi(hObject,evt)
-
 hf = get(hObject,'parent');
 ind = get(hObject,'Value');
 ud = get(hf,'userdata');
 hPanel = getPanel(hf);
-
 try
     if isequal(get(ud.handles.hdiagnostics(1),'parent'),hPanel)
         delete(ud.handles.hdiagnostics)
@@ -539,9 +535,7 @@ out = ud.out;
 dy = out.diagnostics.dy(ind);
 sourceType = out.options.sources(ind).type;
 sourceYidx = out.options.sources(ind).out;
-
-% 
-% % display data noise
+% display data noise
 xlim = [dy.nx(1)-dy.d,dy.nx(end)+dy.d];
 handles.hdiagnostics(1) = subplot(4,2,5,'parent',hPanel,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
 title(handles.hdiagnostics(1),'residuals empirical distribution','fontsize',11)
@@ -549,7 +543,6 @@ xlabel(handles.hdiagnostics(1),'e(t) = y(t)-g(x(t))','fontsize',8)
 ylabel(handles.hdiagnostics(1),'p(e|y)','fontsize',8)
 bar(dy.nx,dy.ny,'facecolor',[.8 .8 .8],'parent',handles.hdiagnostics(1))
 plot(handles.hdiagnostics(1),dy.grid,dy.pg,'r')
-
 if sourceType==0
     plot(handles.hdiagnostics(1),dy.grid,dy.pg2,'g')
 end
@@ -558,7 +551,6 @@ if sourceType==0
 else
     legend(handles.hdiagnostics(1),{'empirical histogram','Gaussian approx'})
 end
-% 
 if out.options.dim.n > 0
     gri = out.diagnostics.microTime(out.diagnostics.sampleInd);
     ti = 'time';
@@ -571,16 +563,12 @@ else
         ti = 'data dimensions';
     end
 end
-
-
 handles.hdiagnostics(2) = subplot(4,2,3,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
 plot(handles.hdiagnostics(2),gri,out.suffStat.dy(sourceYidx,:)','marker','.')
 axis(handles.hdiagnostics(2),'tight')
 title(handles.hdiagnostics(2),'residuals time series','fontsize',11)
 xlabel(handles.hdiagnostics(2),ti,'fontsize',8)
 ylabel(handles.hdiagnostics(2),'e(t) = y(t)-g(x(t))','fontsize',8)
-
-
 % display autocorrelation of residuals
 if ~isweird(dy.R) && out.dim.n_t > 1
     handles.hdiagnostics(3) = subplot(4,2,7,'parent',hPanel);
@@ -589,19 +577,14 @@ if ~isweird(dy.R) && out.dim.n_t > 1
     title(handles.hdiagnostics(3),'residuals empirical autocorrelation','fontsize',11)
     xlabel(handles.hdiagnostics(3),'lag tau','fontsize',8)
     ylabel(handles.hdiagnostics(3),'Corr[e(t),e(t+tau)]','fontsize',8)
-    set(handles.hdiagnostics(3),...
-        'tag','VBLaplace',...
-        'ygrid','on',...
-        'box','off');
+    set(handles.hdiagnostics(3),'tag','VBLaplace','ygrid','on','box','off');
 end
-
 ud.handles = handles;
 set(hf,'userdata',ud);
 try, getSubplots; end
 
 
 function myVB(hfig)
-
 try
     hfig;
 catch
@@ -609,15 +592,12 @@ catch
 end
 % first: clear diagnostics display
 cleanPanel(hfig);
-
 hPanel = getPanel(hfig);
-
 % Second: re-display VB-Laplace inversion output
 ud = get(hfig,'userdata');
 out = ud.out;
 y = out.y;
 posterior = ud.posterior;
-
 options = out.options;
 options.noPause = 1;
 options.DisplayWin =1;
@@ -628,16 +608,10 @@ catch
     Ns=1;
 end
 dim = out.dim;
-
 % Initialize display figure
-
-
-
-
 options.display.hfp = hfig;
 options.figName = get(hfig,'name');
 [options] = VBA_initDisplay(options);
-
 delete(options.display.htt)
 delete(options.display.hpause)
 delete(options.display.hm)
@@ -647,17 +621,10 @@ if options.dim.n == 0 || isinf(posterior.a_alpha(end))
 end
 hfig = options.display.hfp;
 drawnow
-
-
-
-
-
-
 % Display data and hidden states (if any)
 if options.dim.n > 0
     VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
 end
-
 % Display precision hyperparameters
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && sum([options.sources(:).type]==0) > 0
@@ -666,10 +633,8 @@ if ~options.OnLine && sum([options.sources(:).type]==0) > 0
         xlabel(options.display.ha(2*Ns+6),' ')
     end
 end
-
 % Display model evidence
 VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
-
 % Display parameters
 if dim.n_theta >= 1
     VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
@@ -677,21 +642,32 @@ end
 if dim.n_phi >= 1
     VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
 end
-
 try
     getSubplots
 end
 
-function cleanPanel(hf)
 
+
+function cleanPanel(hf)
 hc = intersect(findobj('tag','VBLaplace'),get(hf,'children'));
 if ~isempty(hc)
     delete(hc)
 end
-
 hPanel = getPanel(hf);
 hc = intersect(findobj('tag','VBLaplace'),get(hPanel,'children'));
 if ~isempty(hc)
     delete(hc)
 end
+
+
+function str = catnum2str(x,ind,many)
+str = [];
+for i=1:length(ind)
+    si=ind(i);
+    str = [str,', ',num2str(x(si),'%4.3e')];
+    if many
+        str = [str,' (source #',num2str(si),')'];
+    end
+end
+str(1:2) = [];
 

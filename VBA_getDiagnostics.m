@@ -43,8 +43,7 @@ end
 if out.dim.n > 0 % hidden states and initial conditions
     efficiency.X = -out.suffStat.SX;
     efficiency.X0 = -out.suffStat.SX0;
-    if isinf(out.options.priors.a_alpha) ...
-            && isequal(out.options.priors.b_alpha,0)
+    if isinf(out.options.priors.a_alpha) && isequal(out.options.priors.b_alpha,0)
         efficiency.alpha = NaN;
         DKL.alpha = NaN;
     else
