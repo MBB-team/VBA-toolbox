@@ -36,20 +36,25 @@ Constraints and comments for applying the existing VBA's k-ToM models are as fol
 - states indexing has to be set according to a standard. In the demo, this is done using the function `defIndlev.m`.
 - some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
 
-Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. The indexing is a bit tricky here, essentially because it depends upon k (`f_kToM.m` is recursive). Note that `prepare_kToM.m` stores the state sindexing in the structure `options.inG.indlev`. In brief:
+Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. Note that `prepare_kToM.m` stores the states' indexing in the structure `options.inG.indlev`. It's a bit tricky because both the types and the number of states depend upon $$k$$ (`f_kToM.m` is recursive). Nevertheless, the hidden states of a k-ToM agent can be simply eyeballed using the function `unwrapKTOM.m`, which uses the states indexing stored in [VBA's optional input structure]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/) `options.inG`. The graphical output of `unwrapKTOM.m` is exemplified below:
+
+![]({{ site.baseurl }}/images/wiki/tabs/unwrapkToM.jpg)
+
+> Example of evolving belief of a 2-ToM learner (unknowingly playing against random noise). **Top**: 2-ToM's belief about her opponent's sophistication (here, either 0-ToM or 1-ToM). **Middle**: 2-ToM's trial-by-trial prediction about her opponent's next move, for each possible opponent's sophistication. NB: 2-ToM's overall prediction is a weighted average of these two conditional predictions, where the weights are 2-ToM's belief her opponent's sophistication. **Bottom**: 2-ToM's trial-by-trial estimate of her opponent's unknown parameters (learning rate, behavioural temperature and bias), for each possible opponent's sophistication (`unwrapKTOM.m` proposes to toggle between each possible opponent type).
+
+Editing `unwrapKTOM.m` enables users to extract any internal state (or a transformation thereof) of k-ToM learners. Nevertheless, for the sake of transparency, we provide below a summary of k-ToM's states' indexing:
 
 - k-1 first hidden states : sufficient statistics (truncated log-odds) of the agent's posterior belief about her opponent's sophistication level. More precisely, passing these states through `sigm.m` yields the posterior probability that the opponent's sophistication is k'=0,1,...,k-2 (by construction, the probability for k'=k-1 is `1-sum(sigm(posterior.muX(1:k-2)))`).
 - the next hidden states are the represented hidden states of the agent's vitual opponents, for all admissible sophistication level. The corresponding indices are stored in the structure `options.inG.indlevel`. For example, `options.inG.indlev(2).X` contains the indices of the represented hidden states of a virtual 2-ToM opponent (only posible if the agent is himself at least 3-ToM). Note that the number of these indices is increasing with the sophistication level (because of the recursive nature of k-ToM beliefs).
 -	then `f` (where `sigm(f)` is the probability that the agent's virtual opponent will pick the first option) and its partial derivatives w.r.t. learning parameters (typically volatility and behavioural temperature). Note: we keep track of the latter only to limit the computational burden of k-ToM learning. The corresponding indices are stored in `options.inG.indlev(2).f` and `options.inG.indlev(2).df` (for a 2-ToM virtual opponent).
 - Finally, the [sufficient statistics](https://en.wikipedia.org/wiki/Sufficient_statistic) of the agent's posterior belief about his virtual opponents' learning parameters (mean and variance for each learning parameter: [M1,V1,M2,V2,...]). The corresponding indices are stored in `options.inG.indlev(2).Par` (for a 2-ToM virtual opponent).
 
-> The hidden states of a k-ToM agent can be eyeballed using the function `unwrapKTOM.m`, which uses the states indexing stored in [VBA's optional input structure]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/) `options.inG`. The latter can be set automatically using the function `prepare_kToM.m`.
 
 Many optional features of k-ToM learners can be changed to adapt the model to one's specific experiment. Some of these features are in fact inputs to the function `prepare_kToM.m`:
 
 - the recursion depth $$k$$ of k-ToM learners
 - the game's payoff table $$U(a,b)$$
-- the possibility to include belef dilution effects (e.g. forgetting effects)
+- the possibility to include "belief dilution" effects (e.g. forgetting effects)
 
 Other features have to be reset by modifying the function `prepare_kToM.m`, or directly the appropriate optional inputs stored in `options.inF` and `options.inG`. For example, one can reset the field `options.inF.dummyPar`, which is a 3x1 binary vector that specifies which hidden parameter(s) of her opponent k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to `[1;0;0]`, which means that only k-ToM's opponent's volatility is assumed to change across trials. The impact of setting any of these entries to 1 is that the induced learning rule includes some form of "forgetting effect" which results from the dilution of belief precision from one trial to the next.
 
