@@ -38,7 +38,7 @@ Constraints and comments for applying the existing VBA's k-ToM models are as fol
 
 Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. Note that `prepare_kToM.m` stores the states' indexing in the structure `options.inG.indlev`. It's a bit tricky because both the types and the number of states depend upon $$k$$ (`f_kToM.m` is recursive). Nevertheless, the hidden states of a k-ToM agent can be simply eyeballed using the function `unwrapKTOM.m`, whose  graphical output is exemplified below:
 
-![]({{ site.baseurl }}/images/wiki/unwrapkToM.bmp)
+![]({{ site.baseurl }}/images/wiki/unwrapkTom.bmp)
 
 > Example of evolving belief of a 2-ToM learner (unknowingly playing against random noise). **Top**: 2-ToM's belief about her opponent's sophistication (here, either 0-ToM or 1-ToM). **Middle**: 2-ToM's trial-by-trial prediction about her opponent's next move, for each possible opponent's sophistication. NB: 2-ToM's overall prediction is a weighted average of these two conditional predictions, where the weights are 2-ToM's belief her opponent's sophistication. **Bottom**: 2-ToM's trial-by-trial estimate of her opponent's unknown parameters (learning rate, behavioural temperature and bias), for each possible opponent's sophistication (`unwrapKTOM.m` proposes to toggle between each possible opponent type).
 
