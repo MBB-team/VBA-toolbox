@@ -64,7 +64,7 @@ title: "home"
 
 ### Miscellaneous models
 
-- [Statistical models (GLM, RFT, classification)](statistical-models)
+- [Statistical models (GLM, RFT, classification, mediation)](statistical-models)
 - [Attractors and oscillators](Dynamical-models)
 
 
