@@ -36,7 +36,7 @@ Constraints and comments for applying the existing VBA's k-ToM models are as fol
 - states indexing has to be set according to a standard. In the demo, this is done using the function `defIndlev.m`.
 - some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
 
-Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. Note that `prepare_kToM.m` stores the states' indexing in the structure `options.inG.indlev`. It's a bit tricky because both the types and the number of states depend upon $$k$$ (`f_kToM.m` is recursive). Nevertheless, the hidden states of a k-ToM agent can be simply eyeballed using the function `unwrapKTOM.m`, which uses the states indexing stored in [VBA's optional input structure]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/) `options.inG`. The graphical output of `unwrapKTOM.m` is exemplified below:
+Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. Note that `prepare_kToM.m` stores the states' indexing in the structure `options.inG.indlev`. It's a bit tricky because both the types and the number of states depend upon $$k$$ (`f_kToM.m` is recursive). Nevertheless, the hidden states of a k-ToM agent can be simply eyeballed using the function `unwrapKTOM.m`, whose  graphical output is exemplified below:
 
 ![]({{ site.baseurl }}/images/wiki/unwrapkToM.bmp)
 
