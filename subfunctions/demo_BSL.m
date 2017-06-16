@@ -16,7 +16,7 @@ dim.n_phi = 2;
 
 %% simulate sequence of BSL choices
 x0 = 1*ones(dim.n,1); % log-odds of P(o=1)
-theta = [-32]; % BSL's prior volatility
+theta = [-4]; % BSL's prior volatility
 phi = [2;0]; % (log-) inverse-temperature, bias
 N = 150; % number of trials
 p = 0.75;
@@ -63,5 +63,7 @@ f_fname = @f_BSL;
 g_fname = @g_BSL;
 [posterior,out] = VBA_NLStateSpaceModel(a,u,f_fname,g_fname,dim,options);
 
+%% Display results
+displayResults(posterior,out,a,x,x0,theta,phi,[],[])
 hf = unwrapKBSL(posterior.muX,posterior.muPhi,u,options.inG);
 
