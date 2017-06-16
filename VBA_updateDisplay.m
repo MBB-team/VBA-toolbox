@@ -4,18 +4,17 @@ function VBA_updateDisplay(posterior,suffStat,options,y,it,flag)
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
 
-if options.extended
+if ~options.DisplayWin
+    return
+end
+
+if numel(options.sources)>1 || options.sources(1).type==2
     VBA_updateDisplay_extended(posterior,suffStat,options,y,it,flag);
     %fprintf('Display extended\n');
     return
 end
 
-F = real(suffStat.F);
-
-if ~options.DisplayWin
-    return
-end
-
+F = real(suffStat.F); % should not be required (cf. exit sanity check in VBA_NLStateSpaceModel.m)!
 display = options.display;
 
 % check whether 'pause' button is toggled on

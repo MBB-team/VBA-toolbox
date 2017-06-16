@@ -16,6 +16,7 @@ function [posterior,out] = VBA_hyperparameters(y,u,f_fname,g_fname,dim,options)
 %   parameters for precision hyperparameters, namely:
 %       .posterior.a_phi, priors.b_phi: for observation parameters
 %       .posterior.a_theta, priors.b_theta: for evolution parameters
+%       .posterior.a_x0, priors.b_x0: for initial conditions
 
 
 posterior = [];
@@ -95,7 +96,7 @@ if dim.n >0
     options.priors.SigmaX0 = Evx0*Qx0;
 end
 
-% perform vanilla VBA inversion
+% perform first vanilla VBA inversion
 VBA_disp(' ',options)
 VBA_disp(['VBA with hyperparameters adjustment: initialization (using prior hyperparameters)'],options)
 options.figName = 'VBA with hyperparameters adjustment: initialization';
@@ -173,16 +174,28 @@ while ~stop
          posterior.a_phi = options.priors.a_phi + 0.5*nphi;
          Edphi = out.suffStat.dphi'*iQphi*out.suffStat.dphi + trace(iQphi*posterior.SigmaPhi);
          posterior.b_phi = options.priors.b_phi + 0.5*Edphi;
+         if isfield(out.suffStat,'ODE_posterior')
+             out.suffStat.ODE_posterior.a_phi = posterior.a_phi;
+             out.suffStat.ODE_posterior.b_phi = posterior.b_phi;
+         end
     end
     if ntheta >0
          posterior.a_theta = options.priors.a_theta + 0.5*ntheta;
          Edtheta = out.suffStat.dtheta'*iQtheta*out.suffStat.dtheta + trace(iQtheta*posterior.SigmaTheta);
          posterior.b_theta = options.priors.b_theta + 0.5*Edtheta;
+         if isfield(out.suffStat,'ODE_posterior')
+             out.suffStat.ODE_posterior.a_theta = posterior.a_theta;
+             out.suffStat.ODE_posterior.b_theta = posterior.b_theta;
+         end
     end
     if nx0 >0
          posterior.a_x0 = options.priors.a_x0 + 0.5*nx0;
          Edx0 = out.suffStat.dx0'*iQx0*out.suffStat.dx0 + trace(iQx0*posterior.SigmaX0);
          posterior.b_x0 = options.priors.b_x0 + 0.5*Edx0;
+         if isfield(out.suffStat,'ODE_posterior')
+             out.suffStat.ODE_posterior.a_x0 = posterior.a_x0;
+             out.suffStat.ODE_posterior.b_x0 = posterior.b_x0;
+         end
     end
     
     % correct Free Energy
@@ -294,8 +307,7 @@ end
 
 % subfunctions
 function dF = deltaF(a,a0,b,b0,n)
-% corrects VBA Free Energy for uncertainty in prior precision
-% hyperparameters
+% corrects Free Energy for uncertainty in prior precision hyperparameters
 m1 = a/b;
 v1 = m1/b;
 m2 = a0/b0;

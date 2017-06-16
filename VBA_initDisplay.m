@@ -20,7 +20,7 @@ catch
     priors = 0;
 end
 
-if options.extended
+if numel(options.sources)>1 || options.sources(1).type==2
     [options] = VBA_initDisplay_extended(options,priors);
     return
 end

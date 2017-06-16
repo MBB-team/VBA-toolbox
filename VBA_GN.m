@@ -32,7 +32,7 @@ function [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,flag)
 
 switch flag
     case 'X'
-        if options.extended
+        if numel(options.sources)>1 || options.sources(1).type==2
             error('*** Stochastic multichannel VB is not yet supported !');
         end
         indIn = options.params2update.x;
@@ -56,7 +56,7 @@ switch flag
         if options.UNL % to be rationalized...
             fname = @VBA_Iphi_UNL;
         else
-            if options.extended
+            if  numel(options.sources)>1 || options.sources(1).type==2
                 fname = @VBA_Iphi_extended;
             else
                 if options.nmog > 1

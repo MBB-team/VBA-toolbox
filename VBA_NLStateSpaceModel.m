@@ -193,7 +193,7 @@ end
 
 if exist('in','var')
     
-    try  % Skip initialization
+    try  % Skip initialization [see, e.g., VBA_hyperparameters.m]
         
         dim = in.out.dim;
         posterior = in.posterior;

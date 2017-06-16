@@ -93,9 +93,9 @@ options = check_struct(options, ...
                          'out' , 1:dim.p  )         ...
 ) ;
                          
-options = check_struct(options, ...
-    'extended'  , numel(options.sources)>1 || options.sources(1).type==2 ... % multisource
-) ;
+% options = check_struct(options, ...
+%     'extended'  , numel(options.sources)>1 || options.sources(1).type==2 ... % multisource
+% ) ;
 
 options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
 options.kernelSize  = min([dim.n_t,options.kernelSize]);
@@ -135,7 +135,7 @@ assert(isequal(size(priors.SigmaTheta),dim.n_theta*[1,1]),'*** Dimension of opti
 % if options.binomial
 %     priors = rmfield(priors,{'a_sigma','b_sigma'});
 % end
-if isempty(options.params2update.x0)
+if dim.n>0 && isempty(options.params2update.x0)
     options.updateX0 = 0;
 end
 
@@ -152,7 +152,7 @@ if ~isfield(options,'figName')
     end
 end
 
-% ensure excluded data consistency
+% ensure excluded data consistency (gaussian sources)
 gsi = find([options.sources.type]==0);
 for i=1:numel(gsi)
     for t=1:dim.n_t
@@ -298,8 +298,6 @@ if dim.n > 0
         options.lagOp.E = [eye(n*(lag-1)),zeros(n*(lag-1),n)];
         options.lagOp.Eu = [zeros(n*(lag-1),n),eye(n*(lag-1))];
         options.lagOp.M = [eye(n),zeros(n,n*(lag-1))];
-        % check compatibility with multi-source mode
-        assert(~options.extended,'*** Stochastic inversion is not available for multi-source inversion!');
     end
 end
 

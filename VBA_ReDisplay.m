@@ -467,7 +467,7 @@ if ~isempty(diagnostics.MT_x)
     axis(display.ha(2),'tight')
 end
 
-if ud.out.options.extended
+if numel(out.options.sources)>1
     vis = 'on';
 else
     vis = 'off';
