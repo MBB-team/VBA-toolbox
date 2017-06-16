@@ -18,4 +18,8 @@ More generally, BSL tracks $$2^K$$ probabilities. In this scheme, the only evolu
 
 Note: unsampled sequences will eventually be "forgotten", since the prediction step in the Laplace-Kalman update will dilute any previously sampled evidence.
 
-The script `demo_BSL.m` can be used to simulate and invert k-BSL algorithms. Note that, in addition evolution (`f_BSL.m`) and observation (`g_BSL.m`) functions, VBA provides a simple tool for displaying BSL's evolving belief about transition probabilities (`unwrapKBSL.m`).
+The script `demo_BSL.m` can be used to simulate and invert k-BSL algorithms. Note that, in addition evolution (`f_BSL.m`) and observation (`g_BSL.m`) functions, VBA provides a simple tool for displaying BSL's evolving belief about transition probabilities (`unwrapKBSL.m`). This is exemplified below:
+
+![]({{ site.baseurl }}/images/wiki/unwrapBSL.bmp)
+
+> Example of evolving belief of a 1-BSL learner (unknowingly tracking random noise). **Top**: 1-BSL's trial-by-trial bet about the upcoming outcome. **Bottom**: 1-BSL's trial-by-trial estimate of the outcome's transition probabilities $$P\left(u_t=1\mid u_{t-1}\right)$$ (given each possible previous outcome).
