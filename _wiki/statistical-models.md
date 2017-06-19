@@ -49,6 +49,10 @@ VBA includes a simple version of RFT, which obtains when applied to 1D signals (
 - **`RFT_main.m`**: this is a generic call to 1D-RFT, which can be tailored to any user-specific application. It deals with different sorts of random fields, namely: Gaussian, Student's t or Fisher's F. It provides corrected p-values for set-, cluster- and peak- level inferences, and yields an output structure `out` that contains the complete list of corrected and uncorrected p-values (at each level of inference) for an exhaustive results report. NB: as for neuroimaging, cluster-level inference requires the specification of a "cluster-inducing" threshold (default corresponds to p=0.01 uncorrected). 
 - **`RFT_GLM_contrast.m`**: this applies RFT to GLM-based contrast inference. As `GLM_contrast.m`, this function requires the specification of a design matrix (which is applied to a dimension orthogonal to samples of the random field, e.g., trials), a contrast vector/matrix and the type of summary statistics (i.e. "t" or "F") that ensues. We will describe an example application below.
 
+
+> There are two assumptions underlying RFT. The first is that the error fields are a reasonable lattice approximation to an underlying random field with a multivariate Gaussian distribution. The second is that these fields are continuous, with a twice-differentiable autocorrelation function. In practice, one simply has to ensure that the data are smooth at the chosen sampling resolution. This is why it may be preferable to convolve the data with a smoothing kernel prior to performing RFT analysis. Note that this operates a trade-off between the effective resolution and the power of the inference...
+
+
 Let us assume that our experiment consists in a 2x2 factorial design, with 8 trials per design cell (32 trials in total). On each trial, we measure some peri-stimulus response, e.g., a skin conductance response, which has 1000 time samples. We want to infer on when, in peri-stimulus time, there is a significant interaction of our two experimental factors. Thus, the GLM is applied across trials, at each time sample of the skin conductance response. First, the corresponding design matrix `X` and contrast `c` would look something like this:
 
 ```matlab
@@ -56,7 +60,7 @@ X = kron(eye(4),ones(8,1));
 c = [1;-1;1;-1];
 ```
 
-For the sake of demonstrating 1D-RFT, let us simulate data under the null (we smooth the noise to take adavntage of RFT's power):
+For the sake of demonstrating 1D-RFT, let us simulate data under the null (note that we smooth the noise to guaranty RFT's  assumptions):
 
 ```matlab
 L = 1e3; % size of the 1D field
