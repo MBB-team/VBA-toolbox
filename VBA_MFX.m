@@ -15,8 +15,9 @@ function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options
 %   here, the priors on observation and evolution parameters (as well as
 %   initial conditions) are useless, since they are replaced by empirical
 %   Bayes priors. Priors on precision hyperparameters however, are not
-%   treated as random effects drawn from a parent population distribution,
-%   whose moment are inferred during MFX analysis.
+%   treated as random effects drawn from a parent population distribution.
+%   In turn, MFX analysis does not update their moments using group-level
+%   information...
 %   - priors_group: structure containing the prior sufficient statistics on
 %   the moments of the parent population distributions (for observation and
 %   evolution parameters, as well as for initial conditions, if
@@ -45,6 +46,9 @@ function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options
 %       model.
 %       .it: the final number of VB iterations
 %       .date: date vector for track keeping
+%       .initVBA: a structure containing the VBA outputs of the
+%       within-subject model inversions, without MFX-type priors
+%       (initialization).
 
 
 ns = length(y); % # subjects
@@ -65,71 +69,27 @@ o_group.options = opt;
 % priors_group structure. This means Gaussian(0,1) priors for the
 % population mean of observation/evolution parameters and initial
 % conditions, and Gamma(1,1) for the corresponding population precisions.
+try,priors_group;catch,priors_group=[];end
 if dim.n_phi > 0
-    try
-        priors_group.muPhi;
-    catch
-        priors_group.muPhi = zeros(dim.n_phi,1);
-    end
-    try
-        priors_group.SigmaPhi;
-    catch
-        priors_group.SigmaPhi = eye(dim.n_phi);
-    end
-    try
-        priors_group.a_vPhi;
-    catch
-        priors_group.a_vPhi = ones(dim.n_phi,1);
-    end
-    try
-        priors_group.b_vPhi;
-    catch
-        priors_group.b_vPhi = ones(dim.n_phi,1);
-    end
+        'muPhi'      , zeros(dim.n_phi,1) , ... % prior mean on population average
+        'SigmaPhi'   , eye(dim.n_phi)     , ... % prior variance on population average
+        'a_vPhi'     , ones(dim.n_phi,1)  , ... % prior shape param on population variance
+        'b_vPhi'     , ones(dim.n_phi,1)    ... % prior rate param on population variance
+    ) ;
 end
 if dim.n_theta > 0
-    try
-        priors_group.muTheta;
-    catch
-        priors_group.muTheta = zeros(dim.n_theta,1);
-    end
-    try
-        priors_group.SigmaTheta;
-    catch
-        priors_group.SigmaTheta = eye(dim.n_theta);
-    end
-    try
-        priors_group.a_vTheta;
-    catch
-        priors_group.a_vTheta = ones(dim.n_theta,1);
-    end
-    try
-        priors_group.b_vTheta;
-    catch
-        priors_group.b_vTheta = ones(dim.n_theta,1);
-    end
+        'muTheta'      , zeros(dim.n_theta,1) , ...
+        'SigmaTheta'   , eye(dim.n_theta)     , ...
+        'a_vTheta'     , ones(dim.n_theta,1)  , ...
+        'b_vTheta'     , ones(dim.n_theta,1)    ...
+    ) ;
 end
 if dim.n >0
-    try
-        priors_group.muX0;
-    catch
-        priors_group.muX0 = zeros(dim.n,1);
-    end
-    try
-        priors_group.SigmaX0;
-    catch
-        priors_group.SigmaX0 = eye(dim.n);
-    end
-    try
-        priors_group.a_vX0;
-    catch
-        priors_group.a_vX0 = ones(dim.n,1);
-    end
-    try
-        priors_group.b_vX0;
-    catch
-        priors_group.b_vX0 = ones(dim.n,1);
-    end
+        'muX0'      , zeros(dim.n,1) , ...
+        'SigmaX0'   , eye(dim.n)     , ...
+        'a_vX0'     , ones(dim.n,1)  , ...
+        'b_vX0'     , ones(dim.n,1)    ...
+    ) ;
 end
 
 if isempty(u)
@@ -275,16 +235,17 @@ while ~stop
             end
         end
         
-%         % bypass VBA initialization (to be fixed!)
-%         in.posterior = p_sub{i};
-%         in.out.options = options{i};
-%         in.out.dim = o_sub{i}.dim;
-%         in.out.suffStat = o_sub{i}.suffStat;
-%         in.out.u = o_sub{i}.u;
+        % bypass VBA initialization
+        in.posterior = p_sub{i};
+        in.out.options = options{i};
+        in.out.dim = o_sub{i}.dim;
+        in.out.suffStat = o_sub{i}.suffStat;
+        in.out.u = o_sub{i}.u;
+        in.out.it = o_sub{i}.it;
         
         
         % VBA model inversion
-        [p_sub{i},o_sub{i}] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options{i});%,in);
+        [p_sub{i},o_sub{i}] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options{i},in);
         
         % store sufficient statistics
         if dim.n_phi > 0
@@ -480,7 +441,6 @@ b = b(indrfx);
 a0 = a0(indrfx);
 b0 = b0(indrfx);
 iv0 = VBA_inv(V0);
-
 F = -0.5*ns*sum(log(a./b)) ...
     + sum((a0+0.5*ns-1).*(psi(a)-log(b))) ...
     - sum((0.5*ns*diag(V)+b0).*a./b) ...
