@@ -12,11 +12,11 @@ $$y= g(\vartheta)+\epsilon$$
 
 where $$\epsilon$$ are [model residuals](https://en.wikipedia.org/wiki/Errors_and_residuals) or measurement noise. If the (physical) processes underlying $$\epsilon$$ were known, they would be included in the deterministic part of the model. Typically, we thus have to place statistical priors on $$\epsilon$$, which eventually convey our lack of knowledge, as in “the noise is small”. This can be formalized as a probabilistic statement, such as: “the probability of observing big noise is small” (and, reciprocally: "the probability of observing small noise is big"). It follows that the probability density function of such "small" noise should be bell-shaped (with most of its mass on small values of $$\epsilon$$, and decaying quickly for large values of $$\epsilon$$). At this point, one could assume that the noise follows a [normal distribution](https://en.wikipedia.org/wiki/Normal_distribution), simply because it provides a parametric form for bell-shaped probability densities:
 
-$$p(\epsilon\mid m)\propto exp\left(-\frac{1}{2\sigma^2}\varepsilon^2\right) \implies P(\lvert\epsilon\rvert>1.96\sigma\mid m) \approx 0.05$$
+$$p(\epsilon\mid \sigma,m)\propto exp\left(-\frac{1}{2\sigma^2}\varepsilon^2\right) \implies P(\lvert\epsilon\rvert>2\sigma\mid \sigma,m) < 0.05$$
 
-where $$\sigma$$ is the noise’ [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation) (it determines how big is “big”) and $$m$$ is the so-called generative model. Combining the two equations above yields the [likelihood function](https://en.wikipedia.org/wiki/Likelihood_function) $$p(y\mid\vartheta,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
+where $$\sigma$$ is the noise’ [standard deviation](https://en.wikipedia.org/wiki/Standard_deviation) (it determines how big is “big”) and $$m$$ is the so-called generative model. Note that $$\sigma$$ is often called a [hyperparameter](https://en.wikipedia.org/wiki/Hyperparameter), because it eventually specifies the relative weight of the likelihood when estimating "proper parameters" $$\vartheta$$ (see below). Combining the two equations above yields the [likelihood function](https://en.wikipedia.org/wiki/Likelihood_function) $$p(y\mid\vartheta,\sigma,m)$$, which specifies how likely it is to observe any particular set of observations $$y$$, given the unknown parameters $$\vartheta$$ of the model $$m$$ :
 
-$$p(y\mid\vartheta,m) \propto exp\left(-\frac{1}{2\sigma^2}(y-g(\vartheta))^2\right)$$
+$$p(y\mid\vartheta,\sigma,m) \propto exp\left(-\frac{1}{2\sigma^2}(y-g(\vartheta))^2\right)$$
 
 This derivation of the likelihood function can be generalized to any [generative model](https://en.wikipedia.org/wiki/Generative_model) $$m$$, whose parameters $$\vartheta$$ simply control the statistical moments of the likelihood $$p(y\mid\vartheta,m)$$. The key point here is that the likelihood function always derives from prior assumptions about observation mappings $$g(\vartheta)$$ and measurement noise $$\epsilon$$.
 
@@ -25,16 +25,32 @@ This derivation of the likelihood function can be generalized to any [generative
 
 # Bayes' rule
 
-The likelihood function is the statistical construct that is common to both frequentist (classical) and bayesian inference approaches. However, bayesian approaches also require the definition of a [prior distribution](https://en.wikipedia.org/wiki/Prior_probability) $$p(\vartheta\mid m)$$ on model parameters $$\vartheta$$, which reflects knowledge about their likely range of values, before having observed the data $$y$$. As for priors about measurement noise, such priors can be (i) principled (e.g. certain parameters cannot have negative values), (ii) conservative (e.g. “shrinkage” priors that express the assumption that coupling parameters are small), or (iii) empirical (based on previous, independent measurements).
-Combining the priors and the likelihood function allows one, via [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes'_theorem), to derive both the marginal likelihood of the model (the so-called [model evidence](https://en.wikipedia.org/wiki/Marginal_likelihood)):
+The likelihood function is the statistical construct that is common to both frequentist (classical) and bayesian inference approaches. However, bayesian approaches also require the definition of a [prior distribution](https://en.wikipedia.org/wiki/Prior_probability) $$p(\vartheta\mid m)$$ on model parameters $$\vartheta$$, which reflects knowledge about their likely range of values, before having observed the data $$y$$. Such priors can be (i) principled (e.g. certain parameters cannot have negative values), (ii) conservative (e.g. “shrinkage” priors that express the assumption that parameters are small), or (iii) empirical (based on previous, independent measurements). Of course, this also holds for priors about measurement noise $$p(\sigma\mid m)$$.
 
-$$p(y\mid m)=\int p(y\mid \vartheta,m)p(\vartheta\mid m)d\vartheta$$
+Combining the priors and the likelihood function allows one, via [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes'_theorem), to derive the [posterior probability density function](https://en.wikipedia.org/wiki/Posterior_probability) $$p(\vartheta\mid y,\sigma,m)$$ over model parameters $$\vartheta$$:
 
-and the [posterior probability density function](https://en.wikipedia.org/wiki/Posterior_probability) $$p(\vartheta\mid,m)$$ over model parameters $$\vartheta$$:
+$$p(\vartheta\mid y,\sigma,m)=\frac{p(y\mid\vartheta,\sigma,m)p(\vartheta\mid m)}{p(y\mid \sigma,m)}$$
 
-$$p(\vartheta\mid y,m)=\frac{p(y\mid\vartheta,m)p(\vartheta\mid m)}{p(y\mid m)}$$
+where the denominator does not depend upon $$\vartheta$$. Note that here, the posterior belief is conditional upon measurement noise $$\sigma$$, which determines the expected reliability of the data. In turn, when $$\sigma$$ decreases, 
 
-This is called “model inversion” or “solving the [inverse problem](https://en.wikipedia.org/wiki/Inverse_problem)”. The posterior density $$p(\vartheta\mid y, m)$$  quantifies how likely is any value of $$\vartheta$$, given the observed data $$y$$ and the generative model $$m$$. It is used for inferring on “interesting” model parameters, by marginalizing over [“nuisance” parameters](https://en.wikipedia.org/wiki/Nuisance_parameter). The model evidence $$p(y\mid m)$$  quantifies how likely is the observed data $$y$$ under the generative model $$m$$. Another perspective on this is that $$-\log p(y\mid m)$$ measures statistical surprise, i.e. how unpredictable was the observed data $$y$$ under the model $$m$$. The model evidence accounts for model complexity, and thus penalizes models, whose predictions do not generalize easily (this is referred to as “[Occam’s razor](https://en.wikipedia.org/wiki/Occam's_razor)”). Under flat priors over models, it is used for model selection (by comparison with other models that differ in terms of either their likelihood or their prior density).
+
+
+both the marginal likelihood of the model (the so-called [model evidence](https://en.wikipedia.org/wiki/Marginal_likelihood)):
+
+$$p(y\mid m)=\int\int p(y\mid \vartheta,\sigma,m)p(\vartheta\mid m)p(\sigma\mid m)d\vartheta d\sigma$$
+
+and the [posterior probability density function](https://en.wikipedia.org/wiki/Posterior_probability) $$p(\vartheta,\sigma\mid y,m)$$ over model parameters $$\vartheta$$ and $$\sigma$$:
+
+$$p(\vartheta,\sigma\mid y,m)=\frac{p(y\mid\vartheta,m)p(\vartheta\mid m)p(\sigma\mid m)}{p(y\mid m)}$$
+
+This is called “model inversion” or “solving the [inverse problem](https://en.wikipedia.org/wiki/Inverse_problem)”. The posterior density $$p(\vartheta\sigma\mid y, m)$$  quantifies how likely is any value of $$\left(\vartheta,\sigma\right)$$, given the observed data $$y$$ and the generative model $$m$$. It is used for inferring on “interesting” model parameters (say $$\vartheta_1$$), by marginalizing over [“nuisance” parameters](https://en.wikipedia.org/wiki/Nuisance_parameter) (say $$\sigma$$)), as follows:
+
+$$p(\vartheta\mid y,m)=\int p(\vartheta,\sigma\mid y,m)d\sigma$$
+
+
+In particular, typical Bayesian parameter estimates 
+
+The model evidence $$p(y\mid m)$$  quantifies how likely is the observed data $$y$$ under the generative model $$m$$. Another perspective on this is that $$-\log p(y\mid m)$$ measures statistical surprise, i.e. how unpredictable was the observed data $$y$$ under the model $$m$$. The model evidence accounts for model complexity, and thus penalizes models, whose predictions do not generalize easily (this is referred to as “[Occam’s razor](https://en.wikipedia.org/wiki/Occam's_razor)”). Under flat priors over models, it is used for model selection (by comparison with other models that differ in terms of either their likelihood or their prior density).
 
 
 # Statistical tests and Bayesian model comparison
