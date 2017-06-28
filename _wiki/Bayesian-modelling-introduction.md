@@ -4,6 +4,9 @@ title: "Bayesian inference: introduction"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
+The objective of any data analysis is to discover useful information that can support downstream conlusions and/or decisions. This is trivially true for statistical data analysis, which is typically used to summarize data (cf., e.g., descriptive statistics), or to perform inference (cf., e.g., hypothesis tests). Bayesian data analysis is a specific form of statistical data analysis that relies on so-called [generative models](https://en.wikipedia.org/wiki/Generative_model), i.e. quantitative scenarios that describe how data were generated. These are used to interpret the observed data, effectively operating "model-based" data analysis. What follows is essentially a crash course on Bayesian inference. We sacrifice a little mathematical rigour for simplicity, in the hope of providing a didactic overview. We hope it helps!
+
+
 # Deriving the likelihood function
 
 One usually starts with a quantitative assumption or model of how observations $$y$$ are generated. Without loss of generality, this model possesses unknown parameters $$\vartheta$$, which are mapped through an observation function $$g$$:
