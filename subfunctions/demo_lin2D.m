@@ -37,3 +37,5 @@ displaySimulations(y,x,eta,e)
 options.priors.a_alpha = 1;
 options.priors.b_alpha = 1;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
