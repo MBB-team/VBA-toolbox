@@ -1,5 +1,18 @@
 function [options] = VBA_initDisplay_extended(options,priors)
-% initialize the graphical output
+% initialize VBA graphical output display
+% function [options] = VBA_initDisplay(options,priors)
+% This function is typically called when initializing VBA's graphical
+% output display (e.g., at the begining of VBA inversion if
+% options.DisplayWin=1). In this case, a subset of VBA posterior summary
+% statistics are displayed. But it can also be called when VBA inversion is
+% complete, for both posterior and prior summary statisitcs.
+% IN:
+%   - options: VBA's options structure [see VBA_NLStateSpaceModel.m]
+%   - priors: flag for displaying prior summary statistics
+% OUT:
+%   - options: VBA_initDisplay inserts a 'display' field in VBA's options
+%   structure. This field contains the handles of the relevant graphical
+%   objects.
 
 try
     priors;
