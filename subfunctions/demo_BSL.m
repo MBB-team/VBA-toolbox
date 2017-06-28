@@ -16,8 +16,8 @@ dim.n_phi = 2;
 
 %% simulate sequence of BSL choices
 x0 = 1*ones(dim.n,1); % log-odds of P(o=1)
-theta = [-4]; % BSL's prior volatility
-phi = [2;0]; % (log-) inverse-temperature, bias
+theta = [-2]; % BSL's prior volatility
+phi = [-1;0]; % (log-) inverse-temperature, bias
 N = 150; % number of trials
 p = 0.75;
 P = repmat([p,1-p,p,1-p],1,N); % probabilistic repetition of [1 0 0 1]
@@ -38,8 +38,9 @@ for i=K+2:N
     else
         x(:,i) = f_BSL(x(:,i-1),theta,u(:,i),options.inF);
     end
-    gx(i) = g_BSL(x(:,i),phi,u(:,i),options.inG); 
-    a(i) = gx(i)>.5;
+    gx(i) = g_BSL(x(:,i),phi,u(:,i),options.inG);
+    tmp = VBA_sample('multinomial',struct('p',[gx(i);1-gx(i)],'n',1),1,0);
+    a(i) = tmp(1);%gx(i)>.5;
 end
 hf = figure('color',[1 1 1]);
 ha = subplot(2,1,1,'parent',hf);
