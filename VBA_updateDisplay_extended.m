@@ -4,18 +4,17 @@ function VBA_updateDisplay_extended(posterior,suffStat,options,y,it,flag)
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
 
-F = real(suffStat.F);
-
 if ~options.DisplayWin
     return
 end
-
 display = options.display;
+
+F = real(suffStat.F);
 
 % check whether 'pause' button is toggled on
 VBA_pause(options)
 
-% First check whether this is standard DCM or ODE limit
+% 0- Check whether this is a deterministic dynamical system inversion
 if isequal(options.g_fname,@VBA_odeLim)
     
     % Rebuild posterior from dummy 'ODE' posterior
@@ -44,8 +43,13 @@ end
 
 % Get sufficient statistics to be displayed
 dTime = [1:size(y,2)];
-gx = suffStat.gx(:,dTime);
-vy = suffStat.vy(:,dTime);
+try
+    gx = suffStat.gx(:,dTime);
+    vy = suffStat.vy(:,dTime);
+catch
+    gx = nan(options.dim.p,numel(dTime));
+    vy = nan(options.dim.p,numel(dTime));
+end
 indEnd = length(dTime);
 if   sum([options.sources(:).type]==0) > 0
     if options.OnLine
@@ -118,13 +122,13 @@ end
 Ns= numel(options.sources);
 
 for s_i=1:Ns
-if  options.sources(s_i).type>0
+    if  options.sources(s_i).type>0
         s_out = options.sources(s_i).out ;
         gx_out = gx(s_out,:);
-        y_out = y(s_out,:);
+        y_out = y(s_out,:); 
         [stackyin{s_i},stdyin{s_i},gridgin{s_i}] = VBA_Bin2Cont(gx_out(~options.isYout(s_out,:)),y_out(~options.isYout(s_out,:)));
         [stackyout{s_i},stdyout{s_i},gridgout{s_i}] = VBA_Bin2Cont(gx_out(~~options.isYout(s_out,:)),y_out(~~options.isYout(s_out,:)));
-end  
+    end  
 end
 
 
