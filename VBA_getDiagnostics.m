@@ -143,8 +143,8 @@ for iS = 1:numel(out.options.sources)
     res(out.options.isYout(ySource,:)==1) = NaN ;    
     dy(iS).dy = res(:);
     dy(iS).R = spm_autocorr(res);
-    dy(iS).m = nanmean(dy(iS).dy);
-    dy(iS).v = nanvar(dy(iS).dy);
+    dy(iS).m = VBA_nanmean(dy(iS).dy);
+    dy(iS).v = VBA_nanvar(dy(iS).dy);
     [dy(iS).ny,dy(iS).nx] = hist(dy(iS).dy,10);
     dy(iS).ny = dy(iS).ny./sum(dy(iS).ny);
     d = diff(dy(iS).nx);

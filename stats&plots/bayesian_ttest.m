@@ -54,8 +54,8 @@ elseif numel(x2)==1
 else
     testType  = '2sample';
     x = [x1;x2]';
-    muH0 = nanmean(x);
-    muH1 = [nanmean(x1),nanmean(x2)];
+    muH0 = VBA_nanmean(x);
+    muH1 = [VBA_nanmean(x1),VBA_nanmean(x2)];
     sigmaH0 = sem(x);
     sigmaH1 = [sem(x1),sem(x2)];
 
