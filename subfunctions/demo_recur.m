@@ -4,7 +4,7 @@ clear all
 close all
 clc
 
-K = 2; % depth of k-ToM's recursive beliefs
+K = 1; % depth of k-ToM's recursive beliefs
 PERS = 0; % flag for additional perseveration component
 payoffTable = cat(3,[1,0;0,1],[0,1;1,0]); % game payoff matrix (here: hide-and-seek)
 role = 1;  % player's role (here: 1=seeker, 2=hider)
@@ -31,7 +31,7 @@ if diluteP==1
     theta = [theta;-2];
 end
 N = 50; % number of trials
-o = bernoulli(.5,N)'; % opponent's choices (here dummy binomial sampling)
+o = VBA_bernoulli(.85,N)'; % opponent's choices (here dummy binomial sampling)
 tic
 a = NaN(1,N); % agent's choices
 gx = NaN(1,N);
@@ -65,7 +65,7 @@ else
 end
 set(hf,'position',[1290 266 560 857])
 
-return
+
 %% invert k-ToM model
 options.skipf = zeros(1,N);
 options.skipf(1) = 1;
