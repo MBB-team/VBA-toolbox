@@ -8,7 +8,7 @@ if ~options.DisplayWin
     return
 end
 
-if numel(options.sources)>1 || options.sources(1).type==2
+if true %numel(options.sources)>1 || options.sources(1).type==2
     VBA_updateDisplay_extended(posterior,suffStat,options,y,it,flag);
     %fprintf('Display extended\n');
     return
