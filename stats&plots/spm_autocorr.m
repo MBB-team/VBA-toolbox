@@ -14,8 +14,8 @@ function R= spm_autocorr(y)
 [n,t] = size(y);
 R = zeros(n,t*2);
 % standardize y
-my = nanmean(y,2);
-sy = nanstd(y,[],2);
+my = VBA_nanmean(y,2);
+sy = VBA_nanstd(y,[],2);
 sy(sy==0) = 1; % correct for identically constant time series
 y = y - repmat(my,1,t);
 y = diag(1./sy)*y;
