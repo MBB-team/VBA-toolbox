@@ -32,30 +32,32 @@ if isequal(options.g_fname,@VBA_odeLim)
     options = options.inG.old.options;
 end
 
-try % if called from uitabs of VBA_ReDisplay
-    display.hfp = options.display.hfp;
-    get(display.hfp,'children');
+
+%% set up figure and panel if necessary
+% set up
+try 
+    display = options.display ;
 catch
-    display.hfp = findobj('tag','VBNLSS');
-    try
-    delete(intersect(findobj('tag','diagnostics_tabs'),get(display.hfp,'children')));
-    end
+    display = struct;
 end
-if isempty(display.hfp)
+
+% check if a figure has already been set up
+try 
+    display.hfp;
+catch
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
-    display.hfp = figure('position',pos,'color',[1 1 1],'name',options.figName,'menubar','none','tag','VBNLSS','Renderer','OpenGL','visible',visible);
-    display.hpannel = uipanel('parent',display.hfp,'BorderType','none','BackgroundColor',[1 1 1]);
-    set(display.hpannel,'units','normalized');
-    set(display.hpannel,'Position',[.02 .08 .96 .87]);
-else
-    display.hfp = display.hfp(1);
-    hc = intersect(findobj('tag','VBLaplace'),get(display.hfp,'children'));
-    if ~isempty(hc)
-        delete(hc)
-    end
+    hfp = figure('position',pos,'color',[1 1 1],'name',options.figName,'menubar','none','tag','VBNLSS','Renderer','OpenGL');
+    display.hfp = hfp;
+end
 
-    set(display.hfp,'name',options.figName,'visible',visible);
+% check if a panel has already been set up (spm tab or central element)
+hPanel = getPanel(display.hfp);
+
+if isempty(hPanel)
+    hPanel = uipanel('parent',display.hfp,'Tag','VBLaplace','BorderType','none','BackgroundColor',[1 1 1]);
+    set(hPanel,'units','normalized');
+    set(hPanel,'Position',[.02 .08 .96 .87]);
 end
 
 Ns = numel(options.sources);
@@ -73,14 +75,8 @@ if isequal(xlim,[1,1])
     xlim = [1-eps,1+eps];
 end
 
-hPanel = getPanel(display.hfp);
-
 if Ns > 1
 set(hPanel,'UserData',struct('sliderPos',1,'offScreen',(Ns-1)*.25));
-% panelPos = get(hppp,'Position');
-% height = panelPos(4) + .2*(numel(options.sources)-1);
-% panelPos = [panelPos(1) .965-height panelPos(3) height];
-% set(hppp,'Position',panelPos);
 
 Tab1_Slider = uicontrol('Parent', hPanel,...
     'units','normalized',...
