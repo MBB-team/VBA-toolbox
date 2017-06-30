@@ -246,7 +246,7 @@ suffStat.dtheta = -posterior.muTheta;
 suffStat.dphi = -posterior.muPhi;
 suffStat.vy = out.diagnostics.pvy;
 try
-    Ns=numel(options.sources);
+    Ns=1;%numel(options.sources);
 catch
     Ns=1;
 end
@@ -608,7 +608,7 @@ options.noPause = 1;
 options.DisplayWin =1;
 suffStat = out.suffStat;
 try
-    Ns=numel(options.sources);
+    Ns=1;%numel(options.sources);
 catch
     Ns=1;
 end
