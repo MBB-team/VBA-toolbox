@@ -33,8 +33,8 @@ inG_seq = inG.seq.inG;
 gx_bsl = g_BSLinGame(xseq,P,u,inG_seq);
 
 
-% 3- get P(agent=kToM)
-Pi = sigmoid(x(inG.meta.indx)); % prior P(agent=1)
+% 3- derive meta-ToM probabilistic decision P(a=1)
+Pi = sigmoid(x(inG.meta.indx)); % prior P(agent=kToM)
 gx = Pi*gx_ktom + (1-Pi)*gx_bsl;
 
 

@@ -22,98 +22,64 @@ close all
 clc
 
 % set the learning styles and interaction types of the first player
-styles1 = {'RB','0-ToM','1-ToM','2-ToM'};
-modes1 = {'comp','comp','comp','comp'};
+styles1 = {'RB','WSLS','RL','0-ToM','Inf','1-ToM','2-ToM','3-ToM','BSL','HGF','metaToM'};
+modes1 = {'comp','comp','comp','comp','comp','comp','comp','comp','comp','comp','comp'};
 
 % set the learning styles and interaction types of the second player
-styles2 = {'RB','0-ToM','1-ToM'};
-modes2 = {'comp','comp','comp'};
+styles2 = {'RB','0-ToM','1-ToM','2-ToM'};
+modes2 = {'comp','comp','comp','comp'};
 
 % game payof tables (competitive and cooperative interaction types)
 compGame = cat(3,[1,-1;-1,1],[-1,1;1,-1]); % competitive game
 coopGame = cat(3,[1,-1;-1,1],[1,-1;-1,1]); % cooperative game
 
-nt = 150; % number of trials
+nt = 50; % number of trials
+noisy = 1; % flag for noisy computations
+stdx = exp(-1); % std-dev of computational noise (player #1 only!)
 
 tic
-
-% --only for meta-ToM learner--
-% hf = figure('name','metaToM belief');
-% for i=1:length(styles2)
-%     ha(i) = subplot(length(styles2),1,i,'parent',hf,'nextplot','add');
-% end
-
-Nmc = 100; % # Monte-Carlo simulations
+Nmc = 5000; % # Monte-Carlo simulations
 Perf = zeros(length(styles1),length(styles2),Nmc);
 for imc = 1:Nmc
     imc
     for i=1:length(styles1)
         % prepare player 1
         if isequal(modes1{i},'comp')
-            payoffTable1 = compGame;
+            info1.payoffTable = compGame;
         else
-            payoffTable1 = coopGame;
+            info1.payoffTable = coopGame;
         end
-        [f_p1,g_p1,theta1,phi1,inF1,inG1,x01] = prepare_agent(styles1{i},payoffTable1,1);
+        [info1] = prepare_agent(styles1{i},info1.payoffTable,1);
         for j=1:length(styles2)
             % prepare player 2
             if isequal(modes2{j},'comp')
-                payoffTable2 = compGame;
+                info2.payoffTable = compGame;
             else
-                payoffTable2 = coopGame;
+                info2.payoffTable = coopGame;
             end
-            [f_p2,g_p2,theta2,phi2,inF2,inG2,x02] = prepare_agent(styles2{j},payoffTable2,2);
-            % sample around evol/obs parameters
-            phi1 = phi1;% + randn(size(phi1));
-            phi2 = phi2;% + randn(size(phi2));
-            theta1 = theta1;% + randn(size(theta1));
-            theta2 = theta2;% + randn(size(theta2));
-            % first move
-            x1 = [];
-            x2 = [];
-            x1(:,1) = x01;
-            x2(:,1) = x02;
-            g1(1) = feval(g_p1,x1(:,1),phi1,NaN(3,1),inG1);
-            tmp = VBA_sample('multinomial',struct('p',[g1(1);1-g1(1)],'n',1),1,0);
-            y1(1) = tmp(1);
-            g2(1) = feval(g_p2,x2(:,1),phi2,NaN(3,1),inG2);
-            tmp = VBA_sample('multinomial',struct('p',[g2(1);1-g2(1)],'n',1),1,0);
-            y2(1) = tmp(1);
-            rew(1,1) = payoffTable2(2-y1(1),2-y2(1),1);
-            rew(2,1) = payoffTable2(2-y1(1),2-y2(1),2);
-            % next moves
-            for t=2:nt
-                % build input
-                if t==2
-                    u1 = [y2(t-1);y1(t-1);NaN];
-                    u2 = [y1(t-1);y2(t-1);NaN];
-                else
-                    u1 = [y2(t-1);y1(t-1);y2(t-2)];
-                    u2 = [y1(t-1);y2(t-1);y1(t-2)];
-                end
-                % learn
-                x1(:,t) = feval(f_p1,x1(:,t-1),theta1,u1,inF1);
-                x2(:,t) = feval(f_p2,x2(:,t-1),theta2,u2,inF2);
-                % act
-                g1(t) = feval(g_p1,x1(:,t),phi1,u1,inG1);
-                tmp = VBA_sample('multinomial',struct('p',[g1(t);1-g1(t)],'n',1),1,0);
-                y1(t) = tmp(1);
-                g2(t) = feval(g_p2,x2(:,t),phi2,u2,inG2);
-                tmp = VBA_sample('multinomial',struct('p',[g2(t);1-g2(t)],'n',1),1,0);
-                y2(t) = tmp(1);
-                % perf
-                rew(1,t) = payoffTable2(2-y1(t),2-y2(t),1);
-                rew(2,t) = payoffTable2(2-y1(t),2-y2(t),2);
-            end
-            Perf(i,j,imc) = mean(rew(1,:)); % perf of player #1
+            [info2] = prepare_agent(styles2{j},info2.payoffTable,2);
+%             % sample around evol/obs parameters
+%             info1.phi = info1.phi + randn(size(info1.phi));
+%             info2.phi = info2.phi + randn(size(info2.phi));
+%             info1.theta = info1.theta + randn(size(info1.theta));
+%             info2.theta = info2.theta + randn(size(info2.theta));
+            % simulate game
+            [rew,y1,y2] = runGame_2players(info1,info2,nt,0);
+            % summarize game
+            Perf(i,j,imc) = mean(rew(1,:)); % player #1's perf
             % volterra decomposition
-            %            [out] = get_VolterraInGames([y1;y2],8,1);
-            %            Aself(i,j,imc) = out.A(1);
-            %            Aother(i,j,imc) = out.A(2);
-            % --only for meta-ToM learner--
-            %            Pi(j,:,imc) = sigmoid(x1(1,:));
-            %            plot(ha(j),Pi(j,:,imc))
-            %            drawnow
+            [out] = get_VolterraInGames([y1;y2],8,1);
+            Aself(i,j,imc) = out.A(1);
+            Aother(i,j,imc) = out.A(2);
+            % if noisy computations
+            if noisy
+                try
+                    [rew,y1,y2] = runGame_2players(info1,info2,nt,stdx);
+                    Perf2(i,j,imc) = mean(rew(1,:)); % (noisy) player #1's perf
+                catch
+                    Perf2(i,j,imc) = NaN;
+                end
+            end
         end
     end
     
@@ -121,8 +87,11 @@ end
 
 toc
 
+save ToMgames_ASD2.mat
+
 % plot performance patterns
 mP = mean(Perf,3);
+sP = std(Perf,[],3);
 hf = figure('color',[1 1 1],'name','mean Perf');
 ha = axes('parent',hf,'nextplot','add');
 imagesc(mP,'parent',ha)
@@ -130,8 +99,6 @@ set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,
 axis(ha,'tight')
 axis(ha,'square')
 hh = rotateXLabels(ha,90);
-
-sP = std(Perf,[],3);
 hf = figure('color',[1 1 1],'name','std Perf');
 ha = axes('parent',hf,'nextplot','add');
 imagesc(sP,'parent',ha)
@@ -139,25 +106,69 @@ set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,
 axis(ha,'tight')
 axis(ha,'square')
 
+hf = figure('color',[1 1 1],'name','Performance patterns');
+if noisy
+    na = 2;
+    mP2 = nanmean(Perf2,3);
+    sP2 = nanstd(Perf2,[],3);
+else
+    na = 1;
+end
+col = 'bgry';
+if noisy
+    miP = min([mP(:);mP2(:)]);
+    maP = max([mP(:);mP2(:)]);
+else
+    miP = min(mP(:));
+    maP = max(mP(:));
+end
+for i=1:length(styles1)
+    ha = subplot(na,length(styles1),i,'parent',hf,'nextplot','add');
+    title(ha,[styles1{i},' ',modes1{i}])
+    if noisy
+        ha2 = subplot(na,length(styles1),length(styles1)+i,'parent',hf,'nextplot','add');
+        title(ha2,[styles1{i},' ',modes1{i},' [noisy]'])
+    end
+    if i==1
+        pos = get(ha,'position');
+    end
+    for j=1:4
+        md = mP(i,j);%-mP(i,1);
+        stdd = sqrt(sP(i,j).^2);%+sP(i,1).^2);
+        bar(j,md,'facecolor',col(j),'parent',ha)
+        errorbar(j,md,stdd/sqrt(Nmc),'k.','parent',ha)
+        if noisy
+            md2 = mP2(i,j);%-mP(i,1);
+            stdd2 = sqrt(sP2(i,j).^2);%+sP(i,1).^2);
+            bar(j,md2,'facecolor',col(j),'parent',ha2)
+            errorbar(j,md2,stdd2/sqrt(Nmc),'k.','parent',ha2)
+        end
+    end
+    set(ha,'ylim',[miP,maP],'xtick',[])
+    if noisy
+        set(ha2,'ylim',[miP,maP],'xtick',[])
+    end
+end
+
 
 return
 
 % plot Volterra analyses
-mAs = mean(Aself,3);
-hf = figure('color',[1 1 1],'name','mean Aself');
-ha = axes('parent',hf,'nextplot','add');
-imagesc(mAs,'parent',ha)
-set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,'yticklabel',styles1)
-axis(ha,'tight')
-axis(ha,'square')
-
-mAo = mean(Aother,3);
-hf = figure('color',[1 1 1],'name','mean Aother');
-ha = axes('parent',hf,'nextplot','add');
-imagesc(mAo,'parent',ha)
-set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,'yticklabel',styles1)
-axis(ha,'tight')
-axis(ha,'square')
+% mAs = mean(Aself,3);
+% hf = figure('color',[1 1 1],'name','mean Aself');
+% ha = axes('parent',hf,'nextplot','add');
+% imagesc(mAs,'parent',ha)
+% set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,'yticklabel',styles1)
+% axis(ha,'tight')
+% axis(ha,'square')
+% 
+% mAo = mean(Aother,3);
+% hf = figure('color',[1 1 1],'name','mean Aother');
+% ha = axes('parent',hf,'nextplot','add');
+% imagesc(mAo,'parent',ha)
+% set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,'yticklabel',styles1)
+% axis(ha,'tight')
+% axis(ha,'square')
 
 hf = figure('color',[1 1 1],'name','Volterra decomp.');
 miAo = min(mAo(:));

@@ -3,8 +3,8 @@ function [theta,phi,inF,inG,x0] = prepare_metaToM(kToM_level,seq_length,game,rol
 % function [f,g,theta,phi,inF,inG,x0] = prepare_metaToM(kToM_level,seq_length,game,role)
 % 
 
-theta = [-4;-4]; % prior log-volatility (k-ToM & BSL)
-phi = [-log(2);0]; % (log-) temperature and bias
+theta = [-2;-2]; % prior log-volatility (k-ToM & BSL)
+phi = [-1;0]; % (log-) temperature and bias
 
 inF.meta.indx = 1; % (invsigmoid-) P(opponent=k-ToM)
 inF.meta.indP = [];
