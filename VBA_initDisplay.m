@@ -53,11 +53,19 @@ end
 
 % check if a panel has already been set up (spm tab or central element)
 hPanel = getPanel(display.hfp);
-
 if isempty(hPanel)
     hPanel = uipanel('parent',display.hfp,'Tag','VBLaplace','BorderType','none','BackgroundColor',[1 1 1]);
     set(hPanel,'units','normalized');
     set(hPanel,'Position',[.02 .08 .96 .87]);
+end
+
+%check if source was selected
+ud = get(hPanel,'userdata');
+if isempty(ud)
+    currentSource = 1 ;
+    set(hPanel,'userdata',currentSource);
+else
+   currentSource = ud;
 end
 
 %% Create axes
@@ -80,13 +88,21 @@ if numel(options.sources)>1
     for i=1:numel(options.sources) %dim s
         snames{i} = ['#',num2str(i)];
     end
-    handles(1) = uicontrol('style','popupmenu','parent',hPanel,'tag','VBLaplace','units','normalized','position',[.82 0.96 0.10 0.02],'FontSize',12,'FontWeight','bold','string',snames,'callback',@changeSource,'visible',visible);
+    handles(1) = uicontrol('style','popupmenu', ...
+        'parent',hPanel, ...
+        'tag','VBLaplace', ...
+        'units','normalized', ...
+        'position',[.82 0.96 0.10 0.02], ...
+        'FontSize',12, 'FontWeight','bold', ...
+        'string',snames, ...
+        'callback',@changeSource, ...
+        'visible',visible);
     handles(2) = uicontrol('style','text','parent',hPanel,'tag','VBLaplace','BackgroundColor',[1 1 1], ...
         'units','normalized','position',[0.73    0.96    0.08    0.02], ...
         'FontSize',12,'FontWeight','bold','HorizontalAlignment','left','string','source:','visible',visible);
-    feval(@changeSource,handles(1),[])
-end
+    set(handles(1),'Value',currentSource);
 
+end
     
 display.ha(1) = subplot('Position',[.1 .75 .525 .174],'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
 if ~priors
@@ -244,10 +260,15 @@ catch
 end
 display.hpause = uicontrol('parent',display.hfp,'style','toggle','tag','VBLaplace','units','normalized','position',[0.4,0.96,0.2,0.02],'backgroundcolor',.8*[1,1,1],'string','pause and diagnose?','tag','pause_vb','visible',vis);
 
+
+set(hPanel,'userdata',currentSource);
+
 drawnow
 display.OnLine = options.OnLine;
 options = options0;
 options.display = display;
+
+
 
 try
     getSubplots
@@ -255,5 +276,13 @@ end
 
 
 function changeSource(hObject,evt,si)
+
+    hPanel = get(hObject,'parent');
+    ud = get(hPanel,'userdata');
+    
+    newSource = get(hObject,'Value');
+
+    set(hPanel,'userdata',newSource);
+
     fprintf('switching source');
 

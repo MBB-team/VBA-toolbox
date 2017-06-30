@@ -131,22 +131,21 @@ for s_i=1:Ns
 end
 
 % TODO: replace with current source
-Ns = 1
+currentSource = get(getPanel(display.hfp),'userdata') ;
 
 switch flag % What piece of the model to display?
     
     
     case 'X' % Hidden-states related quantities
         
-     for s_i=1:Ns   
-        s_out=options.sources(s_i).out;
+        s_out=options.sources(currentSource).out;
         % update top-left subplot: predictive density
         cla(display.ha(1))
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
         dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        if options.sources(s_i).type < 2
+        if options.sources(currentSource).type < 2
             plot(display.ha(1),dTime,y_s',':')
             plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
             plot(display.ha(1),dTime,y_s_on','.')
@@ -164,36 +163,38 @@ switch flag % What piece of the model to display?
         axis(display.ha(1),'tight')
         
         % update top-right subplot: predicted VS observed data
-         cla(display.ha(2*s_i))
+         cla(display.ha(2))
         % plot identity
-         if options.sources(s_i).type==0
+         if options.sources(currentSource).type==0
             miy = min(min([gx(s_out,:);y(s_out,:)]));
             may = max(max([gx(s_out,:);y(s_out,:)]));
-            plot(display.ha(2*s_i),[miy,may],[miy,may],'r')
+            plot(display.ha(2),[miy,may],[miy,may],'r')
         else
-            plot(display.ha(2*s_i),[0,1],[0,1],'r')
+            plot(display.ha(2),[0,1],[0,1],'r')
         end
         
-        if options.sources(s_i).type==0
+        if options.sources(currentSource).type==0
             gx_src = gx(s_out,:) ;
             y_src = y(s_out,:) ;
             gxout = gx_src(~~options.isYout(s_out,:));
             yout = y_src(~~options.isYout(s_out,:));
             gxin = gx_src(~options.isYout(s_out,:));
             yin = y_src(~options.isYout(s_out,:));
-            plot(display.ha(2*s_i),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(2*s_i),gxin(:),yin(:),'k.')
+            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
+            plot(display.ha(2),gxin(:),yin(:),'k.')
         else
             gridp = 0:1e-2:1;
-            plot(display.ha(2*s_i),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
-            plot(display.ha(2*s_i),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout{s_i},stackyout{s_i},stdyout{s_i},'.','Color',[.85 .85 .85],'parent',display.ha(2*s_i))
-            errorbar(gridgin{s_i},stackyin{s_i},stdyin{s_i},'k.','parent',display.ha(2*s_i))
+            plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
+            plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
+            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.85 .85 .85],'parent',display.ha(2))
+            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'k.','parent',display.ha(2))
         end
             
-        grid(display.ha(2*s_i),'on')
-        axis(display.ha(2*s_i),'tight')
-     end
+        grid(display.ha(2),'on')
+        axis(display.ha(2),'tight')
+     
+
+    % --
        
         % get display indices if delay embedding
         if sum(options.delays) > 0
@@ -204,23 +205,23 @@ switch flag % What piece of the model to display?
      
         % update middle-left subplot: hidden states
         try
-            cla(display.ha(2*Ns+1))
-            plotUncertainTimeSeries(mux,vx,dTime,display.ha(2*Ns+1),ind);
+            cla(display.ha(3))
+            plotUncertainTimeSeries(mux,vx,dTime,display.ha(3),ind);
         catch
-            cla(display.ha(2*Ns+1))
-            plotUncertainTimeSeries(mux,vx,[],display.ha(2*Ns+1),ind);
+            cla(display.ha(3))
+            plotUncertainTimeSeries(mux,vx,[],display.ha(3),ind);
         end
-        set(display.ha(2*Ns+1),'ygrid','on','xgrid','off')
-        axis(display.ha(2*Ns+1),'tight')
+        set(display.ha(3),'ygrid','on','xgrid','off')
+        axis(display.ha(3),'tight')
         
         % update middle-right subplot: initial conditions
         if options.updateX0
-            cla(display.ha(2*Ns+2))
-            plotUncertainTimeSeries(-dx0,vx0,1,display.ha(2*Ns+2));
-            set(display.ha(2*Ns+2),'ygrid','on','xgrid','off')
+            cla(display.ha(4))
+            plotUncertainTimeSeries(-dx0,vx0,1,display.ha(4));
+            set(display.ha(4),'ygrid','on','xgrid','off')
         elseif isequal(it,0)
-            plotUncertainTimeSeries(dx0,vx0,1,display.ha(2*Ns+2));
-            set(display.ha(2*Ns+2),'ygrid','on','xgrid','off')
+            plotUncertainTimeSeries(dx0,vx0,1,display.ha(4));
+            set(display.ha(4),'ygrid','on','xgrid','off')
         end
         
         displayDF(F,display)
@@ -228,15 +229,15 @@ switch flag % What piece of the model to display?
     case 'phi' % Observation parameters
         
         
-      for s_i=1:Ns   
-        s_out=options.sources(s_i).out;
+         
+        s_out=options.sources(currentSource).out;
         % update top-left subplot: predictive density
         cla(display.ha(1))
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
         dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        if options.sources(s_i).type < 2
+        if options.sources(currentSource).type < 2
             plot(display.ha(1),dTime,y_s',':')
             plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
             plot(display.ha(1),dTime,y_s_on','.')
@@ -254,47 +255,47 @@ switch flag % What piece of the model to display?
         axis(display.ha(1),'tight')
         
         % update top-right subplot: predicted VS observed data
-         cla(display.ha(2*s_i))
+         cla(display.ha(2))
         % plot identity
-        if options.sources(s_i).type==0
+        if options.sources(currentSource).type==0
             miy = min(min([gx(s_out,:);y(s_out,:)]));
             may = max(max([gx(s_out,:);y(s_out,:)]));
-            plot(display.ha(2*s_i),[miy,may],[miy,may],'r')
+            plot(display.ha(2),[miy,may],[miy,may],'r')
         else
-            plot(display.ha(2*s_i),[0,1],[0,1],'r')
+            plot(display.ha(2),[0,1],[0,1],'r')
         end
        
-        if options.sources(s_i).type==0
+        if options.sources(currentSource).type==0
             gx_src = gx(s_out,:) ;
             y_src = y(s_out,:) ;
             gxout = gx_src(~~options.isYout(s_out,:));
             yout = y_src(~~options.isYout(s_out,:));
             gxin = gx_src(~options.isYout(s_out,:));
             yin = y_src(~options.isYout(s_out,:));
-            plot(display.ha(2*s_i),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(2*s_i),gxin(:),yin(:),'k.')
+            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
+            plot(display.ha(2),gxin(:),yin(:),'k.')
         else
             gridp = 0:1e-2:1;
-            plot(display.ha(2*s_i),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
-            plot(display.ha(2*s_i),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout{s_i},stackyout{s_i},stdyout{s_i},'.','Color',[.85 .85 .85],'parent',display.ha(2*s_i))
-            errorbar(gridgin{s_i},stackyin{s_i},stdyin{s_i},'k.','parent',display.ha(2*s_i))
+            plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
+            plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
+            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.85 .85 .85],'parent',display.ha(2))
+            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'k.','parent',display.ha(2))
         end
         
 
         
         
-        grid(display.ha(2*s_i),'on')
-        axis(display.ha(2*s_i),'tight')
-     end
+        grid(display.ha(2),'on')
+        axis(display.ha(2),'tight')
+     % --
         
         % update bottom-left subplot: observation parameters
         if size(dphi,2) == 1 % for on-line wrapper
             dTime = 1;
         end
-        cla(display.ha(2*Ns+3))
-        plotUncertainTimeSeries(-dphi,vphi,dTime,display.ha(2*Ns+3));
-        set(display.ha(2*Ns+3),'ygrid','on','xgrid','off')
+        cla(display.ha(5))
+        plotUncertainTimeSeries(-dphi,vphi,dTime,display.ha(5));
+        set(display.ha(5),'ygrid','on','xgrid','off')
         
         displayDF(F,display)
         
@@ -307,24 +308,23 @@ switch flag % What piece of the model to display?
         if size(dtheta,2) == 1 % for on-line wrapper
             dTime = 1;
         end
-        cla(display.ha(2*Ns+5))
-        plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(2*Ns+5));
-        set(display.ha(2*Ns+5),'ygrid','on','xgrid','off')
+        cla(display.ha(7))
+        plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
+        set(display.ha(7),'ygrid','on','xgrid','off')
         
         displayDF(F,display)
         
         
     case 'precisions' % Precision hyperparameters
         
-      for s_i=1:Ns   
-        s_out=options.sources(s_i).out;
+        s_out=options.sources(currentSource).out;
         % update top-left subplot: predictive density
         cla(display.ha(1))
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=NaN;
         dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        if options.sources(s_i).type < 2
+        if options.sources(currentSource).type < 2
             plot(display.ha(1),dTime,y_s',':')
             plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
             plot(display.ha(1),dTime,y_s_on','.')
@@ -341,27 +341,27 @@ switch flag % What piece of the model to display?
         set(display.ha(1),'ygrid','on','xgrid','off')
         axis(display.ha(1),'tight')
 
-     end   
+     % --   
         
         if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
                 dTime = 1;
-                cla(display.ha(2*Ns+4))
+                cla(display.ha(6))
                 logCI = log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat);
-                plotUncertainTimeSeries(log(sigmaHat),logCI.^2,dTime,display.ha(2*Ns+4));
-                set(display.ha(2*Ns+4),'ygrid','on','xgrid','off')
+                plotUncertainTimeSeries(log(sigmaHat),logCI.^2,dTime,display.ha(6));
+                set(display.ha(6),'ygrid','on','xgrid','off')
         end
             
             % update middle-right subplot: state noise
             if options.dim.n > 0 && ~any(isinf(alphaHat))
                 if size(alphaHat,2) > 1  % for on-line wrapper
-                    cla(display.ha(2*Ns+6))
+                    cla(display.ha(8))
                 else
                     dTime = it+1;
-                    set(display.ha(2*Ns+6),'xlim',[.2,it+1.8],'xtick',[])
+                    set(display.ha(8),'xlim',[.2,it+1.8],'xtick',[])
                 end
                 logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
-                plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(2*Ns+6));
-                set(display.ha(2*Ns+6),'ygrid','on','xgrid','off')
+                plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
+                set(display.ha(8),'ygrid','on','xgrid','off')
             end
             
             displayDF(F,display)
