@@ -14,6 +14,13 @@ F = real(suffStat.F);
 % check whether 'pause' button is toggled on
 VBA_pause(options)
 
+% replace source selector callback if needed
+ud = get(getPanel(display.hfp),'userdata') ;
+ud.update_plot = @() VBA_updateDisplay(posterior,suffStat,options,y,0,'Y'); 
+set(getPanel(display.hfp),'userdata',ud) ;
+
+currentSource = ud.currentSource;
+
 % 0- Check whether this is a deterministic dynamical system inversion
 if isequal(options.g_fname,@VBA_odeLim)
     
@@ -42,7 +49,7 @@ end
 
 
 % Get sufficient statistics to be displayed
-dTime = [1:size(y,2)];
+dTime = 1:size(y,2);
 try
     gx = suffStat.gx(:,dTime);
     vy = suffStat.vy(:,dTime);
@@ -112,7 +119,7 @@ if isequal(dTime,1) && size(y,1) > 1
         mux = mux';
         vx = vx';
     end
-    dTime = [1:size(y,2)];
+    dTime = 1:size(y,2);
     for si=1:numel(options.sources)
         options.sources(si).out = si;
     end
@@ -124,85 +131,33 @@ for s_i=1:Ns
     if  options.sources(s_i).type>0
         s_out = options.sources(s_i).out ;
         gx_out = gx(s_out,:);
-        y_out = y(s_out,:); 
+        y_out = y(s_out,:);
         [stackyin{s_i},stdyin{s_i},gridgin{s_i}] = VBA_Bin2Cont(gx_out(~options.isYout(s_out,:)),y_out(~options.isYout(s_out,:)));
         [stackyout{s_i},stdyout{s_i},gridgout{s_i}] = VBA_Bin2Cont(gx_out(~~options.isYout(s_out,:)),y_out(~~options.isYout(s_out,:)));
-    end  
+    end
 end
-
-% TODO: replace with current source
-currentSource = get(getPanel(display.hfp),'userdata') ;
 
 switch flag % What piece of the model to display?
     
-    
+    case 'Y' % observation only
+        
+        % update top subplots
+         update_observation_plot()
+        
     case 'X' % Hidden-states related quantities
         
-        s_out=options.sources(currentSource).out;
-        % update top-left subplot: predictive density
-        cla(display.ha(1))
-        y_s = y(s_out,:);
-        y_s_on = y_s;
-        y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        if options.sources(currentSource).type < 2
-            plot(display.ha(1),dTime,y_s',':')
-            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(1),dTime,y_s_on','.')
-            vy_s= vy(s_out,:);
-            if ~isempty(dTime_in)
-                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(1));
-            end
-        else 
-            imagesc(gx(s_out,:),'Parent',display.ha(1)); 
-            set(display.ha(1),'Clim',[0 1]) ;
-            colormap(flipud(colormap('bone'))); 
-            plot(display.ha(1),multi2num(y_s_on),'.r');
-        end
-        set(display.ha(1),'ygrid','on','xgrid','off')
-        axis(display.ha(1),'tight')
+        % update top subplots
+        update_observation_plot()
         
-        % update top-right subplot: predicted VS observed data
-         cla(display.ha(2))
-        % plot identity
-         if options.sources(currentSource).type==0
-            miy = min(min([gx(s_out,:);y(s_out,:)]));
-            may = max(max([gx(s_out,:);y(s_out,:)]));
-            plot(display.ha(2),[miy,may],[miy,may],'r')
-        else
-            plot(display.ha(2),[0,1],[0,1],'r')
-        end
+        % --
         
-        if options.sources(currentSource).type==0
-            gx_src = gx(s_out,:) ;
-            y_src = y(s_out,:) ;
-            gxout = gx_src(~~options.isYout(s_out,:));
-            yout = y_src(~~options.isYout(s_out,:));
-            gxin = gx_src(~options.isYout(s_out,:));
-            yin = y_src(~options.isYout(s_out,:));
-            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(2),gxin(:),yin(:),'k.')
-        else
-            gridp = 0:1e-2:1;
-            plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
-            plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.85 .85 .85],'parent',display.ha(2))
-            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'k.','parent',display.ha(2))
-        end
-            
-        grid(display.ha(2),'on')
-        axis(display.ha(2),'tight')
-     
-
-    % --
-       
         % get display indices if delay embedding
         if sum(options.delays) > 0
             ind = 1:options.inF.dim.n;
         else
             ind = 1:size(mux,1);
         end
-     
+        
         % update middle-left subplot: hidden states
         try
             cla(display.ha(3))
@@ -228,66 +183,10 @@ switch flag % What piece of the model to display?
         
     case 'phi' % Observation parameters
         
+        % update top subplots
+        update_observation_plot()
         
-         
-        s_out=options.sources(currentSource).out;
-        % update top-left subplot: predictive density
-        cla(display.ha(1))
-        y_s = y(s_out,:);
-        y_s_on = y_s;
-        y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        if options.sources(currentSource).type < 2
-            plot(display.ha(1),dTime,y_s',':')
-            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(1),dTime,y_s_on','.')
-            vy_s= vy(s_out,:);
-            if ~isempty(dTime_in)
-                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(1));
-            end
-        else
-            imagesc(gx(s_out,:),'Parent',display.ha(1)); 
-            set(display.ha(1),'Clim',[0 1]) ;
-            colormap(flipud(colormap('bone'))); 
-            plot(display.ha(1),multi2num(y_s_on),'.r');
-        end
-        set(display.ha(1),'ygrid','on','xgrid','off')
-        axis(display.ha(1),'tight')
-        
-        % update top-right subplot: predicted VS observed data
-         cla(display.ha(2))
-        % plot identity
-        if options.sources(currentSource).type==0
-            miy = min(min([gx(s_out,:);y(s_out,:)]));
-            may = max(max([gx(s_out,:);y(s_out,:)]));
-            plot(display.ha(2),[miy,may],[miy,may],'r')
-        else
-            plot(display.ha(2),[0,1],[0,1],'r')
-        end
-       
-        if options.sources(currentSource).type==0
-            gx_src = gx(s_out,:) ;
-            y_src = y(s_out,:) ;
-            gxout = gx_src(~~options.isYout(s_out,:));
-            yout = y_src(~~options.isYout(s_out,:));
-            gxin = gx_src(~options.isYout(s_out,:));
-            yin = y_src(~options.isYout(s_out,:));
-            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(2),gxin(:),yin(:),'k.')
-        else
-            gridp = 0:1e-2:1;
-            plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
-            plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.85 .85 .85],'parent',display.ha(2))
-            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'k.','parent',display.ha(2))
-        end
-        
-
-        
-        
-        grid(display.ha(2),'on')
-        axis(display.ha(2),'tight')
-     % --
+        % --
         
         % update bottom-left subplot: observation parameters
         if size(dphi,2) == 1 % for on-line wrapper
@@ -298,8 +197,6 @@ switch flag % What piece of the model to display?
         set(display.ha(5),'ygrid','on','xgrid','off')
         
         displayDF(F,display)
-        
-        
         
     case 'theta' % Evolution parameters
         
@@ -317,56 +214,33 @@ switch flag % What piece of the model to display?
         
     case 'precisions' % Precision hyperparameters
         
-        s_out=options.sources(currentSource).out;
-        % update top-left subplot: predictive density
-        cla(display.ha(1))
-        y_s = y(s_out,:);
-        y_s_on = y_s;
-        y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
-        if options.sources(currentSource).type < 2
-            plot(display.ha(1),dTime,y_s',':')
-            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(1),dTime,y_s_on','.')
-            vy_s= vy(s_out,:);
-            if ~isempty(dTime_in)
-                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(1));
-            end
-        else
-            imagesc(gx(s_out,:),'Parent',display.ha(1)); 
-            set(display.ha(1),'Clim',[0 1]) ;
-            colormap(flipud(colormap('bone'))); 
-            plot(display.ha(1),multi2num(y_s_on),'.r');
-        end
-        set(display.ha(1),'ygrid','on','xgrid','off')
-        axis(display.ha(1),'tight')
-
-     % --   
+        % update top subplots
+        update_observation_plot()
+        
+        % --
         
         if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
-                dTime = 1;
-                cla(display.ha(6))
-                logCI = log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat);
-                plotUncertainTimeSeries(log(sigmaHat),logCI.^2,dTime,display.ha(6));
-                set(display.ha(6),'ygrid','on','xgrid','off')
+            dTime = 1;
+            cla(display.ha(6))
+            logCI = log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat);
+            plotUncertainTimeSeries(log(sigmaHat),logCI.^2,dTime,display.ha(6));
+            set(display.ha(6),'ygrid','on','xgrid','off')
         end
-            
-            % update middle-right subplot: state noise
-            if options.dim.n > 0 && ~any(isinf(alphaHat))
-                if size(alphaHat,2) > 1  % for on-line wrapper
-                    cla(display.ha(8))
-                else
-                    dTime = it+1;
-                    set(display.ha(8),'xlim',[.2,it+1.8],'xtick',[])
-                end
-                logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
-                plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
-                set(display.ha(8),'ygrid','on','xgrid','off')
-            end
-            
-            displayDF(F,display)
-            
         
+        % update middle-right subplot: state noise
+        if options.dim.n > 0 && ~any(isinf(alphaHat))
+            if size(alphaHat,2) > 1  % for on-line wrapper
+                cla(display.ha(8))
+            else
+                dTime = it+1;
+                set(display.ha(8),'xlim',[.2,it+1.8],'xtick',[])
+            end
+            logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
+            plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
+            set(display.ha(8),'ygrid','on','xgrid','off')
+        end
+        
+        displayDF(F,display)
         
     case 'F' % Free energy
         
@@ -387,33 +261,97 @@ drawnow
 
 %--- subfunction ---%
 
-function [] = displayDF(F,display)
-if ~display.OnLine
-    try
-        dF = diff(F);
-        set(display.ho,'string',['Model evidence: log p(y|m) >= ',num2str(F(end),'%1.3e'),' , dF= ',num2str(dF(end),'%4.3e')])
-    catch
-        try
-            set(display.ho,'string',['Model evidence: log p(y|m) >= ',num2str(F(end),'%4.3e')])
+    function update_observation_plot()
+        
+        s_out=options.sources(currentSource).out;
+        
+        % update top-left subplot: predictive density
+        cla(display.ha(1))
+        y_s = y(s_out,:);
+        y_s_on = y_s;
+        y_s_on(options.isYout(s_out,:)==1)=NaN;
+        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
+        if options.sources(currentSource).type < 2
+            plot(display.ha(1),dTime,y_s',':')
+            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
+            plot(display.ha(1),dTime,y_s_on','.')
+            vy_s= vy(s_out,:);
+            if ~isempty(dTime_in)
+                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(1));
+            end
+        else
+            imagesc(gx(s_out,:),'Parent',display.ha(1));
+            set(display.ha(1),'Clim',[0 1]) ;
+            colormap(flipud(colormap('bone')));
+            plot(display.ha(1),multi2num(y_s_on),'.r');
+        end
+        set(display.ha(1),'ygrid','on','xgrid','off')
+        axis(display.ha(1),'tight')
+        
+        % update top-right subplot: predicted VS observed data
+        cla(display.ha(2))
+        % plot identity
+        if options.sources(currentSource).type==0
+            miy = min(min([gx(s_out,:);y(s_out,:)]));
+            may = max(max([gx(s_out,:);y(s_out,:)]));
+            plot(display.ha(2),[miy,may],[miy,may],'r')
+        else
+            plot(display.ha(2),[0,1],[0,1],'r')
+        end
+        
+        if options.sources(currentSource).type==0
+            gx_src = gx(s_out,:) ;
+            y_src = y(s_out,:) ;
+            gxout = gx_src(~~options.isYout(s_out,:));
+            yout = y_src(~~options.isYout(s_out,:));
+            gxin = gx_src(~options.isYout(s_out,:));
+            yin = y_src(~options.isYout(s_out,:));
+            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
+            plot(display.ha(2),gxin(:),yin(:),'k.')
+        else
+            gridp = 0:1e-2:1;
+            plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
+            plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
+            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.85 .85 .85],'parent',display.ha(2))
+            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'k.','parent',display.ha(2))
+        end
+        
+        grid(display.ha(2),'on')
+        axis(display.ha(2),'tight')
+    end
+
+    function [] = displayDF(F,display)
+        if ~display.OnLine
+            try
+                dF = diff(F);
+                set(display.ho,'string',['Model evidence: log p(y|m) >= ',num2str(F(end),'%1.3e'),' , dF= ',num2str(dF(end),'%4.3e')])
+            catch
+                try
+                    set(display.ho,'string',['Model evidence: log p(y|m) >= ',num2str(F(end),'%4.3e')])
+                end
+            end
         end
     end
-end
-end
 
-function [nseq] = interpOut(seq,isYout)
-    nseq=seq;
-    return
-[n,t]=size(seq);
-times=1:t;
-for i = 1:n
-    mask =  isYout(i,:)==0;
-    nseq_i = seq(i,:);
-    nseq_i(~mask) = interp1(times(mask), nseq_i(mask), times(~mask),'spline',0);
-    nseq_i(isnan(nseq_i))=0;
-    nseq(i,:)=nseq_i;
-end
+    function [nseq] = interpOut(seq,isYout)
+        nseq=seq;
+        return
+        [n,t]=size(seq);
+        times=1:t;
+        for i = 1:n
+            mask =  isYout(i,:)==0;
+            nseq_i = seq(i,:);
+            nseq_i(~mask) = interp1(times(mask), nseq_i(mask), times(~mask),'spline',0);
+            nseq_i(isnan(nseq_i))=0;
+            nseq(i,:)=nseq_i;
+        end
+        
+    end
 
-end
+    function updateSource(hObject,evt,si)
+        changeSource(hObject,evt,si);
+        VBA_updateDisplay(posterior,suffStat,options,y,0,'Y');
+    end
 
 end
 
