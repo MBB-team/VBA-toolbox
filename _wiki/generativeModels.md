@@ -111,15 +111,21 @@ Many natural systems, ranging from neurons firing patterns to collective motion 
 
 Strictly speaking, VBA cannot handle this type of generative models, i.e. there is no trick that can be used to emulate switching dynamical systems as a limiting subcase of nonlieanr state-space models. In fact, this is the only class of models that cannot be obtained from VBA's generative model! The issue here, derives from (mutually exclusive) discrete states, that evolve according to transition probabilities that have no formal equivalent in continuous state-spaces...
 
-Having said this, one can approximate discrete states in terms of continuous states passed through steep sigmoidal mappings. For example, let $$z$$ be the $$n\times 1$$ [indicator vector](https://en.wikipedia.org/wiki/Indicator_vector) of a discrete state, i.e. the only non-zero entry of $$z$$ specifies which element of the discrete space is currently active. in switching dynamical systems, such discrete states evolve according to the following transition probability matrix:
+Having said this, one can approximate discrete states in terms of continuous states passed through steep sigmoidal mappings. For example, let $$z$$ be the $$n\times 1$$ [indicator vector](https://en.wikipedia.org/wiki/Indicator_vector) of a discrete state, i.e. the only non-zero entry of $$z$$ specifies which element of the discrete space is currently active. In switching dynamical systems, such discrete states evolve according to the following transition probability matrix:
 
-$$ P\left(z_t\mid z_{t-1}\right) = \left[\begin{array}{cccc} \pi_{11} & \pi_{12} & \cdots & \pi_{1n} \\\ \pi_{21} & \pi_{22} & \cdots & \pi_{2n} \\ \vdots & \vdots & \vdots & \vdots \\ \pi_{n1} & \pi_{n2} & \cdots & \pi_{nn} \end{array}\right] $$
+$$ P\left(z_t\mid z_{t-1}\right) = \left[\begin{array}{cccc} \pi_{11} & \pi_{12} & \cdots & \pi_{1n} \\ \pi_{21} & \pi_{22} & \cdots & \pi_{2n} \\ \vdots & \vdots & \vdots & \vdots \\ \pi_{n1} & \pi_{n2} & \cdots & \pi_{nn} \end{array}\right] $$
 
-where $$1 = \sum_{i=1}^{n} \pi_{ji}$$ for all $$j$$.
+where $$1 = \sum_{i=1}^{n} \pi_{ij}$$ for all $$j$$.
 
+The conditional first-order and second-order moment of z_t are thus given by:
 
+$$ E\left[z_t\mid z_{t-1}^{(j)}=1\right] = \pi_{\dot j} $$
 
+and:
 
+$$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = I_n - \pi_{\dot j}\pi_{\dot j}^T $$
+
+where $$\pi_{\dot j}$$ is the $$j^{th}$$ column of the $$n\times n$$ matrix $$\Pi$$ and $$I_n$$ is the $$n\times n$$ identity matrix.
 
 
 
