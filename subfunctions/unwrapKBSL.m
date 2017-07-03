@@ -36,7 +36,8 @@ EP = sigmoid(m0./(1+a*sqrt(V0)));
 VP = EP.*(1-EP).*(1-1./(1+a*sqrt(V0)));
 
 ha = subplot(2,1,2,'parent',hf);
-plot(ha,EP','marker','.')
+plotUncertainTimeSeries(EP,VP,[],ha);
+% plot(ha,EP','marker','.')
 xlabel(ha,'time/trials')
 ylabel(ha,'P(o=1|past o)')
 title(ha,'BSL''s conditional belief about P(o|past o)')
