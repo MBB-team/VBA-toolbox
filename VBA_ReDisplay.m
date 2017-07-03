@@ -209,7 +209,7 @@ try
     getSubplots ;
 end
 
-hdet = uicontrol('parent',hfig,'style','pushbutton','tag','VBLaplace','units','normalized','position',[0.4,0.05,0.2,0.02],'backgroundcolor',.8*[1,1,1],'string','diagnose deterministic?','callback',@diagnoseDeterministic);
+hdet = uicontrol('parent',hfig,'style','pushbutton','tag','VBLaplace','units','normalized','position',[0.4,0.93,0.2,0.02],'backgroundcolor',.8*[1,1,1],'string','diagnose deterministic?','callback',@diagnoseDeterministic);
 
 
 function diagnoseDeterministic(ho,e)
