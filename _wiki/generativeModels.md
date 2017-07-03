@@ -45,11 +45,9 @@ $$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ ...\\ x_{t-p+1} \end{array}\ri
 
 where $$p$$ is the target order of the autoregressive process. Then the structure of AR(p) processes can be emulated using the following evolution function on $$z_t$$:
 
-$$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ ...\\ 0 \end{array}\right] + \left[\begin{array}{l} A^T \\ {L_1}^T \\ ...\\ {L_{p-1}}^T \end{array}\right] z_t $$ where:
+$$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ ...\\ 0 \end{array}\right] + \left[\begin{array}{l} A^T \\ {L_1}^T \\ ...\\ {L_{p-1}}^T \end{array}\right] z_t $$ where $$A$$ and $$L_1,...,L_{p-1}$$ are vectors given by:
 
 $$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ ...\\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 0 \\ 1 \\ ...\\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ 0 \\ ...\\ 1 \end{array}\right]$$.
-
-
 
 
 
