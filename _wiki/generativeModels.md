@@ -35,38 +35,44 @@ VBA can approximate such continuous process using the following evolution functi
 
 Higher-order auto-regressive models or [AR(p)](https://en.wikipedia.org/wiki/Autoregressive_model) are a non-Markovian generalization of AR(1) processes:
 
-$$x_t= c+ \sum_{i=1}^{p}\theta_i x_{t-i} +\eta_t$$
+$$ x_t= c+ \sum_{i=1}^{p}\theta_i x_{t-i} +\eta_t $$
 
 where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters and $$\eta_t$$ is assumed to be i.i.d. Gaussian random noise.
 
 The only issue here stems from the non-Markovian structure of AR(p) processes. But in fact, a very simple solution to this is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following dummay state variable:
 
-$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}\end{array}\right]$$
+$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}\end{array}\right] $$
 
 where $$p$$ is the target order of the autoregressive process. Then the structure of AR(p) processes can be emulated using the following evolution function on $$z_t$$:
 
-$$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ \vdots \\ 0 \end{array}\right] + \left[\begin{array}{l} A^T \\ {L_1}^T \\ \vdots \\ {L_{p-1}}^T \end{array}\right] z_t = \left[\begin{array}{l} c+ \sum_{i=1}^{p}\theta_i x_{t-i+1} \\ x_{t} \\ \vdots \\ x_{t-p+2} \end{array}\right]$$
+$$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ \vdots \\ 0 \end{array}\right] + \left[\begin{array}{l} A^T \\ {L_1}^T \\ \vdots \\ {L_{p-1}}^T \end{array}\right] z_t = \left[\begin{array}{l} c+ \sum_{i=1}^{p}\theta_i x_{t-i+1} \\ x_{t} \\ \vdots \\ x_{t-p+2} \end{array}\right] $$
 
 where $$A$$ and $$L_1,...,L_{p-1}$$ are $$p\times 1$$ vectors given by:
 
-$$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ \vdots \\ 0 \\ 1 \end{array}\right]$$.
 
-The corresponding observation function would then be given by:
+$$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ \vdots \\ 0 \\ 1 \end{array}\right] $$.
+
+The corresponding observation function would then be simply given by:
 
 $$ g(z_t) = {L_1}^T z_t = x_t$$
 
 with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
-Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $x_t$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $p-1$ last entries of $z_t$. Practically speaking, this can be achieved by setting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagnoal matrix:
+Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $x_t$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $p-1$ last entries of $z_t$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
 $$ {Q_x}^{-1} = \left[\begin{array}{ccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\  &  & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
-where $$r$$ is set to an appriately high value (e.g., $$10^4$$).
+where $$r \rightarrow \infty $$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
 
-# GARCH models
+# ARCH models
 
-bla.
+In brief, [autoregressive conditional heteroskedastic (ARCH)](https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity#GARCH) processes are such that the variance of the current error term or innovation depends upon the system's state. In discrete time, an example of (Markovian) ARCH process would be given by:
 
+$$x_t= c+ \theta x_{t-1} + \sigma\left(x_{t-1}\right)\eta_t$$
+
+where $$\sigma\left(x\right)$$ acts as the state-dependent standard deviation of state noise. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings interspersed with periods of relative calm.
+
+In its 
 
 
