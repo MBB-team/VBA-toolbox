@@ -55,7 +55,7 @@ The corresponding observation function would then be simply given by:
 
 $$ g(z_t) = {L_1}^T z_t = x_t$$
 
-with a measurement noise precision $$\sigma \rightarrow \infty$$ (cf. AR(1) processes).
+with a measurement noise precision $$\sigma \rightarrow \infty$$  (in practice, $$10^4$$ or so).
 
 Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
@@ -98,7 +98,7 @@ Finally, one defines the observation function on the augmented state-space as fo
 
 $$ g(z_t) = {L_1}^T z_t = x_t$$
 
-with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
+with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in practice, $$10^4$$ or so).
 
 
 # Switching dynamical systems
