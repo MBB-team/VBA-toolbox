@@ -47,9 +47,10 @@ try
 catch
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
-    hfp = figure('position',pos,'color',[1 1 1],'name',options.figName,'menubar','none','tag','VBNLSS','Renderer','OpenGL');
+    hfp = figure('position',pos,'color',[1 1 1],'menubar','none','tag','VBNLSS','Renderer','OpenGL');
     display.hfp = hfp;
 end
+set(display.hfp,'name',options.figName);
 
 % check if a panel has already been set up (spm tab or central element)
 hPanel = getPanel(display.hfp);
