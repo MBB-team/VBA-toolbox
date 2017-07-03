@@ -39,6 +39,12 @@ $$x_t= c+ \sum_{i=1}^{p}\theta_i x_{t-i} +\eta_t$$
 
 where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters and $$\eta_t$$ is assumed to be i.i.d. Gaussian random noise.
 
+The only issue here stems from the non-Markovian structure of AR(p) processes. But in fact, a very simple solution to this is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following dummay state variable:
+
+$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ ...\\ x_{t-p} \end{array}\right]$$
+
+where $$p$$ is the target order of the autoregressive process.
+
 
 
 
