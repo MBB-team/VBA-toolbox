@@ -69,9 +69,9 @@ where $$r \rightarrow \infty $$. Practically speaking, this can be approximated 
 
 In brief, [autoregressive conditional heteroskedastic (ARCH)](https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity#GARCH) processes are such that the variance of the current error term or innovation depends upon the system's state. In discrete time, an example of a generalized ARCH process would be given by:
 
-$$x_t= a\left(x_{t-1}\right) + \sigma\left(x_{t-1}\right)\eta_t$$
+$$x_t= a\left(x_{t-1}\right) + \beta\left(x_{t-1}\right)\eta_t$$
 
-where a\left(x\right) is an arbitrary mapping of system's states and $$\sigma\left(x\right)$$ acts as the state-dependent standard deviation of state noise. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\sigma$$ is high) interspersed with periods of relative calm (when $$\sigma$$ is low).
+where a\left(x\right) is an arbitrary mapping of system's states and $$\beta\left(x\right)$$ acts as the state-dependent standard deviation of state noise. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\beta$$ is high) interspersed with periods of relative calm (when $$\beta$$ is low).
 
 In its native form, VBA's generative model does not apprently handle state-dependent noise. But in fact, one can use the same trick as for AR(p) models. In brief:
 
@@ -84,21 +84,25 @@ As we will see, the dummy state $$w_t$$ will be composed of "pure" noise.
 
 Second, one defines their evolution function as follows:
 
-$$ f(z_t) = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \sigma\left({L_1}^T z_t\right) {L_2}^T z_t \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left(x_{t-1}\right) + \sigma\left(x_{t-1}\right)w_t \\ 0 \end{array}\right] $$
+$$ f(z_t) = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \beta\left({L_1}^T z_t\right) {L_2}^T z_t \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left(x_{t-1}\right) + \beta\left(x_{t-1}\right)w_t \\ 0 \end{array}\right] $$
 
 where $$L_1$$ and $$L_2$$ are are $$2\times 1$$ vectors given by:
 
-$$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{array}{l} 1 \\ 1 \end{array}\right] $$
+$$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{array}{l} 0 \\ 1 \end{array}\right] $$
 
-In turn, VBA assumes that dummy states are entirely driven by state noise $$\eta_t$$.
+In turn, VBA assumes that dummy states are entirely driven by state noise, i.e. $$w_t = \eta_t$$.
 
 Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
 
-$$ {Q_x}^{-1} = \left[\begin{array}{cc} r & 0 & \\ 0 & 1  \end{array}\right] $$
+$$ {Q_x}^{-1} = \left[\begin{array}{cc} r & 0 \\ 0 & 1  \end{array}\right] $$
 
-with $$r \rightarrow \infty $$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
+with $$r \rightarrow \infty $$. This ensure that state noise only enters at the level of dummy states $$w$$, which is then rescaled by $$\sigma\left(x\right)$$ before perturbing hidden states $x$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
+Finally, one defines the observation function on the augmented state-space as follows:
 
+$$ g(z_t) = {L_1}^T z_t = x_t$$
+
+with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
 
 
