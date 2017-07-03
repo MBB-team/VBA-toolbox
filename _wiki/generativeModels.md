@@ -43,7 +43,7 @@ The only issue here stems from the non-Markovian structure of AR(p) processes. B
 
 $$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}\end{array}\right] = f(z_t) $$
 
-where $$p$$ is the target order of the autoregressive process. Then the structure of AR(p) processes can be emulated using the following evolution function on $$z_t$$:
+where $$p$$ is the target order of the autoregressive process. This augmented state-space can be used to circumvent non-Markovian dynamics of AR(p) processes, the structure of which can be emulated using the following evolution function on $$z_t$$:
 
 $$ f(z_t) = \left[\begin{array}{l} c+ \sum_{i=1}^{p}\theta_i x_{t-i+1} \\ x_{t} \\ \vdots \\ x_{t-p+2} \end{array}\right] = \left[\begin{array}{l} c \\ 0 \\ \vdots \\ 0 \end{array}\right] + \left[\begin{array}{l} A^T \\ {L_1}^T \\ \vdots \\ {L_{p-1}}^T \end{array}\right] z_t  $$
 
@@ -55,9 +55,9 @@ The corresponding observation function would then be simply given by:
 
 $$ g(z_t) = {L_1}^T z_t = x_t$$
 
-with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
+with a measurement noise precision $$\sigma \rightarrow \infty$$ (cf. AR(1) processes).
 
-Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $x_t$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $p-1$ last entries of $z_t$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
+Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
 $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
@@ -70,7 +70,7 @@ In brief, [autoregressive conditional heteroskedastic (ARCH)](https://en.wikiped
 
 $$x_t= a\left(x_{t-1}\right) + \beta\left(x_{t-1}\right)\eta_t$$
 
-where $$a\left(x\right)$$ is an arbitrary mapping of system's states and $$\beta\left(x\right)$$ acts as the state-dependent standard deviation of state noise. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\beta$$ is high) interspersed with periods of relative calm (when $$\beta$$ is low).
+where $$a\left(x\right)$$ is an arbitrary mapping of system's states and $$\beta\left(x\right)$$ acts as the state-dependent standard deviation of state noise $$\eta$$. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\beta$$ is high) interspersed with periods of relative calm (when $$\beta$$ is low).
 
 In its native form, VBA's generative model does not apprently handle state-dependent noise. But in fact, one can use the same trick as for AR(p) models. In brief:
 
