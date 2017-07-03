@@ -245,11 +245,6 @@ suffStat.dx0 = -posterior.muX0;
 suffStat.dtheta = -posterior.muTheta;
 suffStat.dphi = -posterior.muPhi;
 suffStat.vy = out.diagnostics.pvy;
-try
-    Ns=1;%numel(options.sources);
-catch
-    Ns=1;
-end
 
 % Initialize display figure
 options.display.hfp = hfig;
@@ -260,7 +255,7 @@ delete(options.display.hpause)
 delete(options.display.hm)
 delete(options.display.ho)
 if options.dim.n == 0 || isinf(posterior.a_alpha(end))
-    try delete(options.display.ha(2*Ns+6)); end
+    try delete(options.display.ha(8)); end
 end
 
 % Display data and hidden states (if any)
@@ -272,9 +267,9 @@ end
 % Display precision hyperparameters
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
-    xlabel(options.display.ha(2*Ns+4),' ') ;
-    try
-        xlabel(options.display.ha(2*Ns+6),' ') ;
+    xlabel(options.display.ha(6),' ') ;
+    if ishghandle(options.display.ha(8))
+        xlabel(options.display.ha(8),' ') ;
     end
 end
 
@@ -607,11 +602,7 @@ options = out.options;
 options.noPause = 1;
 options.DisplayWin =1;
 suffStat = out.suffStat;
-try
-    Ns=1;%numel(options.sources);
-catch
-    Ns=1;
-end
+
 dim = out.dim;
 % Initialize display figure
 options.display.hfp = hfig;
@@ -622,7 +613,7 @@ delete(options.display.hpause)
 delete(options.display.hm)
 delete(options.display.ho)
 if options.dim.n == 0 || isinf(posterior.a_alpha(end))
-    try delete(options.display.ha(2*Ns+6)); end
+    try delete(options.display.ha(8)); end
 end
 hfig = options.display.hfp;
 drawnow
@@ -633,9 +624,9 @@ end
 % Display precision hyperparameters
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && sum([options.sources(:).type]==0) > 0
-    xlabel(options.display.ha(2*Ns+4),' ')
-    try
-        xlabel(options.display.ha(2*Ns+6),' ')
+    xlabel(options.display.ha(6),' ')
+    if ishghandle(options.display.ha(8))
+        xlabel(options.display.ha(8),' ')
     end
 end
 % Display model evidence
