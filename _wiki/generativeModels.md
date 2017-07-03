@@ -59,9 +59,9 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
 Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $x_t$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $p-1$ last entries of $z_t$. Practically speaking, this can be achieved by setting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagnoal matrix:
 
-$$ {Q_x}^{-1} = \left[\begin{array}{ccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\  &  & \ddots &  \\  &  &  & r  \end{array}\right] $$
+$$ {Q_x}^{-1} = \left[\begin{array}{ccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\  &  & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
-
+where $$r$$ is set to an appriately high value (e.g., $$10^4$$).
 
 
 # GARCH models
