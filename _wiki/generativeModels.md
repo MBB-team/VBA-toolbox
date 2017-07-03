@@ -26,7 +26,7 @@ Note that, in the seminal definition of AR(1) processes, the variable $$x_t$$ is
 
 $$dx(t) = \theta\left(\mu-x(t)\right) + \beta dW(t)$$
 
-where $$\theta$$ and $$\beta$$ are constant parameters and $$dW(t)$$ is a (Wiener process](https://en.wikipedia.org/wiki/Wiener_process).
+where $$\theta$$ and $$\beta$$ are constant parameters and $$dW(t)$$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process).
 
 VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\delta t \left(\mu-x_t\right)$$, where $$\delta t$$ is the discretization step. 
 
