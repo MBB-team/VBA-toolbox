@@ -63,7 +63,7 @@ $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots &
 
 where $$r \rightarrow \infty $$ to ensure that the past history of hidden states is transfered without distortion. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
-> Tip: This augmented state-space can be used to model delayed dynamical systems...
+> Tip: The augmented state-space of AR(p) processes can be generalized to model any form of delayed dynamical system!
 
 
 # ARCH models
