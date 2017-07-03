@@ -1,5 +1,5 @@
 ---
-title: "Extending VBA's generative models (for power-users)"
+title: "Extending VBA's generative model"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
