@@ -119,6 +119,9 @@ if isequal(dTime,1) && size(y,1) > 1
         mux = mux';
         vx = vx';
     end
+    try
+        options.isYout = options.isYout';
+    end
     dTime = 1:size(y,2);
     for si=1:numel(options.sources)
         options.sources(si).out = si;
