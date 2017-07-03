@@ -60,19 +60,41 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
 Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $x_t$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $p-1$ last entries of $z_t$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
-$$ {Q_x}^{-1} = \left[\begin{array}{ccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\  &  & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
+$$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\  &  & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
 where $$r \rightarrow \infty $$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
 
 # ARCH models
 
-In brief, [autoregressive conditional heteroskedastic (ARCH)](https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity#GARCH) processes are such that the variance of the current error term or innovation depends upon the system's state. In discrete time, an example of (Markovian) ARCH process would be given by:
+In brief, [autoregressive conditional heteroskedastic (ARCH)](https://en.wikipedia.org/wiki/Autoregressive_conditional_heteroskedasticity#GARCH) processes are such that the variance of the current error term or innovation depends upon the system's state. In discrete time, an example of a generalized ARCH process would be given by:
 
-$$x_t= c+ \theta x_{t-1} + \sigma\left(x_{t-1}\right)\eta_t$$
+$$x_t= a\left(x_{t-1}\right) + \sigma\left(x_{t-1}\right)\eta_t$$
 
-where $$\sigma\left(x\right)$$ acts as the state-dependent standard deviation of state noise. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings interspersed with periods of relative calm.
+where a\left(x\right) is an arbitrary mapping of system's states and $$\sigma\left(x\right)$$ acts as the state-dependent standard deviation of state noise. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\sigma$$ is high) interspersed with periods of relative calm (when $$\sigma$$ is low).
 
-In its 
+In its native form, VBA's generative model does not apprently handle state-dependent noise. But in fact, one can use the same trick as for AR(p) models. In brief:
+
+
+- First, one augments hidden states with dummy states $$w_t$$ as follows:
+
+$$ z_t = \left[\begin{array}{l} x_t \\ w_t \end{array}\right] $$
+
+As we will see, the dummy state $$w_t$$ will be composed of "pure" noise.
+
+- Second, one defines their evolution function as follows:
+
+$$ f(z_t) = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \sigma\left({L_2}^T z_t\right) \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left(x_{t-1}\right) + \sigma\left(x_{t-1}\right)w_t \\ 0 \end{array}\right] $$
+
+In turn, VBA assumes that dummy states are entirely driven by state noise $$\eta_t$$.
+
+- Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
+
+$$ {Q_x}^{-1} = \left[\begin{array}{cc} r & 0 & \\ 0 & 1  \end{array}\right] $$
+
+with $$r \rightarrow \infty $$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
+
+
+
 
 
