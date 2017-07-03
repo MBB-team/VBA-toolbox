@@ -22,23 +22,18 @@ Note that, in the seminal definition of AR(1) processes, the variable $$x_t$$ is
 
 # Ornstein-Uhlenbeck processes
 
-[Ornstein-Uhlenbeck processes](https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process) are a continuous variant of AR(1) processes, which tend to drift towards its long-term mean (which is why it called [mean-reverting](https://en.wikipedia.org/wiki/Mean_reversion_(finance))). Formally speaking, an Ornstein–Uhlenbeck process $$x(t)$$ satisfies the following [stochastic differential equation](https://en.wikipedia.org/wiki/Stochastic_differential_equation):
+An [Ornstein-Uhlenbeck process](https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process) is a continuous variant of AR(1) processes that tends to drift towards its long-term mean, which is why it is called [mean-reverting](https://en.wikipedia.org/wiki/Mean_reversion_(finance)). Formally speaking, an Ornstein–Uhlenbeck process $$x(t)$$ satisfies the following [stochastic differential equation](https://en.wikipedia.org/wiki/Stochastic_differential_equation):
 
 $$dx(t) = \theta\left(\mu-x(t)\right) + \beta dW(t)$$
 
-where $$\theta$$ and $$\beta$$ are constant parameters and $$dW(t)$$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process).
+where $$\theta$$ and $$\beta$$ are constant parameters, $$\mu$$ is the long-term mean of the process, and $$dW(t)$$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process). As can be seen in the equation above, the process is expected to exhibit some form of [regression to the mean](https://en.wikipedia.org/wiki/Regression_toward_the_mean), because deviations from the mean $$\left(\mu-x(t)\right)$$ effectively induce restoring forces.
 
-VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\delta t \left(\mu-x_t\right)$$, where $$\delta t$$ is the discretization step. 
-
-
-
-
-
+VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\delta t \left(\mu-x_t\right)$$, where $$\delta t$$ is the discretization step. The continuous limit is obtained by increasing the number of recursive calls to the evolution function between two time samples (e.g., by setting VBA's micro-time resolution to `options.decim = 10`). 
 
 
 # Auto-regressive AR(p) models
 
-bla.
+
 
 
 
