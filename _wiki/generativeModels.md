@@ -28,7 +28,7 @@ $$dx(t) = \theta\left(\mu-x(t)\right) + \beta dW(t)$$
 
 where $$\theta$$ and $$\beta$$ are constant parameters, $$\mu$$ is the long-term mean of the process, and $$dW(t)$$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process). As can be seen in the equation above, the process is expected to exhibit some form of [regression to the mean](https://en.wikipedia.org/wiki/Regression_toward_the_mean), because deviations from the mean $$\mu-x(t)$$ effectively induce restoring forces.
 
-VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\delta t \left(\mu-x_t\right)$$, where $$\delta t$$ is the discretization step. The continuous limit is obtained by increasing the number of recursive calls to the evolution function between two time samples (e.g., by setting VBA's micro-time resolution to `options.decim = 10`). 
+VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\Delta t \left(\mu-x_t\right)$$, where $$\Delta t$$ is the discretization step. The continuous limit is obtained by increasing the number of recursive calls to the evolution function between two time samples (e.g., by setting VBA's micro-time resolution to `options.decim = 10`). 
 
 
 # Auto-regressive AR(p) models
@@ -57,7 +57,11 @@ $$ g(z_t) = {L_1}^T z_t = x_t$$
 
 with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
-Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers 
+Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $x_t$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $p-1$ last entries of $z_t$. Practically speaking, this can be achieved by setting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagnoal matrix:
+
+$$ {Q_x}^{-1} = \left[\begin{array}{ccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\  &  & \ddots &  \\  &  &  & r  \end{array}\right] $$
+
+
 
 
 # GARCH models
