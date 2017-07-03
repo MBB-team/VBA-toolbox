@@ -53,11 +53,11 @@ $$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{ar
 
 The corresponding observation function would then be given by:
 
-$$ g(z_t) = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right] z_t = x_t$$
+$$ g(z_t) = {L_1}^T z_t = x_t$$
 
 with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
-Note that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of detemrinistic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$.
+Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers 
 
 
 # GARCH models
