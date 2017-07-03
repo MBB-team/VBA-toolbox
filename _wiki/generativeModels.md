@@ -115,7 +115,7 @@ Having said this, one can approximate discrete states in terms of continuous sta
 
 $$z = s_{\beta}\left(x\right) = \frac{\exp \beta x}{\sum_{i=1}^n \exp \beta x_i}$$
 
-where $$s_{\beta}()$$ is a sfotmax mapping and $$\beta \rightarrow \infty $$.
+where $$s_{\beta}()$$ is a softmax mapping with inverse-temperature $$\beta \rightarrow \infty $$.
 
 In switching dynamical systems, such discrete states evolve according to the following transition probability matrix:
 
