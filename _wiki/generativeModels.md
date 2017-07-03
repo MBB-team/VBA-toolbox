@@ -41,18 +41,21 @@ where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters and $$\eta_t$$
 
 The only issue here stems from the non-Markovian structure of AR(p) processes. But in fact, a very simple solution to this is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following dummay state variable:
 
-$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ ...\\ x_{t-p+1} \end{array}\right]$$
+$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right]$$
 
 where $$p$$ is the target order of the autoregressive process. Then the structure of AR(p) processes can be emulated using the following evolution function on $$z_t$$:
 
-$$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ ...\\ 0 \end{array}\right] + \left[\begin{array}{l} A^T \\ {L_1}^T \\ ...\\ {L_{p-1}}^T \end{array}\right] z_t $$
+$$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ \vdots \\ 0 \end{array}\right] + \left[\begin{array}{l} A^T \\ {L_1}^T \\ \vdots \\ {L_{p-1}}^T \end{array}\right] z_t $$
 
-where $$A$$ and $$L_1,...,L_{p-1}$$ are vectors given by:
+where $$A$$ and $$L_1,...,L_{p-1}$$ are $$p\times 1$$ vectors given by:
 
-$$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ ...\\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 0 \\ 1 \\ ...\\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ 0 \\ ...\\ 1 \end{array}\right]$$.
+$$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 0 \\ 1 \\ \vdots \\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ 0 \\ \vdots \\ 1 \end{array}\right]$$.
 
+The corresponding observation function would then be given by:
 
+$$ g(z_t) = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right] z_t $$
 
+with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
 # GARCH models
 
