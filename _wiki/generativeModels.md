@@ -113,9 +113,9 @@ Strictly speaking, VBA cannot handle this type of generative models, i.e. there 
 
 Having said this, one can approximate discrete states in terms of continuous states passed through steep sigmoidal mappings. For example, let $$z$$ be the $$n\times 1$$ [indicator vector](https://en.wikipedia.org/wiki/Indicator_vector) of a discrete state, i.e. the only non-zero entry of $$z$$ specifies which element of the discrete space is currently active. Then:
 
-$$z = \frac{\exp \beta x}{\sum_{i=1}^n \exp \beta x_i}$$
+$$z = s\left(x\right) = \frac{\exp \beta x}{\sum_{i=1}^n \exp \beta x_i}$$
 
-where $$x$$ is a dummy $$n\times 1$$ vector and $$\beta \rightarrow \infty $$
+where $$s()$$ is a sfotmax mapping, $$x$$ is a dummy $$n\times 1$$ vector and $$\beta \rightarrow \infty $$.
 
 In switching dynamical systems, such discrete states evolve according to the following transition probability matrix:
 
@@ -123,17 +123,17 @@ $$ P\left(z_t\mid z_{t-1}\right) = \Pi = \left[\begin{array}{cccc} \pi_{11} & \p
 
 where $$1 = \sum_{i=1}^{n} \pi_{ij}$$ for all $$j$$.
 
-Conditional on $$z_{t-1}^{(j)}=1$$, the first-order and second-order moment of $$z_t$$ are thus given by:
+Conditional on $$z_{t-1}$$, the first-order and second-order moment of $$z_t$$ are thus given by:
 
-$$ E\left[z_t\mid z_{t-1}^{(j)}=1\right] = \pi_{\bullet j} $$
+$$ E\left[z_t\mid z_{t-1}\right] = \Pi z_{t-1} $$
 
 and:
 
-$$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = diag(\pi_{\bullet j}) - \pi_{\bullet j}\pi_{\bullet j}^T $$
+$$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = diag(\Pi z_{t-1}) - \pi_{\Pi z_{t-1}}\pi_{\Pi z_{t-1}}^T $$
 
-where $$\pi_{\bullet j}$$ is the $$j^{th}$$ column of the $$n\times n$$ matrix $$\Pi$$ and $$diag(x)$$ is the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
+where $$diag(x)$$ is, by abuse of notation, the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
 
-Thus, switching dynamical systems 
+Thus, switching dynamical systems can be seen as some form of ARCH model, whereby the noise variance is dependent upon the previous state of the system (and given by the above equation).
 
 
 
