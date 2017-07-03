@@ -35,6 +35,7 @@ title: "home"
 - [Setting the priors through Empirical Bayes (group studies)](VBA-MFX)
 - [Setting "hard constraints" through parameter transformations](param-transform)
 - [A few useful stand-alone VBA functions](a-few-VBA-functions)
+- [Extending VBA's native generative model](generativeModels)
 
 
 # Library of models
