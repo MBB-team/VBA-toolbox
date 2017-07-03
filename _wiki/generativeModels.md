@@ -123,9 +123,11 @@ $$ E\left[z_t\mid z_{t-1}^{(j)}=1\right] = \pi_{\bullet j} $$
 
 and:
 
-$$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = I_n - \pi_{\bullet j}\pi_{\bullet j}^T $$
+$$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = diag(\pi_{\bullet j}) - \pi_{\bullet j}\pi_{\bullet j}^T $$
 
-where $$\pi_{\bullet j}$$ is the $$j^{th}$$ column of the $$n\times n$$ matrix $$\Pi$$ and $$I_n$$ is the $$n\times n$$ identity matrix.
+where $$\pi_{\bullet j}$$ is the $$j^{th}$$ column of the $$n\times n$$ matrix $$\Pi$$ and $$diag(x)$$ is the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
+
+
 
 
 
