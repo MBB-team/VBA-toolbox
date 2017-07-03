@@ -41,7 +41,7 @@ where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters and $$\eta_t$$
 
 The only issue here stems from the non-Markovian structure of AR(p) processes. But in fact, a very simple solution to this is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following dummay state variable:
 
-$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}$$
+$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}\end{array}\right]$$
 
 where $$p$$ is the target order of the autoregressive process. Then the structure of AR(p) processes can be emulated using the following evolution function on $$z_t$$:
 
@@ -53,11 +53,11 @@ $$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{ar
 
 The corresponding observation function would then be given by:
 
-$$ g(z_t) = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right] z_t $$
+$$ g(z_t) = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right] z_t = x_t$$
 
 with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
-
+Note that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of detemrinistic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$.
 
 
 # GARCH models
