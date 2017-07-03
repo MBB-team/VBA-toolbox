@@ -105,4 +105,12 @@ $$ g(z_t) = {L_1}^T z_t = x_t$$
 with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
 
+# Switching dynamical systems
+
+Many natural systems, ranging from neurons firing patterns to collective motion of animal crowds, give rise to time series data with complex, nonlinear dynamics. One can gain insight into these systems by decomposing the data into segments that are each explained by simpler dynamic units. This induces so-called switching dynamical systems. The state-space of such system is composed of both continuous ($$x$$) and discrete ($$z$$) states. In particular, the discrete states control the form of the evolution function of the continuous states, eventually inducing abrupt changes in the system's deterministic flow.
+
+Formally speaking, VBA cannot handle this type of generative models, i.e. there is no trick that can be used to emulate switching dynamical systems from nonlieanr state-space models. In fact, this is the only class of models that cannot be obtained from VBA's generative model!
+
+
+
 
