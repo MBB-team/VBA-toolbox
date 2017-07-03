@@ -119,15 +119,15 @@ $$ P\left(z_t\mid z_{t-1}\right) = \Pi = \left[\begin{array}{cccc} \pi_{11} & \p
 
 where $$1 = \sum_{i=1}^{n} \pi_{ij}$$ for all $$j$$.
 
-Conditional on $$z_{t-1}$$, the first-order and second-order moment of $$z_t$$ are thus given by:
+Conditional on $$z_{t-1}$$, the first- and second-order moments of $$z_t$$ are thus given by:
 
 $$ E\left[z_t\mid z_{t-1}\right] = \Pi z_{t-1} $$
 
 and:
 
-$$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = diag(\Pi z_{t-1}) - \left(\Pi z_{t-1}\right) \left(\Pi z_{t-1}\right)^T $$
+$$ V\left[z_t\mid z_{t-1}\right] = \textsf{diag}(\Pi z_{t-1}) - \left(\Pi z_{t-1}\right) \left(\Pi z_{t-1}\right)^T $$
 
-where $$diag(x)$$ is, by abuse of notation, the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
+where $$\textsf{diag}(x)$$ is, by abuse of notation, the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
 
 Thus, switching dynamical systems can be seen as some form of multivariate ARCH model, whereby the noise variance-covariance matrix is dependent upon the previous state of the system (and given by the above equation). One would then define a state-space using $$n$$ continuous states mapped through a sigmoid mapping and $$n$$ dummy states that are driven by noise but are rescaled prior to perturbing the first half of the state-space...
 
