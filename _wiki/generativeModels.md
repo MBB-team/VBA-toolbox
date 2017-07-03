@@ -60,7 +60,7 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
 Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's evolution is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $x_t$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $p-1$ last entries of $z_t$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
-$$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\  &  & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
+$$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
 where $$r \rightarrow \infty $$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
@@ -119,7 +119,7 @@ where $$s_{\beta}()$$ is a softmax mapping with inverse-temperature $$\beta \rig
 
 In switching dynamical systems, such discrete states evolve according to the following transition probability matrix:
 
-$$ P\left(z_t\mid z_{t-1}\right) = \Pi = \left[\begin{array}{cccc} \pi_{11} & \pi_{12} & \cdots & \pi_{1n} \\ \pi_{21} & \pi_{22} & \cdots & \pi_{2n} \\ \vdots & \vdots & \vdots & \vdots \\ \pi_{n1} & \pi_{n2} & \cdots & \pi_{nn} \end{array}\right] $$
+$$ P\left(z_t\mid z_{t-1}\right) = \Pi = \left[\begin{array}{cccc} \pi_{11} & \pi_{12} & \cdots & \pi_{1n} \\ \pi_{21} & \pi_{22} & \cdots & \pi_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ \pi_{n1} & \pi_{n2} & \cdots & \pi_{nn} \end{array}\right] $$
 
 where $$1 = \sum_{i=1}^{n} \pi_{ij}$$ for all $$j$$.
 
@@ -133,7 +133,7 @@ $$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = diag(\Pi z_{t-1}) - \left(\Pi z_{t-1}
 
 where $$diag(x)$$ is, by abuse of notation, the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
 
-Thus, switching dynamical systems can be seen as some form of multivariate ARCH model, whereby the noise variance-covariance matrix is dependent upon the previous state of the system (and given by the above equation). 
+Thus, switching dynamical systems can be seen as some form of multivariate ARCH model, whereby the noise variance-covariance matrix is dependent upon the previous state of the system (and given by the above equation). One would then define a state-space using $$n$$ continuous states mapped through a sigmoid mapping and $$n$$ dummy states that are driven by noise but are rescaled prior to perturbing the first half of the state-space...
 
 
 
