@@ -76,19 +76,23 @@ where a\left(x\right) is an arbitrary mapping of system's states and $$\sigma\le
 In its native form, VBA's generative model does not apprently handle state-dependent noise. But in fact, one can use the same trick as for AR(p) models. In brief:
 
 
-- First, one augments hidden states with dummy states $$w_t$$ as follows:
+First, one augments hidden states with dummy states $$w_t$$ as follows:
 
 $$ z_t = \left[\begin{array}{l} x_t \\ w_t \end{array}\right] $$
 
 As we will see, the dummy state $$w_t$$ will be composed of "pure" noise.
 
-- Second, one defines their evolution function as follows:
+Second, one defines their evolution function as follows:
 
-$$ f(z_t) = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \sigma\left({L_2}^T z_t\right) \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left(x_{t-1}\right) + \sigma\left(x_{t-1}\right)w_t \\ 0 \end{array}\right] $$
+$$ f(z_t) = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \sigma\left({L_1}^T z_t\right) {L_2}^T z_t \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left(x_{t-1}\right) + \sigma\left(x_{t-1}\right)w_t \\ 0 \end{array}\right] $$
+
+where $$L_1$$ and $$L_2$$ are given by:
+
+$$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{array}{l} 1 \\ 1 \end{array}\right] $$.
 
 In turn, VBA assumes that dummy states are entirely driven by state noise $$\eta_t$$.
 
-- Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
+Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
 
 $$ {Q_x}^{-1} = \left[\begin{array}{cc} r & 0 & \\ 0 & 1  \end{array}\right] $$
 
