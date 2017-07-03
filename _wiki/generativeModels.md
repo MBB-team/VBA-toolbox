@@ -9,7 +9,17 @@ As we have described [here]({{ site.baseurl }}/_wiki/Structure-of-VBA's-generati
 
 # Auto-regressive AR(1) models
 
-bla.
+First-order auto-regressive models or AR(1) capture the simplest form of stochastic processes. They are defined recusrvely as follows:
+
+$$x_t= c+ \phi x_{t-1} +\epsilon_t$$
+
+where $$c$$ and $$\phi$$ are constant parameters and $$\epsilon_t$$ is typically assumed to be i.i.d. Gaussian random noise.
+
+> This process is [wide-sense stationary](https://en.wikipedia.org/wiki/Stationary_process#Weak_or_wide-sense_stationarity) if $$\mid \phi \mid <1$$.
+
+
+
+
 
 # Auto-regressive AR(p) models
 
