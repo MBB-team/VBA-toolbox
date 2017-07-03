@@ -129,7 +129,7 @@ $$ V\left[z_t\mid z_{t-1}\right] = \textsf{diag}(\Pi z_{t-1}) - \left(\Pi z_{t-1
 
 where $$\textsf{diag}(x)$$ is, by abuse of notation, the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
 
-Thus, switching dynamical systems can be seen as some form of multivariate ARCH model, whereby the noise variance-covariance matrix is dependent upon the previous state of the system (and given by the above equation). One would then define a state-space using $$n$$ continuous states mapped through a sigmoid mapping and $$n$$ dummy states that are driven by noise but are rescaled prior to perturbing the first half of the state-space...
+Thus, switching dynamical systems can be seen as some form of multivariate ARCH model, whereby the noise variance-covariance matrix is dependent upon the previous state of the system (and given by the above equation). One would then define an augmented state-space using $$n$$ continuous states mapped through a sigmoid mapping and $$n$$ dummy states that are driven by noise but are rescaled approrpiately prior to perturbing the first half of the state-space...
 
 
 
