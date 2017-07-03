@@ -57,7 +57,7 @@ $$ g(z_t) = {L_1}^T z_t = x_t$$
 
 with a measurement noise precision $$\sigma \rightarrow \infty$$  (in practice, $$10^4$$ or so).
 
-> Evolution parameters include $$c$$ and $$\theta_1,...,\theta_p$$, which can be estimated using VBA in the usual way. Note that in this exmaple, there is no observation parameter.
+> Evolution parameters include $$c$$ and $$\theta_1,...,\theta_p$$, which can be estimated using VBA in the usual way. Note that in this example, there is no observation parameter.
 
 Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics are driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
