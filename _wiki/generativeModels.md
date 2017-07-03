@@ -39,7 +39,7 @@ $$ x_t= c+ \sum_{i=1}^{p}\theta_i x_{t-i} +\eta_t $$
 
 where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters, and $$\eta_t$$ is assumed to be i.i.d. Gaussian random noise.
 
-The only issue here stems from the non-Markovian structure of AR(p) processes. But in fact, a very simple solution to this is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following $$p\times 1$$ dummy state variable:
+The only issue here stems from the non-Markovian structure of AR(p) processes. But in fact, a very simple solution to this is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following $$p\times 1$$ augmented state variable:
 
 $$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}\end{array}\right] = f(z_t) $$
 
@@ -61,7 +61,7 @@ Now, there is a last problem to fix. Recall that, when inverting stochastic mode
 
 $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
-where $$r \rightarrow \infty $$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
+where $$r \rightarrow \infty $$ to ensure that the past history of hidden states is transfered without distortion. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
 
 # ARCH models
@@ -72,10 +72,7 @@ $$x_t= a\left(x_{t-1}\right) + \beta\left(x_{t-1}\right)\eta_t$$
 
 where $$a\left(x\right)$$ is an arbitrary mapping of system's states and $$\beta\left(x\right)$$ acts as the state-dependent standard deviation of state noise $$\eta$$. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\beta$$ is high) interspersed with periods of relative calm (when $$\beta$$ is low).
 
-In its native form, VBA's generative model does not apprently handle state-dependent noise. But in fact, one can use the same trick as for AR(p) models. In brief:
-
-
-First, one augments hidden states with dummy states $$w_t$$ as follows:
+In its native form, VBA's generative model does not apprently handle state-dependent noise. But in fact, one can use the same trick as for AR(p) models. First, one augments the native state-space with dummy states $$w_t$$ as follows:
 
 $$ z_t = \left[\begin{array}{l} x_t \\ w_t \end{array}\right] $$
 
@@ -83,13 +80,13 @@ As we will see, the dummy state $$w_t$$ will be composed of "pure" noise.
 
 Second, one defines their evolution function as follows:
 
-$$ f(z_t) = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \beta\left({L_1}^T z_t\right) {L_2}^T z_t \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left(x_{t-1}\right) + \beta\left(x_{t-1}\right)w_t \\ 0 \end{array}\right] $$
+$$ f(z_t)  = \left[\begin{array}{l} a\left(x_t\right) + \beta\left(x_t\right)w_t \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \beta\left({L_1}^T z_t\right) {L_2}^T z_t \\ 0 \end{array}\right] $$
 
 where $$L_1$$ and $$L_2$$ are are $$2\times 1$$ vectors given by:
 
 $$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{array}{l} 0 \\ 1 \end{array}\right] $$
 
-In turn, VBA assumes that dummy states are entirely driven by state noise, i.e. $$w_t = \eta_t$$.
+Since the deterministic flow of dummy states is null, their stochastic dynamics are solely driven by state noise, i.e. $$w_t = \eta_t$$.
 
 Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
 
