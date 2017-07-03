@@ -109,13 +109,13 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$.
 
 Many natural systems, ranging from neurons firing patterns to collective motion of animal crowds, give rise to time series data with complex, nonlinear dynamics. One can gain insight into these systems by decomposing the data into segments that are each explained by simpler dynamic units. This induces so-called switching dynamical systems. The state-space of such system is composed of both continuous ($$x$$) and discrete ($$z$$) states. In particular, the discrete states control the form of the evolution function of the continuous states, eventually inducing abrupt changes in the system's deterministic flow.
 
-Strictly speaking, VBA cannot handle this type of generative models, i.e. there is no simple trick that can be used to emulate switching dynamical systems as a limiting subcase of nonlinear state-space models. The issue here, derives from (mutually exclusive) discrete states, that evolve according to transition probabilities that have no formal equivalent in continuous state-spaces...
+Strictly speaking, a switching dynamical system cannot be derived as a limiting subcase of nonlinear state-space models. The issue here, derives from (mutually exclusive) discrete states, that evolve according to transition probabilities that have no formal equivalent in continuous state-spaces...
 
-Having said this, one can approximate discrete states in terms of continuous states passed through steep sigmoidal mappings. For example, let $$z$$ be the $$n\times 1$$ [indicator vector](https://en.wikipedia.org/wiki/Indicator_vector) of a discrete state, i.e. the only non-zero entry of $$z$$ specifies which element of the discrete space is currently active. Then:
+Having said this, one can approximate discrete states in terms of continuous states passed through steep sigmoidal mappings. For example, let $$z$$ be the $$n\times 1$$ [indicator vector](https://en.wikipedia.org/wiki/Indicator_vector) of a discrete state, i.e. the only non-zero entry of $$z$$ specifies which element of the discrete space is currently active. Then, there always exists some continuous $$n\times 1$$ vector $$x$$ that verifies:
 
-$$z = s\left(x\right) = \frac{\exp \beta x}{\sum_{i=1}^n \exp \beta x_i}$$
+$$z = s_{\beta}\left(x\right) = \frac{\exp \beta x}{\sum_{i=1}^n \exp \beta x_i}$$
 
-where $$s()$$ is a sfotmax mapping, $$x$$ is a dummy $$n\times 1$$ vector and $$\beta \rightarrow \infty $$.
+where $$s_{\beta}()$$ is a sfotmax mapping and $$\beta \rightarrow \infty $$.
 
 In switching dynamical systems, such discrete states evolve according to the following transition probability matrix:
 
@@ -133,7 +133,7 @@ $$ V\left[z_t\mid z_{t-1}^{(j)}=1\right] = diag(\Pi z_{t-1}) - \left(\Pi z_{t-1}
 
 where $$diag(x)$$ is, by abuse of notation, the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
 
-Thus, switching dynamical systems can be seen as some form of ARCH model, whereby the noise variance is dependent upon the previous state of the system (and given by the above equation).
+Thus, switching dynamical systems can be seen as some form of multivariate ARCH model, whereby the noise variance-covariance matrix is dependent upon the previous state of the system (and given by the above equation). 
 
 
 
