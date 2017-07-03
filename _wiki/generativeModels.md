@@ -41,9 +41,13 @@ where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters and $$\eta_t$$
 
 The only issue here stems from the non-Markovian structure of AR(p) processes. But in fact, a very simple solution to this is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following dummay state variable:
 
-$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ ...\\ x_{t-p} \end{array}\right]$$
+$$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ ...\\ x_{t-p+1} \end{array}\right]$$
 
-where $$p$$ is the target order of the autoregressive process.
+where $$p$$ is the target order of the autoregressive process. Then the structure of AR(p) processes can be emulated using the following evolution function on $$z_t$$:
+
+$$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ ...\\ 0 \end{array}\right] + \left[\begin{array}{l} \A^T \\ {L_1}^T \\ ...\\ {L_{p-1}}^T \end{array}\right] z_t $$ where:
+
+$$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ ...\\ \theta_{p-1} \end{array}\right]$$
 
 
 
