@@ -1,5 +1,5 @@
 ---
-title: "How general is the class of VBA's generative models?"
+title: "Extending VBA's generative models"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
@@ -50,7 +50,7 @@ $$ f(z_t) = \left[\begin{array}{l} c \\ 0 \\ \vdots \\ 0 \end{array}\right] + \l
 where $$A$$ and $$L_1,...,L_{p-1}$$ are $$p\times 1$$ vectors given by:
 
 
-$$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ \vdots \\ 0 \\ 1 \end{array}\right] $$.
+$$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ \vdots \\ 0 \\ 1 \end{array}\right] $$
 
 The corresponding observation function would then be simply given by:
 
@@ -86,9 +86,9 @@ Second, one defines their evolution function as follows:
 
 $$ f(z_t) = \left[\begin{array}{l} a\left({L_1}^T z_t\right) + \sigma\left({L_1}^T z_t\right) {L_2}^T z_t \\ 0 \end{array}\right] = \left[\begin{array}{l} a\left(x_{t-1}\right) + \sigma\left(x_{t-1}\right)w_t \\ 0 \end{array}\right] $$
 
-where $$L_1$$ and $$L_2$$ are given by:
+where $$L_1$$ and $$L_2$$ are are $$2\times 1$$ vectors given by:
 
-$$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{array}{l} 1 \\ 1 \end{array}\right] $$.
+$$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{array}{l} 1 \\ 1 \end{array}\right] $$
 
 In turn, VBA assumes that dummy states are entirely driven by state noise $$\eta_t$$.
 
