@@ -103,7 +103,7 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in pra
 
 # Switching dynamical systems
 
-Many natural systems, ranging from neurons firing patterns to collective motion of animal crowds, give rise to time series data with complex, nonlinear dynamics. One can gain insight into these systems by decomposing the data into segments that are each explained by simpler dynamic units. This induces so-called switching dynamical systems. The state-space of such system is composed of both continuous ($$x$$) and discrete ($$z$$) states. In particular, the discrete states control the form of the evolution function of the continuous states, eventually inducing abrupt changes in the system's deterministic flow.
+Many natural systems, ranging from neurons firing patterns to collective motion of animal crowds, give rise to time series data with complex dynamics that may not be amenable to explicit modelling. Neverthless, one can gain insight into these systems by decomposing the data into segments that are each explained by simpler dynamic units. This induces so-called switching dynamical systems. The state-space of such system is composed of both continuous ($$x$$) and discrete ($$z$$) states. The latter control the form of the evolution function of the former, eventually capturing potentially abrupt changes in the system's deterministic flow.
 
 Strictly speaking, a switching dynamical system cannot be derived as a limiting subcase of nonlinear state-space models. The issue here, derives from (mutually exclusive) discrete states, that evolve according to transition probabilities that have no formal equivalent in continuous state-spaces...
 
