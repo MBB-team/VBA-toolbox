@@ -242,7 +242,7 @@ end
 
 % Create axes for state noise precision hyperparameter
 if ~isequal(options0.g_fname,@VBA_odeLim) && options.dim.n > 0 % not for non stochastic systems
-    display.ha(8) = subplot('Position',[.55 .02 .375 .174],'parent',hPanel,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(8) = subplot('Position',[.55 .03 .375 .174],'parent',hPanel,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(8),'system''s noise precision: p(alpha|y,m)','fontsize',12)
     else
