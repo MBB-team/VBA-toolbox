@@ -28,7 +28,7 @@ $$dx(t) = \theta\left(\mu-x(t)\right) + \beta dW(t)$$
 
 where $$\theta$$ and $$\beta$$ are constant parameters, $$\mu$$ is the long-term mean of the process, and $$dW(t)$$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process). As can be seen in the equation above, the process is expected to exhibit some form of [regression to the mean](https://en.wikipedia.org/wiki/Regression_toward_the_mean), because deviations from the mean $$\mu-x(t)$$ effectively induce restoring forces.
 
-VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\Delta t \left(\mu-x_t\right)$$, where $$\Delta t$$ is the discretization step. The continuous limit is obtained by increasing the number of recursive calls to the evolution function between two time samples (e.g., by setting VBA's micro-time resolution to `options.decim = 10` or more). 
+VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\Delta t \theta\left(\mu-x_t\right)$$, where $$\Delta t$$ is the discretization step. Evolution parameters now include both $$\mu$$ and $$\theta$$. The continuous limit is obtained by increasing the number of recursive calls to the evolution function between two time samples (e.g., by setting VBA's micro-time resolution to `options.decim = 10` or more). 
 
 
 # Auto-regressive AR(p) models
@@ -57,7 +57,9 @@ $$ g(z_t) = {L_1}^T z_t = x_t$$
 
 with a measurement noise precision $$\sigma \rightarrow \infty$$  (in practice, $$10^4$$ or so).
 
-Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics is driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
+> Evolution parameters include $$c$$ and $$\theta_1,...,\theta_p$$, which can be estimated using VBA in the usual way. Note that in this exmaple, there is no observation parameter.
+
+Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics are driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
 $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
@@ -88,7 +90,9 @@ where $$L_1$$ and $$L_2$$ are are $$2\times 1$$ vectors given by:
 
 $$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{array}{l} 0 \\ 1 \end{array}\right] $$
 
-Since the deterministic flow of dummy states is null, their stochastic dynamics are solely driven by state noise, i.e. $$w_t = \eta_t$$.
+Since the deterministic flow of dummy states is null, their stochastic dynamics are solely driven by state noise, i.e. $$w_t = \eta_t$$. 
+
+> Both the native deterministic flow $$a(x)$$ and the state-dependent standard-deviation $$\beta(x)$$ can be parameterized, eventually yielding evolution parameters that can be estimated using VBA.
 
 Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
 
