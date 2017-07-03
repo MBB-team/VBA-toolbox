@@ -192,7 +192,7 @@ end
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
 if ~options.OnLine && ~options.binomial
     xlabel(options.display.ha(6),' ')
-    try
+    if ishghandle(options.display.ha(8))
         xlabel(options.display.ha(8),' ')
     end
 end
