@@ -4,7 +4,7 @@ title: "Extending VBA's generative models"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-As we have described [here]({{ site.baseurl }}/_wiki/Structure-of-VBA's-generative-model.md), VBA handles a specific class of generative models, namely: non-linear state-space models. As we discuss below, this class of models is in fact very general, and can be used to emulate more sophisticated generative models that would apparently necessitate an extension of VBA's inference capabilities.
+As we have described [here]({{ site.baseurl }}/_wiki/Structure-of-VBA's-generative-model.md), VBA handles a specific class of generative models, namely: nonlinear state-space models. As we discuss below, this class of models is in fact very general, and can be used to emulate more sophisticated generative models that would apparently necessitate an extension of VBA's inference capabilities. The list of examples given below is by no means exhaustive, but it conveys enough intuition regarding the many ways in which nonlinear state-space models can be set to bypass VBA's apparent limitations...
 
 
 # Auto-regressive AR(1) models
@@ -63,6 +63,8 @@ $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots &
 
 where $$r \rightarrow \infty $$ to ensure that the past history of hidden states is transfered without distortion. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
+> Tip: This augmented state-space can be used to model delayed dynamical systems...
+
 
 # ARCH models
 
@@ -99,6 +101,8 @@ Finally, one defines the observation function on the augmented state-space as fo
 $$ g(z_t) = {L_1}^T z_t = x_t$$
 
 with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in practice, $$10^4$$ or so).
+
+> The computational cost incurred when emulating ARCH models using homoscedastic state-space models is twofold: (i) an increase in the dimensionality of the system, and (ii) some form of nonlinearity in the evolution function. In fact, this intuition generalizes to any form of heteroscedasticity.
 
 
 # Switching dynamical systems
