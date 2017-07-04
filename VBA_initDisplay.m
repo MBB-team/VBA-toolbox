@@ -46,7 +46,9 @@ if isfield(display,'hfp') % from init
     hfp = display.hfp;
 elseif isfield(options,'hf') % form metaiteration
     hfp = options.hf ;
-    clo(hfp)
+    try
+        delete(intersect(findobj('tag','diagnostics_tabs'),get(hfp,'children')));
+    end
 else
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
