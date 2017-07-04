@@ -275,7 +275,7 @@ drawnow
         if options.sources(currentSource).type < 2
             plot(display.ha(1),dTime,y_s',':')
             plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9)
-            plot(display.ha(1),dTime,y_s_on','.','MarkerEdgeColor',[0 0 .8],'MarkerSize',9)
+            plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9)
             vy_s= vy(s_out,:);
             plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
         else
