@@ -28,7 +28,9 @@ This derivation of the likelihood function can be generalized to any [generative
 
 # Bayes' rule
 
-The likelihood function is the statistical construct that is common to both frequentist (classical) and bayesian inference approaches. However, bayesian approaches also require the definition of a [prior distribution](https://en.wikipedia.org/wiki/Prior_probability) $$p(\vartheta\mid m)$$ on model parameters $$\vartheta$$, which reflects knowledge about their likely range of values, before having observed the data $$y$$. Such priors can be (i) uninformative (e.g., flat), (ii) principled (e.g. certain parameters cannot have negative values), (iii) conservative (e.g. “shrinkage” priors that express the assumption that parameters are small), or (iv) empirical (e.g., based on previous, independent measurements). 
+The likelihood function is the statistical construct that is common to both frequentist (classical) and bayesian inference approaches. However, bayesian approaches also require the definition of a [prior distribution](https://en.wikipedia.org/wiki/Prior_probability) $$p(\vartheta\mid m)$$ on model parameters $$\vartheta$$, which reflects knowledge about their likely range of values, before having observed the data $$y$$. Such priors can be (i) uninformative (e.g., flat), (ii) principled (e.g. certain parameters cannot have negative values), (iii) conservative (e.g. “shrinkage” priors that express the assumption that parameters are small), or (iv) empirical (e.g., based on previous, independent measurements).
+
+> The issue of setting the priors is partially adresssed [here]({{ site.baseurl }}/wiki/VBA-MFX).
 
 Combining the priors and the likelihood function allows one, via [Bayes' Theorem](https://en.wikipedia.org/wiki/Bayes'_theorem), to derive the [posterior probability density function](https://en.wikipedia.org/wiki/Posterior_probability) $$p(\vartheta\mid y,\sigma,m)$$ over model parameters $$\vartheta$$:
 
