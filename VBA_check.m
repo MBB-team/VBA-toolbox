@@ -108,6 +108,9 @@ for i=1:numel(options.sources)
             if ~isbinary(ySource(~isYoutSource))
                 error('*** Data should be binary!')
             end
+            if islogical(ySource(~isYoutSource))
+                error('*** Binary data should be numerical (0,1) not logical (true,false).\n*** Use y=+y or y=double(y) to convert your observations.',[])
+            end
         end
     end
 end
