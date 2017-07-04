@@ -196,7 +196,7 @@ function myDeterministic(hfig)
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
     if ~options.OnLine && ~options.binomial
         xlabel(options.display.ha(6),' ')
-        if ishghandle(options.display.ha(8))
+        if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
             xlabel(options.display.ha(8),' ')
         end
     end
@@ -275,7 +275,7 @@ function myPriors(hfig)
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
     if ~options.OnLine && ~options.binomial
         xlabel(options.display.ha(6),' ') ;
-        if ishghandle(options.display.ha(8))
+        if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
             xlabel(options.display.ha(8),' ') ;
         end
     end
@@ -611,7 +611,7 @@ function myVB(hfig)
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
     if ~options.OnLine && sum([options.sources(:).type]==0) > 0
         xlabel(options.display.ha(6),' ')
-        if ishghandle(options.display.ha(8))
+        if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
             xlabel(options.display.ha(8),' ')
         end
     end
