@@ -32,7 +32,7 @@ title: "home"
 - [Bayesian model selection with large model spaces](Comparing-large-spaces-of-models)
 - [Volterra decompositions](Volterra-decomposition)
 - [Bayesian Model Averaging](VBA-BMA)
-- [Setting the priors through Empirical Bayes (group studies)](VBA-MFX)
+- [Setting the priors through Empirical Bayes](VBA-MFX)
 - [Setting "hard constraints" through parameter transformations](param-transform)
 - [A few useful stand-alone VBA functions](a-few-VBA-functions)
 - [Extending VBA's generative model (for power-users only)](generativeModels)
