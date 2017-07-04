@@ -62,7 +62,7 @@ Alternatively, one may wish to challenge prior assumptions in a restricted thoug
 2) update set-level summary statistics from posterior summary statistics
 ```
 
-This is essentially what `VBA_hyperparameters.m` does (its intputs and outputs are identical to those of `VBA_NLStateSpaceModel.m`). More precisely, `VBA_hyperparameters.m` considers an augmented hierarchical model, whose highest level is composed of prior precision hyperparameters on observation and evolution parameters. The ensuing "agnostic" empirical Bayes approach is most appropriate when there are enough obseravtion/evolution parameters, such that their set summary statistics can eventually be learned efficiently.
+This is essentially what `VBA_hyperparameters.m` does. More precisely, it considers an augmented hierarchical model, whose highest level is composed of prior precision hyperparameters on observation and evolution parameters. The ensuing "agnostic" empirical Bayes approach is most appropriate when there are enough obseravtion/evolution parameters, such that their set summary statistics can eventually be learned efficiently.
 
 
 > Note: in both empirical Bayes schemes, users are asked to specify "hyperpriors" (on group-level moments for MFX and on set-level hyperparameters for the "agnostic" approach). Although posterior inference will typically be less sensitive to those hyperpriors (to the point that they can be rendered flat), one may be willing to perform a post-hoc sensitivity analysis... 
