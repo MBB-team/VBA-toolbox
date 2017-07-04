@@ -42,14 +42,17 @@ catch
 end
 
 % check if a figure has already been set up
-try 
-    display.hfp;
-catch
+if isfield(display,'hfp') % from init
+    hfp = display.hfp;
+elseif isfield(options,'hf') % form metaiteration
+    hfp = options.hf ;
+    clo(hfp)
+else
     pos0 = get(0,'screenSize');
     pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
     hfp = figure('position',pos,'color',[1 1 1],'menubar','none','tag','VBNLSS','Renderer','OpenGL');
-    display.hfp = hfp;
 end
+display.hfp = hfp;
 set(display.hfp,'name',options.figName);
 
 % check if a panel has already been set up (spm tab or central element)

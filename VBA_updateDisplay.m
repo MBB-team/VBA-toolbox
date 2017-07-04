@@ -19,6 +19,9 @@ ud = get(getPanel(display.hfp),'userdata') ;
 ud.update_plot = @() VBA_updateDisplay(posterior,suffStat,options,y,0,'Y'); 
 set(getPanel(display.hfp),'userdata',ud) ;
 
+ud = check_struct(ud, ...
+    'currentSource', 1 );
+
 currentSource = ud.currentSource;
 
 % 0- Check whether this is a deterministic dynamical system inversion
