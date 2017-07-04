@@ -206,7 +206,7 @@ end
 % Create axes for measurement noise precision hyperparameter
 Ngs=sum([options.sources(:).type]==0);
 if Ngs>0
-    display.ha(6) = subplot('Position',[.55 .27 .375 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(6) = subplot('Position',[.55 .27 .375 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',1:Ngs,'tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(6),'measurement noise precision: p(sigma|y,m)','fontsize',12)
     else

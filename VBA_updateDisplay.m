@@ -228,8 +228,8 @@ switch flag % What piece of the model to display?
         if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
             dTime = 1;
             cla(display.ha(6))
-            logCI = log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat);
-            plotUncertainTimeSeries(log(sigmaHat),logCI.^2,dTime,display.ha(6));
+            logCI = (log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat))';
+            plotUncertainTimeSeries(log(sigmaHat'),logCI.^2,dTime,display.ha(6));
             set(display.ha(6),'ygrid','on','xgrid','off')
         end
         
