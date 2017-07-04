@@ -36,7 +36,7 @@ dim.n_phi = 4; % nb of observation parameters
 dim.n_theta = 0; % nb of evolution parameters
 dim.n = 0;  % nb of hidden states
 % Call inversion routine
-[posterior,out] = VBA_hyperparameters(y,[],[],g_fname,dim,options);
+[posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
 
 
 %---- Display results
