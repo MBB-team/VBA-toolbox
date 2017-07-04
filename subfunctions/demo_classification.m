@@ -22,9 +22,9 @@ k = n; % number of folds (k=n: leave-one-out cross-validation)
 verbose = 1; % verbose mode
 options = [];
 sparse = 0; % sparse mode
-[posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse);
+[all] = VBA_classification(X,y,k,verbose,options,sparse);
 % evaluate estimated classification weights
-displayResults(posterior,out,y,[],[],[],b,[],[])
+displayResults(all.posterior,all.out,y,[],[],[],b,[],[])
 
 return
 
@@ -45,8 +45,8 @@ for i=1:Nmc
     % apply classifier
     for j=1:length(v)
         options.priors.SigmaPhi = v(j).*eye(p);
-        [posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse);
-        F(i,j) = out.F;
+        [all] = VBA_classification(X,y,k,verbose,options,sparse);
+        F(i,j) = all.out.F;
         pa(i,j) = all.stat.bpa;
     end
 end
