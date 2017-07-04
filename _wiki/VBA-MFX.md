@@ -4,10 +4,14 @@ title: "Setting the priors through Empirical Bayes"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
+Setting the [priors](https://en.wikipedia.org/wiki/Prior_probability) is the most delicate aspect of Bayesian inference. Although only flat priors are valid from a frequentist perspective, they are in fact largely suboptimal, when compared to *almost any* form of informative prior. The reason lies in the so-called "[bias-variance trade-off](https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff)" of statistical estimation: the systematic bias that may be induced by informative priors is overcompensated by the efficiency of regularized parameter estimates. In brief, if one really cares about the expected estimation error, then one should not aim for unbiasedness...
 
-[Empirical Bayes methods](https://en.wikipedia.org/wiki/Empirical_Bayes_method) are procedures for statistical inference in which the prior distribution is estimated from the data. This approach stands in contrast to standard Bayesian methods, for which the prior distribution is fixed before any data are observed. In VBA, the empirical Bayes approach is a fully Bayesian treatment of a [hierarchical model](https://en.wikipedia.org/wiki/Bayesian_hierarchical_modeling) wherein the parameters at the highest level of the hierarchy are [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) of the group, which are unknown but eventually constrain the likely range of subject-level parameters. 
+But acknowledging the benefit of priors does not solve the issue of setting them, in the commonplace situation where one does not have much solid ground to lay on. This is where so-called [empirical Bayes methods](https://en.wikipedia.org/wiki/Empirical_Bayes_method) may be useful. In brief, these are procedures for statistical inference in which the prior distribution is estimated from the data. This approach stands in contrast to standard Bayesian methods, where the prior distribution is fixed before any data are observed. In VBA, the empirical Bayes approach always relies upon a fully Bayesian treatment of a [hierarchical model](https://en.wikipedia.org/wiki/Bayesian_hierarchical_modeling), of which there are two sorts. These are covered in the following sections.
 
-In other terms, VBA's empirical Bayes approach is formally identical to [mixed-effect](https://en.wikipedia.org/wiki/Mixed_model) modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be [sampled](https://en.wikipedia.org/wiki/Sample_(statistics)) from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution.
+
+# Empirical Bayes for group studies: mixed-effect modelling
+
+Let us assume that you (i) are conducting a group study, and (ii) have developped some generative model of within-subject data. VBA enables you to perform [mixed-effect](https://en.wikipedia.org/wiki/Mixed_model) modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be [sampled](https://en.wikipedia.org/wiki/Sample_(statistics)) from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution. Here, parameters at the highest level of the hierarchical model are [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) of the group, which eventually constrain the likely range of subject-level parameters. 
 
 The pseudo-code of VBA's ensuing hierarchical inversion is given below:
 
@@ -41,3 +45,28 @@ Its intputs and outputs are described below:
 - `o_group`: output structure of the VBA_MFX approach. In particular, it contains the Free Energy of the MFX model (for model comparison purposes).
 
 A complete mathematical description of the approach is available [on this page](https://sites.google.com/site/jeandaunizeauswebsite/links/resources).
+
+
+
+# "Agnostic" empirical Bayes approach
+
+But what if you are performing an analysis that cannot be regularized using group data? Recall that vanilla VBA model inversion asks users to specify priors over observation and evolution parameters (as well as initial conditions). This is not to say, however, that the relative weight of priors is fixed. In fact, VBA also estimates (at least for Gaussian observations) the precision hyperparameter $$\sigma$$, which quantifies the data reliability (and therefore, controls the relative weight of the likelihood on parameter estimates). This endows VBA with some flexibility, but does not cure posterior estimates from potential sensitivity to prior assumptions.
+
+A typical advice here is to perform a [sensitivity analysis](https://en.wikipedia.org/wiki/Sensitivity_analysis), in the aim of evaluating whether, e.g., posterior [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) vary when priors are changed. Critical here is the fact that if data is provided with sufficient quantity/quality, then posterior inference is insensitive to priors. In turn, if the sensitivity analysis eventually concludes that posterior distributions are largely influenced by priors, then one would have to consider the possibility of acquiring more data.
+
+Alternatively, one may wish to challenge prior assumptions in a restricted though systematic manner. For example, one may extend the idea of estimating hyperparameters to those hyperparameters that control the prior precision of (observation and evolution) model parameters. But what sort of information could be instrumental here? Well, if one knew the model parameters, one could rescale their prior variance-covariance matrix to match their set distribution. This eventually motivates the following alternative empirical Bayes approach:
+
+```matlab
+[LOOP UNTIL CONVERGENCE]
+1) define prior hyperparameters from set-level summary statistics and perform model inversion
+2) update set-level summary statistics from posterior summary statistics
+```
+
+This is essentially what `VBA_hyperparameters.m` does (its intputs and outputs are identical to those of `VBA_NLStateSpaceModel.m`). More precisely, `VBA_hyperparameters.m` considers an augmented hierarchical model, whose highest level is composed of prior precision hyperparameters on observation and evolution parameters. The ensuing "agnostic" empirical Bayes approach is most appropriate when there are enough obseravtion/evolution parameters, such that their set summary statistics can eventually be learned efficiently.
+
+
+> Note: in both empirical Bayes schemes, users are asked to specify "hyperpriors" (on group-level moments for MFX and on set-level hyperparameters for the "agnostic" approach). Although posterior inference will typically be less sensitive to those hyperpriors (to the point that they can be rendered flat), one may be willing to perform a post-hoc sensitivity analysis... 
+
+
+
+
