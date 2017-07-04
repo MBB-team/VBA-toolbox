@@ -232,12 +232,8 @@ switch flag % What piece of the model to display?
         
         % update middle-right subplot: state noise
         if options.dim.n > 0 && ~any(isinf(alphaHat))
-            if size(alphaHat,2) > 1  % for on-line wrapper
-                cla(display.ha(8))
-            else
-                dTime = it+1;
-                set(display.ha(8),'xlim',[.2,it+1.8],'xtick',[])
-            end
+            dTime = 1;
+            cla(display.ha(8))
             logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
             plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
             set(display.ha(8),'ygrid','on','xgrid','off')

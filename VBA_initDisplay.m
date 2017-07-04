@@ -210,7 +210,7 @@ if Ngs>0
         title(display.ha(6),'measurement noise precision: p(sigma|m)','fontsize',12)
     end
     if ~options.OnLine && options.updateHP
-        xlabel(display.ha(6),'channel','fontsize',10)
+        xlabel(display.ha(6),'gaussian source','fontsize',10)
     elseif ~options.OnLine && ~options.updateHP
         xlabel(display.ha(6),'[fixed pdf]','fontsize',10)
     else
@@ -242,14 +242,14 @@ end
 
 % Create axes for state noise precision hyperparameter
 if ~isequal(options0.g_fname,@VBA_odeLim) && options.dim.n > 0 % not for non stochastic systems
-    display.ha(8) = subplot('Position',[.55 .03 .375 .165],'parent',hPanel,'xlim',[0.2,1.8],'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(8) = subplot('Position',[.55 .03 .375 .165],'parent',hPanel,'xlim',[0.2,1.8],'xtick',[],'nextplot','add','tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(8),'system''s noise precision: p(alpha|y,m)','fontsize',12)
     else
         title(display.ha(8),'system''s noise precision: p(alpha|m)','fontsize',12)
     end
     if ~options.OnLine && options.updateHP
-        xlabel(display.ha(8),'VB iterations','fontsize',10)
+        xlabel(display.ha(8),'','fontsize',10)
     elseif ~options.OnLine && ~options.updateHP
         xlabel(display.ha(8),'[fixed pdf]','fontsize',10)
     else
