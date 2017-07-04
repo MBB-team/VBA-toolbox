@@ -271,16 +271,13 @@ drawnow
         cla(display.ha(1))
         y_s = y(s_out,:);
         y_s_on = y_s;
-        y_s_on(options.isYout(s_out,:)==1)=NaN;
-        dTime_in = find(sum(1-options.isYout(s_out,:),1)>0);
+        y_s_on(options.isYout(s_out,:)==1)=nan;
         if options.sources(currentSource).type < 2
             plot(display.ha(1),dTime,y_s',':')
-            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(1),dTime,y_s_on','.')
+            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',10)
+            plot(display.ha(1),dTime,y_s_on','.','MarkerEdgeColor',[0 0 .8],'MarkerSize',10)
             vy_s= vy(s_out,:);
-            if ~isempty(dTime_in)
-                plotUncertainTimeSeries(gx(s_out,dTime_in),vy_s(:,dTime_in),dTime(dTime_in),display.ha(1));
-            end
+            plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
         else
             imagesc(gx(s_out,:),'Parent',display.ha(1));
             set(display.ha(1),'Clim',[0 1]) ;
@@ -308,8 +305,8 @@ drawnow
             yout = y_src(~~options.isYout(s_out,:));
             gxin = gx_src(~options.isYout(s_out,:));
             yin = y_src(~options.isYout(s_out,:));
-            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.85 .85 .85])
-            plot(display.ha(2),gxin(:),yin(:),'k.')
+            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',10)
+            plot(display.ha(2),gxin(:),yin(:),'.','MarkerEdgeColor',[0 0 .8],'MarkerSize',10)
         else
             gridp = 0:1e-2:1;
             plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
