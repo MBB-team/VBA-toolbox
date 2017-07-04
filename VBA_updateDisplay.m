@@ -273,11 +273,16 @@ drawnow
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=nan;
         if options.sources(currentSource).type < 2
-            plot(display.ha(1),dTime,y_s',':')
-            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9)
-            plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9)
+            p_l  = plot(display.ha(1),dTime,y_s',':');
+            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9);
+            p_mi = plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9);
+            
             vy_s= vy(s_out,:);
-            plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
+            [~,~,p_v] = plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
+            for i=1:numel(p_l)
+                set(p_mi(i),'MarkerEdgeColor',get(p_l(i),'Color'))
+                set(p_v(i),'Color',get(p_l(i),'Color'))
+            end
         else
             imagesc(gx(s_out,:),'Parent',display.ha(1));
             set(display.ha(1),'Clim',[0 1]) ;
@@ -293,9 +298,9 @@ drawnow
         if options.sources(currentSource).type==0
             miy = min(min([gx(s_out,:);y(s_out,:)]));
             may = max(max([gx(s_out,:);y(s_out,:)]));
-            plot(display.ha(2),[miy,may],[miy,may],'r')
+            plot(display.ha(2),[miy,may],[miy,may],'k:')
         else
-            plot(display.ha(2),[0,1],[0,1],'r')
+            plot(display.ha(2),[0,1],[0,1],'k:')
         end
         
         if options.sources(currentSource).type==0
@@ -303,16 +308,18 @@ drawnow
             y_src = y(s_out,:) ;
             gxout = gx_src(~~options.isYout(s_out,:));
             yout = y_src(~~options.isYout(s_out,:));
-            gxin = gx_src(~options.isYout(s_out,:));
-            yin = y_src(~options.isYout(s_out,:));
+            gxin = gx_src;
+            gxin(~~options.isYout(s_out,:)) = nan;
+            yin = y_src;
+            yin(~~options.isYout(s_out,:)) = nan;
             plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9)
-            plot(display.ha(2),gxin(:),yin(:),'.','MarkerEdgeColor',[0 0 .8],'MarkerSize',9)
+            plot(display.ha(2),gxin',yin','.','MarkerSize',9)
         else
             gridp = 0:1e-2:1;
             plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
             plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
             errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.7 .7 .7],'MarkerSize',9,'parent',display.ha(2))
-            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'.','MarkerEdgeColor',[0 0 .8],'MarkerSize',9,'parent',display.ha(2))
+            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'.','MarkerSize',9,'parent',display.ha(2))
         end
         
         grid(display.ha(2),'on')
