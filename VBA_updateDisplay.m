@@ -274,8 +274,8 @@ drawnow
         y_s_on(options.isYout(s_out,:)==1)=nan;
         if options.sources(currentSource).type < 2
             plot(display.ha(1),dTime,y_s',':')
-            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',10)
-            plot(display.ha(1),dTime,y_s_on','.','MarkerEdgeColor',[0 0 .8],'MarkerSize',10)
+            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9)
+            plot(display.ha(1),dTime,y_s_on','.','MarkerEdgeColor',[0 0 .8],'MarkerSize',9)
             vy_s= vy(s_out,:);
             plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
         else
@@ -305,14 +305,14 @@ drawnow
             yout = y_src(~~options.isYout(s_out,:));
             gxin = gx_src(~options.isYout(s_out,:));
             yin = y_src(~options.isYout(s_out,:));
-            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',10)
-            plot(display.ha(2),gxin(:),yin(:),'.','MarkerEdgeColor',[0 0 .8],'MarkerSize',10)
+            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9)
+            plot(display.ha(2),gxin(:),yin(:),'.','MarkerEdgeColor',[0 0 .8],'MarkerSize',9)
         else
             gridp = 0:1e-2:1;
             plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
             plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.85 .85 .85],'parent',display.ha(2))
-            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'k.','parent',display.ha(2))
+            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.7 .7 .7],'MarkerSize',9,'parent',display.ha(2))
+            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'.','MarkerEdgeColor',[0 0 .8],'MarkerSize',9,'parent',display.ha(2))
         end
         
         grid(display.ha(2),'on')
