@@ -16,11 +16,10 @@ VBA_pause(options)
 
 % replace source selector callback if needed
 ud = get(getPanel(display.hfp),'userdata') ;
-ud.update_plot = @() VBA_updateDisplay(posterior,suffStat,options,y,0,'Y'); 
+ud.update_plot = @() VBA_updateDisplay(posterior,suffStat,options,y,0,'Y');
 set(getPanel(display.hfp),'userdata',ud) ;
 
-ud = check_struct(ud, ...
-    'currentSource', 1 );
+ud = check_struct(ud,'currentSource', 1 );
 
 currentSource = ud.currentSource;
 
@@ -132,7 +131,6 @@ if isequal(dTime,1) && size(y,1) > 1
 end
 
 Ns = numel(options.sources);
-
 for s_i=1:Ns
     if  options.sources(s_i).type>0
         s_out = options.sources(s_i).out ;
@@ -148,7 +146,7 @@ switch flag % What piece of the model to display?
     case 'Y' % observation only
         
         % update top subplots
-         update_observation_plot()
+        update_observation_plot()
         
     case 'X' % Hidden-states related quantities
         

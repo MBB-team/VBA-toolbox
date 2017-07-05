@@ -1,15 +1,34 @@
 function [diagnostics,out] = VBA_getDiagnostics(posterior,out)
-% this function derives diagnostics of the VBA model inversion
+% derives post-hoc diagnostics of VBA's model inversion
+% function [diagnostics,out] = VBA_getDiagnostics(posterior,out)
+% Post-hoc diagnostics include: goodness-of-fit metrics, Volterra kernels,
+% null model evidence, posterior entropies, etc...
+% IN:
+%   - posterior,out: VBA's output structures
+% OUT:
+%   - diagnostics: a structure containing the following fields:
+%       .pgx: mean of the prior predictive density
+%       .pvy: variance of the prior predictive density
+%       .kernels: Volterra kernels (if options.kernelSize>0)
+%       .efficiency: posterior entropies
+%       .DKL: prior/posterior Kullback-Leibler divergences
+%       .LLH0: log-evidence of the null model
+%       .MT_x: microtime hidden states time series
+%       .MT_gx: microtime predicted data time series
+%       .microTime: microtime sampling grid
+%       .sampleInd: sub-indexing of the microtime sampling grid
+%       .dy: data residuals structure (e.g., autocorrelation...)
+%       .dx: states innovations structure
+%       .C: posterior correlation matrix
 
 u = out.u;
 y = out.y;
 
+% get goodness-tof-fit metrics
 try; out.fit; catch; out.fit = VBA_fit(posterior,out); end
 
-if out.dim.n_t>1 % && out.dim.u >= 1 && ~isempty(out.options.f_fname)
-%     if isequal(out.options.f_fname,@f_DCMwHRF) && isequal(out.options.g_fname,@g_HRF3)
-%         [out.options] = VBA_check4DCM(out.options);
-%     end
+% derive Volterra kernels
+if out.dim.n_t>1 && out.options.kernelSize>0
     try
         kernels = VBA_VolterraKernels(posterior,out);
     catch
@@ -19,7 +38,6 @@ if out.dim.n_t>1 % && out.dim.u >= 1 && ~isempty(out.options.f_fname)
 else
     kernels = [];
 end
-
 
 % get null model (H0) evidence
 [LLH0] = VBA_LMEH0(y,out.options);
@@ -39,7 +57,6 @@ else
         DKL.sigma(iG) = VBA_KL(m0,v0,m,v,'Gamma');
     end
 end
-
 if out.dim.n > 0 % hidden states and initial conditions
     efficiency.X = -out.suffStat.SX;
     efficiency.X0 = -out.suffStat.SX0;
@@ -134,7 +151,7 @@ catch
     sampleInd = 1:out.dim.n_t;
 end
 
-% get residuals: data noise
+% get residuals structure: data noise
 for iS = 1:numel(out.options.sources)
     % source wise
     ySource = out.options.sources(iS).out ;
@@ -154,7 +171,6 @@ for iS = 1:numel(out.options.sources)
     dy(iS).grid = dy(iS).nx(1):d*1e-2:dy(iS).nx(end);
     dy(iS).pg = exp(-0.5.*(dy(iS).m-dy(iS).grid).^2./dy(iS).v);
     dy(iS).pg = dy(iS).pg./spgy;
-
     if  out.options.sources(iS).type==0
         igs = sum([out.options.sources(1:iS).type]==0);
         shat = posterior.a_sigma(igs)./posterior.b_sigma(igs);
@@ -164,7 +180,7 @@ for iS = 1:numel(out.options.sources)
     end
 end
 
-% get residuals: state noise
+% get residuals structure: state noise
 dx.dx = out.suffStat.dx(:);
 if ~isempty(dx.dx)
     dx.m = mean(dx.dx);
@@ -240,6 +256,7 @@ end
 tick = tick +0.5;
 tick = tick(2:end-1);
 ltick = ltick + 0.5;
+
 
 % wrap up
 diagnostics.pgx = reshape(muy,out.dim.p,[]);
