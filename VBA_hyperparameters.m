@@ -41,8 +41,9 @@ end
 
 % specify minimal default options
 options.tStart = tic;
-options = check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1);
-
+options = check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1,'kernelSize',16);
+kernelSize0 = options.kernelSize;
+options.kernelSize = 0;
 
 VBA_disp('--- VBA with hyperparameters adjustment... ---',options)
 
@@ -300,7 +301,8 @@ VBA_disp(['[Corrected Free Energy: log p(y|m) > F=',num2str(out.F,'%4.3e'),']'],
 VBA_disp(' ',out.options)
 if options.DisplayWin
     out.options.hf(2) = hf;
-%     set(out.options.hf,'name',out.options.figName);
+    out.options.kernelSize = kernelSize0;
+    [tmp,out] = VBA_getDiagnostics(posterior,out);
     VBA_ReDisplay(posterior,out)
     getSubplots
 end
