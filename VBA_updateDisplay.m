@@ -278,10 +278,11 @@ drawnow
             p_mi = plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9);
             
             vy_s= vy(s_out,:);
-            [~,~,p_v] = plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
+            [~,p_vr,p_vl] = plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
             for i=1:numel(p_l)
                 set(p_mi(i),'MarkerEdgeColor',get(p_l(i),'Color'))
-                set(p_v(i),'Color',get(p_l(i),'Color'))
+                set(p_vl(i),'Color',get(p_l(i),'Color'))
+                set(p_vr(i),'FaceColor',get(p_l(i),'Color'))
             end
         else
             imagesc(gx(s_out,:),'Parent',display.ha(1));
