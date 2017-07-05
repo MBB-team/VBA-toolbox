@@ -25,7 +25,7 @@ STR = out.STR;
 
 switch out.options.type
     case 'norm'
-        fieldType = 'gaussian field';
+        fieldtype = 'gaussian field';
     case 't'
         fieldtype = ['t field with dof=',num2str(out.options.dof)];
     case 'F'
