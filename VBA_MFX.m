@@ -143,6 +143,7 @@ o_sub = cell(ns,1);
 if opt.verbose
     fprintf(1,'%6.2f %%',0)
 end
+kernelSize0 = 0; % max lag of volterra kernel 
 for i=1:ns
     if opt.verbose
         fprintf(1,repmat('\b',1,8))
@@ -175,6 +176,9 @@ for i=1:ns
     end
     % VBA model inversion
     options{i}.MaxIter = 0;
+    options{i} = check_struct(options{i},'kernelSize',16);
+    kernelSize0 = max([kernelSize0,options{i}.kernelSize]);
+    options{i}.kernelSize = 0;
     [p_sub{i},o_sub{i}] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options{i});
     % store options for future inversions
     options{i} = o_sub{i}.options;
@@ -245,8 +249,6 @@ while ~stop
         in.out.suffStat = o_sub{i}.suffStat;
         in.out.u = o_sub{i}.u;
         in.out.it = o_sub{i}.it;
-        
-        
         % VBA model inversion
         [p_sub{i},o_sub{i}] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options{i},in);
         
@@ -343,7 +345,10 @@ for i=1:ns
     o_group.within_fit.F(i) = o_sub{i}.F(end);
     o_group.within_fit.R2(i) = o_sub{i}.fit.R2;
     o_group.within_fit.LLH0(i) = VBA_LMEH0(o_sub{i}.y,o_sub{i}.options);
+    o_sub{i}.options.kernelSize = kernelSize0;
+    [tmp,o_sub{i}] = VBA_getDiagnostics(p_sub{i},o_sub{i});
 end
+[o_group.options] = VBA_displayMFX(p_sub,o_sub,p_group,o_group);
 try
     if floor(o_group.dt./60) == 0
         timeString = [num2str(floor(o_group.dt)),' sec'];
