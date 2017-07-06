@@ -22,6 +22,7 @@ N = 150; % number of trials
 p = 0.75;
 P = repmat([p,1-p,p,1-p],1,N); % probabilistic repetition of [1 0 0 1]
 % P = repmat(p,1,N); % probabilistic repetition of [1 0 0 1]
+y = zeros(1,N);
 for i=1:N
     tmp = VBA_sample('multinomial',struct('p',[P(i);1-P(i)],'n',1),1,0);
     y(i) = tmp(1);
