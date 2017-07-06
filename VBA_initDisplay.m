@@ -152,7 +152,7 @@ ylabel(display.ha(2),'y','fontsize',10)
 % Create axes for hidden states and initial conditions
 
 if options.dim.n > 0
-    display.ha(3) = subplot('Position',[.1 .51 .375 .165],'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(3) = subplot('Position',[.1 .51 .525 .165],'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
 
     if ~priors
         title(display.ha(3),'hidden states: p(x|y,m)','fontsize',12)
@@ -165,7 +165,7 @@ if options.dim.n > 0
     else
         ylabel(display.ha(3),'<x|m>','fontsize',10)
     end
-    display.ha(4) = subplot('Position',[.55 .51 .375 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(4) = subplot('Position',[.7 .51 .225 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
     if ~priors
         title( display.ha(4),'initial conditions: p(x_0|y,m)','fontsize',12)
     else
@@ -186,7 +186,7 @@ end
 
 % Create axes for observation parameters
 if options.dim.n_phi > 0
-    display.ha(5) = subplot('Position',[.1 .27 .375 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(5) = subplot('Position',[.1 .27 .525 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
 
     if ~priors
         title(display.ha(5),'observation parameters: p(phi|y,m)','fontsize',12)
@@ -208,7 +208,7 @@ end
 % Create axes for measurement noise precision hyperparameter
 Ngs=sum([options.sources(:).type]==0);
 if Ngs>0
-    display.ha(6) = subplot('Position',[.55 .27 .375 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',1:Ngs,'tag','VBLaplace','box','off');
+    display.ha(6) = subplot('Position',[.7 .27 .225 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',1:Ngs,'tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(6),'measurement noise precision: p(sigma|y,m)','fontsize',12)
     else
@@ -226,7 +226,7 @@ end
 
 % Create axes for evolution parameters
 if options.dim.n_theta > 0
-    display.ha(7) = subplot('Position',[.1 .03 .375 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    display.ha(7) = subplot('Position',[.1 .03 .525 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
     
     if ~priors
         title(display.ha(7),'evolution parameters: p(theta|y,m)','fontsize',12)
@@ -247,7 +247,7 @@ end
 
 % Create axes for state noise precision hyperparameter
 if ~isequal(options0.g_fname,@VBA_odeLim) && options.dim.n > 0 % not for non stochastic systems
-    display.ha(8) = subplot('Position',[.55 .03 .375 .165],'parent',hPanel,'xlim',[0.2,1.8],'xtick',[],'nextplot','add','tag','VBLaplace','box','off');
+    display.ha(8) = subplot('Position',[.7 .03 .225 .165],'parent',hPanel,'xlim',[0.2,1.8],'xtick',[],'nextplot','add','tag','VBLaplace','box','off');
     if ~priors
         title(display.ha(8),'system''s noise precision: p(alpha|y,m)','fontsize',12)
     else
