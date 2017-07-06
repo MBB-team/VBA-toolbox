@@ -71,8 +71,10 @@ switch form
             y = zeros(K,N);
             for i=1:suffStat.n
                 y = y + sampleFromArbitraryP(suffStat.p,eye(K),N)';
-                fprintf(1,repmat('\b',1,8))
-                fprintf(1,'%6.2f %%',100*i/suffStat.n)
+                if verbose
+                    fprintf(1,repmat('\b',1,8))
+                    fprintf(1,'%6.2f %%',100*i/suffStat.n)
+                end
             end
         end
         
