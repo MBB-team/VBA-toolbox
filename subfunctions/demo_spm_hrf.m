@@ -1,5 +1,8 @@
 % % demo simulating hrf with SPM functions
 
+if ~exist('spm','file')
+    error('*** spm must be installed to run this demo')
+end
 
 clear variables
 n = 1;
