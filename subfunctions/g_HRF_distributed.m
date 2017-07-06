@@ -27,7 +27,7 @@ gx = A*w;
 dgdx = dwdx*A';
 
 % recollect gradient wrt observation parameters
-dgdp = zeros(size(Phi,1),size(gx,1));
+dgdp = zeros(size(P,1),size(gx,1));
 dgdp(ind_hrf,:) = dwdp*A';
 for i=1:in.n_reg
     dgdp(ind_profile{i},:) = w(i).*in.B';
