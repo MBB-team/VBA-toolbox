@@ -9,7 +9,7 @@ if nargin==0
     connectivity_model = 'feedback_modulation' ;
     encoding_region    = 'first' ;
     noise = 0;
-    nRepetition = 15;
+    nRepetition = 10;
 end
 
 %% #########################################################
@@ -92,7 +92,7 @@ reduced_f = 1;                % fix some HRF params
 lin = 1;                      % linearized variant of HRF Balloon model
 stochastic = 0;               % flag for stochastic DCM inversion
 alpha = Inf;                  % state noise precision
-sigma = [1/noise;1e4];              % measurement noise precision
+sigma = [1/noise];              % measurement noise precision
 
 % __________________________________________________________ 
 % === Build options and dim structures =====================

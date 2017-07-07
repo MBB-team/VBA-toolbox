@@ -4,7 +4,7 @@
 clear all
 close all
 
-nt = 1e3;
+nt = 5e2;
 f_fname = @f_2d;
 g_fname = @g_Id;
 
