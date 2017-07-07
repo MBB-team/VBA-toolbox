@@ -338,25 +338,5 @@ drawnow
         end
     end
 
-    function [nseq] = interpOut(seq,isYout)
-        nseq=seq;
-        return
-        [n,t]=size(seq);
-        times=1:t;
-        for i = 1:n
-            mask =  isYout(i,:)==0;
-            nseq_i = seq(i,:);
-            nseq_i(~mask) = interp1(times(mask), nseq_i(mask), times(~mask),'spline',0);
-            nseq_i(isnan(nseq_i))=0;
-            nseq(i,:)=nseq_i;
-        end
-        
-    end
-
-    function updateSource(hObject,evt,si)
-        changeSource(hObject,evt,si);
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'Y');
-    end
-
 end
 
