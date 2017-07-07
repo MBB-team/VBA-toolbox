@@ -43,9 +43,9 @@ ev = post.b_sigma./post.a_sigma;
 E = 0;% sqrt(ev)*randn(length(X0),N); % add in predicted residuals? 
 Y = [X0,ones(dim.p,1)]*phi + E;
 %uY = prctile(Y,95,2);
-uY = arrayfun(@(n) VBA_quantile(Y(n,:),.95), 1:size(Y,1))' ;
+uY = arrayfun(@(j) VBA_quantile(Y(j,:),.95), 1:size(Y,1))' ;
 %lY = prctile(Y,5,2);
-lY = arrayfun(@(n) VBA_quantile(Y(n,:),.05), 1:size(Y,1))' ;
+lY = arrayfun(@(j) VBA_quantile(Y(j,:),.05), 1:size(Y,1))' ;
 
 vY = var(Y,[],2);
 
