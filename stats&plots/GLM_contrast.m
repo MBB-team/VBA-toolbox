@@ -140,7 +140,7 @@ switch type
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
             R2_a(i) = FtoR2(stat(i).^2,1,df);
-            [tmp,ks(i)] = kstest(nanzscore(e));
+            [tmp,ks(i)] = VBA_kstest(nanzscore(e));
             if verbose && p>1
                 fprintf(1,repmat('\b',1,8))
                 fprintf(1,'%6.2f %%',100*i/p)
@@ -189,7 +189,7 @@ switch type
 %             SS_tot_a = sum((y_a(:,i)-mean(y_a(:,i))).^2);
 %             SS_err_a = sum((y_a(:,i)-yhat_a(:,i)).^2);
 %             R2_a(i) = 1-(SS_err_a/SS_tot_a);
-            [tmp,ks(i)] = kstest(nanzscore(e));
+            [tmp,ks(i)] = VBA_kstest(nanzscore(e));
             if verbose && p>1
                 fprintf(1,repmat('\b',1,8))
                 fprintf(1,'%6.2f %%',100*i/p)
