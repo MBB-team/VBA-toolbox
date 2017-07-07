@@ -20,7 +20,7 @@
 % Irrespective of the principles their stem from, any susceptibility
 % analysis should "discover" this hidden structure.
 
-clear variable
+clear variables
 close all
 clc
 
@@ -47,7 +47,7 @@ phi                = [1;1;1;1;1;1];
 for i=1:N
     disp(i)
     u = randn(4,dim.n_t);
-    [y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,u,[],sigma,options,[]);
+    [y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,u,[],sigma,options,zeros(dim.n,1));
     [posterior,out] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);
     % displayResults(posterior,out,y-e,[],[],[],phi,sigma,[])
     result(i) = VBA_susceptibility(posterior,out);

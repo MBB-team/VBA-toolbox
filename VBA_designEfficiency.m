@@ -49,8 +49,15 @@ switch flag
                 g_fname{j} = g_fname0;
             end
         end
+        if ~iscell(u)
+            u0 = u;
+            u = cell(nm,1);
+            for j=1:nm
+                u{j} = u0;
+            end
+        end
         fprintf(1,['Deriving prior predictive densities: model       '])
-        parfor j=1:nm % loops over models
+        for j=1:nm % loops over models
             % get prior predictive density
             fprintf(1,repmat('\b',1,6))
             fprintf(1,[num2str(j),'/',num2str(nm),'...'])

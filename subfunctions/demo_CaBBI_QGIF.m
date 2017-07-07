@@ -58,21 +58,27 @@ ydata = (ydata - mean(ydata))./(max(mean(ydata),1));                       % rel
 ydata = ydata - median(ydata);                                             % removing the median
 
 % removing the slow drifts 
-xdata = 1:length(ydata);                                                   % vector of frames
-degree = '4';                                                              % Polynomial degree (4 or 3)
-ft = fittype( ['poly',degree] );                                           % define the model to fit the slow drifts 
-opts = fitoptions( ft );
-opts.Lower = [-Inf -Inf -Inf -Inf -Inf];
-opts.Robust = 'Bisquare';
-opts.Upper = [Inf Inf Inf Inf Inf];
-warning('off')
-[fitresult, gof] = fit( xdata', ydata', ft, opts );                          % fitting the polynomial model to fluorecence trace
-warning('on')
-Coeffs = coeffvalues(fitresult);
-if degree == '4'
-    fittedcurve = Coeffs(1)*xdata.^4 + Coeffs(2)*xdata.^3 + Coeffs(3)*xdata.^2 + Coeffs(4)*xdata + Coeffs(5);
-elseif degree == '3'
-    fittedcurve = Coeffs(1)*xdata.^3 + Coeffs(2)*xdata.^2 + Coeffs(3)*xdata.^1 + Coeffs(4);
+xdata = linspace(0,1,length(ydata));                                                   % vector of frames
+degree = '4';      
+if exist('fittype')
+    % Polynomial degree (4 or 3)
+    ft = fittype( ['poly',degree] );                                           % define the model to fit the slow drifts 
+    opts = fitoptions( ft );
+    opts.Lower = [-Inf -Inf -Inf -Inf -Inf];
+    opts.Robust = 'Bisquare';
+    opts.Upper = [Inf Inf Inf Inf Inf];
+    warning('off')
+    [fitresult, gof] = fit( xdata', ydata', ft, opts );                          % fitting the polynomial model to fluorecence trace
+    warning('on')
+    Coeffs = coeffvalues(fitresult);
+    if degree == '4'
+        fittedcurve = Coeffs(1)*xdata.^4 + Coeffs(2)*xdata.^3 + Coeffs(3)*xdata.^2 + Coeffs(4)*xdata + Coeffs(5);
+    elseif degree == '3'
+        fittedcurve = Coeffs(1)*xdata.^3 + Coeffs(2)*xdata.^2 + Coeffs(3)*xdata.^1 + Coeffs(4);
+    end
+else
+    % less robust fit as fallback
+    fittedcurve = polyval(polyfit(xdata,ydata,4),xdata) ;
 end
 
 Fluor_trace = ydata - fittedcurve;                                         % pre-processed fluorescence trace 
@@ -81,6 +87,7 @@ Fluor_trace = ydata - fittedcurve;                                         % pre
 %% Step 4. Scaling the data
 scale       = 1;                                                           % preferably set it a number between e.g. 0.4 and 1
 Fluor_trace = scale* Fluor_trace/max(Fluor_trace);
+xdata = 1:length(ydata);                                                   % vector of frames
 plot(xdata, scale*ydata/max(ydata) ,'b',xdata, Fluor_trace(1:numel(Fluor_trace)),'r');
 legend('original','pre-processed')
 xlabel('time [frame]')

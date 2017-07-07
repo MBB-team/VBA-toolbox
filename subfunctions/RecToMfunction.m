@@ -1,6 +1,6 @@
-function [fx,indlev] =RecToMfunction(x,P,u,inF)
+function [fx,indlev] = RecToMfunction(x,P,u,inF)
 % recursive evolution function for k-ToM's learning rule (2x2x2 game)
-% [fx,indlev] =RecToMfunction(x,P,u,inF)
+% [fx,indlev] = RecToMfunction(x,P,u,inF)
 % Marie Devaine wrote this function in November 2015 (comments: JD).
 % A k-ToM agent with k>0 learns the unknown parameters (theta) of her
 % opponent's learning and decision rules. Typically, theta includes her
@@ -16,26 +16,36 @@ function [fx,indlev] =RecToMfunction(x,P,u,inF)
 % trials. How much they can change is controlled by her prior volatility
 % about her opponent's parameters. In addition, the agent may partially
 % "forget" about her opponent's sophistication level from a trial to the
-% next. This effectively dilutes the belief P(k') towards the corresponding
-% max-entropic distribution (only if inF.diluteP=1).
+% next. This effectively dilutes her prior belief P(k') towards the
+% corresponding max-entropic distribution before it is updated given her
+% opponent's last move. NB: this forgetting effect is taken into account
+% only if inF.diluteP is set to 1.
 % IN:
 %   - x: hidden states (see indexing in inF.indlev)
 %   - P: evolution params:
 %   P(1)= agent's prior opponent's (log-) volatility on opponent's params
-%   p(2)= agent's (invsigmoid-) dilution coefficient
-%   - u: u(1) = opponent's previous move, u(2) = agent's previous move
+%   P(2)= agent's (invsigmoid-) dilution coefficient [iif inF.diluteP=1]
+%   - u: inputs:
+%   u(1)= opponent's previous move
+%   u(2)= agent's previous move
 %   - inF: input structure (see prepare_kToM.m)
 % OUT:
 %   - fx: updated hidden states
+%   - indlevel: recursive states indexing (see defIndlev.m)
 
-a = 0.36; % for E[s(x)] when x~n(mu,Sig)
-level = inF.lev; % depth of k-ToM's recursive beliefs
+level = inF.lev; % depth of k-ToM's recursive beliefs (k=level)
 fx = zeros(size(x)); % initialize hidden states
+
+try % deal with superceding competition with other generative models
+    w = inF.metaweight;
+catch
+    w = 1;
+end
 
 if level==0 % 0-ToM
     
-    fx = evolution0bisND(x,P,u,inF);  % here: simple Laplace-Kalman filter
-    indlev = [];
+    fx = evolution0bisND(x,P,u,inF); % here: simple Laplace-Kalman filter
+    indlev = []; % no states indexing (state=log-odds of opponent's move)
     
 else % k-ToM with k>0
     
@@ -60,14 +70,14 @@ else % k-ToM with k>0
     %           = sigm(E[x(theta)]/sqrt(1+a*V[theta]*(dx/dtheta)^2)
     if isempty(u) % missed trial or initialization
         % max-entropic belief about opponent's level
-        Pu = 1./level.*ones(1,level);
+        Pk = 1./level.*ones(1,level);
         if level>1
-            fx(1:(level-1)) = invsigmoid(Pu(1:(end-1)));
+            fx(1:(level-1)) = invsigmoid(Pk(1:(end-1)));
         end
     else % trial OK
         ot = u(1); % opponent's last move
         if level<2 % 1-ToM
-            Pu = 1; % 1-ToM's opponent = 0-ToM!
+            Pk = 1; % 1-ToM's opponent = 0-ToM!
         else % k-ToM with k>=2
             % get sufficient statistics of posterior belief on x(theta)
             f = zeros(level,1); % E[x(theta)]
@@ -78,21 +88,23 @@ else % k-ToM with k>0
                 Sig = exp(x(indlev(j).Par(2:2:2*NtotPar))); % V[theta|k'=j-1]
                 Vx(j) = Sig'*df.^2; % V[x(theta)|k'=j-1]
             end
-            % derive E[sigm(x(theta))]
-            Es = sigmoid(f./sqrt(1+a*Vx)); % ~= MD's derivation!!!
+            % derive E[log sigm(x(theta))] -> correction of Devaine et al. (20014)!
+            Els1 = Elogsig(f,Vx);
+            Els0 = Elogsig(-f,Vx);
             % get prior P(k')
             P0 = sigmoid(x(1:(level-1))); % P(k), with k=0,...,k'-2
             P0 = [P0;max(0,1-sum(P0))]; % insert last P(k=k'-1)
-            % partial forgetting of opponent's level?
-            if inF.diluteP % this is not in [Devaine et al. (20014)]
+            % partial forgetting of prior belief on opponent's level?
+            if inF.diluteP % [not in Devaine et al. (20014)!]
                 dc = sigmoid(P(2)); % dilution coefficient
                 P0 = (1-dc).*P0 + dc./(level.*ones(level,1));
             end
             % update P(k')
-            Pu = P0.*Es.^ot.*(1-Es).^(1-ot);
-            Pu = Pu./sum(Pu); % posterior P(k')
+            LL = ot.*Els1 + (1-ot).*Els0;
+            Pk = P0.*exp(w.*LL);
+            Pk = Pk./sum(Pk); % posterior P(k')
             % store posterior P(k') in hidden-states vector
-            fx(1:(level-1)) = invsigmoid(Pu(1:(end-1))); % only k'<k-1
+            fx(1:(level-1)) = invsigmoid(Pk(1:(end-1))); % only k'<k-1
         end
     end
     
@@ -104,15 +116,15 @@ else % k-ToM with k>0
     % exp(P), which is k-ToM's prior volatility...
     for j=1:level % loop over admissible opponent's levels (k'=j-1)
         
-        % 2.1- update E[theta|k'] and V[theta|k']
-        in.k = Pu(j); % posterior P(k')
+        % 2.1- update posterior moments, i.e. E[theta|k'] and V[theta|k']
+        in.Pk = w*Pk(j); % posterior belief P(k') about opponent's level
         in.f = x(indlev(j).f); % E[x(theta)|k'=j]
         in.df = x(indlev(j).df); % d[x(theta)]/dtheta for k'=j
         in.dummyPar = inF.dummyPar; % flags which params drift over trials
         if isempty(u) % missed trial or initialization
             fx(indlev(j).Par) = x(indlev(j).Par); % no update
             oa = [];
-        else
+        else % VB-Laplace update rule for k-ToM's belief
             fx(indlev(j).Par) = updatePar(x(indlev(j).Par),P(1),ot,in);
             oa = u([2;1]); % for the opponent: other's move = u(2) and agent's move = u(1)
         end
@@ -125,6 +137,7 @@ else % k-ToM with k>0
         %-----------------------------------------------------------------%
         
         inL = inF; % copy optional input structure
+        inL.metaweight = 1; % inner recursive loops are immune to superceding model competition!
         inL.lev = j-1; % opponent sophistication [j=1:0-ToM, j=2:1-ToM,...]
         inL.player = 3-inF.player; % reverse player role
         
@@ -141,7 +154,7 @@ else % k-ToM with k>0
         inG = inF; % copy optional input structure
         inG.npara = NtotPar; % total nb of evol/obs params
         inG.lev = j-1; % opponent sophistication
-        inG.k = in.k; % [useless]
+%         inG.k = in.k; % [useless]
         inG.player = 3-inF.player; % reverse player role
         inG.indlev = indlevj; % indexing of opponent's hidden states
         f_new = invsigmoid(fobs(X,Parobs,oa,inG)); % x(params)
@@ -182,17 +195,25 @@ end % avoiding shared variables in nested functions
 
 
 function fPar_k = updatePar(Par_k,theta,ot,in)
+% VB-Laplace update rule for k-ToM belief about his opponent's params
+% [inputs]:
+%   - Par_k: k-ToM's prior mean and variance on his opponent's params
+%   - theta: k-ToM's assumed log-volatility of his opponent's params
+%   - ot: k-ToM's opponent's last move
+%   - in: pre-calculated intermediary variables
+% [outputs]:
+%   - fPar_k: k-ToM's posterior mean and variance on his opponent's params
 % NB: VB update of opponent's params does not account for potential
 % identifiability issues between params (cf. mean-field assumption)
-Pu = in.k; % updated P(k)
+Pk = in.Pk; % updated P(k)
 Proba = sigmoid(in.f); % P(o=1|k)
 df = in.df; % d[x(theta)]/dtheta
 indV = 2:2:length(Par_k); % indices of E[theta]
 indMu = 1:2:length(Par_k); % indices of V[theta]
 V0 = exp(Par_k(indV))+exp(theta).*in.dummyPar; % diluted prior variance
-Vu = 1./((1./V0)+Pu*Proba*(1-Proba).*(df.^2)); % posterior variance
+Vu = 1./((1./V0)+Pk*Proba*(1-Proba).*(df.^2)); % posterior variance
 E0 = Par_k(indMu); % prior mean
-Eu = E0 + Pu.*Vu.*(ot-Proba).*df; % posterior mean
+Eu = E0 + Pk.*Vu.*(ot-Proba).*df; % posterior mean
 fPar_k = zeros(size(Par_k)); % = [...,E[param_i];V[param_i];...]
 fPar_k(indV) = log(Vu);
 fPar_k(indMu) = invsigmoid(sigmoid(Eu)); % for numerical purposes

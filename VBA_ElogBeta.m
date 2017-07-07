@@ -23,7 +23,7 @@ else
 end
 
 if any(b<1)
-    disp('Warning: beta shape parameter smaller than 1!')
+    warning('beta shape parameter smaller than 1!')
 end
 El = zeros(na,1);
 ind = find(a>1e-1);

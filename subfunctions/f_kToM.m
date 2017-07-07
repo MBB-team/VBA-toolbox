@@ -28,4 +28,5 @@ if isweird(u) % e.g., 1st trial
     return
 end
 
-[fx,indlev] = RecToMfunction(x,P,u,inF); % indlev is used recursively by RecToMfunction.m
+[fx,indlev] = RecToMfunction(x,P,u,inF);
+% NB: output indlev is used recursively by RecToMfunction.m

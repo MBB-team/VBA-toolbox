@@ -1,7 +1,7 @@
 % demonstrates how to implement sparse priors with VBA
 % The trick is to use a continuous transform of GLM parameters, such that
 % Gaussian priors are mapped onto fat-tailed distributions. More precisely,
-% the "sparse transformation" is a signed quadratic mapping (see
+% the "sparsify transformation" is a signed quadratic mapping (see
 % sparseTransform.m). Under this transform, the priors become close to a
 % Lapacian density, and the parameter VB-estimate should mimick a L1-norm
 % (i.e. "lasso") estimator.
@@ -78,9 +78,9 @@ getSubplots
 % 1- simulate "sparse" GLM and invert
 p = 32;
 n = 64;
+sigma = 1;
 A = randn(p,n);
 phi1 = sparseTransform(X(randperm(n)),1);
-sigma = 1;
 y1 = A*phi1 + sqrt(sigma.^-1)*randn(p,1);
 
 dims.n = 0;
@@ -89,7 +89,7 @@ dims.n_phi = n;
 options.inG.X = A;
 options.inG.sparseP = 1;
 % options.priors.muPhi = 1e-2*ones(n,1);
-options.checkGrads = 1;
+options.checkGrads = 0;
 [posterior,out] = VBA_NLStateSpaceModel(y1,[],[],@g_GLMsparse,dims,options);
 set(gcf,'tag','dummy','name','"sparse" sim, "sparse" priors')
 hf = figure('color',[1 1 1],'name','estimation accuracy');
