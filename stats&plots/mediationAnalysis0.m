@@ -94,7 +94,7 @@ B = sqrt(sobel.vb).*randn(montecarlo.N,1);
 usAB = (abs(sobel.a)+A).*(abs(sobel.b)+B);
 sAB = (sobel.a+A).*(sobel.b+B);
 montecarlo.p = min([1,2*(1-length(find(usAB>0))./montecarlo.N)]);
-montecarlo.IC = [quantile(sAB,alpha/2),quantile(sAB,1-alpha/2)];
+montecarlo.IC = [VBA_quantile(sAB,alpha/2),VBA_quantile(sAB,1-alpha/2)];
 
 % conjunctive test
 conj.p = max([p2,p4]);
