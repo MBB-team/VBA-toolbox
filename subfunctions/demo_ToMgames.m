@@ -109,8 +109,8 @@ axis(ha,'square')
 hf = figure('color',[1 1 1],'name','Performance patterns');
 if noisy
     na = 2;
-    mP2 = nanmean(Perf2,3);
-    sP2 = nanstd(Perf2,[],3);
+    mP2 = VBA_nanmean(Perf2,3);
+    sP2 = VBA_nanstd(Perf2,[],3);
 else
     na = 1;
 end

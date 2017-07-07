@@ -140,7 +140,7 @@ function [ stdErrMean ] = sem(normal_sample,dim)
 if nargin == 1
     dim = find(size(normal_sample) == max(size(normal_sample)),1,'first' );
 end
-stdErrMean = nanstd(normal_sample,0,dim)/sqrt(size(normal_sample,dim));
+stdErrMean = VBA_nanstd(normal_sample,0,dim)/sqrt(size(normal_sample,dim));
 
 
 end
