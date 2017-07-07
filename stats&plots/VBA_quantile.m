@@ -21,9 +21,7 @@ if n==1
     Y = X*ones(1,numel(p));
     return
 end
-q = (0.5:1:(n-0.5))/n;
-Y = interp1(q,sort(X),p,'linear');
-
-Y(p<q(1)) = min(X);
-Y(p>q(end)) = max(X);
+q = [0 (0.5:1:(n-0.5))/n 1];
+SX = sort(X);
+Y = interp1(q,SX([1 1:n n]),p,'linear');
 
