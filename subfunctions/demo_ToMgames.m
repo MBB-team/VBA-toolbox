@@ -102,7 +102,8 @@ imagesc(mP,'parent',ha)
 set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,'yticklabel',styles1)
 axis(ha,'tight')
 axis(ha,'square')
-hh = rotateXLabels(ha,90);
+drawnow
+rotateXLabels(ha,90);
 hf = figure('color',[1 1 1],'name','std Perf');
 ha = axes('parent',hf,'nextplot','add');
 imagesc(sP,'parent',ha)
