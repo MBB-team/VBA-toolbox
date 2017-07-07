@@ -17,8 +17,8 @@ end
 %% run demos
 log = struct('demo',{},'status',{},'stack',{},'time',{});
 
-for i = 1:numel(d)
-   demo_name = d(i).name(1:end-2);
+for i = 1:numel(demos)
+   demo_name = demos{i};
    
    try
        close all
