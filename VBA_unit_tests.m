@@ -2,8 +2,19 @@ function log = VBA_unit_tests()
 % This function simply launches sequentially all the demos of the toolbox and
 % reports execution time and potential failures
 
-d = dir('./subfunctions/demo*');
 
+%% find demos
+[~,list]=system('find . -name demo*') ;
+
+demos = {};
+for p = strsplit(list)  
+    if ~isempty(p{1})
+        [~,demos{end+1},~] = fileparts(p{1});
+    end
+end
+
+
+%% run demos
 log = struct('demo',{},'status',{},'stack',{},'time',{});
 
 for i = 1:numel(d)
