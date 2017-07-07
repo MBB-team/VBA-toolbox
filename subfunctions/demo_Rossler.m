@@ -9,8 +9,8 @@ clear variables
 f_fname = @f_Rossler;
 g_fname = @g_sigmoid;
 u       = [];
-n_t = 5e2;
-deltat = 4e-2;
+n_t     = 5e2;
+deltat  = 4e-2;
 alpha   = 1e3;
 sigma   = 1e3;
 theta   = [0.2;0.2;2.791];

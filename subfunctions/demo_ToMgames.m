@@ -38,7 +38,11 @@ noisy = 1; % flag for noisy computations
 stdx = exp(-1); % std-dev of computational noise (player #1 only!)
 
 tic
-Nmc = 5000; % # Monte-Carlo simulations
+
+%Nmc = 5000; % # Monte-Carlo simulations
+Nmc = 5; 
+fprintf( 'WARNING: this is a demo! The number of Monte-Carlo simulation should largely be increased (Nmc~5000) for real simulations\n') 
+
 Perf = zeros(length(styles1),length(styles2),Nmc);
 for imc = 1:Nmc
     imc
@@ -87,7 +91,7 @@ end
 
 toc
 
-save ToMgames_ASD2.mat
+%save ToMgames_ASD2.mat
 
 % plot performance patterns
 mP = mean(Perf,3);
@@ -98,7 +102,8 @@ imagesc(mP,'parent',ha)
 set(ha,'xtick',1:length(styles2),'ytick',1:length(styles1),'xticklabel',styles2,'yticklabel',styles1)
 axis(ha,'tight')
 axis(ha,'square')
-hh = rotateXLabels(ha,90);
+drawnow
+rotateXLabels(ha,90);
 hf = figure('color',[1 1 1],'name','std Perf');
 ha = axes('parent',hf,'nextplot','add');
 imagesc(sP,'parent',ha)
@@ -109,8 +114,8 @@ axis(ha,'square')
 hf = figure('color',[1 1 1],'name','Performance patterns');
 if noisy
     na = 2;
-    mP2 = nanmean(Perf2,3);
-    sP2 = nanstd(Perf2,[],3);
+    mP2 = VBA_nanmean(Perf2,3);
+    sP2 = VBA_nanstd(Perf2,[],3);
 else
     na = 1;
 end

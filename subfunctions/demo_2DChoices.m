@@ -6,7 +6,7 @@
 % is then compared to the simulated (hyperbolic) utility profile.
 
 
-clear all
+clear variables
 close all
 
 % initialize simulations
@@ -42,8 +42,8 @@ options.dim = dim;
 dr = R(1,:) - R(2,:); % 1st-alternative reward minus 2nd-alternative reward
 dt = t(1,:) - t(2,:); % 1st-alternative delay minus 2nd-alternative delay
 
-br = [quantile(dr,.05),quantile(dr,.95)];
-bt = [quantile(dt,.05),quantile(dt,.95)];
+br = [VBA_quantile(dr,.05),VBA_quantile(dr,.95)];
+bt = [VBA_quantile(dt,.05),VBA_quantile(dt,.95)];
 xr = linspace(br(1),br(2),32);
 xt = linspace(bt(1),bt(2),32);
 ne  = hist2(dr,dt,xr,xt); % # choice alternatives that fall in that particular domain
