@@ -183,7 +183,7 @@ set.prft = RFT_Pval(options.u,options.k,set.c,out.fwhm,L,options.type,options.do
 out.Em = RFT_expectedTopo(options.u,L,out.fwhm,1,options.type,options.dof);
 switch options.type
     case 'norm'
-        P0 = 1-spm_Ncdf(u,0,1);
+        P0 = 1-spm_Ncdf(options.u,0,1);
     case 't'
         P0 = 1-spm_Tcdf(options.u,options.dof);
     case 'F'
