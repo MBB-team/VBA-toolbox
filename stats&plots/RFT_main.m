@@ -50,7 +50,7 @@ end
 
 if isempty(options)
     options.FWER = 0.05;
-    options.u = icdf('norm',0.99,0,1);
+    options.u = spm_invNcdf(0.99,0,1);
     options.k = 6;
     options.R = [];
     options.type = 'norm';
@@ -89,11 +89,11 @@ else
     if ~isfield(options,'u')
         switch options.type
             case 'norm'
-                options.u = icdf('norm',0.99,0,1);
+                options.u = spm_invNcdf(0.99,0,1);
             case 't'
-                options.u = icdf('t',0.99,options.dof);
+                options.u = spm_invTcdf(0.99,options.dof);
             case 'F'
-                options.u = icdf('F',0.99,options.dof(1),options.dof(2));
+                options.u = spm_invFcdf(0.99,options.dof(1),options.dof(2));
         end
         if verbose
             disp(['Using default cluster-inducing threshold (X>',num2str(options.u,'%3.2f'),').'])
@@ -153,11 +153,11 @@ peaks.val = X(peaks.ind);
 peaks.prft = RFT_Pval(peaks.val,0,1,out.fwhm,L,options.type,options.dof);
 switch options.type
     case 'norm'
-        peaks.punc = 1-normcdf(peaks.val,0,1);
+        peaks.punc = 1-spm_Ncdf(peaks.val,0,1);
     case 't'
-        peaks.punc = 1-tcdf(peaks.val,options.dof);
+        peaks.punc = 1-spm_Tcdf(peaks.val,options.dof);
     case 'F'
-        peaks.punc = 1-fcdf(peaks.val,options.dof(1),options.dof(2));
+        peaks.punc = 1-spm_Fcdf(peaks.val,options.dof(1),options.dof(2));
 end
 
 % cluster-level inference
@@ -183,11 +183,11 @@ set.prft = RFT_Pval(options.u,options.k,set.c,out.fwhm,L,options.type,options.do
 out.Em = RFT_expectedTopo(options.u,L,out.fwhm,1,options.type,options.dof);
 switch options.type
     case 'norm'
-        P0 = 1-normcdf(options.u,0,1);
+        P0 = 1-spm_Ncdf(u,0,1);
     case 't'
-        P0 = 1-tcdf(options.u,options.dof);
+        P0 = 1-spm_Tcdf(options.u,options.dof);
     case 'F'
-        P0 = 1-fcdf(options.u,options.dof(1),options.dof(2));
+        P0 = 1-spm_Fcdf(options.u,options.dof(1),options.dof(2));
 end
 out.En = L.*P0./out.Em;
 

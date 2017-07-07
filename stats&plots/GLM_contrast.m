@@ -134,7 +134,7 @@ switch type
         vhat = sum((y-yhat).^2,1)./trR;
         V = vhat.*(c'*iC*c);
         stat = (c'*b)./sqrt(V);
-        pv = 1 - cdf('t',stat,df);
+        pv = 1 - spm_Tcdf(stat,df);
         for i=1:p
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
@@ -181,7 +181,7 @@ switch type
         for i=1:p
             vhat(i) = sum(e(:,i).^2)./trR;
             stat(i) = ((yhat(:,i)'*M*yhat(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trM);
-            pv(i) = 1 - cdf('F',stat(i),df(1),df(2));
+            pv(i) = 1 - spm_Fcdf(stat(i),df(1),df(2));
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);

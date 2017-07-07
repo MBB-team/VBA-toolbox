@@ -36,7 +36,7 @@ for j=1:length(v)
         hclu(j,ii) = length(find(out.clusters.prft<0.05))>=1;
         f(j,ii) = out.fwhm;
         % apply Bonferroni
-        p = 1-cdf('t',stat,out.options.dof);
+        p = 1-spm_Tcdf(stat,out.options.dof);
         h(j,ii) = length(find(p<0.05./L))>=1;
     end
 end
