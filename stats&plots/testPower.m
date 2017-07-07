@@ -16,11 +16,8 @@ switch type
         tcritic = spm_invTcdf(1-alpha,dof);
         power = 1-spm_Tcdf(tcritic-Estat,dof);
     case 'F'
-        if ~exist('ncfcdf')
-            error('*** The statistics toolbox is required to compute F-test power. Sorry!')
-        end
         Fcritic = spm_invFcdf(1-alpha,dof(1),dof(2));
-        power = 1-ncfcdf(Fcritic,dof(1),dof(2),Estat);  
+        power = 1-VBA_ncfcdf(Fcritic,dof(1),dof(2),Estat);  
     otherwise
         disp('Error: this function only supports t- and F- tests!')
         power = [];
