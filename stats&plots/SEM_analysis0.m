@@ -68,7 +68,7 @@ options.priors.muPhi = zeros(dim.n_phi,1);
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
 options.DisplayWin = 0;
 options.verbose = 0;
-[posterior,out] = VBA_hyperparameters(y,u,[],g_fname,dim,options);
+[posterior,out] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);
 
 % wrap-up SEM estimates
 mP = posterior.muPhi;
