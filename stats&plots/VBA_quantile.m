@@ -8,6 +8,7 @@ function Y = VBA_quantile(X,p)
 % check inputs
 if isempty(X)
     Y = nan(numel(p));
+    return
 end
 
 X(isnan(X)) = [];
@@ -15,9 +16,14 @@ X = vec(X);
 
 % compute quantiels
 n = numel(X);
-q = (0.5:1:(n-0.5))/n;
-Y = interp1(q,sort(X),p);
 
-Y(p==0) = min(X);
-Y(p==1) = max(X);
+if n==1
+    Y = X*ones(1,numel(p));
+    return
+end
+q = (0.5:1:(n-0.5))/n;
+Y = interp1(q,sort(X),p,'linear');
+
+Y(p<q(1)) = min(X);
+Y(p>q(end)) = max(X);
 
