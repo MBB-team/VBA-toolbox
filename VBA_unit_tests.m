@@ -15,7 +15,7 @@ end
 
 
 %% run demos
-logs = struct('demo',{},'status',{},'stack',{},'time',{});
+logs = {}; 
 
 parfor i = 1:numel(demos)
    demo_name = demos{i};
@@ -26,11 +26,14 @@ parfor i = 1:numel(demos)
        fprintf('\n ####################\n  %s \n ####################\n',demo_name)
        tic ;
        evalin('base',demo_name)
-       logs(i) = struct('demo',demo_name,'status',1,'stack',[],'time',toc);
+       logs{i} = struct('demo',demo_name,'status',1,'stack',[],'time',toc);
    catch err
-       logs(i) = struct('demo',demo_name,'status',0,'stack',err,'time',toc);
+       logs{i} = struct('demo',demo_name,'status',0,'stack',err,'time',toc);
    end
    
 end
 
-save(['../VBA_unit_test_log_' version('-release')],'log')
+logs = [logs{:}];
+save(['../VBA_unit_test_log_' version('-release')],'logs')
+
+
