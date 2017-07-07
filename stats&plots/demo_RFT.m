@@ -7,9 +7,12 @@ clc
 
 %--- RFT: specificity
 L = 2e3; % size of the 1D field
-N = 1e3; % number of Monte-Carlo simulations
+%N = 1e3; % number of Monte-Carlo simulations
+N = 100; 
+fprintf( 'WARNING: this is a demo! The number of Monte-Carlo simulation should largely be increased (N~1000) for real simulations\n') 
+
 v = ([1:5:50]/2.355).^2; % smoothing kernel variances
-v = v(end);
+%v = v(end);
 for j=1:length(v)
     j
     kernel = exp(-0.5.*([1:L]-L/2).^2/v(j));
@@ -22,8 +25,9 @@ for j=1:length(v)
     sX = sX./repmat(sqrt(vX),1,N);
     for ii=1:N
         % apply RFT
-        [out] = RFT_main(2+sX(:,ii),[],1);
-        pause
+        disp_and_verbose = 0;
+        [out] = RFT_main(2+sX(:,ii),[],disp_and_verbose);
+        drawnow
         hpeak(j,ii) = length(find(out.peaks.prft<0.05))>=1;
         hclu(j,ii) = length(find(out.clusters.prft<0.05))>=1;
         f(j,ii) = out.fwhm;
@@ -48,4 +52,4 @@ xlabel(ha,'smoothing kernel FWHM')
 ylabel(ha,'RFT-FWHM')
 getSubplots
 
-save RFT.mat
+%save RFT.mat

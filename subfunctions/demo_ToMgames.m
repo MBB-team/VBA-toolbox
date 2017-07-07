@@ -38,7 +38,11 @@ noisy = 1; % flag for noisy computations
 stdx = exp(-1); % std-dev of computational noise (player #1 only!)
 
 tic
-Nmc = 5000; % # Monte-Carlo simulations
+
+%Nmc = 5000; % # Monte-Carlo simulations
+Nmc = 5; 
+fprintf( 'WARNING: this is a demo! The number of Monte-Carlo simulation should largely be increased (Nmc~5000) for real simulations\n') 
+
 Perf = zeros(length(styles1),length(styles2),Nmc);
 for imc = 1:Nmc
     imc
