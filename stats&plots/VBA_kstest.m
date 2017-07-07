@@ -1,5 +1,7 @@
 function [h,p,KSstatistic]=VBA_kstest(x)
+% alternative to kstest fromt the statistics toolbox
 
+%% compute critical statistic
 n = numel(x);
 
 sampleCDF = linspace(0,1,n+1)';
@@ -59,6 +61,7 @@ else
     p = (1 - exp(gammaln(n+1) + n*log(lmax) - n*log(n)) * T(k,k));
 end
 
+% test hypothesis
 h  =  (p < .05);
 
 end
