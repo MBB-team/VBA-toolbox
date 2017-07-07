@@ -83,10 +83,10 @@ hA = [1 1];
 % === Basic settings =======================================
 
 f_fname = @f_DCMwHRFext ; 
-g_fname = @g_DCMwHRFext2 ; 
+g_fname = @g_DCMwHRFext ; 
                               
 TR = 1;                       % sampling period (in sec)
-microDT = .05;                % micro-time resolution (in sec)
+microDT = .200;                % micro-time resolution (in sec)
 homogeneous = 1;              % params of g(x) homogeneous accross regions
 reduced_f = 1;                % fix some HRF params
 lin = 1;                      % linearized variant of HRF Balloon model
@@ -99,7 +99,7 @@ sigma = [1/noise;1e4];              % measurement noise precision
 
 %- specify distribution of observations
 sources(1) = struct('out',1:2,'type',0);  % two BOLD timeseries (gaussian) 
-sources(2) = struct('out',3,  'type',0);  % and a motor response(binomial)
+sources(2) = struct('out',3,  'type',1);  % and a motor response(gaussian)
 
 %- prepare the DCM structure
 options = prepare_fullDCM(A,B,C,{},TR,microDT,homogeneous,hA,{[],[]},{},{},sources);
