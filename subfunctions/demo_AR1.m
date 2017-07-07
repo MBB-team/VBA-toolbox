@@ -85,7 +85,7 @@ options.dim = dim;
 displaySimulations(y,x,eta,e)
 
 
-% Call inversion routine
+% Call inversion routine with AR(1) priors on state noise
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 % Display results
@@ -109,5 +109,6 @@ end
 displayResults(p0,o0,y-e,x(1:2,:),x0(1:2),theta,phi,alpha,sigma);
 
 
-
+% re-display AR(1) inversion
+VBA_ReDisplay(posterior,out,1)
 

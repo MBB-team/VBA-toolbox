@@ -1,4 +1,4 @@
-function [priors,params2update] = VBA_fillInPriors(priors,dim,verbose)
+function [options,params2update] = VBA_fillInPriors(dim,options)
 % fills in priors structure with default priors if necessary
 % function [priors,params2update] = VBA_fillInPriors(priors,dim,verbose)
 % IN: [see VBA_check.m]
@@ -9,66 +9,47 @@ function [priors,params2update] = VBA_fillInPriors(priors,dim,verbose)
 %   - priors: complete priors structure
 %   - params2update: for VBA inversion
 
-params2update.phi = 1:dim.n_phi;
-params2update.theta = 1:dim.n_theta;
-params2update.x0 = 1:dim.n;
-for t=1:dim.n_t
-    params2update.x{t} = 1:dim.n;
+
+% VBA default priors
+default_priors = VBA_priors(dim,options);
+if ~isfield(options,'priors')
+    options.priors = struct();
 end
-if ~isempty(priors)
-    % Get user-specified priors
-    fn = fieldnames(priors);
-    priors0 = VBA_priors(dim,struct('binomial',0));
-    fn0 = fieldnames(priors0);
-    io = ismember(fn0,fn);
-    ind = find(io==0);
-    if ~isempty(ind)
-        VBA_disp('Warning: could not find priors:',struct('verbose',verbose))
-        for i = 1:length(ind)
-            VBA_disp(['      - ',fn0{ind(i)}],struct('verbose',verbose));
-            eval(['priors.',fn0{ind(i)},'=priors0.',fn0{ind(i)},';',])
-        end
-        VBA_disp('---> Using default (non-informative) priors',struct('verbose',verbose))
-    end
-    % check dimension and infinite precision priors
-    if dim.n_theta > 0 % This finds which evolution params to update
-        dpc = diag(priors.SigmaTheta);
-        iz = find(dpc==0);
-        if ~isempty(iz)
-            params2update.theta = setdiff(1:dim.n_theta,iz);
-        end
-    end
-    if dim.n_phi > 0 % This finds which observation params to update
-        dpc = diag(priors.SigmaPhi);
-        iz = find(dpc==0);
-        if ~isempty(iz)
-            params2update.phi = setdiff(1:dim.n_phi,iz);
-        end
-    end
-    if dim.n > 0  % This finds which initial conditions to update
-        dpc = diag(priors.SigmaX0);
-        iz = find(dpc==0);
-        if ~isempty(iz)
-            params2update.x0 = setdiff(1:dim.n,iz);
-        end
-        for t=1:dim.n_t
-            dpc = diag(priors.iQx{t});
-            iz = find(isinf(dpc));
-            if ~isempty(iz)
-                params2update.x{t} = setdiff(1:dim.n,iz);
-            end
-        end
-    end
-    % insure vertical priors
-    priors.muPhi = priors.muPhi(:);
-    priors.muTheta = priors.muTheta(:);
-    priors.muX0 = priors.muX0(:);
-    if isfield(priors,'a_sigma')
-        priors.a_sigma = priors.a_sigma(:);
-        priors.b_sigma = priors.b_sigma(:);
-    end
-    
-else % Build default (non-informative) priors
-    priors = VBA_priors(dim,struct('binomial',0));
+
+% fill in VBA's priors structure with default priors
+options.priors = check_struct(options.priors,default_priors);
+
+% check dimension and infinite precision priors
+if dim.n_theta > 0 % This finds which evolution params to update
+    dpc = diag(options.priors.SigmaTheta);
+    iz = find(dpc==0);
+    params2update.theta = setdiff(1:dim.n_theta,iz);
+else
+    params2update.theta = [];
 end
+if dim.n_phi > 0 % This finds which observation params to update
+    dpc = diag(options.priors.SigmaPhi);
+    iz = find(dpc==0);
+    params2update.phi = setdiff(1:dim.n_phi,iz);
+else
+    params2update.phi = [];
+end
+if dim.n > 0  % This finds which initial conditions to update
+    dpc = diag(options.priors.SigmaX0);
+    iz = find(dpc==0);
+    params2update.x0 = setdiff(1:dim.n,iz);
+    for t=1:dim.n_t
+        dpc = diag(options.priors.iQx{t});
+        iz = find(isinf(dpc));
+        params2update.x{t} = setdiff(1:dim.n,iz);
+    end
+else
+    params2update.x0 = [];
+end
+
+
+
+
+
+
 

@@ -1,8 +1,10 @@
 function [ehat,v_e,etahat,v_eta] = VBA_getNoise(posterior,out)
-
 % returns the Laplace approximation to the innovations posterior density
 % function [ehat,v_e,etahat,v_eta] = VBA_getNoise(posterior)
-
+% This may be useful if one is interested in recovering, e.g., the state
+% noise that enters and perturbs the system. In particular, posterior
+% covariances are attached to state noise, which means that statistical
+% inference can be performed in the usual way...
 % IN:
 %   - posterior/out: output structures of VBA_NLStateSpaceModel.m
 % OUT:

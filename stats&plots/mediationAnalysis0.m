@@ -85,7 +85,7 @@ sobel.b = a3.b(3);
 sobel.vb = a3.vhat.*a3.iC(3,3);
 sobel.ab = sobel.a.*sobel.b;
 sobel.sab = sqrt(sobel.a.^2*sobel.vb + sobel.b^2*sobel.va);
-sobel.p = 2*normcdf(-abs(sobel.ab./sobel.sab),0,1);
+sobel.p = 2*spm_Ncdf(-abs(sobel.ab./sobel.sab),0,1);
 
 % Monte-Carlo test
 montecarlo.N = 1e6; % # Monte-Carlo samples
@@ -94,7 +94,7 @@ B = sqrt(sobel.vb).*randn(montecarlo.N,1);
 usAB = (abs(sobel.a)+A).*(abs(sobel.b)+B);
 sAB = (sobel.a+A).*(sobel.b+B);
 montecarlo.p = min([1,2*(1-length(find(usAB>0))./montecarlo.N)]);
-montecarlo.IC = [quantile(sAB,alpha/2),quantile(sAB,1-alpha/2)];
+montecarlo.IC = [VBA_quantile(sAB,alpha/2),VBA_quantile(sAB,1-alpha/2)];
 
 % conjunctive test
 conj.p = max([p2,p4]);

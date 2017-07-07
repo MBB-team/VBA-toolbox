@@ -16,6 +16,7 @@ function [posterior,out] = VBA_hyperparameters(y,u,f_fname,g_fname,dim,options)
 %   parameters for precision hyperparameters, namely:
 %       .posterior.a_phi, priors.b_phi: for observation parameters
 %       .posterior.a_theta, priors.b_theta: for evolution parameters
+%       .posterior.a_x0, priors.b_x0: for initial conditions
 
 
 posterior = [];
@@ -38,25 +39,17 @@ catch
     dim.p = size(y,1);
 end
 
-% specify default options
+% specify minimal default options
 options.tStart = tic;
-% VB display window
-if ~isfield(options,'DisplayWin')
-    options.DisplayWin = 1;
-end
-if ~isfield(options,'verbose')
-    options.verbose = 1;
-end
+options = check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1,'kernelSize',16);
+kernelSize0 = options.kernelSize;
+options.kernelSize = 0;
 
 VBA_disp('--- VBA with hyperparameters adjustment... ---',options)
 
 % Initialize priors
-try
-    priors = options.priors;
-catch
-    priors = [];
-end
-[options.priors,params2update] = VBA_fillInPriors(priors,dim,options.verbose);
+[options,params2update] = VBA_fillInPriors(dim,options);
+
 nphi = 0;
 ntheta = 0;
 nx0 = 0;
@@ -104,7 +97,7 @@ if dim.n >0
     options.priors.SigmaX0 = Evx0*Qx0;
 end
 
-% perform vanilla VBA inversion
+% perform first vanilla VBA inversion
 VBA_disp(' ',options)
 VBA_disp(['VBA with hyperparameters adjustment: initialization (using prior hyperparameters)'],options)
 options.figName = 'VBA with hyperparameters adjustment: initialization';
@@ -177,22 +170,33 @@ it = 1;
 while ~stop
     
     % adjust precision hyperparameters
-    VBA_disp(' ',options)
     VBA_disp(['VBA with hyperparameters adjustment: iteration #',num2str(it)],options)
     if nphi >0
          posterior.a_phi = options.priors.a_phi + 0.5*nphi;
          Edphi = out.suffStat.dphi'*iQphi*out.suffStat.dphi + trace(iQphi*posterior.SigmaPhi);
          posterior.b_phi = options.priors.b_phi + 0.5*Edphi;
+         if isfield(out.suffStat,'ODE_posterior')
+             out.suffStat.ODE_posterior.a_phi = posterior.a_phi;
+             out.suffStat.ODE_posterior.b_phi = posterior.b_phi;
+         end
     end
     if ntheta >0
          posterior.a_theta = options.priors.a_theta + 0.5*ntheta;
          Edtheta = out.suffStat.dtheta'*iQtheta*out.suffStat.dtheta + trace(iQtheta*posterior.SigmaTheta);
          posterior.b_theta = options.priors.b_theta + 0.5*Edtheta;
+         if isfield(out.suffStat,'ODE_posterior')
+             out.suffStat.ODE_posterior.a_theta = posterior.a_theta;
+             out.suffStat.ODE_posterior.b_theta = posterior.b_theta;
+         end
     end
     if nx0 >0
          posterior.a_x0 = options.priors.a_x0 + 0.5*nx0;
          Edx0 = out.suffStat.dx0'*iQx0*out.suffStat.dx0 + trace(iQx0*posterior.SigmaX0);
          posterior.b_x0 = options.priors.b_x0 + 0.5*Edx0;
+         if isfield(out.suffStat,'ODE_posterior')
+             out.suffStat.ODE_posterior.a_x0 = posterior.a_x0;
+             out.suffStat.ODE_posterior.b_x0 = posterior.b_x0;
+         end
     end
     
     % correct Free Energy
@@ -297,12 +301,15 @@ VBA_disp(['[Corrected Free Energy: log p(y|m) > F=',num2str(out.F,'%4.3e'),']'],
 VBA_disp(' ',out.options)
 if options.DisplayWin
     out.options.hf(2) = hf;
-    set(out.options.hf,'name',out.options.figName);
+    out.options.kernelSize = kernelSize0;
+    [tmp,out] = VBA_getDiagnostics(posterior,out);
+    VBA_ReDisplay(posterior,out)
     getSubplots
 end
 
 % subfunctions
 function dF = deltaF(a,a0,b,b0,n)
+% corrects Free Energy for uncertainty in prior precision hyperparameters
 m1 = a/b;
 v1 = m1/b;
 m2 = a0/b0;

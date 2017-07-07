@@ -9,7 +9,7 @@ dsdx = [];
 if nargout==2
     dsigdx = P.*sig.*(1-sig);
     dsdx = 2*(x.^2).*dsigdx + 2*x.*(2.*sig-1);
-    dsdx(x==0) = 1e-4; % for numerical purposes
+    dsdx(x==0) = 1e-2; % for numerical purposes
     dsdx = diag(dsdx);
 end
 

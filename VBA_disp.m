@@ -1,14 +1,19 @@
 function VBA_disp(str,options)
-
+% display string or cell-arry of strings
+try
+    verbose = options.verbose;
+catch
+    verbose = 1;
+end
 % conditional display function
-if options.verbose
+if verbose
     if iscell(str)
         n = length(str);
         for i=1:n
-            fprintf(str{i})
+            fprintf(1,str{i})
         end
     else
-       fprintf(str) 
+       fprintf(1,str) 
     end
     fprintf('\n')
 end
