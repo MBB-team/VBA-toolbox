@@ -21,8 +21,7 @@ alpha       = Inf;                  % simulated state noise precision
 sigma       = 1e6;                  % simulated data noise precision
 
 % spatial observation parameters
-inG.ind_hrf = 1;
-inG.ind_profile{1} = 2:5;
+inG.ind_hrf = 1:length(phi);
 inG.n_reg = 1;
 inG.n_phi = 4;
 inG.B = randn(15,inG.n_phi);
@@ -31,16 +30,16 @@ phi = [ phi
         2
         -1
         -2  ];
-
+inG.ind_profile{1} = inG.ind_hrf(end)+1:length(phi);
 
 
 % Build priors for model inversion
 priors.muX0         = [0;0;0;0];
 priors.SigmaX0      = 0e0*eye(4);
-priors.muTheta      = 0.1*ones(6,1);
-priors.SigmaTheta   = 1e0*eye(6,6);
-priors.muPhi        = 0*ones(5,1);
-priors.SigmaPhi     = 1e0*eye(5);
+priors.muTheta      = 0.1*ones(length(theta),1);
+priors.SigmaTheta   = 1e0*eye(length(theta));
+priors.muPhi        = 0*ones(length(phi),1);
+priors.SigmaPhi     = 1e0*eye(length(phi));
 priors.SigmaPhi(1)  = 0;
 priors.a_alpha      = Inf;%1e6;
 priors.b_alpha      = 0;%1e2;
@@ -56,8 +55,8 @@ options.inG.TE      = 0.04;
 options.decim       = decim;
 options.microU      = 1;
 options.inG         = inG;
-dim.n_theta         = 6;
-dim.n_phi           = 5;
+dim.n_theta         = length(theta);
+dim.n_phi           = length(phi);
 dim.n               = 4;
 % options.checkGrads = 1;
 
@@ -77,7 +76,7 @@ displaySimulations(y,x,eta,e)
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 % Display inference results
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma)
 
 % Make predictions
 try

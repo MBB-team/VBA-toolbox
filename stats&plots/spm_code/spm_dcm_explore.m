@@ -107,11 +107,7 @@ catch
     DCM = myspm_dcm_test(DCM);
 end
 ud.Pp = DCM.sdr; % posterior proba for P=0 (using SD-ratios)
-try
-    ud.Pcorr = abs(spm_cov2corr(DCM.Cp)); % posterior correlation matrix
-catch
-    ud.Pcorr = abs(cov2corr(DCM.Cp));
-end
+ud.Pcorr = cov2corr(DCM.Cp); % posterior correlation matrix
 for i=1:ud.dim.l
     PSS(i)  = sum(DCM.y(:,i).^2);
     RSS(i)  = sum(DCM.R(:,i).^2);
@@ -119,7 +115,6 @@ for i=1:ud.dim.l
 end
 ud.R2.tot =  sum(PSS)/sum(PSS+RSS);
 
-ud.Pcorr = spm_cov2corr(DCM.Cp);
 pos0 = get(0,'screenSize');
 pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
 [pathstr,filename,ext] = fileparts(DCM.filename);

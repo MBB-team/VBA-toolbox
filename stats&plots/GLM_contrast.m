@@ -124,7 +124,7 @@ switch type
             disp('Error: cannot have contrast matrices for ''t''-tests!')
             return
         end
-        df = trR.^2./sum(sum(R.^2,1));
+        df = trR.^2./sum(sum(R.^2,1)); % Satterthwaite approx.
         if verbose
             fprintf(1,'Computing t-statistics...')
             if p>1
@@ -134,13 +134,13 @@ switch type
         vhat = sum((y-yhat).^2,1)./trR;
         V = vhat.*(c'*iC*c);
         stat = (c'*b)./sqrt(V);
-        pv = 1 - cdf('t',stat,df);
+        pv = 1 - spm_Tcdf(stat,df);
         for i=1:p
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
             R2_a(i) = FtoR2(stat(i).^2,1,df);
-            [tmp,ks(i)] = kstest(zscore(e));
+            [tmp,ks(i)] = VBA_kstest(nanzscore(e));
             if verbose && p>1
                 fprintf(1,repmat('\b',1,8))
                 fprintf(1,'%6.2f %%',100*i/p)
@@ -167,7 +167,7 @@ switch type
 %         yhat_a = R0*yhat;
         M = R0 - R;
         trM = trace(M);
-        df = [trM.^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];
+        df = [trM.^2./sum(sum(M.^2,1)),trR.^2./sum(sum(R.^2,1))];  % Satterthwaite approx.
         if verbose
             fprintf(1,' OK.')
             fprintf(1,'\n')
@@ -181,7 +181,7 @@ switch type
         for i=1:p
             vhat(i) = sum(e(:,i).^2)./trR;
             stat(i) = ((yhat(:,i)'*M*yhat(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trM);
-            pv(i) = 1 - cdf('F',stat(i),df(1),df(2));
+            pv(i) = 1 - spm_Fcdf(stat(i),df(1),df(2));
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
@@ -189,7 +189,7 @@ switch type
 %             SS_tot_a = sum((y_a(:,i)-mean(y_a(:,i))).^2);
 %             SS_err_a = sum((y_a(:,i)-yhat_a(:,i)).^2);
 %             R2_a(i) = 1-(SS_err_a/SS_tot_a);
-            [tmp,ks(i)] = kstest(zscore(e));
+            [tmp,ks(i)] = VBA_kstest(nanzscore(e));
             if verbose && p>1
                 fprintf(1,repmat('\b',1,8))
                 fprintf(1,'%6.2f %%',100*i/p)
@@ -420,6 +420,7 @@ plot(ha,ge,pe*sc,'r')
 xlabel(ha,'residual bins')
 ylabel(ha,'# samples per bin')
 legend(ha,{'histogram of residuals','empirical distribution of residuals','gaussian approximation'})
+title(ha,'residuals'' normality')
 xl = get(ha,'xlim');
 yl = get(ha,'ylim');
 ht = text(xl(1)+dx/2,yl(2),['Kolmogorov-Smirnov test: p=',num2str(ud.all.ks(ind),3)],'color','r','parent',ha);
@@ -438,6 +439,7 @@ ht = text(mih+(mah-mih)/32,yl(2)-0.1*diff(yl),['V[residuals]=',num2str(ve,3)],'c
 set(ha,'xlim',[mih,mah])
 xlabel(ha,'predicted data')
 ylabel(ha,'residuals'' moments')
+title(ha,'residuals'' homoscedasticity')
 try;getSubplots;end
 
 function myData(e1,e2)

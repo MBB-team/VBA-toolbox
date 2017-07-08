@@ -17,10 +17,16 @@ function tol = GLM_tolerance(X0)
 %   0.10 indicates a multicollinearity problem.
 
 [n,p] = size(X0);
-X0 = zscore(X0);
+
+% z-score
+X0 = bsxfun(@minus,X0, mean(X0));
+sigma0 = std(X0);
+sigma0(sigma0==0) = 1;
+X0 = bsxfun(@rdivide,X0, sigma0);
+
 tol = zeros(p,1);
-for i=1:n
-    X = X0(:,setdiff(1:n,i));
+for i=1:p
+    X = X0(:,setdiff(1:p,i));
     y = X0(:,i);
     C = X'*X;
     iC = pinv(C);

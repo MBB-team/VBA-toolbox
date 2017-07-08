@@ -1,6 +1,5 @@
 function [suffStat,posterior] = VBA_check_errors(y,u,options)
-% Function merging VBA_getsuffstat and the content of VBA_Initialize
-% regarding deterministic DCM
+% dummy diagnostic of model specification
 
 [suffStat] = VBA_getSuffStat(options,[],0);
 dim = options.dim;
@@ -110,8 +109,6 @@ for t=1:dim.n_t
         
         
     end
-
- %%
     
     % store states dynamics if ODE mode
     if isequal(options.g_fname,@VBA_odeLim)

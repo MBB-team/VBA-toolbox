@@ -10,9 +10,9 @@ function Z = RFT_Gtf(x,df,type)
 try, type; catch, type = 't'; end
 switch type
     case 't'
-        Z =  icdf('norm',tcdf(x,df),0,1);
+        Z =  spm_invNcdf(spm_Tcdf(x,df),0,1);
     case 'F'
-        Z =  icdf('norm',fcdf(x,df(1),df(2)),0,1);
+        Z =  spm_invNcdf(spm_Fcdf(x,df(1),df(2)),0,1);
     case 'norm'
         Z = x; % trivial case (no transform)
     otherwise
