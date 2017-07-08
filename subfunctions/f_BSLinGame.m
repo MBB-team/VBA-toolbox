@@ -17,7 +17,10 @@ function [ fx ] = f_BSLinGame(x,theta,u,in)
 %       x(1:2^K)= E[log-odds]
 %       x((2^K)+1:2^(K+1))= log V[log-odds]
 %   - theta: BSL's prior volatity
-%   - u: u(1)= current outcome, u(2:K+1)= sequence of past outcomes
+%   - u: sequence of past outcomes:
+%       u(1)= opponent's last move
+%       u(2)= learner's last move
+%       u(3:K+2) = sequence of K past opponent's moves
 %   - in: depth of sequence learning
 % OUT:
 %   - fx: updated sufficient statistics of log-odds of P(o=1)
@@ -27,5 +30,5 @@ if isweird(u) % e.g., 1st trial
     return
 end
 
-u(2) = []; % remove previous agent's move
+u(2) = []; % remove agent's previous move
 [fx] = f_BSL(x,theta,u,in);

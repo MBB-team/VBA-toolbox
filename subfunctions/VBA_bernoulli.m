@@ -1,4 +1,4 @@
-function y=bernoulli(p,n)
+function y=VBA_bernoulli(p,n)
 % BERNOULLI.M
 %bernoulli(p,n)
 % This function generates n independent draws of a Bernoulli

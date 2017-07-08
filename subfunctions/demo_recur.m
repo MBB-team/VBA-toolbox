@@ -4,7 +4,7 @@ clear all
 close all
 clc
 
-K = 3; % depth of k-ToM's recursive beliefs
+K = 1; % depth of k-ToM's recursive beliefs
 PERS = 0; % flag for additional perseveration component
 payoffTable = cat(3,[1,0;0,1],[0,1;1,0]); % game payoff matrix (here: hide-and-seek)
 role = 1;  % player's role (here: 1=seeker, 2=hider)
@@ -26,12 +26,12 @@ end
     
 %% simulate sequence of k-ToM choices
 phi = [-2;0;1]; % temperature, bias and perseveration
-theta = -log(2); % prior volatility
+theta = -2; % k-ToM's prior volatility
 if diluteP==1
-    theta = [theta;-log(2)];
+    theta = [theta;-2];
 end
 N = 50; % number of trials
-o = bernoulli(.65,N)'; % opponent's choices (here dummy binomial sampling)
+o = VBA_bernoulli(.85,N)'; % opponent's choices (here dummy binomial sampling)
 tic
 a = NaN(1,N); % agent's choices
 gx = NaN(1,N);
@@ -64,17 +64,29 @@ else
     hf = unwrapKTOM(x,options.inG);
 end
 set(hf,'position',[1290 266 560 857])
-return
 
+
+%% invert k-ToM model
 options.skipf = zeros(1,N);
 options.skipf(1) = 1;
 options.binomial = 1;
 options.DisplayWin = 1;
 options.priors.SigmaTheta = 1e2*eye(dim.n_theta); % relax evol param
+options.priors.SigmaX0 = 0*eye(dim.n);
 f_fname = @f_kToM;
 g_fname = @g_kToM;
 u = [zeros(2,1),[o;a]];
-[posterior,out] = VBA_NLStateSpaceModel(a(1:50),u,f_fname,g_fname,dim,options);
+y = a(1:50);
+[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
+%% Display results
+displayResults(posterior,out,y,x(:,1:50),options.priors.muX0,theta,phi,[],[])
+
+if PERS
+    hf = unwrapKTOM(posterior.muX,options.inG.in0);
+else
+    hf = unwrapKTOM(posterior.muX,options.inG);
+end
+set(hf,'name',[get(hf,'name'),' : VBA inversion'])
 
 

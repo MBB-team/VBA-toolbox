@@ -37,37 +37,37 @@ if level==0 % 0-ToM
     
 else
     
-    % Get P(k). Note: if the agent is k'-ToM, then, by definition, she
-    % considers that her opponent's sophistication is k <= k'-1. In
-    % addition, there is a constraint of normalization, ie sum_k P(k) = 1.
-    % Thus, one only needs to keep track of k'-1 probabilities (the last
-    % one is, by construction, 1-sum_k P(k)).
-    Pk = sigmoid(x(1:(level-1))); % P(k), with k=0,...,k'-2
-    Pk = [Pk;max(0,1-sum(Pk))]; % insert last P(k=k'-1)
+    % Get P(k'). Note: if the agent is k-ToM, then, by definition, she
+    % considers that her opponent's sophistication is k' < k. In addition,
+    % there is a constraint of normalization, ie sum_k' P(k') = 1. Thus,
+    % one only needs to keep track of k'-1 probabilities (the last one is,
+    % by construction, 1-sum_k' P(k')).
+    Pk = sigmoid(x(1:(level-1))); % P(k'), with k'=0,...,k-1
+    Pk = [Pk;max(0,1-sum(Pk))]; % insert last P(k'=k-1)
     
-    % Get P(o=1|k). Note: the agent's prediction P(o=1|k) depends upon her
-    % estimate of her opponent's parameters (learning rate, tmperature,
+    % Get P(o=1|k'). Note: the agent's prediction P(o=1|k') depends upon
+    % her estimate of her opponent's parameters (learning rate, tmperature,
     % bias...). Uncertainty Re: these parameters eventually results in
     % blurring her prediction.
-    % Note: hidden states encode x(theta), the log-odds of P(o=1|k,theta)
+    % Note: hidden states encode x(theta), the log-odds of P(o=1|k',theta)
     % evaluated at the agent's estimate of theta (mu). In addition, they
     % encode the gradient of x wrt to theta (dx/dtheta), and V[theta]. This
-    % then serves to derive P(o=1|k) as follows:
-    % P(o=1|k) = E[sigm(x(theta))]
+    % then serves to derive P(o=1|k') as follows:
+    % P(o=1|k') = E[sigm(x(theta))]
     %           = sigm(E[x(theta)]/sqrt(1+a*V[x(theta)])
     %           = sigm(E[x(theta)]/sqrt(1+a*V[theta]*(dx/dtheta)^2)   
     f = zeros(level,1); % E[x(theta)]
     Vx = zeros(level,1); % V[x(theta)]
-    for j=1:level % loop over possible opponent's levels  (k=j-1)
+    for j=1:level % loop over possible opponent's levels  (k'=j-1)
         f(j) = x(indlev(j).f); % E[x(theta)|k'=j-1]
-        df = x(indlev(j).df); % d[x(theta)]/dtheta for k=j-1
-        Sig = exp(x(indlev(j).Par(2:2:2*ntotPar))); % V[theta|k=j-1]
-        Vx(j) = sum(Sig.*df.^2); % V[x(theta)|k=j-1]
+        df = x(indlev(j).df); % d[x(theta)]/dtheta for k'=j-1
+        Sig = exp(x(indlev(j).Par(2:2:2*ntotPar))); % V[theta|k'=j-1]
+        Vx(j) = sum(Sig.*df.^2); % V[x(theta)|k'=j-1]
     end
     Es = sigmoid(f./sqrt(1+a*Vx)); % E[sigm(x(theta))]
     
-    % Get P(o=1) = sum_k P(o=1|k)*P(k)
-    Po = Pk'*Es;
+    % Get P(o=1) = sum_k P(o=1|k')*P(k')
+    Po = Pk'*Es; % k-ToM's belief about her opponent's next move
     
 end
 

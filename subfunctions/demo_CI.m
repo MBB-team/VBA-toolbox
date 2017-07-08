@@ -42,8 +42,11 @@ phi = repmat(post.muPhi,1,N) + sV*randn(2,N);
 ev = post.b_sigma./post.a_sigma;
 E = 0;% sqrt(ev)*randn(length(X0),N); % add in predicted residuals? 
 Y = [X0,ones(dim.p,1)]*phi + E;
-uY = prctile(Y,95,2);
-lY = prctile(Y,5,2);
+%uY = prctile(Y,95,2);
+uY = arrayfun(@(j) VBA_quantile(Y(j,:),.95), 1:size(Y,1))' ;
+%lY = prctile(Y,5,2);
+lY = arrayfun(@(j) VBA_quantile(Y(j,:),.05), 1:size(Y,1))' ;
+
 vY = var(Y,[],2);
 
 hf = figure('color',[1 1 1]);

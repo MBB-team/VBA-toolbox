@@ -9,9 +9,9 @@ clc
 L = 1e3; % size of the 1D field
 n = 64; % number of GLM data samples
 k = 8; % number of GLM parameters
-N = 1e3; % number of Monte-Carlo simulations
+N = 1e2; % number of Monte-Carlo simulations
 v = ([1:5:50]/2.355).^2; % smoothing kernel variances
-% v = v(end);
+verbose = 0;
 for j=1:length(v)
     j
     kernel = exp(-0.5.*([1:L]-L/2).^2/v(j));
@@ -24,20 +24,19 @@ for j=1:length(v)
         end
         e = e./repmat(sqrt(var(e,[],2)),1,n);
         X = randn(n,k);
-        b = zeros(k,L);
-%         b(1,100:150) = 1;
+        b = zeros(k,L); % under the null!
         y = X*b + e';
-%         for i=1:n
-%             y(i,:) = conv(y(i,:),kernel,'same');
-%         end
+        for i=1:n
+            y(i,:) = conv(y(i,:),kernel,'same');
+        end
         % apply RFT
         c = [1;zeros(k-1,1)];
-        [stat,out] = RFT_GLM_contrast(X,y,c,'t',[],0);
+        [stat,out] = RFT_GLM_contrast(X,y,c,'t',[],verbose);
         hpeak(j,ii) = length(find(out.peaks.prft<0.05))>=1;
         hclu(j,ii) = length(find(out.clusters.prft<0.05))>=1;
         f(j,ii) = out.fwhm;
         % apply Bonferroni
-        p = 1-cdf('t',stat,out.options.dof);
+        p = 1-spm_Tcdf(stat,out.options.dof);
         h(j,ii) = length(find(p<0.05./L))>=1;
     end
 end

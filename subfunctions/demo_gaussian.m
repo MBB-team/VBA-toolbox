@@ -1,12 +1,12 @@
-% Demo for fitting mixture of Gaussians
+% Basic demo for fitting mixture of Gaussians
 % This demo first simulates a noisy MoG density profile, whose mode
 % position and width are then estimated using VBA.
 
 close all
-% clear all
+clear all
+clc
 
-%---- simulate noisy gbf ----%
-
+%---- simulate noisy data
 % Choose basic settings for simulations
 sigma = 1e-1;            % precision 
 phi = [5;-1;1;3];         % observation parameters
@@ -23,27 +23,22 @@ plot(y','ro')
 hold on;
 plot(gx')
 
-%---- Invert gbf on simulated data ----%
 
+%---- Invert model on simulated data
 % Build priors structure
-priors.muPhi = zeros(4,1);         % prior mean on observation params
+priors.muPhi = zeros(4,1); % prior mean on observation params
 priors.SigmaPhi = 1e0*eye(4); % prior covariance on observation params
-priors.a_sigma = 1;             % Jeffrey's prior
-priors.b_sigma = 1;             % Jeffrey's prior
-options.priors = priors;        % include priors in options structure
-options.inG = inG;              % input structure (grid)
-dim.n_phi = 4;                  % nb of observation parameters
-dim.n_theta = 0;                % nb of evolution parameters
-dim.n=0;                        % nb of hidden states
-
-
-
-
-
+priors.a_sigma = 1; % Jeffrey's prior
+priors.b_sigma = 1; % Jeffrey's prior
+options.priors = priors; % include priors in options structure
+options.inG = inG; % input structure (grid)
+dim.n_phi = 4; % nb of observation parameters
+dim.n_theta = 0; % nb of evolution parameters
+dim.n = 0;  % nb of hidden states
 % Call inversion routine
 [posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
 
 
-%---- Display results ----%
-displayResults(posterior,out,y,[],[],[],phi,[],sigma)
+%---- Display results
+displayResults(posterior,out,y,[],[],[],phi,[],sigma);
 

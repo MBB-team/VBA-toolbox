@@ -1,4 +1,4 @@
-function [posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse)
+function [all] = VBA_classification(X,y,k,verbose,options,sparse)
 % performs binary classification using VBA
 % function [pv,stat,df,all] = VBA_classification(X,y,k,verbose,options)
 % In brief, this function fits the following logistic regresion model:
@@ -29,7 +29,6 @@ function [posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse)
 %   - sparse: when sparse=1, VBA_classification uses sparsifying priors
 %   (default=0).
 % OUT:
-%   - posterior/out: VBA's output structures for whole-data inversion
 %   - all: structure array with fields:
 %       .stat: structure of summary statistics:
 %           .pv: classical p-value on classifier accuracy
@@ -49,7 +48,6 @@ function [posterior,out,all] = VBA_classification(X,y,k,verbose,options,sparse)
 
 % fill in default I/O
 tStart = tic;
-pv = [];
 all = [];
 [n,m] = size(y);
 [n0,p] = size(X);
@@ -112,6 +110,7 @@ options.verbose = 0;
 options.inG.X = X';
 options.inG.sparse = sparse;
 options.inG.sparseP = 1;
+options.n0 = 0; % number of dummy counts
 
 if ~isequal(k,0) % performing cross-validation scheme
     if verbose
@@ -121,7 +120,10 @@ if ~isequal(k,0) % performing cross-validation scheme
         et0 = clock; % get time
     end
     sizeFolds = floor(n./k);
-    acc = zeros(n,1);
+    acc = zeros(n,1); % test accuracy
+    acc0 = zeros(n,1); % training accuracy
+    Eg = zeros(n,1); % out-of-sample prediction E[y] (on test data)
+    Vg = zeros(n,1); % out-of-sample prediction V[y] (on test data)
     P = zeros(p,k);
     for i=1:k
         if i<k
@@ -132,8 +134,11 @@ if ~isequal(k,0) % performing cross-validation scheme
         options.isYout = zeros(n,1);
         options.isYout(itest) = 1;
         [posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
-        ytest = out.suffStat.gx(itest)>=0.5;
-        acc(itest) = [y(itest)==ytest];
+        Eg(itest) = out.suffStat.gx(itest);
+        Vg(itest) = out.suffStat.vy(itest);
+        ytest = Eg(itest)>=0.5;
+        acc(itest) = [y(itest)==ytest];  
+        acc0(itest) = out.fit.acc;
         if sparse
             P(:,i) = sparseTransform(posterior.muPhi,options.inG.sparseP);
         else
@@ -144,13 +149,6 @@ if ~isequal(k,0) % performing cross-validation scheme
             fprintf(1,'%6.2f %%',floor(100*i/k))
         end
     end
-    r = mean(y);
-    if r<0.5
-        r = 1-r;
-    end
-    nok = sum(acc);
-    [pdf0,cdf0] = VBA_binomial(nok,n,r);
-    pv = 1- cdf0;
     if verbose
         fprintf(1,repmat('\b',1,8))
         fprintf(1,[' OK (took ',num2str(etime(clock,et0)),' seconds).'])
@@ -168,31 +166,36 @@ options.isYout = zeros(n,1);
 if verbose
     fprintf(1,[' OK (took ',num2str(etime(clock,et0)),' seconds).'])
     fprintf(1,'\n')
-    figname = 'VBA classification';
-    if sparse
-        figname = [figname,' (sparse inversion)'];
-    end
-    out.options.figName = [figname,': whole-data inversion results'];
-    VBA_ReDisplay(posterior,out,1);
 end
 
 % wrap-up
-if ~isequal(k,0)
-    all.stat.pv = pv; % classical p-value on classifier accuracy
-    all.stat.success = acc; % nx1 vector of successful classifications
-    all.stat.pa = nok./n; % cross-validation prediction accuracy
-    all.stat.bpa = 0.5*(sum(acc.*y)./sum(y) + sum(acc.*(1-y))./sum(1-y)); % balanced class. acc.
-    all.stat.pBayes = VBA_PPM(nok,n-nok,0.5,'beta',0); % Bayesian exceedance prob.
-    all.P = P; % set of estimated weights (for each k-fold)
-    all.r = r; % data imbalance (r=0.5 means balanced dta)
-end
 all.in.X = X;
 all.in.y = y;
 all.in.k = k;
 all.in.sparse = sparse;
 all.date = clock;
 all.dt = toc(tStart);
-if verbose
-    [all] = VBA_classification_display(all);
+all.posterior = posterior;
+all.out = out;
+if ~isequal(k,0)
+    r = mean(y);
+    if r<0.5
+        r = 1-r;
+    end
+    nok = sum(acc);
+    [pdf0,cdf0] = VBA_binomial(nok,n,r);
+    all.stat.pv = 1 - cdf0; % classical p-value on classifier accuracy
+    all.stat.success = acc; % nx1 vector of successful classifications
+    all.stat.pa = nok./n; % cross-validation prediction accuracy
+    all.stat.bpa = 0.5*(sum(acc.*y)./sum(y) + sum(acc.*(1-y))./sum(1-y)); % balanced class. acc.
+    all.stat.pBayes = VBA_PPM(nok+options.n0,n-nok+options.n0,r,'beta',0); % Bayesian exceedance prob.
+    all.Eg = Eg;
+    all.Vg = Vg;
+    all.P = P; % set of estimated weights (for each k-fold)
+    all.r = r; % data imbalance (r=0.5 means balanced data)
+    if verbose
+        [all] = VBA_classification_display(all);
+    end
 end
+
 

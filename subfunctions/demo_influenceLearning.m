@@ -29,7 +29,7 @@ x0 = [0]; % log-odds of P(o=1)
 theta = [1;1;0]; % weight (PE1), weight (PE2), opponent's temp
 phi = [-1;0]; % (log-) temperature, bias
 N = 50; % number of trials
-o = bernoulli(.75,N)'; % opponent's choices (here dummy binomial sampling)
+o = VBA_bernoulli(.75,N)'; % opponent's choices (here dummy binomial sampling)
 a = NaN(1,N);
 gx = NaN(1,N);
 x = zeros(dim.n,N+1);
@@ -45,11 +45,11 @@ figure,plot(x')
 options.skipf = zeros(1,N);
 options.skipf(1) = 1;
 options.binomial = 1;
-options.SigmaTheta = 1e2*eye(dim.n_theta);
+options.priors.SigmaTheta = 1e2*eye(dim.n_theta);
 f_fname = @f_Hampton;
 g_fname = @g_Hampton;
 u = [zeros(2,1),[o;a]];
-[posterior,out] = VBA_NLStateSpaceModel(a,u,f_fname,g_fname,dim,options);
+[posterior,out] = VBA_hyperparameters(a,u,f_fname,g_fname,dim,options);
 
 
 

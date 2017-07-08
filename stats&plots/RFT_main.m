@@ -50,7 +50,7 @@ end
 
 if isempty(options)
     options.FWER = 0.05;
-    options.u = icdf('norm',0.99,0,1);
+    options.u = spm_invNcdf(0.99,0,1);
     options.k = 6;
     options.R = [];
     options.type = 'norm';
@@ -89,11 +89,11 @@ else
     if ~isfield(options,'u')
         switch options.type
             case 'norm'
-                options.u = icdf('norm',0.99,0,1);
+                options.u = spm_invNcdf(0.99,0,1);
             case 't'
-                options.u = icdf('t',0.99,options.dof);
+                options.u = spm_invTcdf(0.99,options.dof);
             case 'F'
-                options.u = icdf('F',0.99,options.dof(1),options.dof(2));
+                options.u = spm_invFcdf(0.99,options.dof(1),options.dof(2));
         end
         if verbose
             disp(['Using default cluster-inducing threshold (X>',num2str(options.u,'%3.2f'),').'])
@@ -128,9 +128,9 @@ if ~isempty(options.R)
 else
     out.fwhm = RFT_smoothness(X);
 end
-OUTSTR{2} = ['Search volume: L=',num2str(L),'.'];
-OUTSTR{3} = ['Estimated smoothness: FWHM=',num2str(out.fwhm,'%3.1f'),'.'];
-OUTSTR{4} = ['Number of resels: R=',num2str(L./out.fwhm,'%3.1f'),'.'];
+OUTSTR{2} = ['Search volume: L=',num2str(L)];
+OUTSTR{3} = ['Estimated smoothness: FWHM=',num2str(out.fwhm,'%3.1f')];
+OUTSTR{4} = ['Number of resels: R=',num2str(L./out.fwhm,'%3.1f')];
 if verbose
     disp(OUTSTR{2})
     disp(OUTSTR{3})
@@ -142,7 +142,7 @@ gridu = 0:1e-3:10;
 pgrid = RFT_Pval(gridu',0,1,out.fwhm,L,options.type,options.dof);
 d = abs(options.FWER-pgrid);
 out.xc = gridu(find(d==min(d)));
-OUTSTR{5} = ['Critical height threshold [peak-level]: X_c=',num2str(out.xc,'%3.2f'),' (test size: FWER=',num2str(round(options.FWER*100)),'%).'];
+OUTSTR{5} = ['Critical height threshold [peak-level]: X>',num2str(out.xc,'%3.2f'),' (test size: FWER=',num2str(round(options.FWER*100)),'%)'];
 if verbose
     disp(OUTSTR{5})
 end
@@ -153,11 +153,11 @@ peaks.val = X(peaks.ind);
 peaks.prft = RFT_Pval(peaks.val,0,1,out.fwhm,L,options.type,options.dof);
 switch options.type
     case 'norm'
-        peaks.punc = 1-normcdf(peaks.val,0,1);
+        peaks.punc = 1-spm_Ncdf(peaks.val,0,1);
     case 't'
-        peaks.punc = 1-tcdf(peaks.val,options.dof);
+        peaks.punc = 1-spm_Tcdf(peaks.val,options.dof);
     case 'F'
-        peaks.punc = 1-fcdf(peaks.val,options.dof(1),options.dof(2));
+        peaks.punc = 1-spm_Fcdf(peaks.val,options.dof(1),options.dof(2));
 end
 
 % cluster-level inference
@@ -183,24 +183,24 @@ set.prft = RFT_Pval(options.u,options.k,set.c,out.fwhm,L,options.type,options.do
 out.Em = RFT_expectedTopo(options.u,L,out.fwhm,1,options.type,options.dof);
 switch options.type
     case 'norm'
-        P0 = 1-normcdf(u,0,1);
+        P0 = 1-spm_Ncdf(options.u,0,1);
     case 't'
-        P0 = 1-tcdf(options.u,options.dof);
+        P0 = 1-spm_Tcdf(options.u,options.dof);
     case 'F'
-        P0 = 1-fcdf(options.u,options.dof(1),options.dof(2));
+        P0 = 1-spm_Fcdf(options.u,options.dof(1),options.dof(2));
 end
 out.En = L.*P0./out.Em;
 
-OUTSTR{6} = ['Expected voxels per cluster [cluster-level]: E[k|H0]=',num2str(out.En,'%3.1f'),' (height threshold: X>',num2str(options.u,'%3.2f'),').'];
-OUTSTR{7} = ['Expected number of clusters [set-level]: E[c|H0]=',num2str(out.Em,'%3.1f'),' (extent threshold: k>',num2str(options.k),').'];
+OUTSTR{6} = ['Expected voxels per cluster [cluster-level]: E[k|H0]=',num2str(out.En,'%3.1f')];
+OUTSTR{7} = ['Expected number of clusters [set-level]: E[c|H0]=',num2str(out.Em,'%3.1f')];
 if verbose
     disp(OUTSTR{6})
     disp(OUTSTR{7})
 end
 
-OUTSTR{8} = ['Number of local peaks =',num2str(length(peaks.prft)),'.'];
-OUTSTR{9} = ['Number of upcrossing clusters =',num2str(nc),' (X>',num2str(options.u,'%3.2f'),').'];
-OUTSTR{10} = ['RFT [set-level]: p=',num2str(set.prft,'%3.3f'),' (c=',num2str(set.c),').'];
+OUTSTR{8} = ['Number of local peaks =',num2str(length(peaks.prft)),];
+OUTSTR{9} = ['Number of upcrossing clusters =',num2str(nc),' (X>',num2str(options.u,'%3.2f'),')'];
+OUTSTR{10} = ['RFT [set-level]: p=',num2str(set.prft,'%3.3f'),' (c=',num2str(set.c),')'];
 if verbose
     disp(OUTSTR{8})
     disp(OUTSTR{9})

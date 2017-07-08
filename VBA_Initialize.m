@@ -42,7 +42,11 @@ if dim.n > 0
        posterior.a_sigma = options.priors.a_sigma;
        posterior.b_sigma = options.priors.b_sigma;
    end
-
+   
+   % try to pass on display handles to main inversion
+   try
+       options.display = out.options.display;
+   end
 
 else
     

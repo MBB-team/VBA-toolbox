@@ -39,7 +39,7 @@ options.priors.b_alpha = 1;
 [p1,o1] = VBA_NLStateSpaceModel(y,[],f_fname,g_fname,dim,options);
 
 % VB-Kalman-smoother (lag = size of blind window)
-options.backwardLag = nt;
+options.backwardLag = nt+1;
 [p2,o2] = VBA_NLStateSpaceModel(y,[],f_fname,g_fname,dim,options);
 set(gcf,'name',['Kalman lag = ',num2str(o2.options.backwardLag)])
 

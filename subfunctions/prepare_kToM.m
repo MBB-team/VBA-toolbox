@@ -50,7 +50,7 @@ if K > 0 % for k-ToM with k>0
     for j=1:K
         % prior (log-) volatility = -1 (opponent = efficient learner)
         indVol = inG.indlev(j).Par(1); % index of hidden-state encoding E[invsigm volatility]
-        options.priors.muX0(indVol) = -1;
+        options.priors.muX0(indVol) = 0;%-1;
         % "forgetting" of opponent's sophistication
         if inF.diluteP==1
             indDil = inG.indlev(j).Par(3); % index of hidden-state encoding E[invsigm dilut. coef.]
@@ -58,7 +58,7 @@ if K > 0 % for k-ToM with k>0
         end
         % behavioural temperature = -1 (opponent = exploitative decider)
         indTemp = inG.indlev(j).Par(2*inF.indParev+1); % index of hidden-state encoding E[log temp]
-        options.priors.muX0(indTemp) = -1;
+        options.priors.muX0(indTemp) = 0;%-1;
     end
 end
 % options.priors.SigmaX0 = zeros(dim.n);
