@@ -54,7 +54,7 @@ Have a look at `VBA_getNtuples.m` :)
 > This is problem of [combinatorics](https://en.wikipedia.org/wiki/Combinatorics), which arises, e.g., in the context of [between-condition model comparison]({{ site.baseurl }}/wiki/BMS-for-group-studies). This is because here, one wants to evaluate the model evidences of all possible pairings (n-tuples, where $$n$$ is the number of conditions) of condition-specific models (where there are $$k$$ models)...
 
 
-## Want to extract the states' time-dependent variances from VBA's posterior structure?
+## Want to extract the states' variances from VBA's posterior structure?
 
 Have a look at `VBA_getVar.m` :)
 
@@ -96,7 +96,7 @@ Have a look at `VBA_PRESS.m` :)
 
 Have a look at `VBA_SavageDickey.m` :)
 
-> [Savage-Dickey ratios](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0059655) can be used to compute the free energy and posterior moments of a reduced model, given the prior and posterior densities of a full model. The key added-value of this scheme is that one does not need to perform the corresponding model inversion!
+> [Savage-Dickey ratios](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0059655) can be used to compute the free energy and posterior moments of a reduced model, given the prior and posterior densities of a full model. The key added-value of this scheme is that one does not need to perform the corresponding model inversion! This is particularly useful when [comparing models within large model spaces]({{ site.baseurl }}/wiki/Comparing-large-spaces-of-models).
 
 
 ## Tools for classical contrast testing.
