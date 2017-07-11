@@ -52,13 +52,16 @@ dF = out.F - out.diagnostics.LLH0 ;
 bayesianP = 1./(1+exp(dF)) ;
 ```
 
-  where `out.diagnostics.LLH0` is the evidence for the "null" (i.e. a model that assumes that data are random samples). The above "Bayesian p-value" is in fact the posterior probability of the null...
+where `out.diagnostics.LLH0` is the evidence for the "null" (i.e. a model that assumes that data are random samples). The above "Bayesian p-value" is in fact the posterior probability of the null...
+  
+> More generally, the model's log-evidence is used for model comparison purposes. This specific issue is treated in other sections. For example, group-level model selection is described [here]({{ site.baseurl }}/wiki/BMS-for-group-studies), whereas model selection with large model spaces is described [here]({{ site.baseurl }}/wiki/Comparing-large-spaces-of-models).
+  
 - **Goodness-of-fit metrics**:
   - percentage of variance explained: `out.fit.R2`.
   - log-likelihood: `out.fit.LL`.
   - [AIC](https://en.wikipedia.org/wiki/Akaike_information_criterion): `out.fit.AIC`
   - [BIC](https://en.wikipedia.org/wiki/Bayesian_information_criterion): `out.fit.BIC`
-  - when dealing with categorical (binary) data, VBA also outputs the balanced classification accuracy, i.e. the percentage of correct classifications (see `out.fit.bacc`).
+  - when dealing with categorical (binary) data, VBA also outputs the classification accuracy, i.e. the percentage of correct classifications (see `out.fit.acc`), as well as the so-called ["balanced classification accuracy"](http://www.sciencedirect.com/science/article/pii/S1053811913002371) (see `out.fit.bacc`). 
 
 > **TIP**: here AIC and BIC scores are defined as the log-likelihood, minus a model complexity penalty term (typically related to the number of unknown model variables). This means that for all model quality metrics, the higher the score, the better the model.
 All these are given under the `summary` tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)). Note that all goodness-of-fit metrics can be re-derived using the function `VBA_fit.m` (which simply requires both `posterior` and `out` structures).
