@@ -11,7 +11,13 @@ But acknowledging the benefit of priors does not solve the issue of setting them
 
 # Empirical Bayes for group studies: mixed-effect modelling
 
-Let us assume that you (i) are conducting a group study, and (ii) have developped some generative model of within-subject data. VBA enables you to perform [mixed-effect](https://en.wikipedia.org/wiki/Mixed_model) modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be [sampled](https://en.wikipedia.org/wiki/Sample_(statistics)) from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution. Here, parameters at the highest level of the hierarchical model are [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) of the group. Would one know the group's summary statistics, they could be used to constrain the likely range of subject-level parameters. Reciprocally, the group's summary statistics can be inferred from within-subject parameter estimates. This reciprocal dependency is resolved using a [variational Bayesian]({{ site.baseurl }}/wiki/The-variational-Bayesian-approach) scheme, whose pseudo-code is given below:
+Let us assume that you (i) are conducting a group study, and (ii) have developped some generative model of within-subject data. VBA enables you to perform [mixed-effect](https://en.wikipedia.org/wiki/Mixed_model) modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be [sampled](https://en.wikipedia.org/wiki/Sample_(statistics)) from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution. Here, parameters at the highest level of the hierarchical model are [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) of the group. The structure of the ensuing hierarchical model is depicted in the graph below:
+
+![]({{ site.baseurl }}/images/wiki/MFX.jpg)
+
+where $$\nu$$ and $$\alpha$$ are the unknown group summary statistics (its mean and precision, respectively), $$\vartheta_i$$ is the set of unknown (evolution and observation) parameters of subject $$i$$, $$y_i$$ is the observed (known) data of subject $$i$$ and $$\sigma_i$$ is the corresponding unknown data precision. Note: the plate denotes a replication of the statistical dependencies over $$n$$ subjects.
+
+Would one know the group's summary statistics, they could be used to constrain the likely range of subject-level parameters. Reciprocally, the group's summary statistics can be inferred from within-subject parameter estimates. This reciprocal dependency is resolved using a [variational Bayesian]({{ site.baseurl }}/wiki/The-variational-Bayesian-approach) scheme, whose pseudo-code is given below:
 
 ```matlab
 [LOOP UNTIL CONVERGENCE]
