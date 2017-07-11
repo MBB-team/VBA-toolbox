@@ -15,7 +15,7 @@ Let us assume that you (i) are conducting a group study, and (ii) have developpe
 
 ![]({{ site.baseurl }}/images/wiki/MFX.jpg)
 
-where $$\nu$$ and $$\alpha$$ are the unknown group summary statistics (its mean and precision, respectively), $$\vartheta_i$$ is the set of unknown (evolution and observation) parameters of subject $$i$$, $$y_i$$ is the observed (known) data of subject $$i$$ and $$\sigma_i$$ is the corresponding unknown data precision. Note: the plate denotes a replication of the statistical dependencies over $$n$$ subjects.
+where $$\nu$$ and $$\alpha$$ are the unknown group summary statistics (its mean and precision, respectively), $$\vartheta_i$$ is the set of unknown (evolution and observation) parameters of subject $$i$$, $$y_i$$ is the observed (known) data of subject $$i$$ and $$\sigma_i$$ is the corresponding unknown data precision. Note: the plate denotes a replication of the hierarchical statistical dependencies over $$n$$ subjects.
 
 Would one know the group's summary statistics, they could be used to constrain the likely range of subject-level parameters. Reciprocally, the group's summary statistics can be inferred from within-subject parameter estimates. This reciprocal dependency is resolved using a [variational Bayesian]({{ site.baseurl }}/wiki/The-variational-Bayesian-approach) scheme, whose pseudo-code is given below:
 
