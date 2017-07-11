@@ -11,22 +11,20 @@ But acknowledging the benefit of priors does not solve the issue of setting them
 
 # Empirical Bayes for group studies: mixed-effect modelling
 
-Let us assume that you (i) are conducting a group study, and (ii) have developped some generative model of within-subject data. VBA enables you to perform [mixed-effect](https://en.wikipedia.org/wiki/Mixed_model) modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be [sampled](https://en.wikipedia.org/wiki/Sample_(statistics)) from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution. Here, parameters at the highest level of the hierarchical model are [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) of the group, which eventually constrain the likely range of subject-level parameters. 
-
-The pseudo-code of VBA's ensuing hierarchical inversion is given below:
+Let us assume that you (i) are conducting a group study, and (ii) have developped some generative model of within-subject data. VBA enables you to perform [mixed-effect](https://en.wikipedia.org/wiki/Mixed_model) modelling (MFX), whereby the priors on parameters are hierarchically defined, such that subject-level parameters are assumed to be [sampled](https://en.wikipedia.org/wiki/Sample_(statistics)) from a Gaussian density whose mean and variance are unknown but match the moments of the group distribution. Here, parameters at the highest level of the hierarchical model are [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) of the group. Would one know the group's summary statistics, they could be used to constrain the likely range of subject-level parameters. Reciprocally, the group's summary statistics can be inferred from within-subject parameter estimates. This reciprocal dependency is resolved using a [variational Bayesian]({{ site.baseurl }}/wiki/The-variational-Bayesian-approach) scheme, whose pseudo-code is given below:
 
 ```matlab
 [LOOP UNTIL CONVERGENCE]
 1) for i=1:n (loop over subjects)
       define within-subject priors from group-level summary statistics
       perform within-subject model inversion
-  end
+   end
 2) update group-level summary statistics from posterior within-subject summary statistics
 ```
 
 Over the algorithm iterations, within-subject priors are refined and matched to the inferred parent population distribution. Empirical Bayes procedures of this sort learn from group statistics, and thus inform within-subject inversions with each other results. This eventually [shrinks](https://en.wikipedia.org/wiki/Shrinkage_estimator) the within-subject posterior estimate around the estimated group mean...
 
-Of course, there is no need to write specific functions, and VBA performs this analysis automatically. One simply calls the function `VBA_MFX.m`, as follows:
+VBA's main function for mixed-effect modelling is `VBA_MFX.m`. It is demonstrated in the demo `demo_MFX.m`, which exemplifies the added-value of MFX modelling in the aim of capturing between-subject variability. Note that its call is almost equivalent to `VBA_NLStateSpacelModel.m`:
 
 ```
 [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group)
@@ -44,7 +42,7 @@ Its intputs and outputs are described below:
 - `p_group`: structure containing the sufficient statistics of the posterior over the moments of the parent population distribution.
 - `o_group`: output structure of the VBA_MFX approach. In particular, it contains the Free Energy of the MFX model (for model comparison purposes).
 
-A complete mathematical description of the approach is available [on this page](https://sites.google.com/site/jeandaunizeauswebsite/links/resources).
+> A complete mathematical description of the approach is available [on this page](https://sites.google.com/site/jeandaunizeauswebsite/links/resources).
 
 
 
