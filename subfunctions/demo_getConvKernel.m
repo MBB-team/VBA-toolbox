@@ -25,7 +25,7 @@ fb.indfb = 1;
 options.skipf = zeros(1,n_t);
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
 
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,0,fb);
+[y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,0,fb);
 displaySimulations(y,x,eta,e)
 
 dim.n = 1;

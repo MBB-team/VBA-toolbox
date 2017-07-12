@@ -20,6 +20,16 @@ function [y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,s
 %       .inF
 %       .inG
 %   - x0: the initial conditions
+%   - fb: an optional feedback struture that contains the following fields:
+%       .h_fname: the name/handle of the function that implements the
+%       feedback mapping, i.e. that maps the system's output y_t to its
+%       feedback h(y_t,t,inH) 
+%       .inH: an optional entry structure for the feedback mapping
+%       .indy: the vector of indices that are used to address the previous
+%       system output (y_t-1) within the current input (u_t)
+%       .indfb: the vector of indices that are used to address the feedback
+%       h(y_t-1,t-1,inH) to the previous system output within the current
+%       input (u_t) 
 % OUT:
 %   - y: the pxt (noisy) measurement time series
 %   - x: the nxt (noisy) hidden-states time series
