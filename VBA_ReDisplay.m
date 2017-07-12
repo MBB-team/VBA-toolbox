@@ -194,7 +194,7 @@ function myDeterministic(hfig)
     
     % Display precision hyperparameters
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-    if ~options.OnLine && ~options.binomial
+    if ~options.OnLine && any([options.sources.type]==0)
         xlabel(options.display.ha(6),' ')
         if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
             xlabel(options.display.ha(8),' ')
@@ -273,7 +273,7 @@ function myPriors(hfig)
 
     % Display precision hyperparameters
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-    if ~options.OnLine && ~options.binomial
+    if ~options.OnLine && any([options.sources.type]==0)
         xlabel(options.display.ha(6),' ') ;
         if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
             xlabel(options.display.ha(8),' ') ;

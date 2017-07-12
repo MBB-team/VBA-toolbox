@@ -64,7 +64,7 @@ switch flag
                         error('*** Splitted multichannel VB is not yet supported !');
                     end
                     fname = @VBA_Iphi_split;
-                elseif options.binomial
+                elseif options.sources(1).type==1
                     fname = @VBA_Iphi_binomial;
                 else
                     fname = @VBA_Iphi;
