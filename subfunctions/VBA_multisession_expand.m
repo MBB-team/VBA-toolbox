@@ -1,6 +1,12 @@
 function [f_fname_multi,g_fname_multi,dim_multi,options,u_multi] = VBA_multisession_expand(f_fname,g_fname,dim,options,u)
-
-
+% [f_fname_multi,g_fname_multi,dim_multi,options,u_multi] = VBA_multisession_expand(f_fname,g_fname,dim,options,u)
+% prepare model to be fitted to multisession data. In particular, it:
+% - duplicates the parameter set for each session, unless specified 
+%   otherwise by multisession.fixed structure
+% - wrap the evolution and observation functions so the correct states and
+%   parameters are used in each session
+% The reverse operation can be performed by VBA_multisession_factor
+% to reconstruct within session parameters and states from the expanded model
 %% check args
 
 %% check if multisession is required

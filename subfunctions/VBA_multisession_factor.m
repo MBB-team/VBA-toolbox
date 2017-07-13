@@ -1,4 +1,8 @@
 function [posterior, out] = VBA_multisession_factor(posterior,out)
+% [posterior, out] = VBA_multisession_factor(posterior,out)
+% take a multisession model, extract within session parameters and
+% trajectories (in posterior.perSession), and clean up the out structure 
+% by undoing the multisession wrapping performed by VBA_multisession_expand. 
 
 %% skip if no multisession
 if ~(isfield(out.options,'multisession') && isfield(out.options.multisession,'expanded') && out.options.multisession.expanded)
