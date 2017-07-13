@@ -1,4 +1,4 @@
-function option = check_struct(option, varargin)
+function option = VBA_check_struct(option, varargin)
 % compare and fill-in input structure with default structure
 
 if isempty(option)

@@ -19,7 +19,7 @@ ud = get(getPanel(display.hfp),'userdata') ;
 ud.update_plot = @() VBA_updateDisplay(posterior,suffStat,options,y,0,'Y');
 set(getPanel(display.hfp),'userdata',ud) ;
 
-ud = check_struct(ud,'currentSource', 1 );
+ud = VBA_check_struct(ud,'currentSource', 1 );
 
 currentSource = ud.currentSource;
 

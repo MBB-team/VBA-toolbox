@@ -41,7 +41,7 @@ end
 
 % specify minimal default options
 options.tStart = tic;
-options = check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1,'kernelSize',16);
+options = VBA_check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1,'kernelSize',16);
 kernelSize0 = options.kernelSize;
 options.kernelSize = 0;
 
