@@ -54,7 +54,7 @@ priors.a_alpha = Inf;
 priors.b_alpha = 0;
 
 options.priors = priors;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.skipf = zeros(1,n_t);
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
 

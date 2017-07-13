@@ -43,7 +43,7 @@ end
 
 % hyperparameters
 n_gs = sum([out.options.sources(:).type]==0);
-if n_gs>0 %~out.options.binomial
+if n_gs>0 
     sigmaHat = posterior.a_sigma./posterior.b_sigma;
     vs = posterior.a_sigma./(posterior.b_sigma.^2);
     lvs = log(sigmaHat+sqrt(vs)) - log(sigmaHat);
@@ -142,7 +142,7 @@ may = max([out.suffStat.gx(:);y(:)]);
 hs = subplot(2,2,4,'parent',hres2);
 set(hs,'nextplot','add')
 plot(hs,[miy,may],[miy,may],'r')
-if ~out.options.binomial
+if n_gs>0
     plot(hs,out.suffStat.gx(:),y(:),'.')
 else
     [stacky,stdy,gridg] = VBA_Bin2Cont(out.suffStat.gx,y);

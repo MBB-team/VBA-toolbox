@@ -44,7 +44,7 @@ figure,plot(x')
 %% invert "influence learning" model given sequence of agent's choices
 options.skipf = zeros(1,N);
 options.skipf(1) = 1;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.priors.SigmaTheta = 1e2*eye(dim.n_theta);
 f_fname = @f_Hampton;
 g_fname = @g_Hampton;

@@ -33,7 +33,7 @@ priors.SigmaX0 = 1e1*eye(dim.n);
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 options.priors = priors;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.verbose = 0;
 
 tau = 8;
