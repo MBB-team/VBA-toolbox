@@ -64,7 +64,7 @@ where `f_fname`, `g_fname`, `dim`, `options` are nx1 cell arrays (n models), `e`
 One can then either compare different designs on the basis of their efficiency (e.g. on a predefined set of inputs $$u$$), or perform numerical optimization of the design efficiency w.r.t. $$u$$ (or some parametric form of it).
 
 
-## On-line adaptive designs
+# On-line adaptive designs
 
 In the context of, e.g., experimental psychophysics, adaptive designs such as "stair-case" methods are typically used to estimate some individual sensory detection or discrimination threshold. Such procedures operate in real-time in the sense that the next stimulation depends on the previous behavioral response and is computed in order to optimize model fitting. More generally, adaptive (on-line) designs can be used to improve on three problems: (i) model parameter estimation; (ii) hypothesis testing (or BMS); (iii) choosing the duration of the experiment (e.g., the number of trials).
 
