@@ -1,8 +1,5 @@
-function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi(phi,y,posterior,suffStat,dim,u,options)
-% Gauss-Newton update of the observation parameters
-% !! When the observation function is @VBA_odeLim, this Gauss-Newton update
-% actually implements a gradient ascent on the variational energy of the
-% equivalent deterministic DCM.
+function [Iphi,SigmaPhi,deltaMuPhi,suffStat] = VBA_Iphi_binomial(phi,y,posterior,suffStat,dim,u,options)
+% Gauss-Newton update of the observation parameters, for binomial data
 
 
 if options.DisplayWin % Display progress
@@ -19,11 +16,7 @@ end
 %  Look-up which evolution parameter to update
 indIn = options.params2update.phi;
 
-% Get precision parameters
-sigmaHat = posterior.a_sigma./posterior.b_sigma;
-
 % Preallocate intermediate variables
-iQy = options.priors.iQy;
 Q = options.priors.SigmaPhi(indIn,indIn);
 iQ = VBA_inv(Q,[]);
 muPhi0 = options.priors.muPhi;
@@ -34,8 +27,8 @@ ddydphi = 0;
 dy = zeros(dim.p,dim.n_t);
 vy = zeros(dim.p,dim.n_t);
 gx = zeros(dim.p,dim.n_t);
-dy2 = 0;
-d2gdx2 = 0;
+d2gdx2 = zeros(dim.n_phi,dim.n_phi);
+logL = 0;
 if isequal(options.g_fname,@VBA_odeLim)
     clear VBA_odeLim
     muX = zeros(options.inG.old.dim.n,dim.n_t);
@@ -49,6 +42,10 @@ for t=1:dim.n_t
     % evaluate observation function at current mode
     [gx(:,t),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
     
+    % fix numerical instabilities
+    gx(:,t) = checkGX_binomial(gx(:,t));
+    
+    % store states dynamics if ODE mode
     if isequal(options.g_fname,@VBA_odeLim)
         % get sufficient statistics of the hidden states from unused i/o in
         % VBA_evalFun.
@@ -56,32 +53,34 @@ for t=1:dim.n_t
         SigmaX{t} = dG_dX.dx'*posterior.SigmaPhi*dG_dX.dx;
     end
     
-    % posterior covariance matrix terms
-    d2gdx2 = d2gdx2 + dG_dPhi*iQy{t}*dG_dPhi';
+    % predicted variance over binomial data
+    vy(:,t) = gx(:,t).*(1-gx(:,t));
     
-    % error terms
-    dy(:,t) = y(:,t) - gx(:,t);
-    dy2 = dy2 + dy(:,t)'*iQy{t}*dy(:,t);
-    ddydphi = ddydphi + dG_dPhi*iQy{t}*dy(:,t);
+    % remove irregular trials
+    yin = find(~options.isYout(:,t));
     
-    % Predictive density (data space)
-    V = dG_dPhi'*posterior.SigmaPhi*dG_dPhi + (1./sigmaHat).*VBA_inv(iQy{t},[]);
-    if dim.n > 0
-        V = V + dG_dX'*posterior.SigmaX.current{t}*dG_dX;
-    end
-    vy(:,t) = diag(V);
+    % accumulate log-likelihood
+    logL = logL + y(yin,t)'*log(gx(yin,t)) + (1-y(yin,t))'*log(1-gx(yin,t));
+    
+    % prediction error
+    dy(yin,t) = y(yin,t) - gx(yin,t);
+    
+    % gradient and Hessian
+    ddydphi = ddydphi + dG_dPhi(:,yin)*(dy(yin,t)./vy(yin,t));
+    tmp = y(yin,t)./gx(yin,t).^2 - (y(yin,t)-1)./(1-gx(yin,t)).^2;
+    d2gdx2 = d2gdx2 + dG_dPhi(:,yin)*diag(tmp)*dG_dPhi(:,yin)';
     
     
     % Display progress
     if mod(t,dim.n_t./10) < 1
-        if  options.DisplayWin
+        if options.DisplayWin
             set(options.display.hm(2),'string',[num2str(floor(100*t/dim.n_t)),'%']);
             drawnow
         end
     end
     
     % Accelerate divergent update
-    if isweird({dy2,dG_dPhi,dG_dX})
+    if isweird({dy,dG_dPhi,dG_dX})
         div = 1;
         break
     end
@@ -94,27 +93,24 @@ if options.DisplayWin
     drawnow
 end
 
-
-
 % posterior covariance matrix
-iSigmaPhi = iQ + sigmaHat.*d2gdx2(indIn,indIn);
+iSigmaPhi = iQ + d2gdx2(indIn,indIn);
 SigmaPhi = VBA_inv(iSigmaPhi,[]);
 
 % mode
-tmp = iQ*dphi0(indIn) + sigmaHat.*ddydphi(indIn);
+tmp = iQ*dphi0(indIn) + ddydphi(indIn);
 deltaMuPhi = SigmaPhi*tmp;
 
 % variational energy
-Iphi = -0.5.*dphi0(indIn)'*iQ*dphi0(indIn) -0.5*sigmaHat.*dy2;
+Iphi = -0.5.*dphi0(indIn)'*iQ*dphi0(indIn) + logL;
 if isweird({Iphi,SigmaPhi}) || div
     Iphi = -Inf;
 end
 
 % update sufficient statistics
-suffStat.Iphi = Iphi;
 suffStat.gx = gx;
 suffStat.dy = dy;
-suffStat.dy2 = dy2;
+suffStat.logL = logL;
 suffStat.vy = vy;
 suffStat.dphi = dphi0;
 if isequal(options.g_fname,@VBA_odeLim)
@@ -122,6 +118,5 @@ if isequal(options.g_fname,@VBA_odeLim)
     suffStat.SigmaX = SigmaX;
 end
 suffStat.div = div;
-
 
 

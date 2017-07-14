@@ -32,46 +32,53 @@ function [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,flag)
 
 switch flag
     case 'X'
-        if numel(options.sources)>1 
-            error('*** Stochastic multisource models are not yet supported!');
+        if numel(options.sources)>1 || options.sources(1).type==2
+            error('*** Stochastic multichannel VB is not yet supported !');
         end
         indIn = options.params2update.x;
         PreviousMu = posterior.muX;
-        switch options.sources.type
-            case 0 % gaussian
-                fname = @VBA_IX_lagged;
-            case 1 % binomial
-                fname = @VBA_IX_lagged_binomial;
-            case 2 % mulitnomial
-                 error('*** Stochastic multinomial models are not yet supported!');
+        if ~options.binomial
+            fname = @VBA_IX_lagged;
+        else
+            fname = @VBA_IX_lagged_binomial;
         end
+        s1 = 'I(<X>) =';
+        s2 = '<dX>';
     case 'X0'
         indIn = options.params2update.x0;
         PreviousMu = posterior.muX0(indIn);
         fname = @VBA_IX0;
+        s1 = 'I(<X0>) =';
+        s2 = '<dX0>';
     case 'Phi'
         indIn = options.params2update.phi;
         PreviousMu = posterior.muPhi(indIn);
-        if options.UNL 
-        % UNL
-            if numel(options.sources>1) || options.sources(1).type==2
-                error('*** UNL multisource or multinomial models are not yet supported!');
-            end
+        if options.UNL % to be rationalized...
             fname = @VBA_Iphi_UNL;
-        elseif options.nmog > 1
-        % split
-            if numel(options.sources>1) || options.sources(1).type==2
-                error('*** Splitted multisource or multinomial models are not yet supported!');
-            end
-            fname = @VBA_Iphi_split;
         else
-        % default
-            fname = @VBA_Iphi;
+            if  numel(options.sources)>1 || options.sources(1).type==2
+                fname = @VBA_Iphi_extended;
+            else
+                if options.nmog > 1
+                    if options.extended
+                        error('*** Splitted multichannel VB is not yet supported !');
+                    end
+                    fname = @VBA_Iphi_split;
+                elseif options.binomial
+                    fname = @VBA_Iphi_binomial;
+                else
+                    fname = @VBA_Iphi;
+                end
+            end
         end
+        s1 = 'I(<Phi>) =';
+        s2 = '<dPhi>';
     case 'Theta'
         indIn = options.params2update.theta;
         PreviousMu = posterior.muTheta(indIn);
         fname = @VBA_Itheta;
+        s1 = 'I(<Theta>) =';
+        s2 = '<dTheta>';
 end
 
 if isempty(indIn)
@@ -90,13 +97,13 @@ end
 % Plot current mode
 if options.GnFigs
     try suffStat.haf = suffStat2.haf; end
-    str = sprintf('I(<%s>) = %4.3e',flag,PreviousI);
+    str = [s1,num2str(PreviousI,'%4.3e')];
     hf = figure('visible','off','color',[1,1,1]);
     pos = get(hf,'position');
     set(hf,'position',pos-[pos(3)./2 0 0 0],'visible','on')
     ha = axes('parent',hf);
     plot(ha,deltaMu')
-    title(ha,sprintf('<d%s> ; %s',flag,str));
+    title(ha,[s2,' ; ',str])
     drawnow
 end
 
@@ -123,14 +130,14 @@ while ~stop
     if options.GnFigs
         try, clf(hf); catch, hf = figure; end
         ha = axes('parent',hf);
-        plot(ha,deltaMu')        
-        str = sprintf('I(<%s>) = %4.3e, dI/I = %4.3e, it #%d',flag,I,rdf,it);
+        plot(ha,deltaMu')
+        str = [s1,num2str(I,'%4.3e'),' ,dI/I =',num2str(rdf,'%4.3e'),' ,it #',num2str(it)];
     end
     VBA_pause(options)  % check 'pause' button
     % accept move or halve step?
     if deltaI<0     % halve step size
         deltaMu = 0.5*deltaMu;
-        try,title(ha,sprintf('<d%s> : halve step ; %s',flag,str));end
+        try,title(ha,[s2,': halve step ; ',str]);end
     else            % accept move
         % 1- propose a new move according to new local quadratic approx
         deltaMu = NextdeltaMu;
@@ -153,7 +160,7 @@ while ~stop
             case 'Theta'
                 VBA_updateDisplay(posterior,suffStat,options,y,[],'theta')
         end
-        try,title(ha,sprintf('<d%s> : accept move ; %s',flag,str));end
+        try,title(ha,[s2,': accept move ; ',str]);end
         conv = 1;
     end
     % check convergence criterion
