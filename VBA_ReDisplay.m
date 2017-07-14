@@ -181,9 +181,7 @@ function myDeterministic(hfig)
     delete(options.display.hpause)
     delete(options.display.hm)
     delete(options.display.ho)
-    if options.dim.n == 0 || isinf(posterior.a_alpha(end))
-        try delete(options.display.ha(8)); end
-    end
+  
     hfig = options.display.hfp;
     drawnow
 
@@ -261,10 +259,7 @@ function myPriors(hfig)
     delete(options.display.hpause)
     delete(options.display.hm)
     delete(options.display.ho)
-    if options.dim.n == 0 || isinf(posterior.a_alpha(end))
-        try delete(options.display.ha(8)); end
-    end
-
+ 
     % Display data and hidden states (if any)
     if options.dim.n > 0
         options.OnLine = 0;
@@ -598,9 +593,7 @@ function myVB(hfig)
     delete(options.display.hpause)
     delete(options.display.hm)
     delete(options.display.ho)
-    if options.dim.n == 0 || isinf(posterior.a_alpha(end))
-        try delete(options.display.ha(8)); end
-    end
+  
     hfig = options.display.hfp;
     drawnow
     % Display data and hidden states (if any)
