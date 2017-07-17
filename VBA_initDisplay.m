@@ -58,8 +58,11 @@ set(display.hfp,'name',options.figName);
 
 % check if a panel has already been set up (spm tab or central element)
 hPanel = getPanel(display.hfp);
-% otherwise, create a central panel to gather the plots
-if isempty(hPanel)
+if ~isempty(hPanel)
+    % if there is one, start from scratch
+    delete(get(hPanel,'children'));
+else
+    % otherwise, create a central panel to gather the plots
     hPanel = uipanel('parent',display.hfp,'Tag','VBLaplace','BorderType','none','BackgroundColor',[1 1 1]);
     set(hPanel,'units','normalized');
     set(hPanel,'Position',[.02 .08 .96 .87]);
@@ -414,5 +417,5 @@ function changeSource(hObject,evt,si)
          'HorizontalAlignment','center'     , ...
          'FontSize'           ,10           , ...
          'Color'              ,[.6 .6 .6]   );
-    set(h,'visible','off');
+    set(h,'Visible','off');
      
