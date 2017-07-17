@@ -361,7 +361,7 @@ ylabel(h,'<log(alpha)>','fontsize',10)
     
 display.ha(8) = h;
 
-if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || isinf(options.priors.a_alpha)    % not for non stochastic systems
+if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0     % not for non stochastic systems
     placeHolder(h,'no evolution hyperparameters')
 end
 
