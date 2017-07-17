@@ -156,7 +156,7 @@ xlabel(h, ...
     xl, ...
     'fontsize',10)
 ylabel(h, ...
-    sprintf('<g(x) | %s> & y',data_conditioner), ...
+    sprintf('<g(x)|%s> & y',data_conditioner), ...
     'fontsize',10)
 
 display.ha(1) = h;
@@ -174,7 +174,7 @@ title(h, ...
     sprintf('Model fit: <g(x)|%s> versus y',data_conditioner) , ...
     'fontsize',12)
 xlabel(h, ...
-    sprintf('<g(x) | %s>',data_conditioner), ...
+    sprintf('<g(x)|%s>',data_conditioner), ...
     'fontsize',10)
 ylabel(h, ...
     sprintf('y'), ...
@@ -199,7 +199,7 @@ xlabel(h, ...
     sprintf('time'), ...
     'fontsize',10)
 ylabel(h, ...
-    sprintf('<x | %s>',data_conditioner), ...
+    sprintf('<x|%s>',data_conditioner), ...
     'fontsize',10)
 
 display.ha(3) = h;
@@ -226,9 +226,9 @@ title(h, ...
 if options.updateX0
     xlabel(h,'x_0 dimensions','fontsize',10)
     if ~priors
-        ylabel(h,'<x_0 | y,m> - <x_0 | m>','fontsize',10)
+        ylabel(h,'<x_0|y,m> - <x_0|m>','fontsize',10)
     else
-        ylabel(h,'<x_0 | m>','fontsize',10)
+        ylabel(h,'<x_0|m>','fontsize',10)
     end
 else
     xlabel(h,'x_0 dimensions [fixed pdf]','fontsize',10)
@@ -262,9 +262,9 @@ else
     xlabel(h,'time','fontsize',10)
 end
 if ~priors
-    ylabel(h,'<\phi | y,m> - <\phi | m>','fontsize',10)
+    ylabel(h,'<\phi|y,m> - <\phi|m>','fontsize',10)
 else
-    ylabel(h,'<\phi | m>','fontsize',10)
+    ylabel(h,'<\phi|m>','fontsize',10)
 end
 
 display.ha(5) = h;
@@ -288,7 +288,7 @@ h = subplot( ...
     'box'       ,'off'              );
 
 title(h, ...
-    sprintf('observation precision: p(sigma | %s)',data_conditioner) , ...
+    sprintf('observation precision: p(\\sigma|%s)',data_conditioner) , ...
     'fontsize',12)
 
     if ~options.OnLine && options.updateHP
@@ -298,7 +298,7 @@ title(h, ...
     else
         xlabel(h,'time','fontsize',10)
     end
-    ylabel(h,'<log(sigma)>','fontsize',10)
+    ylabel(h,'<log(\sigma)>','fontsize',10)
    
 display.ha(6) = h;
 
@@ -318,18 +318,18 @@ h = subplot( ...
     'box'       ,'off'              );
 
 title(h, ...
-    sprintf('evolution parameters: p(theta | %s)',data_conditioner) , ...
+    sprintf('evolution parameters: p(\\theta|%s)',data_conditioner) , ...
     'fontsize',12)
 
 if ~options.OnLine
-    xlabel(h,'theta dimensions','fontsize',10)
+    xlabel(h,'\theta dimensions','fontsize',10)
 else
     xlabel(h,'time','fontsize',10)
 end
 if ~priors
-    ylabel(h,'<theta | y,m> - <theta | m>','fontsize',10)
+    ylabel(h,'<\theta|y,m> - <\theta|m>','fontsize',10)
 else
-    ylabel(h,'<theta | m>','fontsize',10)
+    ylabel(h,'<\theta|m>','fontsize',10)
 end
     
 display.ha(7) = h;
@@ -360,7 +360,7 @@ elseif ~options.OnLine && ~options.updateHP
 else
     xlabel(h,'time','fontsize',10)
 end
-ylabel(h,'<log(alpha)>','fontsize',10)
+ylabel(h,'<log(\alpha)>','fontsize',10)
     
 display.ha(8) = h;
 
