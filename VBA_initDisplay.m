@@ -255,18 +255,18 @@ if options.dim.n_phi == 0
     placeHolder(h,'no observation parameters')
 else
     title(h, ...
-        sprintf('observation parameters: p(\\phi|%s)',data_conditioner) , ...
+        sprintf('observation parameters: p(phi|%s)',data_conditioner) , ...
         'fontsize',12)
 
     if ~options.OnLine
-        xlabel(h,'\phi dimensions','fontsize',10)
+        xlabel(h,'phi dimensions','fontsize',10)
     else
         xlabel(h,'time','fontsize',10)
     end
     if ~priors
-        ylabel(h,'<\phi|y,m> - <\phi|m>','fontsize',10)
+        ylabel(h,'<phi|y,m> - <phi|m>','fontsize',10)
     else
-        ylabel(h,'<\phi|m>','fontsize',10)
+        ylabel(h,'<phi|m>','fontsize',10)
     end
 end
 display.ha(5) = h;
@@ -288,7 +288,7 @@ if Ngs == 0
     placeHolder(h,'no observation hyperparameters')
 else
     title(h, ...
-        sprintf('observation precision: p(\\sigma|%s)',data_conditioner) , ...
+        sprintf('observation precision: p(sigma|%s)',data_conditioner) , ...
         'fontsize',12)
     
     if ~options.OnLine && options.updateHP
@@ -298,7 +298,7 @@ else
     else
         xlabel(h,'time','fontsize',10)
     end
-    ylabel(h,'<log(\sigma)>','fontsize',10)
+    ylabel(h,'<log(sigma)>','fontsize',10)
 end   
 display.ha(6) = h;
 
@@ -317,18 +317,18 @@ if options.dim.n_theta == 0
     placeHolder(h,'no evolution parameters')
 else
     title(h, ...
-        sprintf('evolution parameters: p(\\theta|%s)',data_conditioner) , ...
+        sprintf('evolution parameters: p(theta|%s)',data_conditioner) , ...
         'fontsize',12)
 
     if ~options.OnLine
-        xlabel(h,'\theta dimensions','fontsize',10)
+        xlabel(h,'theta dimensions','fontsize',10)
     else
         xlabel(h,'time','fontsize',10)
     end
     if ~priors
-        ylabel(h,'<\theta|y,m> - <\theta|m>','fontsize',10)
+        ylabel(h,'<theta|y,m> - <theta|m>','fontsize',10)
     else
-        ylabel(h,'<\theta|m>','fontsize',10)
+        ylabel(h,'<theta|m>','fontsize',10)
     end
 end  
 display.ha(7) = h;
@@ -348,7 +348,7 @@ if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || isinf(options.
     placeHolder(h,'no evolution hyperparameters')
 else
     title(h, ...
-        sprintf('evolution precision: p(\\alpha|%s)',data_conditioner) , ...
+        sprintf('evolution precision: p(alpha|%s)',data_conditioner) , ...
         'fontsize',12)
 
     if ~options.OnLine && options.updateHP
@@ -358,7 +358,7 @@ else
     else
         xlabel(h,'time','fontsize',10)
     end
-    ylabel(h,'<log(\alpha)>','fontsize',10)
+    ylabel(h,'<log(alpha)>','fontsize',10)
 end 
 display.ha(8) = h;
 
