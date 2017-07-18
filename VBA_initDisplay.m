@@ -58,8 +58,11 @@ set(display.hfp,'name',options.figName);
 
 % check if a panel has already been set up (spm tab or central element)
 hPanel = getPanel(display.hfp);
-% otherwise, create a central panel to gather the plots
-if isempty(hPanel)
+if ~isempty(hPanel)
+    % if there is one, start from scratch
+    delete(get(hPanel,'children'));
+else
+    % otherwise, create a central panel to gather the plots
     hPanel = uipanel('parent',display.hfp,'Tag','VBLaplace','BorderType','none','BackgroundColor',[1 1 1]);
     set(hPanel,'units','normalized');
     set(hPanel,'Position',[.02 .08 .96 .87]);
@@ -154,7 +157,7 @@ xlabel(h, ...
     xl, ...
     'fontsize',10)
 ylabel(h, ...
-    sprintf('<g(x) | %s> & y',data_conditioner), ...
+    sprintf('<g(x)|%s> & y',data_conditioner), ...
     'fontsize',10)
 
 display.ha(1) = h;
@@ -173,7 +176,7 @@ title(h, ...
     'fontsize',12,...
     'color','r')
 xlabel(h, ...
-    sprintf('<g(x) | %s>',data_conditioner), ...
+    sprintf('<g(x)|%s>',data_conditioner), ...
     'fontsize',10)
 ylabel(h, ...
     sprintf('y'), ...
@@ -191,22 +194,21 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('hidden states: p(x|%s)',data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
-xlabel(h, ...
-    sprintf('time'), ...
-    'fontsize',10)
-ylabel(h, ...
-    sprintf('<x | %s>',data_conditioner), ...
-    'fontsize',10)
-
-display.ha(3) = h;
-
 if options.dim.n == 0
     placeHolder(h,'no hidden states timeseries')
+else
+    title(h, ...
+        sprintf('hidden states: p(x|%s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
+    xlabel(h, ...
+        sprintf('time'), ...
+        'fontsize',10)
+    ylabel(h, ...
+        sprintf('<x | %s>',data_conditioner), ...
+        'fontsize',10)
 end
+display.ha(3) = h;
 
 % 4) Initial state
 % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -219,28 +221,27 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('initial conditions: p(x_0|%s)',data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
-
-if options.updateX0
-    xlabel(h,'x_0 dimensions','fontsize',10)
-    if ~priors
-        ylabel(h,'<x_0 | y,m> - <x_0 | m>','fontsize',10)
-    else
-        ylabel(h,'<x_0 | m>','fontsize',10)
-    end
-else
-    xlabel(h,'x_0 dimensions [fixed pdf]','fontsize',10)
-    ylabel(h,'x_0','fontsize',10)
-end
-
-display.ha(4) = h;
-
 if options.dim.n == 0
     placeHolder(h,'no initial hidden states')
+else
+    title(h, ...
+        sprintf('initial conditions: p(x_0|%s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
+
+    if options.updateX0
+        xlabel(h,'x_0 dimensions','fontsize',10)
+        if ~priors
+            ylabel(h,'<x_0 | y,m> - <x_0 | m>','fontsize',10)
+        else
+            ylabel(h,'<x_0 | m>','fontsize',10)
+        end
+    else
+        xlabel(h,'x_0 dimensions [fixed pdf]','fontsize',10)
+        ylabel(h,'x_0','fontsize',10)
+    end
 end
+display.ha(4) = h;
 
 % 5) Observation parameters
 % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -253,28 +254,27 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('observation parameters: p(\\phi|%s)',data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
-
-if ~options.OnLine
-    xlabel(h,'\phi dimensions','fontsize',10)
-else
-    xlabel(h,'time','fontsize',10)
-end
-if ~priors
-    ylabel(h,'<\phi | y,m> - <\phi | m>','fontsize',10)
-else
-    ylabel(h,'<\phi | m>','fontsize',10)
-end
-
-display.ha(5) = h;
 
 if options.dim.n_phi == 0
     placeHolder(h,'no observation parameters')
-end
+else
+    title(h, ...
+        sprintf('observation parameters: p(\\phi|%s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
 
+    if ~options.OnLine
+        xlabel(h,'\phi dimensions','fontsize',10)
+    else
+        xlabel(h,'time','fontsize',10)
+    end
+    if ~priors
+        ylabel(h,'<\phi | y,m> - <\phi | m>','fontsize',10)
+    else
+        ylabel(h,'<\phi | m>','fontsize',10)
+    end
+end
+display.ha(5) = h;
 
 % 6) measurement noise precision hyperparameter
 % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -289,25 +289,24 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('observation precision: p(\\sigma | %s)',data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
-
-    if ~options.OnLine && options.updateHP
-        xlabel(h,'gaussian source','fontsize',10)
-    elseif ~options.OnLine && ~options.updateHP
-        xlabel(h,'[fixed pdf]','fontsize',10)
-    else
-        xlabel(h,'time','fontsize',10)
-    end
-    ylabel(h,'<log(\sigma)>','fontsize',10)
-   
-display.ha(6) = h;
-
 if Ngs == 0
     placeHolder(h,'no observation hyperparameters')
+else
+    title(h, ...
+        sprintf('observation precision: p(\\sigma | %s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
+
+        if ~options.OnLine && options.updateHP
+            xlabel(h,'gaussian source','fontsize',10)
+        elseif ~options.OnLine && ~options.updateHP
+            xlabel(h,'[fixed pdf]','fontsize',10)
+        else
+            xlabel(h,'time','fontsize',10)
+        end
+    ylabel(h,'<log(\sigma)>','fontsize',10)   
 end
+display.ha(6) = h;
 
 % 7) Evolution parameters
 % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -320,27 +319,28 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('evolution parameters: p(\\theta | %s)',data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
 
-if ~options.OnLine
-    xlabel(h,'\theta dimensions','fontsize',10)
-else
-    xlabel(h,'time','fontsize',10)
-end
-if ~priors
-    ylabel(h,'<\theta | y,m> - <\theta | m>','fontsize',10)
-else
-    ylabel(h,'<\theta | m>','fontsize',10)
-end
-    
-display.ha(7) = h;
 
 if options.dim.n_theta == 0
     placeHolder(h,'no evolution parameters')
-end
+else
+    title(h, ...
+        sprintf('evolution parameters: p(\\theta | %s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
+
+    if ~options.OnLine
+        xlabel(h,'\theta dimensions','fontsize',10)
+    else
+        xlabel(h,'time','fontsize',10)
+    end
+    if ~priors
+        ylabel(h,'<\theta | y,m> - <\theta | m>','fontsize',10)
+    else
+        ylabel(h,'<\theta | m>','fontsize',10)
+    end
+end  
+display.ha(7) = h;
 
 % 8) State noise precision hyperparameter
 % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -353,27 +353,26 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('evolution precision: p(\\alpha|%s)',data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
 
-if ~options.OnLine && options.updateHP
-    xlabel(h,'','fontsize',10)
-elseif ~options.OnLine && ~options.updateHP
-    xlabel(h,'[fixed pdf]','fontsize',10)
-else
-    xlabel(h,'time','fontsize',10)
-end
-ylabel(h,'<log(\alpha)>','fontsize',10)
-    
-display.ha(8) = h;
 
-if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || ...     
-        isinf(options0.priors.a_alpha/options0.priors.b_alpha) % not for non stochastic systems
+if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || isinf(options0.priors.a_alpha/options0.priors.b_alpha) % not for non stochastic systems
     placeHolder(h,'no evolution hyperparameters')
-end
+else
+    title(h, ...
+        sprintf('evolution precision: p(\\alpha|%s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
 
+    if ~options.OnLine && options.updateHP
+        xlabel(h,'','fontsize',10)
+    elseif ~options.OnLine && ~options.updateHP
+        xlabel(h,'[fixed pdf]','fontsize',10)
+    else
+        xlabel(h,'time','fontsize',10)
+    end
+    ylabel(h,'<log(\alpha)>','fontsize',10)
+end 
+display.ha(8) = h;
 
 %% Create text boxes for user feedback
 display.ho     = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.20 0.010 0.60 0.02],'backgroundcolor',[1,1,1]);
@@ -423,5 +422,5 @@ function changeSource(hObject,evt,si)
          'HorizontalAlignment','center'     , ...
          'FontSize'           ,10           , ...
          'Color'              ,[.6 .6 .6]   );
-    set(h,'visible','off');
+    set(h,'Visible','off');
      
