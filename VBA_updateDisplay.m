@@ -237,7 +237,7 @@ switch flag % What piece of the model to display?
             cla(display.ha(8))
             logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
             plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
-            set(display.ha(8),'ygrid','on','xgrid','off')
+            set(display.ha(8),'visible','on','ygrid','on','xgrid','off')
         end
         
         displayDF(F,display)

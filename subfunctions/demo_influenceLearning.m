@@ -9,7 +9,7 @@
 % PE1 and lambda is the weight of PE2.
 % Note: PE2 
 
-clear all
+% clear all
 close all
 clc
 

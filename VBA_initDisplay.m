@@ -151,7 +151,8 @@ h = subplot( ...
 
 title(h, ...
     sprintf('%s predictive density: p(g(x)|%s)',data_label,data_conditioner) , ...
-    'fontsize',12)
+    'fontsize',12,...
+    'color','r')
 xlabel(h, ...
     xl, ...
     'fontsize',10)
@@ -172,7 +173,8 @@ h = subplot( ...
 
 title(h, ...
     sprintf('Model fit: <g(x)|%s> versus y',data_conditioner) , ...
-    'fontsize',12)
+    'fontsize',12,...
+    'color','r')
 xlabel(h, ...
     sprintf('<g(x)|%s>',data_conditioner), ...
     'fontsize',10)
@@ -197,14 +199,14 @@ if options.dim.n == 0
 else
     title(h, ...
         sprintf('hidden states: p(x|%s)',data_conditioner) , ...
-        'fontsize',12)
+        'fontsize',12,...
+        'color','r')
     xlabel(h, ...
         sprintf('time'), ...
         'fontsize',10)
     ylabel(h, ...
-        sprintf('<x|%s>',data_conditioner), ...
+        sprintf('<x | %s>',data_conditioner), ...
         'fontsize',10)
-
 end
 display.ha(3) = h;
 
@@ -224,14 +226,15 @@ if options.dim.n == 0
 else
     title(h, ...
         sprintf('initial conditions: p(x_0|%s)',data_conditioner) , ...
-        'fontsize',12)
+        'fontsize',12,...
+        'color','r')
 
     if options.updateX0
         xlabel(h,'x_0 dimensions','fontsize',10)
         if ~priors
-            ylabel(h,'<x_0|y,m> - <x_0|m>','fontsize',10)
+            ylabel(h,'<x_0 | y,m> - <x_0 | m>','fontsize',10)
         else
-            ylabel(h,'<x_0|m>','fontsize',10)
+            ylabel(h,'<x_0 | m>','fontsize',10)
         end
     else
         xlabel(h,'x_0 dimensions [fixed pdf]','fontsize',10)
@@ -251,22 +254,24 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
+
 if options.dim.n_phi == 0
     placeHolder(h,'no observation parameters')
 else
     title(h, ...
-        sprintf('observation parameters: p(phi|%s)',data_conditioner) , ...
-        'fontsize',12)
+        sprintf('observation parameters: p(\\phi|%s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
 
     if ~options.OnLine
-        xlabel(h,'phi dimensions','fontsize',10)
+        xlabel(h,'\phi dimensions','fontsize',10)
     else
         xlabel(h,'time','fontsize',10)
     end
     if ~priors
-        ylabel(h,'<phi|y,m> - <phi|m>','fontsize',10)
+        ylabel(h,'<\phi | y,m> - <\phi | m>','fontsize',10)
     else
-        ylabel(h,'<phi|m>','fontsize',10)
+        ylabel(h,'<\phi | m>','fontsize',10)
     end
 end
 display.ha(5) = h;
@@ -288,18 +293,19 @@ if Ngs == 0
     placeHolder(h,'no observation hyperparameters')
 else
     title(h, ...
-        sprintf('observation precision: p(sigma|%s)',data_conditioner) , ...
-        'fontsize',12)
-    
-    if ~options.OnLine && options.updateHP
-        xlabel(h,'gaussian source','fontsize',10)
-    elseif ~options.OnLine && ~options.updateHP
-        xlabel(h,'[fixed pdf]','fontsize',10)
-    else
-        xlabel(h,'time','fontsize',10)
-    end
-    ylabel(h,'<log(sigma)>','fontsize',10)
-end   
+        sprintf('observation precision: p(\\sigma | %s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
+
+        if ~options.OnLine && options.updateHP
+            xlabel(h,'gaussian source','fontsize',10)
+        elseif ~options.OnLine && ~options.updateHP
+            xlabel(h,'[fixed pdf]','fontsize',10)
+        else
+            xlabel(h,'time','fontsize',10)
+        end
+    ylabel(h,'<log(\sigma)>','fontsize',10)   
+end
 display.ha(6) = h;
 
 % 7) Evolution parameters
@@ -313,22 +319,25 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
+
+
 if options.dim.n_theta == 0
     placeHolder(h,'no evolution parameters')
 else
     title(h, ...
-        sprintf('evolution parameters: p(theta|%s)',data_conditioner) , ...
-        'fontsize',12)
+        sprintf('evolution parameters: p(\\theta | %s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
 
     if ~options.OnLine
-        xlabel(h,'theta dimensions','fontsize',10)
+        xlabel(h,'\theta dimensions','fontsize',10)
     else
         xlabel(h,'time','fontsize',10)
     end
     if ~priors
-        ylabel(h,'<theta|y,m> - <theta|m>','fontsize',10)
+        ylabel(h,'<\theta | y,m> - <\theta | m>','fontsize',10)
     else
-        ylabel(h,'<theta|m>','fontsize',10)
+        ylabel(h,'<\theta | m>','fontsize',10)
     end
 end  
 display.ha(7) = h;
@@ -344,12 +353,15 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || isinf(options.priors.a_alpha) 
+
+
+if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || isinf(options0.priors.a_alpha/options0.priors.b_alpha) % not for non stochastic systems
     placeHolder(h,'no evolution hyperparameters')
 else
     title(h, ...
-        sprintf('evolution precision: p(alpha|%s)',data_conditioner) , ...
-        'fontsize',12)
+        sprintf('evolution precision: p(\\alpha|%s)',data_conditioner) , ...
+        'fontsize',12,...
+        'color','r')
 
     if ~options.OnLine && options.updateHP
         xlabel(h,'','fontsize',10)
@@ -358,7 +370,7 @@ else
     else
         xlabel(h,'time','fontsize',10)
     end
-    ylabel(h,'<log(alpha)>','fontsize',10)
+    ylabel(h,'<log(\alpha)>','fontsize',10)
 end 
 display.ha(8) = h;
 
@@ -405,7 +417,7 @@ function changeSource(hObject,evt,si)
  function placeHolder(h,label)
      xx = get(h,'XLim');
      yy = get(h,'YLim');
-     t=text(mean(xx),mean(yy),label);
+     t=text(mean(xx),mean(yy),label,'parent',h);
      set(t, ...
          'HorizontalAlignment','center'     , ...
          'FontSize'           ,10           , ...
