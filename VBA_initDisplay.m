@@ -149,16 +149,12 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('%s predictive density: p(g(x)|%s)',data_label,data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
-xlabel(h, ...
-    xl, ...
-    'fontsize',10)
-ylabel(h, ...
-    sprintf('<g(x)|%s> & y',data_conditioner), ...
-    'fontsize',10)
+styleTitle(title(h, ...
+    sprintf('%s predictive density: p(g(x)|%s)',data_label,data_conditioner))) ;
+styleLabel(xlabel(h, ...
+    sprintf('%s',xl)));
+styleLabel(ylabel(h, ...
+    sprintf('<g(x)|%s> & y',data_conditioner)));
 
 display.ha(1) = h;
 
@@ -171,16 +167,12 @@ h = subplot( ...
     'tag'       ,'VBLaplace'        , ...
     'box'       ,'off'              );
 
-title(h, ...
-    sprintf('Model fit: <g(x)|%s> versus y',data_conditioner) , ...
-    'fontsize',12,...
-    'color','r')
-xlabel(h, ...
-    sprintf('<g(x)|%s>',data_conditioner), ...
-    'fontsize',10)
-ylabel(h, ...
-    sprintf('y'), ...
-    'fontsize',10)
+styleTitle(title(h, ...
+    sprintf('Model fit: <g(x)|%s> versus y',data_conditioner)));
+styleLabel(xlabel(h, ...
+    sprintf('<g(x)|%s>',data_conditioner)));
+styleLabel(ylabel(h, ...
+    sprintf('y')));
 
 display.ha(2) = h;
 
@@ -197,16 +189,12 @@ h = subplot( ...
 if options.dim.n == 0
     placeHolder(h,'no hidden states timeseries')
 else
-    title(h, ...
-        sprintf('hidden states: p(x|%s)',data_conditioner) , ...
-        'fontsize',12,...
-        'color','r')
-    xlabel(h, ...
-        sprintf('time'), ...
-        'fontsize',10)
-    ylabel(h, ...
-        sprintf('<x | %s>',data_conditioner), ...
-        'fontsize',10)
+    styleTitle(title(h, ...
+        sprintf('hidden states: p(x|%s)',data_conditioner)));
+    styleLabel(xlabel(h, ...
+        sprintf('time')));
+    styleLabel(ylabel(h, ...
+        sprintf('<x | %s>',data_conditioner)));
 end
 display.ha(3) = h;
 
@@ -224,22 +212,23 @@ h = subplot( ...
 if options.dim.n == 0
     placeHolder(h,'no initial hidden states')
 else
-    title(h, ...
-        sprintf('initial conditions: p(x_0|%s)',data_conditioner) , ...
-        'fontsize',12,...
-        'color','r')
+    styleTitle(title(h, ...
+        sprintf('initial conditions: p(x_0|%s)',data_conditioner)));
 
     if options.updateX0
-        xlabel(h,'x_0 dimensions','fontsize',10)
+        x_label_str = 'x_0 dimensions' ;
         if ~priors
-            ylabel(h,'<x_0 | y,m> - <x_0 | m>','fontsize',10)
+            y_label_str = '<x_0 | y,m> - <x_0 | m>';
         else
-            ylabel(h,'<x_0 | m>','fontsize',10)
+            y_label_str = '<x_0 | m>' ;
         end
     else
-        xlabel(h,'x_0 dimensions [fixed pdf]','fontsize',10)
-        ylabel(h,'x_0','fontsize',10)
+        x_label_str = 'x_0 dimensions [fixed pdf]' ;
+        y_label_str = 'x_0' ;
     end
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
+    
 end
 display.ha(4) = h;
 
@@ -258,21 +247,22 @@ h = subplot( ...
 if options.dim.n_phi == 0
     placeHolder(h,'no observation parameters')
 else
-    title(h, ...
-        sprintf('observation parameters: p(\\phi|%s)',data_conditioner) , ...
-        'fontsize',12,...
-        'color','r')
+    styleTitle(title(h, ...
+        sprintf('observation parameters: p(\\phi|%s)',data_conditioner)));
 
     if ~options.OnLine
-        xlabel(h,'\phi dimensions','fontsize',10)
+        x_label_str = '\phi dimensions' ;
     else
-        xlabel(h,'time','fontsize',10)
+        x_label_str = 'time' ;
     end
     if ~priors
-        ylabel(h,'<\phi | y,m> - <\phi | m>','fontsize',10)
+        y_label_str = '<\phi | y,m> - <\phi | m>' ;
     else
-        ylabel(h,'<\phi | m>','fontsize',10)
+        y_label_str = '<\phi | m>' ;
     end
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
+    
 end
 display.ha(5) = h;
 
@@ -292,19 +282,19 @@ h = subplot( ...
 if Ngs == 0
     placeHolder(h,'no observation hyperparameters')
 else
-    title(h, ...
-        sprintf('observation precision: p(\\sigma | %s)',data_conditioner) , ...
-        'fontsize',12,...
-        'color','r')
+    styleTitle(title(h, ...
+        sprintf('observation precision: p(\\sigma | %s)',data_conditioner)));
 
         if ~options.OnLine && options.updateHP
-            xlabel(h,'gaussian source','fontsize',10)
+            x_label_str = 'gaussian source' ;
         elseif ~options.OnLine && ~options.updateHP
-            xlabel(h,'[fixed pdf]','fontsize',10)
+            x_label_str = '[fixed pdf]' ;
         else
-            xlabel(h,'time','fontsize',10)
+            x_label_str = 'time' ;
         end
-    ylabel(h,'<log(\sigma)>','fontsize',10)   
+        y_label_str = '<log(\sigma)>' ;
+        styleLabel(xlabel(h,x_label_str));
+        styleLabel(ylabel(h,y_label_str));
 end
 display.ha(6) = h;
 
@@ -324,21 +314,22 @@ h = subplot( ...
 if options.dim.n_theta == 0
     placeHolder(h,'no evolution parameters')
 else
-    title(h, ...
-        sprintf('evolution parameters: p(\\theta | %s)',data_conditioner) , ...
-        'fontsize',12,...
-        'color','r')
+    styleTitle(title(h, ...
+        sprintf('evolution parameters: p(\\theta | %s)',data_conditioner)));
 
     if ~options.OnLine
-        xlabel(h,'\theta dimensions','fontsize',10)
+        x_label_str = '\theta dimensions' ;
     else
-        xlabel(h,'time','fontsize',10)
+        x_label_str = 'time' ;
     end
     if ~priors
-        ylabel(h,'<\theta | y,m> - <\theta | m>','fontsize',10)
+        y_label_str = '<\theta | y,m> - <\theta | m>' ;
     else
-        ylabel(h,'<\theta | m>','fontsize',10)
+        y_label_str = '<\theta | m>' ;
     end
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
+    
 end  
 display.ha(7) = h;
 
@@ -358,19 +349,20 @@ h = subplot( ...
 if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || isinf(options0.priors.a_alpha/options0.priors.b_alpha) % not for non stochastic systems
     placeHolder(h,'no evolution hyperparameters')
 else
-    title(h, ...
-        sprintf('evolution precision: p(\\alpha|%s)',data_conditioner) , ...
-        'fontsize',12,...
-        'color','r')
+    styleTitle(title(h, ...
+        sprintf('evolution precision: p(\\alpha|%s)',data_conditioner)));
 
     if ~options.OnLine && options.updateHP
-        xlabel(h,'','fontsize',10)
+        x_label_str = '' ;
     elseif ~options.OnLine && ~options.updateHP
-        xlabel(h,'[fixed pdf]','fontsize',10)
+        x_label_str = '[fixed pdf]' ;
     else
-        xlabel(h,'time','fontsize',10)
+        x_label_str = 'time' ;
     end
-    ylabel(h,'<log(\alpha)>','fontsize',10)
+    y_label_str = '<log(\alpha)>' ;
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
+    
 end 
 display.ha(8) = h;
 
@@ -400,20 +392,42 @@ options         = options0;
 options.display = display;
 
 
+%% ========================================================================
+% subfunctions
 
-
+% callback for the source selector menu
 function changeSource(hObject,evt,si)
 
+    % get data stored in the figure
     hPanel = get(hObject,'parent');
     ud = get(hPanel,'userdata');
     
+    % update the source index and store back
     ud.currentSource = get(hObject,'Value');
     set(hPanel,'userdata',ud);
     
+    % try to update display
     if isfield(ud,'update_plot')
         ud.update_plot();
     end
 
+% styling of axes labels
+function styleTitle(h)
+    set(h,'FontName'    ,'Arial'    );
+    set(h,'FontUnits'   ,'points'   );
+    set(h,'FontSize'    ,12         );
+    set(h,'FontWeight'  ,'bold'     );
+    set(h,'Color'       ,[0 0 0]    );
+    set(h,'Margin'      ,3          );
+    
+function styleLabel(h)
+    set(h,'FontName'    ,'Arial'    );
+    set(h,'FontUnits'   ,'points'   );
+    set(h,'FontSize'    ,10         );
+    set(h,'FontWeight'  ,'normal'   );
+    set(h,'Color'       ,[0 0 0]    );
+ 
+ % display low key text when usual plot is not required
  function placeHolder(h,label)
      xx = get(h,'XLim');
      yy = get(h,'YLim');
