@@ -308,10 +308,10 @@ function myConv(hfig)
         set(hp2,'color',[1 0 0])
         text(nit/2,diagnostics.LLH0-3/2,'log p(y|H0)','color',[1 0 0],'parent',ha);
         if ~out.options.OnLine
-            title(ha,'VB optimization: F values','fontsize',11)
+            title(ha,'VB optimization: F values','fontsize',12,'color','r')
             xlabel(ha,'inner (Gauss-Newton) iterations')
         else
-            title(ha,'online VB: F values','fontsize',11)
+            title(ha,'online VB: F values','fontsize',12,'color','r')
             xlabel(ha,'time samples')
         end
         ylabel(ha,'Free energy')
@@ -325,10 +325,10 @@ function myConv(hfig)
         plot(ha,[0:nit-1],diff(out.suffStat.F)) ;
         plot(ha,[0:nit-1],diff(out.suffStat.F),'.') ;
         if ~out.options.OnLine
-            title(ha,'VB optimization: F increments','fontsize',11)
+            title(ha,'VB optimization: F increments','fontsize',12,'color','r')
             xlabel(ha,'inner (Gauss-Newton) iterations')
         else
-            title(ha,'online VB: F increments','fontsize',11)
+            title(ha,'online VB: F increments','fontsize',12,'color','r')
             xlabel(ha,'time samples')
         end
         ylabel(ha,'Free energy differences')
@@ -396,7 +396,7 @@ function myKerneli(hObject,evt)
         [t1,t2,hp] = plotUncertainTimeSeries(kernels.x.m(:,:,ind),kernels.x.v(:,:,ind),[],handles.hkernels(1));
         set(hp,'marker','.')
         set(handles.hkernels(1),'XLim',[0.5 size(kernels.x.m,2)+0.5],'xtick',[1:size(kernels.x.m,2)],'xticklabel',[0:size(kernels.x.m,2)-1])
-        title(handles.hkernels(1),['states'' Volterra kernels: input #',num2str(ind),' (R2=',num2str(mean(kernels.x.R2),'%4.2f'),')'],'fontsize',12)
+        title(handles.hkernels(1),['states'' Volterra kernels: input #',num2str(ind),' (R2=',num2str(mean(kernels.x.R2),'%4.2f'),')'],'fontsize',12,'color','r')
         ylabel(handles.hkernels(1),'(lagged) input weight')
         xlabel(handles.hkernels(1),'time lag')
     end
@@ -412,7 +412,7 @@ function myKerneli(hObject,evt)
     [t1,t2,hp] = plotUncertainTimeSeries(kernels.g.m(:,:,ind),kernels.g.v(:,:,ind),[],handles.hkernels(2));
     set(hp,'marker','.') ;
     set(handles.hkernels(2),'XLim',[0.5 size(kernels.g.m,2)+0.5],'xtick',[1:size(kernels.g.m,2)],'xticklabel',[0:size(kernels.g.m,2)-1]) ;
-    title(handles.hkernels(2),['observables'' Volterra kernels: input #',num2str(ind)],'fontsize',12)
+    title(handles.hkernels(2),['observables'' Volterra kernels: input #',num2str(ind)],'fontsize',12,'color','r')
     ylabel(handles.hkernels(2),'(lagged) input weight')
     xlabel(handles.hkernels(2),'time lag')
 
@@ -434,7 +434,7 @@ function myDiagnostics(hfig)
     % display micro-time hidden-states
     if ~isempty(diagnostics.MT_x)
         display.ha(1) = subplot(4,2,1,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
-        title(display.ha(1),'micro-time resolution predicted data','fontsize',11)
+        title(display.ha(1),'micro-time resolution predicted data','fontsize',12,'color','r')
         xlabel(display.ha(1),'time','fontsize',8)
         ylabel(display.ha(1),'g(x) & y','fontsize',8)
         plot(display.ha(1),diagnostics.microTime,diagnostics.MT_gx')
@@ -442,7 +442,7 @@ function myDiagnostics(hfig)
         plot(display.ha(1),diagnostics.microTime(diagnostics.sampleInd),y,':')
         axis(display.ha(1),'tight')
         display.ha(2) = subplot(4,2,2,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
-        title(display.ha(2),'micro-time resolution hidden states','fontsize',11)
+        title(display.ha(2),'micro-time resolution hidden states','fontsize',12,'color','r')
         xlabel(display.ha(2),'time','fontsize',8)
         ylabel(display.ha(2),'x','fontsize',8)
         plot(display.ha(2),diagnostics.microTime,diagnostics.MT_x')
@@ -468,7 +468,7 @@ function myDiagnostics(hfig)
     if ~isempty(diagnostics.dx.dx)
         xlim = [diagnostics.dx.nx(1)-diagnostics.dx.d,diagnostics.dx.nx(end)+diagnostics.dx.d];
         display.ha(4) = subplot(4,2,6,'parent',hPanel,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
-        title(display.ha(4),'state noise empirical distribution','fontsize',11)
+        title(display.ha(4),'weighted state noise distribution','fontsize',12,'color','r')
         xlabel(display.ha(4),'eta(t) = x(t+1)-f(x(t))','fontsize',8)
         ylabel(display.ha(4),'p(eta|y)','fontsize',8)
         bar(diagnostics.dx.nx,diagnostics.dx.ny,'facecolor',[.8 .8 .8],'parent',display.ha(4))
@@ -482,7 +482,7 @@ function myDiagnostics(hfig)
             plot(display.ha(8),diagnostics.microTime(diagnostics.sampleInd),out.suffStat.dx','marker','.')
         end
         axis(display.ha(8),'tight')
-        title(display.ha(8),'state noise time series','fontsize',11)
+        title(display.ha(8),'state noise time series','fontsize',12,'color','r')
         xlabel(display.ha(8),'time','fontsize',8)
         ylabel(display.ha(8),'eta(t) = x(t+1)-f(x(t))','fontsize',8)
     end
@@ -490,7 +490,7 @@ function myDiagnostics(hfig)
     % display parameters posterior correlation matrix
     display.ha(6) = subplot(4,2,8,'parent',hPanel);
     imagesc(diagnostics.C,'parent',display.ha(6))
-    title(display.ha(6),'parameters posterior correlation matrix','fontsize',11)
+    title(display.ha(6),'parameters posterior correlation matrix','fontsize',12,'color','r')
     set(display.ha(6),'tag','VBLaplace','xtick',diagnostics.ltick,'ytick',diagnostics.ltick,'xticklabel',diagnostics.ticklabel,'yticklabel',diagnostics.ticklabel,'box','off','nextplot','add');
     for i=1:length(diagnostics.tick)
         plot(display.ha(6),[0.5 size(diagnostics.C,1)+0.5],[diagnostics.tick(i) diagnostics.tick(i)],'color',[1 1 1])
@@ -524,7 +524,7 @@ function myDiagnosticsi(hObject,evt,si)
     % display data noise
     xlim = [dy.nx(1)-dy.d,dy.nx(end)+dy.d];
     handles.hdiagnostics(1) = subplot(4,2,5,'parent',hPanel,'nextplot','add','xlim',xlim,'ygrid','on','tag','VBLaplace','box','off');
-    title(handles.hdiagnostics(1),'residuals empirical distribution','fontsize',11)
+    title(handles.hdiagnostics(1),'weighted residuals distribution','fontsize',12,'color','r')
     xlabel(handles.hdiagnostics(1),'e(t) = y(t)-g(x(t))','fontsize',8)
     ylabel(handles.hdiagnostics(1),'p(e|y)','fontsize',8)
     bar(dy.nx,dy.ny,'facecolor',[.8 .8 .8],'parent',handles.hdiagnostics(1))
@@ -552,7 +552,7 @@ function myDiagnosticsi(hObject,evt,si)
     handles.hdiagnostics(2) = subplot(4,2,3,'parent',hPanel,'nextplot','add','tag','VBLaplace','ygrid','on','box','off');
     plot(handles.hdiagnostics(2),gri,out.suffStat.dy(sourceYidx,:)','marker','.')
     axis(handles.hdiagnostics(2),'tight')
-    title(handles.hdiagnostics(2),'residuals time series','fontsize',11)
+    title(handles.hdiagnostics(2),'residuals time series','fontsize',12,'color','r')
     xlabel(handles.hdiagnostics(2),ti,'fontsize',8)
     ylabel(handles.hdiagnostics(2),'e(t) = y(t)-g(x(t))','fontsize',8)
     % display autocorrelation of residuals
@@ -560,7 +560,7 @@ function myDiagnosticsi(hObject,evt,si)
         handles.hdiagnostics(3) = subplot(4,2,7,'parent',hPanel);
         plot(handles.hdiagnostics(3),[-out.options.dim.n_t:out.options.dim.n_t-1],fftshift(dy.R)')
         axis(handles.hdiagnostics(3),'tight')
-        title(handles.hdiagnostics(3),'residuals empirical autocorrelation','fontsize',11)
+        title(handles.hdiagnostics(3),'residuals empirical autocorrelation','fontsize',12,'color','r')
         xlabel(handles.hdiagnostics(3),'lag tau','fontsize',8)
         ylabel(handles.hdiagnostics(3),'Corr[e(t),e(t+tau)]','fontsize',8)
         set(handles.hdiagnostics(3),'tag','VBLaplace','ygrid','on','box','off');
