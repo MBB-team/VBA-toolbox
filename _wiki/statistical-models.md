@@ -172,13 +172,13 @@ VBA possesses an in-built function for classfication, namely: `VBA_classificatio
 % simulate binary data
 n = 32; % data sample size
 p = 10; % number of features
-X = randn(n,p); % feature matrix
+F = randn(n,p); % feature matrix
 b = 1+randn(p,1); % feature weights
 e = randn(n,1); % additional noise
-y = sig(X*b+e)>0.5;
+y = sig(F*b+e)>0.5;
 % classify data using default set-up
 sparse = 0; % sparse mode
-[posterior,out,all] = VBA_classification(X,y,n,1,[],sparse);
+[posterior,out,all] = VBA_classification(F,y,n,1,[],sparse);
 ```
 where `sparse`is a flag that can be used to perform sparse estimation of classifier weights. 
 
@@ -186,7 +186,9 @@ Let us eyeball the graphical output of the function `VBA_classification.m`:
 
 ![]({{ site.baseurl }}/images/wiki/VBA_classification.jpg)
 
-> **Upper-left panel**: the distribution of correct classifications ($$X$$) under the null is compared with the actual number of classifier successes ($$x$$). This serves to perform classical inference on classification accuracy: p-value = $$P\left( X>x \mid H_0 \right)$$. **Lower-left panel**: posterior distribution over the classification accuracy. This serves to perform Bayesian inference on classification accuracy ($$r$$): exceedance probability = $$P\left( r>0.5 \mid x \right)$$. **Upper-right panel**: classifier weights estimates for each train fold. This can be used to eyball the estimation stability of classifier weights. **Lower-right panel**: Summary statistics of data classification.
+> **Upper-left panel**: classifier test prediction (y-axis) is plotted for all data samples (x-axis), in green (resp. red) if the test classication outcome turned out correct (resp. wrong). **Upper-right panel**: Data average (y-axis) is plotted as a function of binned classifier test prediction (x-axis). **Middle-left panel**: classifier test prediction variance is plotted for both correct (left) and wrong (right) classification outcomes. This can be used to evaluate whether test prediction doubt can be used as a proxy for test prediction accuracy. **Middle-right panel**: classifier weights estimates for each train fold. This can be used to eyeball the estimation stability of classifier weights. **Lower-left panel**: the distribution of correct classifications ($$X$$) under the null is compared with the actual number of classifier successes ($$x$$). This serves to perform classical inference on classification accuracy: p-value = $$P\left( X>x \mid H_0 \right)$$. **Lower-right panel**: posterior distribution over the classification accuracy. This serves to perform Bayesian inference on classification accuracy ($$r$$): exceedance probability = $$P\left( r>0.5 \mid x \right)$$.
+
+One can see on this example that there is no class imbalance, i.e. there is an equal number of $$y=1$$ and $$y=0$$ observations. Note that class imbalance is not a problem for inference (wheter classical or bayesian) on classification accuracy. However, it may limit the ability of the classifier to generalize (this would be seen on the balanced classification accuracy). One can also see that here, classification features are rather uncorrelated (tolerance is always higher than 0.1), which implies that classification weights can be estimated without much identifiability issues.
 
 The script `demo_classification.m` exemplifies this approach, and demonstrates the relation between classical cross-validation approaches and Bayesian model comparison.
 
