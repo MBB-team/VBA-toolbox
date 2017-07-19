@@ -7,7 +7,8 @@
 % where o is the other's last move, PE1=o-p is the first-order prediction
 % error, PE2 is the second-order prediction error, eta is the weight of
 % PE1 and lambda is the weight of PE2.
-% Note: PE2 
+% Note: PE2 drives the "influence" learning. If set to 0, then the
+% influence learner reduces to a simple RL agent (with counterfactuals).
 
 % clear all
 close all
@@ -39,7 +40,7 @@ for i=1:N
     a(i)= gx(i)>.5;
     x(:,i+1)= f_Hampton(x(:,i),theta, [o(i);a(i)],options.inF);
 end
-figure,plot(x')
+% figure,plot(x')
 
 %% invert "influence learning" model given sequence of agent's choices
 options.skipf = zeros(1,N);

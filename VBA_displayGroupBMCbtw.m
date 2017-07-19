@@ -25,7 +25,7 @@ for i=1:nc
 end
 xlabel(handles.ha(1),'models')
 set(handles.ha(1),'xtick',1:nm,'xlim',[0.5,nm+0.5],'ygrid','on')
-title(handles.ha(1),'mean log- model evidences')
+title(handles.ha(1),'mean log- model evidences','fontsize',12,'fontweight','bold')
 legend(handles.ha(1),leg)
 drawnow
 
@@ -46,7 +46,7 @@ axis(handles.ha(2),'tight')
 axis(handles.ha(2),'square')
 xlabel(handles.ha(2),'conditions')
 ylabel(handles.ha(2),'conditions')
-title(handles.ha(2),'profile likelihood coherence')
+title(handles.ha(2),'profile likelihood coherence','fontsize',12,'fontweight','bold')
 set(handles.ha(2),'xlim',[0.5,nc+0.5],'xtick',[1:nc],'ylim',[0.5,nc+0.5],'ytick',[1:nc],'ydir','reverse','clim',[-1 1])
 colormap(handles.ha(2),bone)
 handles.hc = colorbar('peer',handles.ha(2));
@@ -69,7 +69,7 @@ if isfield(out.options,'families') && ~isempty(out.options.families)
     axis(handles.ha(3),'tight')
     xlabel(handles.ha(3),'models')
     ylabel(handles.ha(3),'families')
-    title(handles.ha(3),'families'' partition')
+    title(handles.ha(3),'families'' partition','fontsize',12,'fontweight','bold')
     set(handles.ha(3),'xlim',[0.5,nm+0.5],'xtick',[1:nm],'ylim',[0.5,nf+0.5],'ytick',[1:nf],'ydir','reverse','clim',[0 1])
     drawnow
     
@@ -83,7 +83,7 @@ if isfield(out.options,'families') && ~isempty(out.options.families)
     axis(handles.ha(5),'tight')
     xlabel(handles.ha(5),'families')
     ylabel(handles.ha(5),'conditions')
-    title(handles.ha(5),'per-condition family-BMS: EPs')
+    title(handles.ha(5),'per-condition family-BMS: EPs','fontsize',12,'fontweight','bold')
     set(handles.ha(5),'xlim',[0.5,nf+0.5],'xtick',[1:nf],'ylim',[0.5,nc+0.5],'ytick',[1:nc],'ydir','reverse','clim',[0 1])
     handles.hc(end+1) = colorbar('peer',handles.ha(5));
     drawnow
@@ -100,7 +100,7 @@ else
     axis(handles.ha(5),'tight')
     xlabel(handles.ha(5),'models')
     ylabel(handles.ha(5),'conditions')
-    title(handles.ha(5),'per-condition BMS: EPs')
+    title(handles.ha(5),'per-condition BMS: EPs','fontsize',12,'fontweight','bold')
     set(handles.ha(5),'xlim',[0.5,nm+0.5],'xtick',[1:nm],'ylim',[0.5,nc+0.5],'ytick',[1:nc],'ydir','reverse','clim',[0 1])
     handles.hc(end+1) = colorbar('peer',handles.ha(5));
     drawnow
@@ -133,7 +133,7 @@ if isfield(out,'factors')
         axis(handles.ha(4),'tight')
         xlabel(handles.ha(4),'conditions')
         ylabel(handles.ha(4),'factors')
-        title(handles.ha(4),'design')
+        title(handles.ha(4),'design','fontsize',12,'fontweight','bold')
         set(handles.ha(4),'xlim',[0.5,nc+0.5],'xtick',[1:nc],'ylim',[0.5,nf+0.5],'ytick',[1:nf])
         handles.hc(end+1) = colorbar('peer',handles.ha(4));
         set(handles.hc(end),'ytick',1:max(vec(C)))
@@ -151,7 +151,7 @@ if isfield(out,'factors')
         axis(handles.ha(6),'tight')
         xlabel(handles.ha(6),'factors')
         ylabel(handles.ha(6),'pEP(f=)')
-        title(handles.ha(6),'btw-condition stability: pEPs')
+        title(handles.ha(6),'btw-condition stability: pEPs','fontsize',12,'fontweight','bold')
         set(handles.ha(6),'xlim',[0.5,nf+0.5],'xtick',[1:nf],'ylim',[0,1])
         drawnow
         
@@ -169,7 +169,7 @@ if ~isfield(out,'factors') || nf==1
     axis(handles.ha(6),'tight')
     xlabel(handles.ha(6),'f=')
     ylabel(handles.ha(6),'pEP(f=)')
-    title(handles.ha(6),'btw-condition stability: pEPs')
+    title(handles.ha(6),'btw-condition stability: pEPs','fontsize',12,'fontweight','bold')
     set(handles.ha(6),'xlim',[0.5,nf+0.5],'xtick',[],'ylim',[0,1])
     drawnow
     

@@ -123,13 +123,14 @@ end
 if options.DisplayWin
     hf = figure('color',[1 1 1],'name','VBA with hyperparameters adjustment...','menubar','none');
     ha(1) = subplot(2,2,1,'parent',hf,'nextplot','add');
-    title(ha(1),'F = log p(y|m)')
+    title(ha(1),'corrected free energy','fontsize',12,'fontweight','bold')
     plot(ha(1),0,F,'ko')
     set(ha(1),'xlim',[-.2,0.8],'xtick',[])
     xlabel(ha(1),'VBA meta-iterations')
+    ylabel(ha(1),'F = log p(y|m)')
     if nphi >0
         ha(2) = subplot(2,2,2,'parent',hf,'nextplot','add');
-        title(ha(2),'PHI')
+        title(ha(2),'observation parameters','fontsize',12,'fontweight','bold')
         EP = options.priors.a_phi/options.priors.b_phi;
         VP = EP/options.priors.b_phi;
         set(ha(2),'xlim',[-.2,0.8],'xtick',[])
@@ -137,10 +138,11 @@ if options.DisplayWin
         plotUncertainTimeSeries(log(EP),logCI.^2,0,ha(2));
         set(ha(2),'ygrid','on','xgrid','off')
         xlabel(ha(2),'VBA meta-iterations')
+        ylabel(ha(2),'<log precision>')
     end
     if ntheta >0
         ha(3) = subplot(2,2,3,'parent',hf,'nextplot','add');
-        title(ha(3),'THETA')
+        title(ha(3),'evolution parameters','fontsize',12,'fontweight','bold')
         EP = options.priors.a_theta/options.priors.b_theta;
         VP = EP/options.priors.b_theta;
         set(ha(3),'xlim',[-.2,0.8],'xtick',[])
@@ -148,10 +150,11 @@ if options.DisplayWin
         plotUncertainTimeSeries(log(EP),logCI.^2,0,ha(3));
         set(ha(3),'ygrid','on','xgrid','off')
         xlabel(ha(3),'VBA meta-iterations')
+        ylabel(ha(3),'<log precision>')
     end
     if nx0 >0
         ha(4) = subplot(2,2,4,'parent',hf,'nextplot','add');
-        title(ha(4),'X0')
+        title(ha(4),'initial conditions','fontsize',12,'fontweight','bold')
         EP = options.priors.a_x0/options.priors.b_x0;
         VP = EP/options.priors.b_x0;
         set(ha(4),'xlim',[-.2,0.8],'xtick',[])
@@ -159,6 +162,7 @@ if options.DisplayWin
         plotUncertainTimeSeries(log(EP),logCI.^2,0,ha(4));
         set(ha(4),'ygrid','on','xgrid','off')
         xlabel(ha(4),'VBA meta-iterations')
+        ylabel(ha(4),'<log precision>')
     end
     drawnow
     getSubplots

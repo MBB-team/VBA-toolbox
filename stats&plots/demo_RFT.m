@@ -8,26 +8,29 @@ clc
 %--- RFT: specificity
 L = 2e3; % size of the 1D field
 %N = 1e3; % number of Monte-Carlo simulations
-N = 100; 
+N = 100;
 fprintf( 'WARNING: this is a demo! The number of Monte-Carlo simulation should largely be increased (N~1000) for real simulations\n') 
+disp_and_verbose = 1;
 
 v = ([1:5:50]/2.355).^2; % smoothing kernel variances
-%v = v(end);
+v = v(end);
 for j=1:length(v)
     j
     kernel = exp(-0.5.*([1:L]-L/2).^2/v(j));
     kernel = kernel./sum(kernel);
     for ii=1:N
-        X = randn(L,1);
+        X = 0+randn(L,1);
         sX(:,ii) = conv(X,kernel,'same');
     end
     vX = var(sX,[],2);
     sX = sX./repmat(sqrt(vX),1,N);
     for ii=1:N
         % apply RFT
-        disp_and_verbose = 0;
-        [out] = RFT_main(2+sX(:,ii),[],disp_and_verbose);
-        drawnow
+        [out] = RFT_main(sX(:,ii),[],disp_and_verbose);
+        if disp_and_verbose
+            drawnow
+            pause
+        end
         hpeak(j,ii) = length(find(out.peaks.prft<0.05))>=1;
         hclu(j,ii) = length(find(out.clusters.prft<0.05))>=1;
         f(j,ii) = out.fwhm;
