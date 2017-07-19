@@ -1,3 +1,4 @@
+
 function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
 
 % VB inversion of nonlinear stochastic DCMs

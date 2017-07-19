@@ -49,7 +49,7 @@ plot(all.handles.ha(1),find(acc==0),Eg(acc==0),'r.')
 set(all.handles.ha(1),'xlim',[0.5,length(acc)+0.5])
 xlabel(all.handles.ha(1),'data samples')
 ylabel(all.handles.ha(1),'test prediction E[y]')
-title(all.handles.ha(1),'classifier test prediction','FontSize',12,'fontweight','bold')
+VBA_title(all.handles.ha(1),'classifier test prediction')
 
 % display classification accuracy
 all.handles.ha(2) = subplot(4,2,2,'parent',all.handles.hf,'nextplot','add');
@@ -63,7 +63,7 @@ grid(all.handles.ha(2),'on')
 axis(all.handles.ha(2),'tight')
 xlabel(all.handles.ha(2),'test prediction E[y]')
 ylabel(all.handles.ha(2),'data average E[y]')
-title(all.handles.ha(2),'test prediction accuracy','FontSize',12,'fontweight','bold')
+VBA_title(all.handles.ha(2),'test prediction accuracy')
 
 % display classifier doubt
 iok = find(acc==1);
@@ -78,7 +78,7 @@ set(hp,'barwidth',0.4)
 set(hf,'color','k')
 xlabel(all.handles.ha(3),'classification outcomes')
 ylabel(all.handles.ha(3),'prediction variance V[y]')
-title(all.handles.ha(3),'test prediction doubt','FontSize',12,'fontweight','bold')
+VBA_title(all.handles.ha(3),'test prediction doubt')
 set(all.handles.ha(3),'ylim',[0,0.25],'xlim',[0.5,2.5],'xtick',1:2,'xticklabel',{'correct','wrong'})
 
 % display classification weights
@@ -87,7 +87,7 @@ plot(all.handles.ha(4),[1,size(all.P,1)],[0,0],'k--')
 plot(all.handles.ha(4),all.P,'marker','.')
 set(all.handles.ha(4),'xlim',[0.5,size(all.P,1)+0.5],'xtick',1:size(all.P,1))
 xlabel(all.handles.ha(4),'weights'' dimensions')
-title(all.handles.ha(4),'weights'' estimates','FontSize',12,'fontweight','bold')
+VBA_title(all.handles.ha(4),'weights'' estimates')
 
 % display # observed accurate predictions (and its distribution under H0)
 all.handles.ha(5) = subplot(4,2,5,'parent',all.handles.hf,'nextplot','add');
@@ -98,7 +98,7 @@ plot(all.handles.ha(5),nok*[1 1],get(all.handles.ha(5),'ylim'),'r')
 set(all.handles.ha(5),'xlim',[-0.5,n+1.5])
 xlabel(all.handles.ha(5),'x = number of accurate predictions')
 ylabel(all.handles.ha(5),'p(x|H_0)')
-title(all.handles.ha(5),'classical inference','FontSize',12,'fontweight','bold')
+VBA_title(all.handles.ha(5),'classical inference')
 
 % display bayesian posterior pdf on classification accuracy
 all.handles.ha(6) = subplot(4,2,6,'parent',all.handles.hf,'nextplot','add');
@@ -107,7 +107,7 @@ plot(all.handles.ha(6),[r r],get(all.handles.ha(6),'ylim'),'r')
 set(all.handles.ha(6),'ytick',[])
 xlabel(all.handles.ha(6),'r = classifier accuracy')
 ylabel(all.handles.ha(6),'p(r|x)')
-title(all.handles.ha(6),'Bayesian inference','FontSize',12,'fontweight','bold')
+VBA_title(all.handles.ha(6),'Bayesian inference')
 
 % add uicontrol for eyeballing VBA inversion results
 all.handles.uic = uicontrol('parent',all.handles.hf,'style','pushbutton',...

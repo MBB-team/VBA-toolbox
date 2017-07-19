@@ -50,7 +50,7 @@ if doFig
     if ~isempty(out.options.modelNames)
         set(handles.ha(1),'xticklabel',out.options.modelNames)
     end
-    title(handles.ha(1),'log- model evidences','fontsize',12,'fontweight','bold')
+    VBA_title(handles.ha(1),'log- model evidences')
     % display families partition
     if ~isempty(out.options.families)
         nf = size(out.options.C,2);
@@ -58,7 +58,7 @@ if doFig
         axis(handles.ha(7),'tight')
         xlabel(handles.ha(7),'models')
         ylabel(handles.ha(7),'families')
-        title(handles.ha(7),'families'' partition','fontsize',12,'fontweight','bold')
+        VBA_title(handles.ha(7),'families'' partition')
         set(handles.ha(7),'xlim',[0.5,K+0.5],'xtick',[1:K],'ylim',[0.5,nf+0.5],'ytick',[1:nf],'ydir','reverse','clim',[0 1])
         if ~isempty(out.options.modelNames)
             set(handles.ha(7),'xticklabel',out.options.modelNames)
@@ -74,7 +74,7 @@ hi = imagesc(posterior.r','parent',handles.ha(2));
 axis(handles.ha(2),'tight')
 xlabel(handles.ha(2),'models')
 ylabel(handles.ha(2),'subjects')
-title(handles.ha(2),'model attributions','fontsize',12,'fontweight','bold')
+VBA_title(handles.ha(2),'model attributions')
 set(handles.ha(2),'xlim',[0.5,K+0.5],'xtick',[1:K],'ylim',[0.5,n+0.5],'ytick',[1:n],'ydir','reverse','clim',[0 1])
 if ~isempty(out.options.modelNames)
     set(handles.ha(2),'xticklabel',out.options.modelNames)
@@ -97,7 +97,7 @@ set(handles.ha(3),'xtick',1:K,'xlim',[0.5,K+0.5],'ylim',[0 1],'ygrid','on')
 if ~isempty(out.options.modelNames)
     set(handles.ha(3),'xticklabel',out.options.modelNames)
 end
-title(handles.ha(3),'estimated model frequencies','fontsize',12,'fontweight','bold')
+VBA_title(handles.ha(3),'estimated model frequencies')
 
 % display exceedance probabilities
 cla(handles.ha(4))
@@ -108,7 +108,7 @@ set(handles.ha(4),'xtick',1:K,'xlim',[0.5,K+0.5],'ylim',[0 1],'ygrid','on')
 if ~isempty(out.options.modelNames)
     set(handles.ha(4),'xticklabel',out.options.modelNames)
 end
-title(handles.ha(4),'exceedance probabilities','fontsize',12,'fontweight','bold')
+VBA_title(handles.ha(4),'exceedance probabilities')
 
 % display VB algorithm convergence
 cla(handles.ha(5))
@@ -135,7 +135,7 @@ end
 xlabel(handles.ha(5),'VB iterations')
 ylabel(handles.ha(5),'VB free energy')
 set(handles.ha(5),'xtick',1:length(out.F),'xticklabel',[],'xlim',[0.5,length(out.F)+0.5],'ygrid','on')
-title(handles.ha(5),'VB algorithm convergence','fontsize',12,'fontweight','bold')
+VBA_title(handles.ha(5),'VB algorithm convergence')
 
 if ~isempty(out.options.families)
     nf = size(out.options.C,2);
@@ -144,7 +144,7 @@ if ~isempty(out.options.families)
     plot(handles.ha(6),[0.5,nf+0.5],[1,1]/nf,'g')
     xlabel(handles.ha(6),'families')
     set(handles.ha(6),'xtick',1:nf,'xlim',[0.5,nf+0.5],'ylim',[0 1],'ygrid','on')
-    title(handles.ha(6),'estimated family frequencies','fontsize',12,'fontweight','bold')
+    VBA_title(handles.ha(6),'estimated family frequencies')
 end
 
 % display free energy update
