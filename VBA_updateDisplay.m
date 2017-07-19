@@ -223,20 +223,29 @@ switch flag % What piece of the model to display?
         
         % --
         
+        % update observation noise plot
+
         if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
-            dTime = 1;
+            
+            if options.OnLine
+                set(display.ha(6),'xlim',[.2,it+1.8],'xtick',[])
+            end
+            dTime = 1;  
             cla(display.ha(6))
             logCI = (log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat))';
             plotUncertainTimeSeries(log(sigmaHat'),logCI.^2,dTime,display.ha(6));
             set(display.ha(6),'ygrid','on','xgrid','off')
         end
         
-        % update middle-right subplot: state noise
+        % update state noise plot
         if options.dim.n > 0 && ~any(isinf(alphaHat))
+            if options.OnLine
+                set(display.ha(8),'xlim',[.2,it+1.8],'xtick',[])
+            end
             dTime = 1;
             cla(display.ha(8))
             logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
-            plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
+            plotUncertainTimeSeries(log(alphaHat'),logCI.^2,dTime,display.ha(8));
             set(display.ha(8),'ygrid','on','xgrid','off')
         end
         
