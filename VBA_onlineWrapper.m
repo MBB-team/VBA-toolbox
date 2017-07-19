@@ -86,6 +86,7 @@ end
 OL_options.updateX0 = 1;
 OL_options.GnFigs = 0;
 OL_options.DisplayWin = 0;
+OL_options.isYout = options.isYout(:,1);
 OL_dim.n_t=1;
 OL_y = y(:,1);
 OL_u = u(:,1);
@@ -158,15 +159,17 @@ for t =2:dim.n_t
         OL_posterior,OL_out,posterior,suffStat,t,options);
     
     % update display
-    VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'precisions')
+    options_OL = options;
+    options_OL.isYout = options_OL.isYout(:,1:t);
+    VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'precisions')
     if dim.n_phi > 0
-        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'phi')
+        VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'phi')
     end
     if dim.n > 0
-        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'X')
+        VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'X')
     end
     if dim.n_theta > 0
-        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'theta')
+        VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'theta')
     end
 end
 
