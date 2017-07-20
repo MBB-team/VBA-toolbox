@@ -163,24 +163,19 @@ switch flag % What piece of the model to display?
         end
         
         % update middle-left subplot: hidden states
+        cla(display.ha(3))
         try
-            cla(display.ha(3))
             plotUncertainTimeSeries(mux,vx,dTime,display.ha(3),ind);
         catch
-            cla(display.ha(3))
             plotUncertainTimeSeries(mux,vx,[],display.ha(3),ind);
         end
-        set(display.ha(3),'ygrid','on','xgrid','off')
-        axis(display.ha(3),'tight')
         
         % update middle-right subplot: initial conditions
         if options.updateX0
             cla(display.ha(4))
             plotUncertainTimeSeries(-dx0,vx0,1,display.ha(4));
-            set(display.ha(4),'ygrid','on','xgrid','off')
         elseif isequal(it,0)
             plotUncertainTimeSeries(dx0,vx0,1,display.ha(4));
-            set(display.ha(4),'ygrid','on','xgrid','off')
         end
         
         displayDF(F,display)
@@ -198,23 +193,19 @@ switch flag % What piece of the model to display?
         end
         cla(display.ha(5))
         plotUncertainTimeSeries(-dphi,vphi,dTime,display.ha(5));
-        set(display.ha(5),'ygrid','on','xgrid','off')
         
         displayDF(F,display)
         
     case 'theta' % Evolution parameters
         
         % update bottom-right subplot: observation parameters
-        
         if size(dtheta,2) == 1 % for on-line wrapper
             dTime = 1;
         end
         cla(display.ha(7))
         plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
-        set(display.ha(7),'ygrid','on','xgrid','off')
         
-        displayDF(F,display)
-        
+        displayDF(F,display)   
         
     case 'precisions' % Precision hyperparameters
         
@@ -228,7 +219,6 @@ switch flag % What piece of the model to display?
             cla(display.ha(6))
             logCI = (log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat))';
             plotUncertainTimeSeries(log(sigmaHat'),logCI.^2,dTime,display.ha(6));
-            set(display.ha(6),'ygrid','on','xgrid','off')
         end
         
         % update middle-right subplot: state noise
@@ -237,7 +227,6 @@ switch flag % What piece of the model to display?
             cla(display.ha(8))
             logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
             plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
-            set(display.ha(8),'ygrid','on','xgrid','off')
         end
         
         displayDF(F,display)
@@ -288,8 +277,6 @@ drawnow
             colormap(flipud(colormap('bone')));
             plot(display.ha(1),multi2num(y_s_on),'.r');
         end
-        set(display.ha(1),'ygrid','on','xgrid','off')
-        axis(display.ha(1),'tight')
         
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
@@ -320,9 +307,7 @@ drawnow
             errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.7 .7 .7],'MarkerSize',9,'parent',display.ha(2))
             errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'.','MarkerSize',9,'parent',display.ha(2))
         end
-        
-        grid(display.ha(2),'on')
-        axis(display.ha(2),'tight')
+         
     end
 
     function [] = displayDF(F,display)
