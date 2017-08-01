@@ -127,7 +127,7 @@ Thus, it suffices to augment the native parameter space with two sets of dummy p
 
 $$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt{\lambda_i} U_i z_i$$
 
-where $$U_i$$ are the [matricial square root](https://en.wikipedia.org/wiki/Square_root_of_a_matrix) of covariance components $$Q_i$$, i.e.: $$Q_i=U_i U_i^T$$.
+where $$U_i$$ are the [matricial square root](https://en.wikipedia.org/wiki/Square_root_of_a_matrix) of covariance components $$Q_i$$, i.e.: $$Q_i=U_i U_i^T$$ (these can be obtained from numerical [SVD decompositions](https://en.wikipedia.org/wiki/Singular_value_decomposition)).
 
 Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance component models. On a practical note, parameter estimation would be better behaved if one used some form of [hard positivity constraint]({{ site.baseurl }}/_wiki/param-transform.md) on the $$\lambda$$s.
 
