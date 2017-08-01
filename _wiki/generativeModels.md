@@ -123,7 +123,7 @@ Here as well, one can use a similar trick as above. To begin with, note that the
 
 $$ \big\{ \begin{array}{l} \eta = \sum_i \sqrt{\lambda_i} w_i \\ E[w_i w_i^T]= Q_i \end{array} $$
 
-Thus, it suffices to augment the native parameter space with two sets of dummy parameters $$z$$ and $$\lamda$$, and replace the native observation function $$g$$ by the following augmented observation function $$h$$:
+Thus, it suffices to augment the native parameter space with two sets of dummy parameters $$z$$ and $$\lambda$$, and replace the native observation function $$g$$ by the following augmented observation function $$h$$:
 
 $$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt(\lambda_i) U_i z_i$$
 
