@@ -113,7 +113,7 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in pra
 
 For the sake of simplicity, we will only consider static generative models of the form $$y=g(\phi)+\eta$$, where $$y$$ is the data, $$ \phi$$ are uknown observation parameters, $$g$$ is an arbitrary observation function and $$\eta$$ are model residuals.
 
-Recall that, by default, VBA can only estimate on variance hyperparameter (namely: $$\sigma$$) per data source. In other terms, the covariance of model residuals $$\eta$$ is constrained to be a rescaling of a fixed covariance matrix $$Q_y$$, i.e.: $$E[\eta\eta^T]= \sigma^{-1}Q_y$$. However, one may have prior information regarding the statistical structure of model residuals, in the form of a mixture of covariance components:
+Recall that, by default, VBA can only estimate one variance hyperparameter (namely: $$\sigma$$) per data source. In other terms, the covariance of model residuals $$\eta$$ is constrained to be a rescaling of a fixed covariance matrix $$Q_y$$, i.e.: $$E[\eta\eta^T]= \sigma^{-1}Q_y$$. However, one may have prior information regarding the statistical structure of model residuals, in the form of a mixture of covariance components:
 
 $$E[\eta\eta^T]= \sum_i \lambda_i Q_i$$
 
@@ -130,6 +130,8 @@ $$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt{\lambda_i} U_i z_i$$
 where $$U_i$$ are the [matricial square root](https://en.wikipedia.org/wiki/Square_root_of_a_matrix) of covariance components $$Q_i$$, i.e.: $$Q_i=U_i U_i^T$$.
 
 Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance component models...
+
+> If the covariance components reduce to channel-specific variances, then one can use VBA's ["multi-source" inversion]({{ site.baseurl }}/_wiki/Multisources.md) as a simple and elegant shortcut!
 
 
 
