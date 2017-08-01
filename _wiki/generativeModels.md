@@ -125,11 +125,11 @@ $$ \Bigg\{ \begin{array}{l} \eta = \sum_i \sqrt{\lambda_i} w_i \\ E[w_i w_i^T]= 
 
 Thus, it suffices to augment the native parameter space with two sets of dummy parameters $$z$$ and $$\lambda$$, and replace the native observation function $$g$$ by the following augmented observation function $$h$$:
 
-$$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt(\lambda_i) U_i z_i$$
+$$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt{\lambda_i} U_i z_i$$
 
 where $$U_i$$ are the [matricial square root](https://en.wikipedia.org/wiki/Square_root_of_a_matrix) of covariance components $$Q_i$$, i.e.: $$Q_i=U_i U_i^T$$.
 
-Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance omponent models...
+Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance component models...
 
 
 
