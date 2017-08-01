@@ -117,7 +117,7 @@ Recall that, by default, VBA can only estimate one variance hyperparameter (name
 
 $$E[\eta\eta^T]= \sum_i \lambda_i Q_i$$
 
-where $$Q_i$$ are fixed covariance components and $$\lambda_i$$ are unknown mixture coefficients.
+where $$Q_i$$ are fixed covariance components and $$\lambda_i$$ are unknown mixture coefficients. Covariance component models simply provide estimates of both model parameters $$\phi$$ and hyperparameters $$\lambda$$. Critical here is the fact that structured residuals can (and should) change parameters estimates...
 
 Here as well, one can use a similar trick as above. To begin with, note that the above covariance component mixture would follow from defining model residuals $$\eta$$ as the following weighted sum of dummy random variables $$w_i$$:
 
@@ -129,7 +129,7 @@ $$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt{\lambda_i} U_i z_i$$
 
 where $$U_i$$ are the [matricial square root](https://en.wikipedia.org/wiki/Square_root_of_a_matrix) of covariance components $$Q_i$$, i.e.: $$Q_i=U_i U_i^T$$.
 
-Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance component models...
+Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance component models. On a practical note, parameter estimation would be better behaved if one used some form of [hard positivity constraint]({{ site.baseurl }}/_wiki/param-transform.md) on the $$\lambda$$s.
 
 > If the covariance components reduce to channel-specific variances, then one can use VBA's ["multi-source" inversion]({{ site.baseurl }}/_wiki/Multisources.md) as a simple and elegant shortcut!
 
