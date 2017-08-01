@@ -109,6 +109,30 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in pra
 > The computational cost incurred when emulating ARCH models using homoscedastic state-space models is twofold: (i) an increase in the dimensionality of the system, and (ii) some form of nonlinearity in the evolution function. In fact, this intuition generalizes to any form of heteroscedasticity.
 
 
+# Covariance component models
+
+For the sake of simplicity, we will only consider static generative models of the form $$y=g(\phi)+\eta$$, where $$y$$ is the data, $$ \phi$$ are uknown observation parameters, $$g$$ is an arbitrary observation function and $$\eta$$ are model residuals.
+
+Recall that, by default, VBA can only estimate on variance hyperparameter (namely: $$\sigma$$) per data source. In other terms, the covariance $$\Sigma$$ of model residuals $$\eta$$ is constrained to be a rescaling of a fixed covariance matrix $$Q_y$$, i.e.: $$E[\eta\eta^T]= \sigma^{-1}Q_y$$. However, one may have prior information regarding the statistical structure of model residuals, in the form of a mixture of covariance components:
+
+$$E[\eta\eta^T]= \sum_i \lambda_i Q_i$$
+
+where $$Q_i$$ are fixed covariance components and $$\lambda_i$$ are unknown mixture coefficients.
+
+Here as well, one can use a similar trick as above. To begin with, note that the above covariance component mixture would follow from defining model residuals $$\eta$$ as the following weighted sum of dummy random variables $$w_i$$:
+
+$$ \left{\begin{array}{l} \eta = \sum_i \sqrt(\lambda_i) w_i \\ E[w_i w_i^T]= Q_i \end{array} $$
+
+Thus, it suffices to augment the native parameter space with two sets of dummy parameters $$z$$ and $$\lamda$$, and replace the native observation function $$g$$ by the following augmented observation function $$h$$:
+
+$$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt(\lambda_i) U_i z_i$$
+
+where $$U_i$$ are the [matricial square root](https://en.wikipedia.org/wiki/Square_root_of_a_matrix) of covariance components $$Q_i$$, i.e.: $$Q_i=U_i U_i^T$$.
+
+Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance omponent models...
+
+
+
 # Switching dynamical systems
 
 Many natural systems, ranging from neurons firing patterns to collective motion of animal crowds, give rise to time series data with complex dynamics that may not be amenable to explicit modelling. Neverthless, one can gain insight into these systems by decomposing the data into segments that are each explained by simpler dynamic units. This induces so-called switching dynamical systems. The state-space of such system is composed of both continuous ($$x$$) and discrete ($$z$$) states. The latter control the form of the evolution function of the former, eventually capturing potentially abrupt changes in the system's deterministic flow.
