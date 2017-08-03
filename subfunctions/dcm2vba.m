@@ -112,7 +112,7 @@ catch
 end
 if ~isequal(confounds,0)
     if isequal(confounds,'find')
-        [X0,isYout] = spm_Xadjust(DCM.xY(1).SPMfile,DCM.xY(1).VOIfile);
+        [X0,isYout] = VBA_spm_Xadjust(DCM.xY(1).SPMfile,DCM.xY(1).VOIfile);
     else
         X0 = confounds.X0;
         isYout = confounds.isYout;

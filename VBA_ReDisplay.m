@@ -79,7 +79,7 @@ else
     active = 1;
 end
 
-[handles] = spm_uitab(hfp,labels,callbacks,'diagnostics_tabs',active);
+[handles] = VBA_spm_uitab(hfp,labels,callbacks,'diagnostics_tabs',active);
 set(handles.htab   , 'backgroundcolor' , [1 1 1]     );
 set(handles.hh     , 'backgroundcolor' , [1 1 1]     );
 set(handles.hp     , 'backgroundcolor' , [1 1 1]     );

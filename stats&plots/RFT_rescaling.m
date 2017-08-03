@@ -13,4 +13,4 @@ lnu = sum(ft.*dt);
 
 
 function p = myp(t,nu)
-p = spm_Npdf(spm_invNcdf(spm_Tcdf(t,nu),0,1));
+p = VBA_spm_Npdf(spm_invNcdf(spm_Tcdf(t,nu),0,1));
