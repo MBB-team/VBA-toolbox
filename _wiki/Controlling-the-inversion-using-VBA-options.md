@@ -7,7 +7,7 @@ title: "Controlling the inversion options"
 Strictly speaking, the main VBA inversion routine (`VBA_NLStateSpaceModel.m`) only requires the specification of evolution/observation functions and the model dimension (see [this page]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps) for a quick introduction).
 However, optional arguments can be passed to this function, that allow the user to control the inversion. These are reviewed here.
 
-# Dealing with categorical or missing data
+# Dealing with categorical data
 
 By default, VBA's generative model assumes observed data are [continuous](https://en.wikipedia.org/wiki/Continuous_function), for which there is a natural [distance metric](https://en.wikipedia.org/wiki/Metric_(mathematics)). Now if the data is categorical, there is no such natural metric, and one has to resort to probability distributions dealing with discrete events. For example, [binary](https://en.wikipedia.org/wiki/Binary_number) data can be treated as [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) (Bernouilli) samples, whose sufficient statistic (first-order moment) is given by the observation function. This can be done by setting:
 
@@ -17,14 +17,19 @@ options.binomial = 1 ;
 
 Note that this renders the measurement noise precision (and associated covariance components, see below) irrelevant. It turns out that this does not induce any major change in the VB inversion scheme under the Laplace approximation. In fact, when the dimension of the data is high enough, the empirical distribution of the "residuals" $$\epsilon = y - g(\vartheta)$$ will tend to a Gaussian density (this is actually used during VBA's initialization).
 
-In addition, one may want to simply exclude data samples (either because one knows that they are unreliable, or because one has missing data). This can be done using the variable `options.isYout`. By default, `options.isYout` is a zero-valued matrix, whose size is identical to the data matrix `y`. Setting any of its value to one effectively asks VBA to disregard the corresponding data sample. For example:
+> **TIP:** data can be categorical without being binary. In particular, it can have more than two "levels" (as for, e.g., colours or emotions, etc...). From a statistical perspective, this type of data can be modelled in terms of [multinomial](https://en.wikipedia.org/wiki/Multinomial_distribution) variables, which VBA can handle. See [this page]({{site.baseurl }}/wiki/Multisources) for details regarding how to set up a multinomial likelihood.
+
+
+# Dealing with missing data
+
+One may want to simply exclude data samples (either because one knows that they are unreliable, or because one has missing data). This can be done using the variable `options.isYout`. By default, `options.isYout` is a zero-valued matrix, whose size is identical to the data matrix `y`. Setting any of its value to one effectively asks VBA to disregard the corresponding data sample. For example:
 
 ```matlab
 options.isYout(1:2,3) = 1 ;
 ```
 means that the third time sample of the two first dimensions of `y` will not be considered in the inversion.
 
-> **TIP:** when dealing with continuous data, the same can be obtained by setting the corresponding measurement precision component to zero!
+> **TIP:** when dealing with continuous data, the same can be obtained by setting the corresponding measurement precision matrix elements to zero: `options.priors.iQy{3}(1:2,1:2) = 0` (recall that by default, VBA assumes identity measurement precision matrices). Note that, rather than excluding a data sample, one may prefer to tell VBA about data samples' poor reliability, which can be done by resetting the corresponding measurement precision matrix elements to small but nonzero values...
 
 
 # "Micro-time" resolution
