@@ -52,7 +52,7 @@ Below are graphical outputs of the demonstration script. First, let us focus on 
 
 ![]({{ site.baseurl }}/images/wiki/demo1/demo1_1.jpg)
 
-On can see how the agent's behavioural response changes according to the feedback he receives. In brief, the Q-learner is tracking the winning option (which effectively varies over time).
+One can see how the agent's behavioural response changes according to the feedback he receives. In brief, the Q-learner is tracking the winning option (which effectively varies over time).
 
 All VBA's graphical outputs (parameter estimation, model accuracy, inversion diagnostics, convergence, etc...), for this particular example, are described [here]({{ site.baseurl }}/wiki/VBA-graphical-output). Now let us check how accurate the model inversion was:
 
