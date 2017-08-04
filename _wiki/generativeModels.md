@@ -111,7 +111,7 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in pra
 
 # Covariance component models
 
-For the sake of simplicity, we will only consider static generative models of the form $$y=g(\phi)+\eta$$, where $$y$$ is the data, $$ \phi$$ are uknown observation parameters, $$g$$ is an arbitrary observation function and $$\eta$$ are model residuals.
+For the sake of simplicity, we will only consider below static generative models of the form $$y=g(\phi)+\eta$$, where $$y$$ is the data, $$ \phi$$ are uknown observation parameters, $$g$$ is an arbitrary observation function and $$\eta$$ are model residuals.
 
 Recall that, by default, VBA can only estimate one variance hyperparameter (namely: $$\sigma$$) per data source. In other terms, the covariance of model residuals $$\eta$$ is constrained to be a rescaling of a fixed covariance matrix $$Q_y$$, i.e.: $$E[\eta\eta^T]= \sigma^{-1}Q_y$$. However, one may have prior information regarding the statistical structure of model residuals, in the form of a mixture of covariance components:
 
