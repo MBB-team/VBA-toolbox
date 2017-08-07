@@ -107,7 +107,7 @@ end
 try
    [I,Sigma,deltaMu,suffStat2] = feval(fname,PreviousMu,y,posterior,suffStat,dim,u,options);
     PreviousI = I;
-catch
+catch err
     VBA_disp(['Warning: could not evaluate variational energy on ',flag,'!'],options)
     return
 end
@@ -121,7 +121,7 @@ if options.GnFigs
     set(hf,'position',pos-[pos(3)./2 0 0 0],'visible','on')
     ha = axes('parent',hf);
     plot(ha,deltaMu')
-    title(ha,[s2,' ; ',str])
+    VBA_title(ha,[s2,' ; ',str])
     drawnow
 end
 
@@ -155,7 +155,7 @@ while ~stop
     % accept move or halve step?
     if deltaI<0     % halve step size
         deltaMu = 0.5*deltaMu;
-        try,title(ha,[s2,': halve step ; ',str]);end
+        try, VBA_title(ha,[s2,': halve step ; ',str]);end
     else            % accept move
         % 1- propose a new move according to new local quadratic approx
         deltaMu = NextdeltaMu;
@@ -178,7 +178,7 @@ while ~stop
             case 'Theta'
                 VBA_updateDisplay(posterior,suffStat,options,y,[],'theta')
         end
-        try,title(ha,[s2,': accept move ; ',str]);end
+        try,VBA_title(ha,[s2,': accept move ; ',str]);end
         conv = 1;
     end
     % check convergence criterion
