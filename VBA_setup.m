@@ -1,6 +1,8 @@
 function VBA_setup()
-
-
+% VBA_setup()
+% Cleanly add the VBA_toolbox to the Matlab path.
+% Please prefer this function to addpath() or addpath(genpath()) to ensure
+% all subfolders are included with the notable exception of the .git tracker.
 
 fprintf('\n');
 fprintf(' ======================================================================================\n')
@@ -107,11 +109,6 @@ if ~isempty(r)
         savepath
     end
 end
-
-
-
-
-
 
 %% find folder to install
 p = strsplit(genpath(pwd),':');

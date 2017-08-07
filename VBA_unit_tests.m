@@ -13,6 +13,9 @@ for p = strsplit(list)
     end
 end
 
+% setup for base
+setup = 'pause off; warning off; ' ;
+
 
 %% run demos
 logs = {}; 
@@ -25,7 +28,7 @@ parfor i = 1:numel(demos)
        
        fprintf('\n ####################\n  %s \n ####################\n',demo_name)
        tic ;
-       evalin('base',demo_name)
+       evalin('base',[ setup demo_name])
        logs{i} = struct('demo',demo_name,'status',1,'stack',[],'time',toc);
    catch err
        logs{i} = struct('demo',demo_name,'status',0,'stack',err,'time',toc);
@@ -34,6 +37,5 @@ parfor i = 1:numel(demos)
 end
 
 logs = [logs{:}];
-save(['../VBA_unit_test_log_' version('-release')],'logs')
 
 

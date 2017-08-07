@@ -40,7 +40,7 @@ assert( ...
 , '*** Please provide the dimension of the observation parameters in dim.n_phi');
 
 
-dim = check_struct(dim, ...
+dim = VBA_check_struct(dim, ...
     'n_t'   , size(y,2), ... % number of trials or time samples
     'p'     , size(y,1)  ... % data dimension
 );
@@ -62,7 +62,7 @@ if isfield(options,'binomial') % check for legacy binomial field
 end
 
 % set defaults 
-options = check_struct(options, ...
+options = VBA_check_struct(options, ...
     'decim'      , 1     , ...     % Micro-time resolution
     'microU'     , 0     , ...     % Micro-resolution input
     'inF'        , []    , ...     % Optional (internal) parameters of the evolution function

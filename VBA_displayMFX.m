@@ -117,7 +117,7 @@ if dim.n_phi > 0
     indrfx = setdiff(1:dim.n_phi,o_group.ind.phi_ffx);
     indrfx = intersect(indrfx,o_group.ind.phi_in);
     if ~isempty(indrfx)
-        title(display.ha(1,1),'phi: population mean')
+        VBA_title(display.ha(1,1),'phi: population mean')
         cla(display.ha(1,2))
         set(display.ha(1,2),'visible','on');
         alphaHat = p_group.a_vPhi./p_group.b_vPhi;
@@ -125,9 +125,9 @@ if dim.n_phi > 0
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(1,2));
         set(display.ha(1,2),'xlim',[0.5,options.dim.n_phi+0.5],'box','off','xtick',[])
-        title(display.ha(1,2),'phi: population log-precision')
+        VBA_title(display.ha(1,2),'phi: population log-precision')
     else
-        title(display.ha(1,1),'phi: group mean (FFX)')
+        VBA_title(display.ha(1,1),'phi: group mean (FFX)')
     end
 end
 if dim.n_theta > 0
@@ -140,7 +140,7 @@ if dim.n_theta > 0
     indrfx = setdiff(1:dim.n_theta,o_group.ind.theta_ffx);
     indrfx = intersect(indrfx,o_group.ind.theta_in);
     if ~isempty(indrfx)
-        title(display.ha(2,1),'theta: population mean')
+        VBA_title(display.ha(2,1),'theta: population mean')
         cla(display.ha(2,2))
         set(display.ha(2,2),'visible','on');
         alphaHat = p_group.a_vTheta./p_group.b_vTheta;
@@ -148,9 +148,9 @@ if dim.n_theta > 0
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(2,2));
         set(display.ha(2,2),'xlim',[0.5,options.dim.n_theta+0.5],'box','off','xtick',[])
-        title(display.ha(2,2),'theta: population log-precision')
+        VBA_title(display.ha(2,2),'theta: population log-precision')
     else
-        title(display.ha(2,1),'theta: group mean (FFX)')
+        VBA_title(display.ha(2,1),'theta: group mean (FFX)')
     end
 end
 if dim.n >0
@@ -163,7 +163,7 @@ if dim.n >0
     indrfx = setdiff(1:dim.n,o_group.ind.x0_ffx);
     indrfx = intersect(indrfx,o_group.ind.x0_in);
     if ~isempty(indrfx)
-        title(display.ha(3,1),'x0: population mean')
+        VBA_title(display.ha(3,1),'x0: population mean')
         cla(display.ha(3,2))
         set(display.ha(3,2),'visible','on');
         alphaHat = p_group.a_vX0./p_group.b_vX0;
@@ -171,9 +171,9 @@ if dim.n >0
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(3,2));
         set(display.ha(3,2),'xlim',[0.5,options.dim.n+0.5],'box','off','xtick',[])
-        title(display.ha(3,2),'x0: population log-precision')
+        VBA_title(display.ha(3,2),'x0: population log-precision')
     else
-        title(display.ha(3,1),'x0: group mean (FFX)')
+        VBA_title(display.ha(3,1),'x0: group mean (FFX)')
     end
 end
 
@@ -183,7 +183,7 @@ if o_group.it >= 1
     cla(display.ha(4,1))
     set(display.ha(4,1),'visible','on');
     plot([0:o_group.it],o_group.F,'marker','.','parent',display.ha(4,1))
-    title(display.ha(4,1),'VB optimization: F values')
+    VBA_title(display.ha(4,1),'VB optimization: F values')
     ylabel(display.ha(4,1),'free energy')
     xlabel(display.ha(4,1),'VB iterations')
     xl = {'prior(0)',['posterior(',num2str(o_group.it),')']};

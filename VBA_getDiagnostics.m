@@ -156,10 +156,15 @@ for iS = 1:numel(out.options.sources)
     % source wise
     ySource = out.options.sources(iS).out ;
     res = out.suffStat.dy(ySource,:);
+    if out.options.sources(iS).type==0
+        gi = find(iS==find([out.options.sources(:).type]==0));
+        iQyt = out.options.priors.iQy(:,gi);
+        res = getWeightedResiduals(res,iQyt);
+    end
     % remove skipped
-    res(out.options.isYout(ySource,:)==1) = NaN ;    
+    res(out.options.isYout(ySource,:)==1) = NaN ;
     dy(iS).dy = res(:);
-    dy(iS).R = spm_autocorr(res);
+    dy(iS).R = VBA_spm_autocorr(res);
     dy(iS).m = VBA_nanmean(dy(iS).dy);
     dy(iS).v = VBA_nanvar(dy(iS).dy);
     [dy(iS).ny,dy(iS).nx] = hist(dy(iS).dy,10);
@@ -181,8 +186,9 @@ for iS = 1:numel(out.options.sources)
 end
 
 % get residuals structure: state noise
-dx.dx = out.suffStat.dx(:);
-if ~isempty(dx.dx)
+if ~isempty(out.suffStat.dx)
+    wdx = getWeightedResiduals(out.suffStat.dx,out.options.priors.iQx);
+    dx.dx = wdx(:);
     dx.m = mean(dx.dx);
     dx.v = var(dx.dx);
     [dx.ny,dx.nx] = hist(dx.dx,10);
@@ -198,6 +204,8 @@ if ~isempty(dx.dx)
     spgy = sum(exp(-0.5.*ahat.*dx.nx.^2));
     dx.pg2 = exp(-0.5.*ahat.*dx.grid.^2);
     dx.pg2 = dx.pg2./spgy;
+else
+    dx.dx = [];
 end
 
 % get parameters posterior correlation matrix
@@ -276,6 +284,15 @@ diagnostics.tick = tick;
 diagnostics.ticklabel = ticklabel;
 diagnostics.C = C;
 out.diagnostics = diagnostics;
+
+
+function wdx = getWeightedResiduals(dx,iQx)
+% weigths residuals according to (state/data) precision matrix
+wdx = zeros(size(dx));
+for t = 1:size(dx,2)
+    sqrtiQ = VBA_getISqrtMat(iQx{t},0);
+    wdx(:,t) = sqrtiQ*dx(:,t);
+end
 
 
 

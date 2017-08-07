@@ -14,10 +14,9 @@ function [options] = VBA_initDisplay(options,priors)
 %   structure. This field contains the handles of the relevant graphical
 %   objects.
 
-try
-    priors;
-catch
-    priors = 0;
+% by default, show posterior statistics
+if ~exist('priors','var')
+    priors = false;
 end
 
 if ~options.DisplayWin
@@ -26,7 +25,7 @@ else
     visible = 'on';
 end
 
-% First check whether this is standard DCM
+% check whether this is deterministic model
 options0 = options;
 if isequal(options.g_fname,@VBA_odeLim)
     options = options.inG.old.options;
@@ -35,9 +34,9 @@ end
 
 %% set up figure and panel if necessary
 % set up
-try 
+if isfield(options,'display') 
     display = options.display ;
-catch
+else
     display = struct;
 end
 
@@ -59,7 +58,11 @@ set(display.hfp,'name',options.figName);
 
 % check if a panel has already been set up (spm tab or central element)
 hPanel = getPanel(display.hfp);
-if isempty(hPanel)
+if ~isempty(hPanel)
+    % if there is one, start from scratch
+    delete(get(hPanel,'children'));
+else
+    % otherwise, create a central panel to gather the plots
     hPanel = uipanel('parent',display.hfp,'Tag','VBLaplace','BorderType','none','BackgroundColor',[1 1 1]);
     set(hPanel,'units','normalized');
     set(hPanel,'Position',[.02 .08 .96 .87]);
@@ -88,11 +91,13 @@ if isequal(xlim,[1,1])
 end
 
 
-% if multisource, show selector
+% if multisource, show a select menu to change the displayed source
 if numel(options.sources)>1
-    for i=1:numel(options.sources) %dim s
+    % name the sources by their number
+    for i=1:numel(options.sources)
         snames{i} = ['#',num2str(i)];
     end
+    % show the select menu
     handles(1) = uicontrol( ...
         'style'     ,'popupmenu'            , ...
         'parent'    ,hPanel                 , ...
@@ -103,7 +108,9 @@ if numel(options.sources)>1
         'FontWeight','bold'                 , ...
         'string'    ,snames                 , ...
         'callback'  ,@changeSource          , ...
-        'visible'   ,visible                );
+        'visible'   ,visible                , ...
+        'Value',currentSource               );
+    % show a label text next to the menu
     handles(2) = uicontrol( ...
         'style'     ,'text'                 , ...
         'parent'    ,hPanel                 , ...
@@ -116,194 +123,305 @@ if numel(options.sources)>1
         'HorizontalAlignment','left'        , ...
         'string'    ,'observation source:'              , ...
         'visible'   ,visible                );
-    
-    set(handles(1),'Value',currentSource);
-
+    %store handles
     display.source_selector = handles;
-    
+   
 else
     display.source_selector = [];
 end
     
-display.ha(1) = subplot('Position',[.1 .75 .525 .165],'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
-if ~priors
-    title(display.ha(1),'posterior predictive density: p(g(x)|y,m)','fontsize',12)
+%% prepare figure by initializing all axes
+if priors
+    data_label = 'prior' ;
+    data_conditioner = 'm';
 else
-    title(display.ha(1),'prior predictive density: p(g(x)|m)','fontsize',12)
-end
-xlabel(display.ha(1),xl,'fontsize',10)
-if ~priors
-    ylabel(display.ha(1),'<g(x)|y,m> & y','fontsize',10)
-else
-    ylabel(display.ha(1),'<g(x)|m> & y','fontsize',10)
+    data_label = 'posterior' ;
+    data_conditioner = 'y,m';
 end
 
-display.ha(2) = subplot('Position',[.7 .75 .225 .165],'parent',hPanel,'nextplot','add','tag','VBLaplace','box','off');
+% 1) predictive density and observations as function of time
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+h = stylePlot(subplot( ...
+    'Position'  ,[.1 .75 .525 .165] , ...
+    'parent'    ,hPanel             , ...
+    'xlim'      ,xlim               , ...
+    'ygrid'     ,'on'               , ...
+    'xgrid'     ,'off'              ));
+axis(h,'tight')
 
-if ~priors
-    title(display.ha(2),'Model fit: <g(x)|y,m> versus y','fontsize',12)
-    xlabel(display.ha(2),'<g(x)|y,m>','fontsize',10)
+VBA_title(h, ...
+    sprintf('%s predictive density: p(g(x)|%s)',data_label,data_conditioner)) ;
+styleLabel(xlabel(h, ...
+    sprintf('%s',xl)));
+styleLabel(ylabel(h, ...
+    sprintf('<g(x)|%s> & y',data_conditioner)));
+
+display.ha(1) = h;
+
+% 2) model fit, shown as prediciton against observation
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+h = stylePlot(subplot( ...
+    'Position'  ,[.7 .75 .225 .165] , ...
+    'parent'    ,hPanel             , ...
+    'ygrid'     ,'on'               , ...
+    'xgrid'     ,'on'               ));
+axis(h,'tight')
+
+VBA_title(h, ...
+    sprintf('Model fit: <g(x)|%s> versus y',data_conditioner));
+styleLabel(xlabel(h, ...
+    sprintf('<g(x)|%s>',data_conditioner)));
+styleLabel(ylabel(h, ...
+    sprintf('y')));
+
+display.ha(2) = h;
+
+% 3) hidden states as function of time
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+h = stylePlot(subplot( ...
+    'Position'  ,[.1 .51 .525 .165] , ...
+    'parent'    ,hPanel             , ...
+    'xlim'      ,xlim               , ...
+    'ygrid'     ,'on'               , ...
+    'xgrid'     ,'off'              ));
+axis(h,'tight')
+        
+if options.dim.n == 0
+    placeHolder(h,'no hidden states timeseries')
 else
-    title(display.ha(2),'Model fit: <g(x)|m> versus y','fontsize',12)
-    xlabel(display.ha(2),'<g(x)|m>','fontsize',10)
+    VBA_title(h, ...
+        sprintf('hidden states: p(x|%s)',data_conditioner));
+    styleLabel(xlabel(h, ...
+        sprintf('time')));
+    styleLabel(ylabel(h, ...
+        sprintf('<x | %s>',data_conditioner)));
 end
-ylabel(display.ha(2),'y','fontsize',10)
+display.ha(3) = h;
 
-% Create axes for hidden states and initial conditions
+% 4) Initial state
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+h = stylePlot(subplot( ...
+    'Position'  ,[.7 .51 .225 .165]      , ...
+    'parent'    ,hPanel                  , ...
+    'xlim'      ,[0.2,options.dim.n+0.8] , ...
+    'xtick'     ,[]                      , ...
+    'ygrid'     ,'on'                    , ...
+    'xgrid'     ,'off'                   ));
+      
+if options.dim.n == 0
+    placeHolder(h,'no initial hidden states')
+else
+    VBA_title(h, ...
+        sprintf('initial conditions: p(x_0|%s)',data_conditioner));
 
-if options.dim.n > 0
-    display.ha(3) = subplot('Position',[.1 .51 .525 .165],'parent',hPanel,'xlim',xlim,'nextplot','add','tag','VBLaplace','box','off');
-
-    if ~priors
-        title(display.ha(3),'hidden states: p(x|y,m)','fontsize',12)
-    else
-        title(display.ha(3),'hidden states: p(x|m)','fontsize',12)
-    end
-    xlabel(display.ha(3),'time','fontsize',10)
-    if ~priors
-        ylabel(display.ha(3),'<x|y,m>','fontsize',10)
-    else
-        ylabel(display.ha(3),'<x|m>','fontsize',10)
-    end
-    display.ha(4) = subplot('Position',[.7 .51 .225 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n+0.8],'xtick',[],'tag','VBLaplace','box','off');
-    if ~priors
-        title( display.ha(4),'initial conditions: p(x_0|y,m)','fontsize',12)
-    else
-        title( display.ha(4),'initial conditions: p(x_0|m)','fontsize',12)
-    end
     if options.updateX0
-        xlabel(display.ha(4),'x_0 dimensions','fontsize',10)
+        x_label_str = 'x_0 dimensions' ;
         if ~priors
-            ylabel(display.ha(4),'<x_0|y,m> - <x_0|m>','fontsize',10)
+            y_label_str = '<x_0 | y,m> - <x_0 | m>';
         else
-            ylabel(display.ha(4),'<x_0|m>','fontsize',10)
+            y_label_str = '<x_0 | m>' ;
         end
     else
-        xlabel(display.ha(4),'x_0 dimensions [fixed pdf]','fontsize',10)
-        ylabel(display.ha(4),'x_0','fontsize',10)
+        x_label_str = 'x_0 dimensions [fixed pdf]' ;
+        y_label_str = 'x_0' ;
     end
-end
-
-% Create axes for observation parameters
-if options.dim.n_phi > 0
-    display.ha(5) = subplot('Position',[.1 .27 .525 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_phi+0.8],'xtick',[],'tag','VBLaplace','box','off');
-
-    if ~priors
-        title(display.ha(5),'observation parameters: p(phi|y,m)','fontsize',12)
-    else
-        title(display.ha(5),'observation parameters: p(phi|m)','fontsize',12)
-    end
-    if ~options.OnLine
-        xlabel(display.ha(5),'phi dimensions','fontsize',10)
-    else
-        xlabel(display.ha(5),'time','fontsize',10)
-    end
-    if ~priors
-        ylabel(display.ha(5),'<phi|y,m> - <phi|m>','fontsize',10)
-    else
-        ylabel(display.ha(5),'<phi|m>','fontsize',10)
-    end
-end
-
-% Create axes for measurement noise precision hyperparameter
-Ngs=sum([options.sources(:).type]==0);
-if Ngs>0
-    display.ha(6) = subplot('Position',[.7 .27 .225 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,Ngs+0.8],'xtick',1:Ngs,'tag','VBLaplace','box','off');
-    if ~priors
-        title(display.ha(6),'measurement noise precision: p(sigma|y,m)','fontsize',12)
-    else
-        title(display.ha(6),'measurement noise precision: p(sigma|m)','fontsize',12)
-    end
-    if ~options.OnLine && options.updateHP
-        xlabel(display.ha(6),'gaussian source','fontsize',10)
-    elseif ~options.OnLine && ~options.updateHP
-        xlabel(display.ha(6),'[fixed pdf]','fontsize',10)
-    else
-        xlabel(display.ha(6),'time','fontsize',10)
-    end
-    ylabel(display.ha(6),'<log(sigma)>','fontsize',10)
-end
-
-% Create axes for evolution parameters
-if options.dim.n_theta > 0
-    display.ha(7) = subplot('Position',[.1 .03 .525 .165],'parent',hPanel,'nextplot','add','xlim',[0.2,options.dim.n_theta+0.8],'xtick',[],'tag','VBLaplace','box','off');
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
     
-    if ~priors
-        title(display.ha(7),'evolution parameters: p(theta|y,m)','fontsize',12)
-    else
-        title(display.ha(7),'evolution parameters: p(theta|m)','fontsize',12)
-    end
+end
+display.ha(4) = h;
+
+% 5) Observation parameters
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+h = stylePlot(subplot( ...
+    'Position'  ,[.1 .27 .525 .165]          , ...
+    'parent'    ,hPanel                      , ...
+    'xlim'      ,[0.2,options.dim.n_phi+0.8] , ...
+    'xtick'     ,[]                          , ...
+    'ygrid'     ,'on'                        , ...
+    'xgrid'     ,'off'                       ));
+
+if options.dim.n_phi == 0
+    placeHolder(h,'no observation parameters')
+else
+    VBA_title(h, ...
+        sprintf('observation parameters: p(\\phi|%s)',data_conditioner));
+
     if ~options.OnLine
-        xlabel(display.ha(7),'theta dimensions','fontsize',10)
+        x_label_str = '\phi dimensions' ;
     else
-        xlabel(display.ha(7),'time','fontsize',10)
+        x_label_str = 'time' ;
     end
     if ~priors
-        ylabel(display.ha(7),'<theta|y,m> - <theta|m>','fontsize',10)
+        y_label_str = '<\phi | y,m> - <\phi | m>' ;
     else
-        ylabel(display.ha(7),'<theta|m>','fontsize',10)
+        y_label_str = '<\phi | m>' ;
     end
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
+    
 end
+display.ha(5) = h;
 
-% Create axes for state noise precision hyperparameter
-if ~isequal(options0.g_fname,@VBA_odeLim) && options.dim.n > 0 % not for non stochastic systems
-    display.ha(8) = subplot('Position',[.7 .03 .225 .165],'parent',hPanel,'xlim',[0.2,1.8],'xtick',[],'nextplot','add','tag','VBLaplace','box','off');
-    if ~priors
-        title(display.ha(8),'system''s noise precision: p(alpha|y,m)','fontsize',12)
+% 6) measurement noise precision hyperparameter
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+Ngs=sum([options.sources(:).type]==0);
+    
+h = stylePlot(subplot( ...
+    'Position'  ,[.7 .27 .225 .165] , ...
+    'parent'    ,hPanel             , ...
+    'xlim'      ,[0.2,Ngs+0.8]      , ...
+    'xtick'     ,1:Ngs              , ...
+    'ygrid'     ,'on'               , ...
+    'xgrid'     ,'off'              ));
+
+if Ngs == 0
+    placeHolder(h,'no observation hyperparameters')
+else
+    VBA_title(h, ...
+        sprintf('observation precision: p(\\sigma | %s)',data_conditioner));
+
+        if ~options.OnLine && options.updateHP
+            x_label_str = 'gaussian source' ;
+        elseif ~options.OnLine && ~options.updateHP
+            x_label_str = '[fixed pdf]' ;
+        else
+            x_label_str = 'time' ;
+        end
+        y_label_str = '<log(\sigma)>' ;
+        styleLabel(xlabel(h,x_label_str));
+        styleLabel(ylabel(h,y_label_str));
+end
+display.ha(6) = h;
+
+% 7) Evolution parameters
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+h = stylePlot(subplot( ...
+    'Position'  ,[.1 .03 .525 .165]             , ...
+    'parent'    ,hPanel                         , ...
+    'xlim'      ,[0.2,options.dim.n_theta+0.8]  , ...
+    'xtick'     ,[]                             , ...
+    'ygrid'     ,'on'                           , ...
+    'xgrid'     ,'off'                          ));
+
+if options.dim.n_theta == 0
+    placeHolder(h,'no evolution parameters')
+else
+    VBA_title(h, ...
+        sprintf('evolution parameters: p(\\theta | %s)',data_conditioner));
+
+    if ~options.OnLine
+        x_label_str = '\theta dimensions' ;
     else
-        title(display.ha(8),'system''s noise precision: p(alpha|m)','fontsize',12)
+        x_label_str = 'time' ;
     end
+    if ~priors
+        y_label_str = '<\theta | y,m> - <\theta | m>' ;
+    else
+        y_label_str = '<\theta | m>' ;
+    end
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
+    
+end  
+display.ha(7) = h;
+
+% 8) State noise precision hyperparameter
+% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+h = stylePlot(subplot( ...
+    'Position'  ,[.7 .03 .225 .165] , ...
+    'parent'    ,hPanel             , ...
+    'xlim'      ,[0.2 1.8]          , ...
+    'xtick'     ,[]                 , ...
+    'ygrid'     ,'on'               , ...
+    'xgrid'     ,'off'              ));
+
+if isequal(options0.g_fname,@VBA_odeLim) || options.dim.n == 0 || isinf(options0.priors.a_alpha/options0.priors.b_alpha) % not for non stochastic systems
+    placeHolder(h,'no evolution hyperparameters')
+else
+    VBA_title(h, ...
+        sprintf('evolution precision: p(\\alpha|%s)',data_conditioner));
+
     if ~options.OnLine && options.updateHP
-        xlabel(display.ha(8),'','fontsize',10)
+        x_label_str = '' ;
     elseif ~options.OnLine && ~options.updateHP
-        xlabel(display.ha(8),'[fixed pdf]','fontsize',10)
+        x_label_str = '[fixed pdf]' ;
     else
-        xlabel(display.ha(8),'time','fontsize',10)
+        x_label_str = 'time' ;
     end
-    ylabel(display.ha(8),'<log(alpha)>','fontsize',10)
-end
+    y_label_str = '<log(\alpha)>' ;
+    styleLabel(xlabel(h,x_label_str));
+    styleLabel(ylabel(h,y_label_str));
+    
+end 
+display.ha(8) = h;
 
-% Create text boxes for user feedback
-display.ho = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.2,0.01,0.6,0.02],'backgroundcolor',[1,1,1]);
-display.hm(1) = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.28,0.035,0.4,0.02],'backgroundcolor',[1,1,1]);
-display.hm(2) = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.68,0.035,0.1,0.02],'backgroundcolor',[1,1,1]);
-display.htt(1) = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.75 0.97 0.25 0.02],'backgroundcolor',[1,1,1]);
+%% Create text boxes for user feedback
+display.ho     = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.20 0.010 0.60 0.02],'backgroundcolor',[1,1,1]);
+display.hm(1)  = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.28 0.035 0.40 0.02],'backgroundcolor',[1,1,1]);
+display.hm(2)  = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.68 0.035 0.10 0.02],'backgroundcolor',[1,1,1]);
+display.htt(1) = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.75 0.970 0.25 0.02],'backgroundcolor',[1,1,1]);
 
 % Create 'pause' uicontrol button
-try
-    if ~options.noPause
-        vis = 'on';
-    else
-        vis = 'off';
-    end
-catch
+if ~isfield(options,'noPause') || ~options.noPause
     vis = 'on';
+else
+    vis = 'off';
 end
 display.hpause = uicontrol('parent',display.hfp,'style','toggle','tag','VBLaplace','units','normalized','position',[0.4,0.96,0.2,0.02],'backgroundcolor',.8*[1,1,1],'string','pause and diagnose?','tag','pause_vb','visible',vis);
 
-
-%set(hPanel,'userdata',currentSource);
-
+%% actually display
 drawnow
-display.OnLine = options.OnLine;
-options = options0;
-options.display = display;
-
-
-
 try
     getSubplots
 end
 
+%% save handles and options
+display.OnLine  = options.OnLine;
+options         = options0;
+options.display = display;
 
+
+%% ========================================================================
+% subfunctions
+
+% callback for the source selector menu
 function changeSource(hObject,evt,si)
 
+    % get data stored in the figure
     hPanel = get(hObject,'parent');
     ud = get(hPanel,'userdata');
     
+    % update the source index and store back
     ud.currentSource = get(hObject,'Value');
     set(hPanel,'userdata',ud);
     
+    % try to update display
     if isfield(ud,'update_plot')
         ud.update_plot();
     end
+
+% styling of axes labels
+function h=stylePlot(h)
+    set(h,'nextplot'  ,'add'         );
+    set(h,'tag'       ,'VBLaplace'   );
+    set(h,'box'       ,'off'         );
+     
+function styleLabel(h)
+    set(h,'FontName'    ,'Arial'    );
+    set(h,'FontUnits'   ,'points'   );
+    set(h,'FontSize'    ,10         );
+    set(h,'FontWeight'  ,'normal'   );
+    set(h,'Color'       ,[0 0 0]    );
+ 
+ % display low key text when usual plot is not required
+ function placeHolder(h,label)
+     xx = get(h,'XLim');
+     yy = get(h,'YLim');
+     t=text(mean(xx),mean(yy),label,'parent',h);
+     set(t, ...
+         'HorizontalAlignment','center'     , ...
+         'FontSize'           ,10           , ...
+         'Color'              ,[.6 .6 .6]   );
+    set(h,'Visible','off');
+     

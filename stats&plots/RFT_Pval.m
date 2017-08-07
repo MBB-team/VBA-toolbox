@@ -23,11 +23,11 @@ function [Pw] = RFT_Pval(u,k,c,fwhm,L,type,dof)
 EC = RFT_expectedTopo(u,L,fwhm,1,type,dof);
 switch type
     case 'norm'
-        P0 = 1-spm_Ncdf(u,0,1);
+        P0 = 1-VBA_spm_Ncdf(u,0,1);
     case 't'
-        P0 = 1-spm_Tcdf(u,dof);
+        P0 = 1-VBA_spm_Tcdf(u,dof);
     case 'F'
-        P0 = 1-spm_Fcdf(u,dof(1),dof(2));
+        P0 = 1-VBA_spm_Fcdf(u,dof(1),dof(2));
 end
 beta = (gamma(3/2).*EC./(L.*P0)).^2;
 Pnk = exp(-beta.*k.^2);
