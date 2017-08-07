@@ -25,7 +25,7 @@ function [priors] = VBA_priors(dim,options)
 
 % check for sources for backward compatibility
 if ~isfield(options,'sources')
-    options.sources = struct('out',1:dim.p,'type',options.binomial);
+    error('Please specify the observation distribution using options.sources.\n');
 end
 
 % prior Gamma pdf of the measurement noise (Jeffrey)

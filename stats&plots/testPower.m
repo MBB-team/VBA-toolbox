@@ -13,10 +13,10 @@ dof(isinf(dof)) = 1e8;
 dof(dof==0) = 1e-8;
 switch type
     case 't'
-        tcritic = spm_invTcdf(1-alpha,dof);
-        power = 1-spm_Tcdf(tcritic-Estat,dof);
+        tcritic = VBA_spm_invTcdf(1-alpha,dof);
+        power = 1-VBA_spm_Tcdf(tcritic-Estat,dof);
     case 'F'
-        Fcritic = spm_invFcdf(1-alpha,dof(1),dof(2));
+        Fcritic = VBA_spm_invFcdf(1-alpha,dof(1),dof(2));
         power = 1-VBA_ncfcdf(Fcritic,dof(1),dof(2),Estat);  
     otherwise
         disp('Error: this function only supports t- and F- tests!')

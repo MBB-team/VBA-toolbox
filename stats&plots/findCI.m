@@ -28,9 +28,9 @@ ci(2) = post.muPhi;
 
 function gx = pval(x,P,u,in)
 if isequal(in.type,'F')
-    gx = spm_Fcdf(P,in.df(1),in.df(2));
+    gx = VBA_spm_Fcdf(P,in.df(1),in.df(2));
 elseif isequal(in.type,'t')
-    gx = spm_Tcdf(P,in.df);
+    gx = VBA_spm_Tcdf(P,in.df);
 else
     disp('findCI: error: unsupported dfistribution type!')
 end

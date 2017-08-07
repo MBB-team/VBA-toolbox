@@ -14,7 +14,7 @@ inG.X = [ones(dim.p,1),randn(dim.p,dim.n_phi-1)];
 phi = ones(dim.n_phi,1);
 g_fname = @g_logistic;
 options.inG = inG;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.dim = dim;
 options.checkGrads = 0;
 % Build simulated observations 

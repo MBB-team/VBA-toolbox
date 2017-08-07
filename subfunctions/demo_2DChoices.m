@@ -33,7 +33,7 @@ dim.n = 0;
 dim.p = 1;
 dim.n_t = ntrials;
 options.inG = in;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation
 options.dim = dim;
 [y,x,x0,eta,e] = simulateNLSS(ntrials,[],g_fname,[],phi,u,[],[],options);
 
@@ -97,7 +97,7 @@ dim.n = 0;
 dim.n_theta = 0;
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
 options.inG = inb;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.DisplayWin = 0;
 options.verbose = 1;
 [p0,o0] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);

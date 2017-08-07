@@ -33,12 +33,12 @@ inF.rf = 1;
 inG.respmod = 'fixedForm'; % or 'taylor';
 x0 = repmat([0;0;0;0;0],2,1);
 u = zeros(2,size(fb.inH.u0,2)+1);
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.inF = inF;
 options.inG = inG;
 options.skipf = zeros(1,length(u));
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
-[y,x,x0,eta,e,u] = simulateNLSS_fb(length(u),f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0,fb);
+[y,x,x0,eta,e,u] = simulateNLSS(length(u),f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0,fb);
 
 figure
 plot(y-e,'r')

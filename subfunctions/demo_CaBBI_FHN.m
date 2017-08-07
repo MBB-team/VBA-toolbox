@@ -256,3 +256,8 @@ CaBBI.W_inferred        = W_inferred;                                      % inf
 CaBBI.Ca_inferred       = Ca_inferred;                                     % inferred [Ca2+] trace (posterior mean)
 CaBBI.SpikeTimes_Frame  = SpikeTimes_Frame;                                % reconstructed spike (or event) times, in [frame]
 CaBBI.SpikeTimes_millisecond  = SpikeTimes_millisecond;                    % reconstructed spike (or event) times, in [ms]
+
+%% cleanup
+
+delete([pwd filesep 'Data.zip']);  % delete the fluorescence data
+rmdir([pwd filesep 'Data'],'s');    

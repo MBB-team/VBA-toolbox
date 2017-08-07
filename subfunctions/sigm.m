@@ -23,7 +23,7 @@ function [Sx,dsdx,dsdp] = sigm(x,in,Phi)
 if ~exist('in','var')
     in = [];
 end
-in = check_struct(in,'G0',1,'S0',0,'beta',1,'INV',0,'deriv',0,'mat',0);
+in = VBA_check_struct(in,'G0',1,'S0',0,'beta',1,'INV',0,'deriv',0,'mat',0);
 if ~in.mat
     % transform x into a row vector
     x = x(:)';

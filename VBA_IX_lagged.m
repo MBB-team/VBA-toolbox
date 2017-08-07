@@ -194,10 +194,10 @@ if options.GnFigs
     end
     h(1) = subplot(2,1,1,'parent',suffStat.haf);
     plot(h(1),dx')
-    title(h(1),'state noise')
+    VBA_title(h(1),'state noise')
     h(2) = subplot(2,1,2,'parent',suffStat.haf);
     plot(h(2),muX')
-    title(h(2),'posterior mean')
+    VBA_title(h(2),'posterior mean')
     axis(h,'tight')
 end
 

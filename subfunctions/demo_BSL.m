@@ -59,7 +59,7 @@ title(ha,['perf=',num2str(100*length(ic)./N,3),'%'])
 %% invert BSL model given sequence of agent's choices
 options.skipf = zeros(1,N);
 options.skipf(1:K+1) = 1;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.SigmaTheta = 1e2*eye(dim.n_theta);
 f_fname = @f_BSL;
 g_fname = @g_BSL;

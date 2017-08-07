@@ -70,7 +70,7 @@ else
 end
 
 % Calculate the p-values
-p=2*(1-spm_Tcdf(abs(t),N-2));
+p=2*(1-VBA_spm_Tcdf(abs(t),N-2));
 
 
 

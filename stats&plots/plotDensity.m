@@ -56,7 +56,7 @@ hfp = figure(...
         'Renderer','OpenGL');
 labels = {'summary','observables','states'};
 callbacks = {@mySummary,@myObs,@myStates};
-[h] = spm_uitab(hfp,labels,callbacks,'XY',1,1,0.05);
+[h] = VBA_spm_uitab(hfp,labels,callbacks,'XY',1,1,0.05);
 
 h.hfp = hfp;
 in = struct(...
@@ -161,7 +161,7 @@ for i=1:n
    labels{i} = ['dim ',num2str(i)];
    callbacks{i} = @plotPY;
 end
-[h] = spm_uitab(in.h.hp,labels,callbacks,'plot',1,1,0.05);
+[h] = VBA_spm_uitab(in.h.hp,labels,callbacks,'plot',1,1,0.05);
 set(h.htab,'backgroundcolor',[1 1 1])
 set(h.hh,'backgroundcolor',[1 1 1])
 set(h.hp,'HighlightColor',0.8*[1 1 1])
@@ -177,7 +177,7 @@ for i=1:n
    labels{i} = ['dim ',num2str(i)];
    callbacks{i} = @plotPX;
 end
-[h] = spm_uitab(in.h.hp,labels,callbacks,'plot',1,1,0.05);
+[h] = VBA_spm_uitab(in.h.hp,labels,callbacks,'plot',1,1,0.05);
 set(h.htab,'backgroundcolor',[1 1 1])
 set(h.hh,'backgroundcolor',[1 1 1])
 set(h.hp,'HighlightColor',0.8*[1 1 1])

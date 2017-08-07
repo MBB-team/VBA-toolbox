@@ -23,7 +23,7 @@ box(ha,'off')
 axis(ha,'tight')
 xlabel(ha,'time')
 ylabel(ha,'x')
-title(ha,'simulated hidden-states time series')
+VBA_title(ha,'simulated hidden-states time series')
 
 % plot simulated observations
 ha = subplot(3,2,2,'parent',hf,'nextplot','add','ygrid','on','xgrid','off');
@@ -33,7 +33,7 @@ box(ha,'off')
 axis(ha,'tight')
 xlabel(ha,'time')
 ylabel(ha,'y')
-title(ha,'simulated observations')
+VBA_title(ha,'simulated observations')
 
 % plot hidden-states eigenspace
 if size(x,1) > 3
@@ -53,7 +53,7 @@ plot3(ha,xp(1,:),xp(2,:),xp(3,:))
 box(ha,'off')
 grid(ha,'on')
 axis(ha,'tight')
-title(ha,'x: state space')
+VBA_title(ha,'x: state space')
 xlabel(ha,'x1')
 ylabel(ha,'x2')
 zlabel(ha,'x3')
@@ -75,7 +75,7 @@ set(ha,'nextplot','add')
 plot3(ha,yp(1,:),yp(2,:),yp(3,:))
 grid(ha,'on')
 axis(ha,'tight')
-title(ha,'y: state space')
+VBA_title(ha,'y: state space')
 xlabel(ha,'y1')
 ylabel(ha,'y2')
 zlabel(ha,'y3')
@@ -85,7 +85,7 @@ ha = subplot(3,2,5,'parent',hf,'nextplot','add','ygrid','on','xgrid','off');
 plot(ha,dTime,eta);
 box(ha,'off')
 axis(ha,'tight')
-title(ha,'stochastic innovations')
+VBA_title(ha,'stochastic innovations')
 xlabel(ha,'time')
 ylabel(ha,'eta')
 
@@ -94,7 +94,7 @@ ha = subplot(3,2,6,'parent',hf,'nextplot','add','ygrid','on','xgrid','off');
 plot(ha,dTime,e);
 box(ha,'off')
 axis(ha,'tight')
-title(ha,'measurement noise')
+VBA_title(ha,'measurement noise')
 xlabel(ha,'time')
 ylabel(ha,'e')
 getSubplots

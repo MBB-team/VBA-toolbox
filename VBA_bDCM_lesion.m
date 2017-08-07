@@ -10,7 +10,7 @@ out.options.verbose = 0;
 out.options.displayWin = 0;
 out.options.multisession.expanded = 1;
 
-out.dim = check_struct(out.options.dim, ... ,
+out.dim = VBA_check_struct(out.options.dim, ... ,
     'u',size(out.u,1)       ,...
     'n_t',size(out.u,2)      ...
 );

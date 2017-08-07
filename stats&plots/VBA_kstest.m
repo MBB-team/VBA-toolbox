@@ -14,7 +14,7 @@ sigma0(sigma0==0) = 1;
 y = bsxfun(@rdivide,y, sigma0);
 empcdf = [1:n]'/n;
 empcdf2 = ([1:n]-1)'/n;
-fx = spm_Ncdf(y);
+fx = VBA_spm_Ncdf(y);
 KSz = max([abs(fx-empcdf);abs(fx-empcdf2)]);
 s = -20:1:20;
 a = (-1).^s.*exp(-2*(s.*sqrt(n)*KSz).^2); 

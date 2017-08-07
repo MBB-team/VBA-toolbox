@@ -32,7 +32,7 @@ end
 
 %-- Then invert HRF model
 % get spm canonical hrf
-[hrf] = spm_hrf(TR);
+[hrf] = VBA_spm_hrf(TR);
 % get basic i/o
 n_t         = length(hrf);          % number of time samples (over 40 sec)
 decim       = max([1,round(TR./microDT)]);
