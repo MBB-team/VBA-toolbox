@@ -34,6 +34,5 @@ parfor i = 1:numel(demos)
 end
 
 logs = [logs{:}];
-save(['../VBA_unit_test_log_' version('-release')],'logs')
 
 

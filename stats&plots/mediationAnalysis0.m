@@ -85,7 +85,7 @@ sobel.b = a3.b(3);
 sobel.vb = a3.vhat.*a3.iC(3,3);
 sobel.ab = sobel.a.*sobel.b;
 sobel.sab = sqrt(sobel.a.^2*sobel.vb + sobel.b^2*sobel.va);
-sobel.p = 2*spm_Ncdf(-abs(sobel.ab./sobel.sab),0,1);
+sobel.p = 2*VBA_spm_Ncdf(-abs(sobel.ab./sobel.sab),0,1);
 
 % Monte-Carlo test
 montecarlo.N = 1e6; % # Monte-Carlo samples

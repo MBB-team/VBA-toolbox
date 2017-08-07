@@ -156,7 +156,7 @@ options.priors.muTheta(options.inF.indB{3}(1)) = -5;
 %--- Call inversion routine
 [p2,o2] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 set(gcf,'name','model ''withold''')
-spm_dcm_explore(vba2dcm(p2,o2,[],TR));
+VBA_spm_dcm_explore(vba2dcm(p2,o2,[],TR));
 
 
 % VBA_ReDisplay(p1,o1,1)

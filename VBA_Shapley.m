@@ -72,7 +72,7 @@ end
 switch options.coalitions
     case 'interactions'
         % factorial perturbation of parmeeters with normal inputs,
-        kw = full(spm_perm_mtx(nw));
+        kw = full(VBA_spm_perm_mtx(nw));
         k = [kw ones(2^nw,nu)] ;
         % factorial perturbation of parameters with each input respectively
         % pertrubed 
@@ -82,14 +82,14 @@ switch options.coalitions
         end
         % plus factorial perturbation of inputs alone
         % (ie 2^nw + nu x 2^nw + 2^nu coalitions)
-        k = vertcat(k,[ones(2^nu,nw) full(spm_perm_mtx(nu))]);
+        k = vertcat(k,[ones(2^nu,nw) full(VBA_spm_perm_mtx(nu))]);
     case 'parameters'
         % factorial perturbation of paramters, normal inputs
-        k = full(spm_perm_mtx(nw));
+        k = full(VBA_spm_perm_mtx(nw));
         k = [k ones(size(k,1),nu)];
     case 'inputs'
         % factorial perturbation of inputs, normal paramters
-        k = full(spm_perm_mtx(nu));
+        k = full(VBA_spm_perm_mtx(nu));
         k = [ones(size(k,1),nw) k];
 end
 nk = size(k,1);

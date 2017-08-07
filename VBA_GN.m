@@ -89,7 +89,7 @@ end
 try
    [I,Sigma,deltaMu,suffStat2] = feval(fname,PreviousMu,y,posterior,suffStat,dim,u,options);
     PreviousI = I;
-catch
+catch err
     VBA_disp(['Warning: could not evaluate variational energy on ',flag,'!'],options)
     return
 end
