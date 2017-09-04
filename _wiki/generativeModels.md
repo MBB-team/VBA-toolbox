@@ -4,7 +4,7 @@ title: "Extending VBA's generative model"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-As we have described [here]({{ site.baseurl }}/_wiki/Structure-of-VBA's-generative-model.md), VBA handles a specific class of generative models, namely: nonlinear state-space models. As we discuss below, this class of models is in fact very general, and can be used to emulate more sophisticated generative models that would apparently necessitate an extension of VBA's inference capabilities. What follows is essentially a mathematical note that, we hope, will be useful to VBA's power-users. The list of examples given below is by no means exhaustive, but it conveys enough intuition regarding the many ways in which nonlinear state-space models can be set to bypass VBA's apparent limitations...
+As we have described [here]({{ site.baseurl }}/_wiki/Structure-of-VBA's-generative-model), VBA handles a specific class of generative models, namely: nonlinear state-space models. As we discuss below, this class of models is in fact very general, and can be used to emulate more sophisticated generative models that would apparently necessitate an extension of VBA's inference capabilities. What follows is essentially a mathematical note that, we hope, will be useful to VBA's power-users. The list of examples given below is by no means exhaustive, but it conveys enough intuition regarding the many ways in which nonlinear state-space models can be set to bypass VBA's apparent limitations...
 
 
 # Auto-regressive AR(1) models
