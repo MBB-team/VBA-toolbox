@@ -161,7 +161,7 @@ $$ E\left[z_t\mid z_{t-1}\right] = \Pi z_{t-1} $$
 
 and:
 
-$$ V\left[z_t\mid z_{t-1}\right] = \textsf{diag}(\Pi z_{t-1}) - \left(\Pi z_{t-1}\right) \left(\Pi z_{t-1}\right)^T $$
+$$ V\left[z_t\mid z_{t-1}\right] = \textsf{diag}(\Pi z_{t-1}) - \Pi z_{t-1} \Pi z_{t-1}^T $$
 
 where $$\textsf{diag}(x)$$ is, by abuse of notation, the $$n\times n$$ matrix whose diagonal entries is composed of the vector $$x$$.
 
