@@ -41,8 +41,8 @@ end
 [p_BMA.muX0,p_BMA.SigmaX0] = get2moments(mus,Qs,ps);
 
 % hidden states
-T = size(p0{1}.muX,2);
 try
+T = size(p0{1}.muX,2);
 for t=1:T
     mus = cell(K,1);
     Qs = cell(K,1);
@@ -68,6 +68,7 @@ for iS=1:numel(p0{1}.a_sigma)  % loop over sources
 end
 
 % hidden state precision
+try
 mus = cell(K,1);
 Qs = cell(K,1);
 id = zeros(K,1);
@@ -92,7 +93,7 @@ else
     p_BMA.b_alpha = Inf;
     p_BMA.a_alpha = 0;
 end
-
+end
 
 
 
