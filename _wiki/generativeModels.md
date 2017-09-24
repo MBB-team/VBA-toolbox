@@ -28,7 +28,7 @@ $$dx(t) = \theta\left(\mu-x(t)\right) + \beta dW(t)$$
 
 where $$\theta$$ and $$\beta$$ are constant parameters, $$\mu$$ is the long-term mean of the process, and $$dW(t)$$ is a [Wiener process](https://en.wikipedia.org/wiki/Wiener_process). As can be seen in the equation above, the process is expected to exhibit some form of [regression to the mean](https://en.wikipedia.org/wiki/Regression_toward_the_mean), because deviations from the mean $$\mu-x(t)$$ effectively induce restoring forces.
 
-VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\Delta t \theta\left(\mu-x_t\right)$$, where $$\Delta t$$ is the discretization step. Evolution parameters now include both $$\mu$$ and $$\theta$$. The continuous limit is obtained by increasing the number of recursive calls to the evolution function between two time samples (e.g., by setting VBA's micro-time resolution to `options.decim = 10` or more). 
+VBA can approximate such continuous process using the following evolution function: $$f(x_t)=x_t+\Delta t \theta\left(\mu-x_t\right)$$, where $$\Delta t$$ is the discretization step. Evolution parameters now include both $$\mu$$ and $$\theta$$. The continuous limit is obtained by increasing the number of recursive calls to the evolution function between two time samples (e.g., by setting VBA's micro-time resolution to `options.decim = 10` or more). Note that the variance $$\beta$$ of the approximated Wiener process can be recovered from VBA's estimate of the state noise precision.
 
 
 # Auto-regressive AR(p) models
