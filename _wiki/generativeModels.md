@@ -4,7 +4,7 @@ title: "Extending VBA's generative model"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-As we have described [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model), VBA handles a specific class of generative models, namely: nonlinear state-space models. As we discuss below, this class of models is in fact very general, and can be used to emulate more sophisticated generative models that would apparently necessitate an extension of VBA's inference capabilities. What follows is essentially a mathematical note that, we hope, will be useful to VBA's power-users. The list of examples given below is by no means exhaustive, but it conveys enough intuition regarding the many ways in which nonlinear state-space models can be set to bypass VBA's apparent limitations...
+As we have described [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model), VBA deals with so-called *nonlinear state-space models*. As we discuss below, this class of generative models is in fact very general, and can be used to emulate more sophisticated generative models that would apparently necessitate an extension of VBA's inference capabilities. What follows is a mathematical note that exemplifies how to frame apparently VBA-incompatible statistical models as state-space models that VBA can handle.
 
 
 # Auto-regressive AR(1) models
@@ -15,7 +15,7 @@ $$x_t= c+ \theta x_{t-1} +\eta_t$$
 
 where $$c$$ and $$\theta$$ are constant parameters, and $$\eta_t$$ is typically assumed to be i.i.d. Gaussian random noise.
 
-> Some parameter constraints are necessary for the model to remain [wide-sense stationary](https://en.wikipedia.org/wiki/Stationary_process#Weak_or_wide-sense_stationarity). In particular, AR(1) processes with $$\mid \phi \mid >1$$ are not stationary.
+> Some parameter constraints are necessary for the model to remain [wide-sense stationary](https://en.wikipedia.org/wiki/Stationary_process#Weak_or_wide-sense_stationarity). In particular, AR(1) processes with $$\mid \theta \mid >1$$ are not stationary.
 
 Note that, in the seminal definition of AR(1) processes, the variable $$x_t$$ is directly observable. This corresponds to a specific case of nonlinear state-space models, where the evolution function of hidden states is given by $$f(x_t)=c+\theta x_t$$, and the observation function is trivial and given by $$g(x_t) = x_t$$ with a measurement noise precision $$\sigma \rightarrow \infty$$. Practically speaking, one can use high values for measurement noise precision (e.g. $$10^4$$).
 
