@@ -155,7 +155,7 @@ When the model is fitted to multiple sources of observation, VBA fuses all infor
 
 ```matlab
 % compute source variance
-v = var(y(options.sources(i).out,:));
+y_s = y(options.sources(i).out,:);
 
 % set explained variance range
 min_ev = 0.05 ; % between 5%
@@ -163,7 +163,7 @@ max_ev = 0.15 ; % and 15%
 
 % informed hyperprior
 [options.priors.a_sigma(s), options.priors.b_sigma(s)] = ...
-	getHyperpriors(v,min_ev,max_ev) ;
+	getHyperpriors(y_s,min_ev,max_ev) ;
 ```
 
 This effectively sets the prior weight of each source in proportion to the amount of expected explained variance.
