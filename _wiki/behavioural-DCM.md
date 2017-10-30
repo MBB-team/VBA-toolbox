@@ -171,7 +171,7 @@ dim=options.dim;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
 
-> Tip: You can also look at the demo script `demo_negfeedback.m` that implement the simple two-nodes bDCM descibed in our seminal paper ([Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}):
+You can have a look at the demo script `demo_negfeedback.m` that simulates the simple two-nodes bDCM analysis described in our seminal paper ([Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}):
 
 ![bdcm-demo]({{ site.baseurl }}/images/wiki/bdcm/bdcm_example.png)
 
@@ -181,12 +181,12 @@ The 1st input evokes responses through the action of node 1. The 2nd input modul
 
 # Post-hoc bDCM analysis
 
-
+Once the BDCM model has been inverted given mixed fMRI/behavioural times series, one can then perform post-hoc analyses on the model. The objective here is twofold: (i) predict behavioural deficits that would arise from (artificial) lesions on either nodes or links within the network, and (ii) quantify the **importance** of network nodes or links for funnelling the impact of inputs onto behavioural outputs. As we will se below, VBA is equipped with specific tools for performing these two types of post-hoc analyses.
 
 
 ## Artificial lesion analyses
 
-One of the main advantage of bDCM is its ability to predict the effect of brain lesions or dysconnectivity on behavioural responses. To do so, one simply needs to "switch off" the corresponding node or connection, simulate the reduced model, and summarize the predicted behavioural responses.
+One of the main advantage of bDCM is its ability to predict the effect of brain lesions or dysconnectivity on behavioural responses. To do so, one simply needs to "switch off" the corresponding node or link, simulate the ensuing lesioned model, and summarize the predicted behavioural responses.
 
 In VBA, you can automatically test the effect of lesioning each node in turn, as follows:
 
@@ -204,9 +204,19 @@ results.lesion(2).y
 > **Example of lesion analysis**
 If the 1st node is lesioned (left), then the normal behaviour (plain bars) is completly abolished (hatched bars). If the 2nd node is lesioned (right), we observe an increase in the response rate when the modulatory input is on, showing the loss of the feedback process.
 
+
 ## Susceptibility analysis
 
-One may also want to ask which node and/or connection is critical fir funelling the impact of each input onto each behavioural output. This can be done using so-called "susceptibility analyses". In VBA, this can be performed as follows: 
+One may also want to ask which node and/or link is critical for funelling the impact of each input onto each behavioural output. This can be done using so-called "susceptibility analyses". 
+
+Critical here is the fact that measuring the behavioural distortion induced by removing a node or a link is not sufficient for measuring how important is that node or link. This is becaus eone has to account for potential **functional redundancy** in the system. In brief, if a given input can bypass this node or link to impact behavioural responses, then the corresponding input-output relationship is weakly susceptible to this node or link. We can measure this by measuring the additional additional distortion induced by switching off the input, having already removed the node/link. The amount of additional distortion directly measures functional redundancy. This is because if switching off the input induces additional distoritions, then this means that it did not have to flow through the corresponding node/link... The logic of such analysis is summarized below:
+
+!({{ site.baseurl }}/images/wiki/bdcm_susceptibility.jpg){:width="85%"}
+
+> Amount of explained variance in observed behavioural responses (top row) as a function of artificial esions performed on the network (bottom row). Left: un-lesioned network. Lesioning the link from node 2 to node 3 induces a loss of explained variance (red). Further switching off input $$u_1$$ induces an additional loss of explained variance (violet). This is because input $$u_1$$ can bypass the missing link to impact the behavioural response $$o$$ (by flowing directly through node 3). In contrast, switching off input $$u_2$$ (green) doesn ot induced any additional loss of explained variance. This is because input $$u_2$$ has no other route to pass through. In conclusion, the link from node 2 to node 3 is critical for funneling the impact of input $$u_2$$ onto behavioural response.
+
+
+In VBA, this can be performed automatically as follows: 
 
 ```matlab
 % posterior and out come from @VBA_NLStateSpaceModel
