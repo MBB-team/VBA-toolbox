@@ -156,8 +156,6 @@ dim.n = 5*nreg;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
 
-> **Tip:** By default, a DCM analysis relies upon a deterministic model of neural dynamics. However, VBA can be used to invert *stochastic* DCMs ([Daunizeau et al., 2012](https://www.ncbi.nlm.nih.gov/pubmed/22579726)), whereby unpredictable neural perturbations are allowed to interact with responses evoked by the experimental manipulation. This is done by [changing VBA's priors on state noise precision]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps), or, alternatively, by setting ```stochastic = 1``` prior to calling ```getPriors```.
-
 
 # A few advanced tricks
 
@@ -192,6 +190,11 @@ btype = 'Fourier'; % basis function type
 
 The ```options``` structure now contains the set of confounds (encoded in the matrix ```X0```), whose impact on fMRI times series will be estimated along with other DCM parameters...
 
+
+## Stochastic DCM
+
+By default, a DCM analysis relies upon a deterministic model of neural dynamics (cf. Equation above). However, VBA can be used to invert *stochastic* DCMs ([Daunizeau et al., 2012](https://www.ncbi.nlm.nih.gov/pubmed/22579726)), whereby unpredictable neural perturbations are allowed to interact with responses evoked by the experimental manipulation. In formal terms, the equation above is augmented with stochastic state noise, which has to be estimated, along with other DCM parameters, given fMRI time series. It turns out that the inversion of stochastic and deterministic systems are qualitatively different from each other. Nevertheless, switching to stochastic DCM
+can be done simply by [changing VBA's priors on state noise precision]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps), or, alternatively, by setting ```stochastic = 1``` prior to calling ```getPriors```.
 
 
 
