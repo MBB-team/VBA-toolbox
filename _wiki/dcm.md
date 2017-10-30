@@ -152,10 +152,12 @@ dim.n = 5*nreg;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
 
-> **Tip:** By default, a DCM analysis relies upon a deterministic model of neural dynamics. However, VBA can be used to invert *stochastic* DCMs ([Daunizeau et al., 2012](https://www.ncbi.nlm.nih.gov/pubmed/22579726)), whereby unpredictable neural perturbations are allowed to interact with responses evoked by the experimental manipulation. This is done by [changing VBA's priors on state noise precision]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps). 
+> **Tip:** By default, a DCM analysis relies upon a deterministic model of neural dynamics. However, VBA can be used to invert *stochastic* DCMs ([Daunizeau et al., 2012](https://www.ncbi.nlm.nih.gov/pubmed/22579726)), whereby unpredictable neural perturbations are allowed to interact with responses evoked by the experimental manipulation. This is done by [changing VBA's priors on state noise precision]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps), or, alternatively, by setting ```stochastic = 1``` prior to calling ```getPriors```.
 
 
-# Using SPM-specified structures in VBA (and back) 
+# A few advanced tricks
+
+## Using SPM-specified structures in VBA (and back) 
 
 If you already performed a DCM analysis in SPM, you may have recognized that $$A$$, $$B$$, $$C$$ and $$D$$ matrices correspond to `DCM.a`, `DCM.b`, `DCM.c`, and `DCM.d` of the SPM-specified DCM structure, respectively. In fact, one can use the graphical user interface of SPM to specify a DCM, and then format the SPM structure for a VBA analysis. The following script allows one to invert an SPM-specified DCM model using VBA, and then eyeball inversion results and diagnostics:
 
@@ -173,12 +175,28 @@ The graphical output of `spm_decm_explore.m` is appended below:
 ![]({{ site.baseurl }}/images/wiki/tabs/dcm1.jpg)
 
 
+## Including confounds in DCM analyses
+
+Some experimental designs may be associated with a few anticipated confounding factors. These typically take the form of mixtures of regressors that may induce sample-to-sample variations in the fMRI times, above and beyond those that ared using DCM. VBA enables one to include these in the analysis as long as the corresponding "null design" matrix is known. For example, one may want to consider (non specific) slow trends, which may act as confounding factors. The following script exemplifies how to account for such confounds:
+
+```matlab
+nconfounds = 16; % number of basis functions
+btype = 'Fourier'; % basis function type
+[X0] = get_U_basis(n_t*TR,TR,nconfounds,btype)'; % creates basis function set on temporal grid
+[u,options,dim] = addConfounds2dcm(X0,u,options,dim); % modifies the i/o of DCM inversion
+```
+
+The ```options``` structure now contains the set of confounds (encoded in the matrix ```X0```), whose impact on fMRI times series will be estimated along with other DCM parameters...
+
+
+
+
 # A few useful demonstration scripts
 
 A number of VBA demonstration scripts have been written for DCM:
 
-- `demo_dcm_1region.m`: this script simulates and inverts a 1-node network model. It is useful to assess the statistical [identifiability](https://en.wikipedia.org/wiki/Identifiability) of local self-inhibitory processes and neuro-vascular coupling parameters.
-- `demo_dcm4fmri.m`: this script simulates and inverts a 3-nodes network model, with induced network plasticity. Emphasis is put on the influence of [neural noise](https://en.wikipedia.org/wiki/Neuronal_noise) on the system's dynamics.
+- `demo_dcm_1region.m`: this script simulates and inverts a 1-node network model. We advise readers to have a look at this demo in the aim of getting more insight on the statistical [identifiability](https://en.wikipedia.org/wiki/Identifiability) of conncetivity parameters (including, e.g., local self-inhibitory connections) and neuro-vascular coupling parameters.
+- `demo_dcm4fmri.m`: this script simulates and inverts a 3-nodes network model, with induced network plasticity. Emphasis is put on the influence of [neural noise](https://en.wikipedia.org/wiki/Neuronal_noise) on the system's dynamics. 
 - `demo_dcm4fmri_distributed.m`: this script simulates and inverts a 3-nodes network model (same as above). Here, the observation function has been augmented with unknown spatial profile of activation, which can be useful to capture non-trivial spatial encoding of experimentally controlled stimuli or observed behaviour.
 
 
