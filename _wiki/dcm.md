@@ -4,10 +4,10 @@ title: "Dynamic Causal Modeling"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-Decomposing the relation existing between cognitive functions and their neurobiological "signature" (the spatio-temporal properties of brain activity) requires an understanding of how information is transmitted through brain networks. The ambition here is to ask questions such as: "what is the nature of the information that region A passes on to region B"? This stems from the notion of functional integration, which views function as an emergent property of brain networks. [Dynamic causal modelling](http://www.scholarpedia.org/article/Dynamic_causal_modeling) or DCM was developed specifically to address this question.
 
 # Crash-course on DCM
 
+Decomposing the relation existing between cognitive functions and their neurobiological "signature" (the spatio-temporal properties of brain activity) requires an understanding of how information is transmitted through brain networks. The ambition here is to ask questions such as: "what is the nature of the information that region A passes on to region B"? This stems from the notion of functional integration, which views function as an emergent property of brain networks. [Dynamic causal modelling](http://www.scholarpedia.org/article/Dynamic_causal_modeling) or DCM was developed specifically to address this question.
 
 ## What you cannot ignore
 
