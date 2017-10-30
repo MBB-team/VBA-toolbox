@@ -17,7 +17,7 @@ In what follows, we explain how to perform a bDCM analysis on your own dataset.
 The core of bDCM is identical to classical DCM. In particular, you will need to:
 - extract fMRI times series ```y_fmri``` in your regions of interest 
 - specify your inputs ```u```
-- setting DCM connectivity structure (cf. ```A```, ```B```, ```C``` and ```D``` matrices)
+- setting the DCM connectivity structure (cf. ```A```, ```B```, ```C``` and ```D``` matrices)
 
 We refer the reader to the [DCM wiki]({{ site.baseurl }}/wiki/dcm) for more detailed explanations on how to prepare a vanilla DCM analysis using VBA. 
 
@@ -38,7 +38,7 @@ where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called "neuro
 
 $$E[y_{behaviour}] = g_r(r)$$
 
-where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=frac{1}{1+e^{-r}}$$ for binary choices).
+where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=\frac{1}{1+e^{-r}}$$ for binary choices).
 
 In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to extend vanilla DCM to include behavioural variables.
 
