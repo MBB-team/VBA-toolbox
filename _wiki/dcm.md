@@ -29,7 +29,7 @@ where $$x$$ is a vector of DCM hidden states that quantifies activity in each no
 
 ![]({{ site.baseurl }}/images/wiki/dcm0.jpg)
 
-> DCM users have to specify which entries in $$A$$, $$B$$, $$C$$ and $$D$$ matrices are non-zero. The Figure above depicts the correspondance between the entries of DCM matrices and the underlying types of edges in a typical DCM network model. Note that DCM matrices are oriented such that directed edges go from columns to rows.
+> DCM users have to specify which entries in $$A$$, $$B$$, $$C$$ and $$D$$ matrices are non-zero. We refer to this as **setting the connectivity structure** of the DCM model. The Figure above depicts the correspondance between the entries of DCM matrices and the underlying types of edges in a typical DCM network model. Note that DCM matrices are oriented such that directed edges go from columns to rows.
 
 
 
