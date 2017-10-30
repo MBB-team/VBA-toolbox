@@ -17,14 +17,28 @@ In what follows, we explain how to perform a bDCM analysis on your own dataset.
 The core of bDCM is identical to classical DCM. In particular, you will need to:
 - extract fMRI times series ```y_fmri``` in your regions of interest 
 - specify your inputs ```u```
-- setting the connectivity matrices $$A$$, $$B$$, $$C$$ and $$D$$.
+- setting DCM connectivity matrices (see $$A$$, $$B$$, $$C$$ and $$D$$ below)
 
 We refer the reader to the [DCM wiki]({{ site.baseurl }}/wiki/dcm) for more detailed explanations on how to prepare a vanilla DCM analysis using VBA. 
 
 
-# Upgrading DCM (with behavioural predictions)
+# Upgrading DCM with behavioural predictions
 
-We now can focus on extending the model to include behavioural predictors.
+Recall that vanilla DCM relies on the following ordinary differential equation to describe how network nodes influence each other:
+
+$$\frac{dx}{dt}=Ax + \sum_i u_i B^{(i)}x + Cu + \sum_j x_j D^{(j)}x$$
+
+where $$x$$ is a vector of DCM hidden states that quantifies activity in each node of the relevant brain network and $$u$$ are user-specified inputs that drive or modulate activity in network nodes. Matrices $$A$$, $$B$$, $$C$$ and $$D$$ correspond to connection strengths, input modulations of connections, input-state couplings and state modulations of connections, respectively.
+
+In addition, behavioural DCM assumes that there are hidden behavioural predictor variables $$r$$ that obey a similar set of ordinary differential equations:
+
+$$\frac{dr}{dt}= A_r x + \sum_i u_i B_r^{(i)}x + C_ru + \sum_j x_j D_r^{(j)}x - \alpha r$$
+
+where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called "neuro-behavioural mapping" (see below). Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of sampled behavioural obseravtions, i.e.: $$r = E[y_behaviour]$$.
+
+In what follows, we focus on how to extend vanilla DCM to include behavioural variables.
+
+
 
 ## Combining the responses
 
@@ -40,10 +54,10 @@ The most intuitive neuro-bahvioural mapping is a linear predictor that directly 
 ![direct neural mapping]({{ site.baseurl  }}/images/wiki/bdcm/mapping_ha.png){:width="50%"}
 
 
-Such a linear mapping can be defined through the matrix ```hA``` that specifies which node can impact on each behavioural response (columns=nodes, lines=responses):
+Such a linear mapping can be defined through the matrix ```Ar``` that specifies which node can impact on each behavioural response (columns=nodes, lines=responses):
   
 ```matlab
-hA = [ 0 1 0 ;   % the first response is predicted by node 2
+Ar = [ 0 1 0 ;   % the first response is predicted by node 2
        0 0 1 ] ; % the second response is predicted by node 3
 ```
   
@@ -52,11 +66,11 @@ hA = [ 0 1 0 ;   % the first response is predicted by node 2
 Brain-to behaviour mappings may change according to experimental conditions (which are encoded in inputs `u`):
 ![modulated neural mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hb.png){:width="50%"}
 
-Such modulatory effects can be defined through the cell-array `hB` that specifies which node-to-response link is modulated by each input in turn (similarly to DCM's `B` matrix above):
+Such modulatory effects can be defined through the cell-array `Br` that specifies which node-to-response link is modulated by each input in turn (similarly to DCM's `B` matrix above):
   
 ```matlab
 % the first response is predicted by the 3rd node modulated by the 2nd input
-hB{2} = [ 0 0 1 ;   
+Br{2} = [ 0 0 1 ;   
           0 0 0 ] ; 
 ```
 
@@ -67,12 +81,12 @@ One may also consider direct influences of inputs onto behavioural responses:
 
 Although it seems counter-intuitive to assume that the impact of experimental manipulation may not be mediated by brain acitivity, this may be provide a useful reference point.
 
-This type of "mapping" is implemented in the matrix `hC`:
+This type of "mapping" is implemented in the matrix `Cr`:
   
 ```matlab
 % the first response is predicted by a linear mixture of the first and second inputs
 % the second response is predicted by the last input only
-hC = [ 1 1 ;   
+Cr = [ 1 1 ;   
        0 1 ] ; 
 ```
 
@@ -81,11 +95,11 @@ hC = [ 1 1 ;
 Finally, similarly to DCM's quadratic gating effects, one may assume that brain-to behaviour mappings may be modulated by activity in other network nodes. This capture situations in which nodes interact to produce a response. Think of lesion mapping, for example. It may be that a lesion in region X alone may not produce any behavioural deficit. The same with region Y. But it may be that if both X and Y are lesioned, then a ebahviorual deficit is observed. This is the type of effect such interactions may predict:
 ![quadratic mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hd.png){:width="50%"}
 
-These nonlinear effects can be defined through the cell-array `hD` that specifies which node-to-response link is modulated by each node in turn (similarly to DCM's `D` matrix above):
+These nonlinear effects can be defined through the cell-array `Dr` that specifies which node-to-response link is modulated by each node in turn (similarly to DCM's `D` matrix above):
   
 ```matlab
 % the 2nd response (line) is jointly predicted by the 1st (array index) and 3rd (column) nodes
-hD{1} = [ 0 0 0 ;   
+Dr{1} = [ 0 0 0 ;   
           0 0 1 ] ; 
 ```
 
