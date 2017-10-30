@@ -40,18 +40,10 @@ where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=\frac{1}{
 
 For further details, we refer the reader to [Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}.
 
-In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to extend vanilla DCM to include behavioural variables.
+In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to set the neuro-behavioural mapping.
 
 
-## Combining the responses
-
-We assume that you have stored the fMRI time series in ```y_fmri```. The full observation matrix ```y``` should also include the behavioural observations (choices, reaction times, subjective ratings, pupil responses, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. You also need to inform VBA about the type of behavioural data (e.g., gaussian, multinomial ,etc...) you are dealing with. We refer the reader to [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding this sort of *mixed observations*.
-
-## Setting the neuro-behavioural mapping
-
-In bDCM, the mapping from neural states to behaviour is based on a quadratic expansion similar to the one describing the evolution function of hidden states. Below, we describe the set of matrices that can be used to map hidden states $$x$$ to the behavioural predictors $$r$$ that will be fitted (after an eventual transformation by the observation function $$g_r$$) to the behavioural responses.
-
-* **Direct neural mapping**
+### Direct neural mapping
 
 The most intuitive part of the neuro-behavioural mapping is a linear predictor that directly maps DCM nodes to behavioural predictors:
 ![direct neural mapping]({{ site.baseurl  }}/images/wiki/bdcm/mapping_ha.png){:width="50%"}
@@ -65,7 +57,7 @@ Ar = [ 0 1 0 ;
        0 0 1 ] ;
 ```
   
-* **Modulated neural mapping**
+### Modulated neural mapping
 
 Brain-to behaviour mappings may change according to experimental conditions (which are encoded in inputs `u`):
 ![modulated neural mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hb.png){:width="50%"}
@@ -78,7 +70,7 @@ Br{2} = [ 0 0 1 ;
           0 0 0 ] ; 
 ```
 
-* **Direct input mapping**
+### Direct input mapping
 
 One may also consider direct influences of inputs onto behavioural responses:
 ![cheating mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hc.png){:width="50%"}
@@ -94,7 +86,7 @@ Cr = [ 1 1 ;
        0 1 ] ; 
 ```
 
-* **Quadratic neural mapping**
+### Quadratic neural mapping
 
 Finally, similarly to DCM's quadratic gating effects, one may assume that brain-to behaviour mappings may be modulated by activity in other network nodes. This capture situations in which nodes interact to produce a response. Think of lesion mapping, for example. It may be that a lesion in region X alone may not produce any behavioural deficit. The same with region Y. But it may be that if both X and Y are lesioned, then a ebahviorual deficit is observed. This is the type of effect such interactions may predict:
 ![quadratic mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hd.png){:width="50%"}
@@ -107,31 +99,11 @@ Dr{1} = [ 0 0 0 ;
           0 0 1 ] ; 
 ```
 
-# Defining the complete model
+# Combining fMRI and behavioural time series
 
-In VBA, a generative model is defined in terms of an evolution function, an observation function, and a set of priors (see [this page]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model) for a complete description of the class of VBA's generative models). VBA already includes generic bDCM's evolution and observation. All one has to do is to tell VBA about the matrices above. in what follows, we explain how to do this.
+We assume that you have stored the fMRI time series in ```y_fmri``` (see [above]({{ site.baseurl }}/wiki/behavioural-DCM/#Preparing-a-vanilla-DCM-analysis)). The full observation matrix ```y``` should also include the behavioural observations (choices, reaction times, subjective ratings, pupil responses, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. You also need to inform VBA about the type of behavioural data (e.g., gaussian, multinomial ,etc...) you are dealing with. We refer the reader to [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding this sort of *mixed observations*.
 
-## bDCM evolution function
-
-Once you have defined all the connectivity and mapping matrices, the model can be constructed automatically.  Just call the `prepare_fullDCM.m` function:
-
-```matlab
-%- prepare the bDCM structure
-options = prepare_fullDCM( ...
-  A, B, C, D,     ... % DCM connectivity
-  TR,             ... % sampling timestep
-  microDT,        ... % micro_resolution
-  homogeneous,    ... % are all nodes similar?
-  hA, hB, hC, hD, ... % behavioural mapping	
-  sources         ... % observation mixture
-);
-```
-
-This procedure will include in VBA's `options` structure all the required information, including default priors.
-
-## bDCM observation function
-
-Remember we [began this tutorial]({{ site.baseurl }}/wiki/behavioural-DCM/#combining-the-responses) by defining a general observation matrix `y` containing both the fMRI timeseries and the behavioural responses. As VBA only deals with one observation function to map hidden states to the observation, we need to 1) create an "aggregated" observation function predicting all the data concurrently, and 2) inform VBA how to split the observations into fMRI and behavioural time series.
+Now, as VBA only deals with one observation function to map hidden states to the observation, we need to 1) create an "aggregated" observation function predicting all the data concurrently, and 2) inform VBA how to split the observations into fMRI and behavioural time series.
 
 ### Mixing the predictors
 
@@ -142,16 +114,16 @@ The second element is a transformation for the response predictors. Note that th
 Now if you have a DCM with 3 nodes and 2 behavioral (e.g., button) responses, the mixed observation function should be defined as follows:
 
 ```matlab
-% prediction is a 5 elements vector;
+% mixed fMRI/bhavioural prediction is a 5 elements vector:
 g = [g_fmri         ; % 3 lines for the 3 nodes
-     g_buttonResp1  ; 
-     g_buttonResp2] ;
+     g_buttonResp1  ; % left  hand
+     g_buttonResp2] ; % right hand
 ```
 
 Such an observation function can be saved and wrapped with appropriate input/output standards (see [this page]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps) for a complete description of the I/O structure of observation/evolution functions).
 
-Note that VBA already includes a default bDCM observation function, `g_DCMwHRFext.m`, that does exactly that for you.
-It will apply the DCM model on the first $$n$$ observations (where $$n$$ is the number of nodes), and treat all the remaining lines in the data matrix as binary behaviorual responses (by applying a sigmoid transform). If you want to implement another brain-to-bbehaviour mapping (that deals with, e.g., real valued responses), you'll have to adapt `g_DCMwHRFext.m` accordingly.
+> Note that VBA already includes a default bDCM observation function, `g_DCMwHRFext.m`, that does exactly this.
+It will apply the vanilla DCM model to the first $$n$$ observations (where $$n$$ is the number of nodes), and treat all the remaining lines in the data matrix as binary behavioural responses (i.e. in this case, $$g_r$$ is the sigmoid mapping). If you want to implement another brain-to-behaviour mapping (that deals with, e.g., continuous responses), you will have to adapt `g_DCMwHRFext.m` accordingly.
 
 ### Splitting the observations
 
@@ -169,20 +141,48 @@ The only thing VBA still requires is information regarding which lines in the da
 ```
 
 
-# bDCM analysis
+# Running the inversion
 
-We now are in a position to perform a complete bDCM analysis. 
+In VBA, a generative model is defined in terms of an evolution function, an observation function, and a set of priors (see [this page]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model) for a complete description of the class of VBA's generative models). VBA already includes generic bDCM's evolution and observation. All one has to do is to tell VBA about the above connectivity and neuro-behavioural mapping matrices. As for vanilla DCM, the following matlab script creates the corresponding VBA's ```options``` structure:
 
-## Simulation and estimation
+```matlab
+%- prepare the DCM structure
+TR = 2; % sampling resolution (in secs)
+microDT = 1e-1; % micro_resolution = ODE solver time step (in secs)
+homogeneous = 1; % are all nodes similar?
+options = prepare_fullDCM(A, B, C, D, TR, microDT, homogeneous,hA, hB, hC, hD,sources);
+```
 
-Behavioural DCM is not different from any other model in VBA's library. You can thus use the generic functions `simulateNLSS.m` to simulate artifical data and `VBA_NLStateSpaceModel.m` to invert the model.
+Priors can be automatically set using the $$getPriors$$ function:
+```matlab
+nreg = 3; % number of network nodes
+n_t = 720; % number of fMRI time samples
+reduced_f = 1; % simplified HRF model
+stochastic = 0; % for deterministic DCM
+options.priors = getPriors(nreg,n_t,options,reduced_f,stochastic);
+```
 
-You can also look at the demo script `demo_negfeedback.m` that implement the simple two-nodes bDCM descibed in our seminal paper ([Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}):
+The main VBA inversion routine can now be called to run the behavioural DCM analysis:
+
+```matlab
+f_fname = @f_DCMwHRFext; % bDCM evolution function
+g_fname = @g_DCMwHRFext; %  % bDCM obseravtion function
+dim=options.dim;
+[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+```
+
+> Tip: You can also look at the demo script `demo_negfeedback.m` that implement the simple two-nodes bDCM descibed in our seminal paper ([Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}):
 
 ![bdcm-demo]({{ site.baseurl }}/images/wiki/bdcm/bdcm_example.png)
 
 > **Toy bDCM example from [Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}**
 The 1st input evokes responses through the action of node 1. The 2nd input modulates the influence of the negative feedback loop formed between nodes 1 and 2.
+
+
+# Post-hoc bDCM analysis
+
+
+
 
 ## Artificial lesion analyses
 
