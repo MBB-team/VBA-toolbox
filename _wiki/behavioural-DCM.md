@@ -30,7 +30,7 @@ In addition to network dynamics, behavioural DCM assumes that there are hidden b
 
 $$\frac{dr}{dt}= A_r x + \sum_i u_i B_r^{(i)}x + C_ru + \sum_j x_j D_r^{(j)}x - \alpha r$$
 
-where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called "neuro-behavioural mapping" (see below). Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes, i.e.:
+where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called "*neuro-behavioural mapping*" (see below). Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes, i.e.:
 
 $$E[y_{behaviour}] = g_r(r)$$
 
@@ -40,31 +40,32 @@ where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=\frac{1}{
 
 For further details, we refer the reader to [Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}.
 
-In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify the **model structure**, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to extend vanilla DCM to include behavioural variables.
+In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to extend vanilla DCM to include behavioural variables.
 
 
 ## Combining the responses
 
-We assume that you have stored the fMRI time series in ```y_fmri```. The full observation matrix ```y``` should also include the behavioural observations (button responses, skin conductance, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. You also need to inform VBA about the type of behavioural data (e.g., gaussian, multinomial ,etc...) you are dealing with. We refer the reader to the [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding these issues.
+We assume that you have stored the fMRI time series in ```y_fmri```. The full observation matrix ```y``` should also include the behavioural observations (choices, reaction times, subjective ratings, pupil responses, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. You also need to inform VBA about the type of behavioural data (e.g., gaussian, multinomial ,etc...) you are dealing with. We refer the reader to [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding this sort of *mixed observations*.
 
 ## Setting the neuro-behavioural mapping
 
-In bDCM, the mapping from neural states to behaviour is based on a quadratic expansion similar to the one describing the evolution function of hidden states. Below, we describe the set of matrices that can be used to map hidden states ```x``` to the behavioural predictors ```r``` that will be fitted (after an eventual transformation by the observation function) to the behavioural responses.
+In bDCM, the mapping from neural states to behaviour is based on a quadratic expansion similar to the one describing the evolution function of hidden states. Below, we describe the set of matrices that can be used to map hidden states $$x$$ to the behavioural predictors $$r$$ that will be fitted (after an eventual transformation by the observation function $$g_r$$) to the behavioural responses.
 
-### Direct neural mapping
+* **Direct neural mapping**
 
-The most intuitive neuro-bahvioural mapping is a linear predictor that directly maps DCM nodes to behavioural predictors:
+The most intuitive part of the neuro-behavioural mapping is a linear predictor that directly maps DCM nodes to behavioural predictors:
 ![direct neural mapping]({{ site.baseurl  }}/images/wiki/bdcm/mapping_ha.png){:width="50%"}
 
 
 Such a linear mapping can be defined through the matrix ```Ar``` that specifies which node can impact on each behavioural response (columns=nodes, lines=responses):
   
 ```matlab
-Ar = [ 0 1 0 ;   % the first response is predicted by node 2
-       0 0 1 ] ; % the second response is predicted by node 3
+% 2 behavioural responses: r1 is influenced by node 2, and r2 is influenced by node 3
+Ar = [ 0 1 0 ;
+       0 0 1 ] ;
 ```
   
-### Modulated neural mapping
+* **Modulated neural mapping**
 
 Brain-to behaviour mappings may change according to experimental conditions (which are encoded in inputs `u`):
 ![modulated neural mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hb.png){:width="50%"}
@@ -77,7 +78,7 @@ Br{2} = [ 0 0 1 ;
           0 0 0 ] ; 
 ```
 
-### Direct input mapping
+* **Direct input mapping**
 
 One may also consider direct influences of inputs onto behavioural responses:
 ![cheating mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hc.png){:width="50%"}
@@ -93,7 +94,7 @@ Cr = [ 1 1 ;
        0 1 ] ; 
 ```
 
-### Quadratic neural mapping
+* **Quadratic neural mapping**
 
 Finally, similarly to DCM's quadratic gating effects, one may assume that brain-to behaviour mappings may be modulated by activity in other network nodes. This capture situations in which nodes interact to produce a response. Think of lesion mapping, for example. It may be that a lesion in region X alone may not produce any behavioural deficit. The same with region Y. But it may be that if both X and Y are lesioned, then a ebahviorual deficit is observed. This is the type of effect such interactions may predict:
 ![quadratic mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hd.png){:width="50%"}
