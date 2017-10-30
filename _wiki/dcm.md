@@ -13,7 +13,151 @@ DCM embraces a [graph-theoretic](https://en.wikipedia.org/wiki/Graph_theory) per
 
 The inversion of such models given neuroimaging data can then be used to identify the structure of brain networks and their specific modulation by the experimental manipulation (i.e. induced [plasticity](https://en.wikipedia.org/wiki/Neuroplasticity)). For example, showing that a given connection is modulated by the colour of some stimulus demonstrates that this connection conveys the colour information.
 
-The academic freeware [SPM](http://www.fil.ion.ucl.ac.uk/spm/) proposed the seminal implementations of DCM. The following script allows one to invert an SPM-specified DCM model using VBA, and then eyeball inversion results and diagnostics:
+
+# Preparing a vanilla DCM analysis in VBA
+
+Recall that DCM has many variants, which may be specific to neuroimaging modalities (e.g., EEG/MEG, intracranial LFP, fMRI, etc...). Although almost all variants of DCM are directly available from the [SPM academic freeware](http://www.fil.ion.ucl.ac.uk/spm/), only a few of them are already implemented in VBA. In particular, VBA includes DCM for fMRI time series. In what follows, we will briefly review how to prepare such vanilla DCM analysis.
+
+Note: we refer the reader to the [SPM documentation](http://www.fil.ion.ucl.ac.uk/spm/doc/) to help you design and preprocess a DCM-friendly experiment.
+
+## Crash-course on DCM for fMRI
+
+As highligthed above, DCM relies on ordinary differential equations that specify how network nodes influence each other. For fMRI times series, the core DCM equation writes:
+
+$$\frac{dx}{dt}=Ax + \sum_i u_i B^{(i)}x + Cu + \sum_j x_j D^{(j)}x$$
+
+where $$x$$ is a vector of DCM hidden states that quantifies activity in each node of the relevant brain network and $$u$$ are user-specified inputs that drive or modulate activity in network nodes. Matrices $$A$$, $$B$$, $$C$$ and $$D$$ correspond to connection strengths, input modulations of connections, input-state couplings and state modulations of connections, respectively. They are estimated by fitting the DCM model to fMRI time series (accounting for the convolution-like effect of the neuro-vascular coupling).
+
+
+![]({{ site.baseurl }}/images/wiki/dcm0.jpg)
+
+> DCM users have to specify which entries in $$A$$, $$B$$, $$C$$ and $$D$$ matrices are non-zero. The Figure above depicts the correspondance between the entries of DCM matrices and the underlying types of edges in a typical DCM network model. Note that DCM matrices are oriented such that directed edges go from columns to rows.
+
+
+
+## Extracting the fMRI timeseries
+
+First, one needs to extract fMRI timeseries from relevant regions of interest or ROIs. This can be done easily in SPM:
+
+* Locate the central voxel of each ROI, e.g., by selecting the peak of activation in the corresponding significant cluster.
+* Click on SPM's 'eigenvariate' button. 
+* Define the ROI geometry.
+* Adjust for effects of interest, e.g., to correct for movement/physio artifacts. 
+* Save.
+
+This procedure will provide a timeseries describing the 'typical' activity in the ROI. Repeat for each node.
+
+For each subject, you will have to load all those timeseries and store them in the observation matrix ```y_fmri```:
+
+```matlab
+% load eigenvariates
+data_ROI_1 = load('VOI_ROI1_1.mat') ;
+data_ROI_2 = load('VOI_ROI2_1.mat') ;
+data_ROI_3 = load('VOI_ROI3_1.mat') ;
+
+% store in the observation matrix
+y_fmri = [data_ROI_1.Y data_ROI_2.Y data_ROI_3.Y ]' ; 
+```
+ 
+## Specifying the inputs
+ 
+The inputs to the DCM are in general identical to the (un-convolved) regressors used in SPM's first level analysis. In VBA, one needs to store them in a matrix ```u``` that usually has the same number of columns as the data matrix (in case inputs are sampled at the fMRI rate) or more (if you define the inputs at the [micro-time resolution]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#micro-time-resolution)).
+
+
+## Setting the connectivity
+
+You now have to specify which entries of the DCM matrices are non-zero:
+
+* **Static connectivity**:
+  The matrix ```A``` defines the network's invariant connectivity (columns=source nodes, lines=target nodes). Its size is $$n \times n$$, where $$n$$ is the number of network nodes.
+  
+  ```matlab
+  % node 1 projects on node 2
+  % node 2 projects on node 3
+  % node 3 projects on node 2
+  A = [0 0 0 ;   
+       1 0 1 ;   
+	   0 1 0 ] ; 
+  ```
+  <br/>
+
+* **Modulatory influences**:
+  The matrices ```B``` define potential psycho-physiological influences. In VBA, ```B``` is a cell-array (of size the number of inputs), where each cell is a matrix of same size as ```A``` that specifies which network connection is modified by the corresponding input.
+  
+  ```matlab
+  % the second input modulates the connection from node 2 to node 3
+  B{2} = [0 0 0 ;
+          0 0 0 ;
+		  0 1 0 ] ; 
+  ```
+  <br/>
+  
+* **Direct inputs**:
+  The matrix ```C``` defines which input (columns) enters which node (lines). Its size is $$n \times n_u$$, where $$n_u$$ is the number of inputs:
+  
+  ```matlab
+  C = [1 0 ; % first input enter node 1 
+       0 0 ;
+	   0 0 ] ; 
+  ```
+  <br/>
+
+* **Quadratic effects**:
+  The last set of matrices, the array ```D``` explicits gating (interaction) effects. In VBA, ```D``` is a cell-array (of size the number of nodes), where each cell is a matrix of same size as ```A``` that specifies which network connection is modulated or gated by the corresponding node.
+  
+  ```matlab
+  % node 1 modulates the feedback connection from node 3 to node 2 
+  D{1} = [0 0 0 ;   
+          0 0 1 ;   
+	      0 0 0 ] ; 
+  ```
+  <br/>
+
+
+## Running the inversion
+
+VBA contains evolution and observation functions for vanilla DCM analysis of fMRI time series. These require specific optional ```options.inF``` and ```options.inG``` structures, which can be directly derived from the above $$A$$, $$B$$, $$C$$ and $$D$$ matrices and a few other parameters. Simply call the `prepare_fullDCM.m` function:
+
+```matlab
+%- prepare the DCM structure
+TR = 2; % sampling resolution (in secs)
+microDT = 1e-1; % micro_resolution = ODE solver time step (in secs)
+homogeneous = 1; % are all nodes similar?
+options = prepare_fullDCM(A, B, C, D, TR, microDT, homogeneous);
+```
+
+This sets up VBA's ```options``` structure, excluding DCM priors.
+Default DCM priors can then be set automatically as follows:
+
+```matlab
+nreg = 3; % number of network nodes
+n_t = 720; % number of fMRI time samples
+reduced_f = 1; % simplified HRF model
+stochastic = 0; % for deterministic DCM
+options.priors = getPriors(nreg,n_t,options,reduced_f,stochastic);
+```
+
+The main VBA inversion routine can now be called to run the DCM analysis:
+
+```matlab
+f_fname = @f_DCMwHRF; % DCM evolution function
+g_fname = @g_HRF3; %  % DCM obseravtion function
+dim.n_theta = options.inF.ind5(end);
+if homogeneous
+    dim.n_phi = 2;
+else
+    dim.n_phi = 2*nreg;
+end  
+dim.n = 5*nreg;
+[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+```
+
+> **Tip:** By default, a DCM analysis relies upon a deterministic model of neural dynamics. However, VBA can be used to invert *stochastic* DCMs ([Daunizeau et al., 2012](https://www.ncbi.nlm.nih.gov/pubmed/22579726)), whereby unpredictable neural perturbations are allowed to interact with responses evoked by the experimental manipulation. This is done by [changing VBA's priors on state noise precision]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps). 
+
+
+# Using SPM-specified structures in VBA (and back) 
+
+If you already performed a DCM analysis in SPM, you may have recognized that $$A$$, $$B$$, $$C$$ and $$D$$ matrices correspond to `DCM.a`, `DCM.b`, `DCM.c`, and `DCM.d` of the SPM-specified DCM structure, respectively. In fact, one can use the graphical user interface of SPM to specify a DCM, and then format the SPM structure for a VBA analysis. The following script allows one to invert an SPM-specified DCM model using VBA, and then eyeball inversion results and diagnostics:
 
 ```matlab
 [y, u, f_fname, g_fname, dim, options] = dcm2vba(DCM); % SPM-compatible format to VBA-compatible format
@@ -28,11 +172,13 @@ The graphical output of `spm_decm_explore.m` is appended below:
 
 ![]({{ site.baseurl }}/images/wiki/tabs/dcm1.jpg)
 
+
+# A few useful demonstration scripts
+
 A number of VBA demonstration scripts have been written for DCM:
 
 - `demo_dcm_1region.m`: this script simulates and inverts a 1-node network model. It is useful to assess the statistical [identifiability](https://en.wikipedia.org/wiki/Identifiability) of local self-inhibitory processes and neuro-vascular coupling parameters.
 - `demo_dcm4fmri.m`: this script simulates and inverts a 3-nodes network model, with induced network plasticity. Emphasis is put on the influence of [neural noise](https://en.wikipedia.org/wiki/Neuronal_noise) on the system's dynamics.
 - `demo_dcm4fmri_distributed.m`: this script simulates and inverts a 3-nodes network model (same as above). Here, the observation function has been augmented with unknown spatial profile of activation, which can be useful to capture non-trivial spatial encoding of experimentally controlled stimuli or observed behaviour.
 
-> **Tip:** By default, a DCM analysis relies upon a deterministic model of neural dynamics. However, VBA can be used to invert *stochastic* DCMs ([Daunizeau et al., 2012](https://www.ncbi.nlm.nih.gov/pubmed/22579726)), whereby unpredictable neural perturbations are allowed to interact with responses evoked by the experimental manipulation. This is done by [changing VBA's priors on state noise precision]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps). 
 
