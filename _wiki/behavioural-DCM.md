@@ -12,90 +12,15 @@ For further details, we refer the reader to [Rigoux & Daunizeau, 2015](http://ww
 
 In what follows, we explain how to perform a bDCM analysis on your own dataset. 
 
-# Specifying the classical DCM
+# Preparing a vanilla DCM analysis
 
-The core of bDCM is identical to classical DCM. In the next section, we will briefly review how to prepare your DCM before upgrading it to bDCM. We refer the reader to the [DCM wiki]({{ site.baseurl }}/wiki/dcm) for more detailed explanations on how to run a DCM analysis using VBA. There is also plenty of information in the [SPM documentation](http://www.fil.ion.ucl.ac.uk/spm/doc/) to help you design and preprocess a DCM-friendly experiment.
+The core of bDCM is identical to classical DCM. In particular, you will need to:
+- extract fMRI times series ```y_fmri``` in your regions of interest 
+- specify your inputs ```u```
+- setting the connectivity matrices $$A$$, $$B$$, $$C$$ and $$D$$.
 
-## Getting the BOLD timeseries
+We refer the reader to the [DCM wiki]({{ site.baseurl }}/wiki/dcm) for more detailed explanations on how to prepare a vanilla DCM analysis using VBA. 
 
-First, one needs to extract fMRI timeseries from relevant ROIs. This can be done easily in SPM:
-
-* Locate the central voxel of each ROI, e.g., by selecting the peak of activation in the corresponding significant cluster.
-* Click on SPM's 'eigenvariate' button. 
-* Define the ROI geometry.
-* Adjust for effects of interest, e.g., to correct for movement/physio artifacts. 
-* Save.
-
-This procedure will provide a timeseries describing the 'typical' activity in the ROI. Repeat for each node.
-
-For each subject, you will have to load all those timeseries and store them in the observation matrix:
-
-```matlab
-% load eigenvariates
-data_ROI_1 = load('VOI_ROI1_1.mat') ;
-data_ROI_2 = load('VOI_ROI2_1.mat') ;
-data_ROI_3 = load('VOI_ROI3_1.mat') ;
-
-% store in the observation matrix
-y_fmri = [data_ROI_1.Y data_ROI_2.Y data_ROI_3.Y ]' ; 
-```
- 
-## Defining the inputs
- 
-The inputs to the DCM are in general identical to the (un-convolved) regressors used in SPM's first level analysis. In VBA, one needs to store them in a matrix ```u``` that usually has the same number of columns as the data matrix (cf [combining the responses](#combining-the-responses)) or more if you define the inputs at the [micro-time resolution]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#micro-time-resolution).
-
-
-## Setting the connectivity
-
-You now have to implement the connectivity affecting your nodes. You need for this to specify 4 set of matrices:
-
-* **Static connectivity**:
-  The matrix ```A``` defines the network's invariant connectivity (columns=source nodes, lines=target nodes).
-  
-  ```matlab
-  % node 2 projects on node 1
-  % node 3 projects on node 2
-  % node 1 projects on node 3
-  A = [0 1 0 ;   
-       0 0 1 ;   
-	   1 0 0 ] ; 
-  ```
-  <br/>
-
-* **Modulatory influences**:
-  The matrices ```B``` define potential psycho-physiological influences. In VBA, ```B``` is a cell-array (of size the number of inputs), where each cell is a matrix of same size as ```A``` that specifies which network connection is modified by the corresponding input.
-  
-  ```matlab
-  % the second input modulates the connection from node 3 to node 1
-  B{2} = [0 0 0 ;
-          0 0 0 ;
-		  1 0 0 ] ; 
-  ```
-  <br/>
-  
-* **Direct inputs**:
-  The matrix ```C``` defines which input (columns) enters which node (lines):
-  
-  ```matlab
-  C = [1 0 ;
-       0 0 ;
-	   1 0 ] ; % first input enter nodes 1 and 3 
-  ```
-  <br/>
-
-* **Quadratic effects**:
-  The last set of matrices, the array ```D``` explicits gating (interaction) effects. In VBA, ```D``` is a cell-array (of size the number of nodes), where each cell is a matrix of same size as ```A``` that specifies which network connection is modified by the corresponding node.
-  
-  ```matlab
-  % node 2 receive the interaction effect of nodes 3 and 1 
-  D{3} = [0 0 0 ;   
-          1 0 0 ;   
-	      0 0 0 ] ; 
-  ```
-  <br/>
-  
-  
-If you already performed a DCM analysis in SPM, those matrices correspond to `DCM.a`, `DCM.b`, `DCM.c`, and `DCM.d` of the SPM output structure, respectively.
 
 # Upgrading DCM (with behavioural predictions)
 
@@ -103,7 +28,7 @@ We now can focus on extending the model to include behavioural predictors.
 
 ## Combining the responses
 
-We already have stored the fMRi time series in the ```y_fmri```. The full observation matrix ```y``` should also include the behavioural observations (button responses, skin conductance, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. You also need to inform VBA about the type of behavioural data (e.g., gaussian, multinomial ,etc...) you are dealing with. We refer the reader to the [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding these issues.
+We assume that you have stored the fMRI time series in ```y_fmri```. The full observation matrix ```y``` should also include the behavioural observations (button responses, skin conductance, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. You also need to inform VBA about the type of behavioural data (e.g., gaussian, multinomial ,etc...) you are dealing with. We refer the reader to the [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding these issues.
 
 ## Setting the neuro-behavioural mapping
 
