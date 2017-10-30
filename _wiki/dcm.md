@@ -6,6 +6,11 @@ title: "Dynamic Causal Modeling"
 
 Decomposing the relation existing between cognitive functions and their neurobiological "signature" (the spatio-temporal properties of brain activity) requires an understanding of how information is transmitted through brain networks. The ambition here is to ask questions such as: "what is the nature of the information that region A passes on to region B"? This stems from the notion of functional integration, which views function as an emergent property of brain networks. [Dynamic causal modelling](http://www.scholarpedia.org/article/Dynamic_causal_modeling) or DCM was developed specifically to address this question.
 
+# Crash-course on DCM
+
+
+## What you cannot ignore
+
 DCM embraces a [graph-theoretic](https://en.wikipedia.org/wiki/Graph_theory) perspective on brain networks, whereby functionally segregated sources (i.e. brain regions or neuronal populations) correspond to “nodes” and conditional dependencies among the hidden states of each node are mediated by [effective connectivity](http://www.scholarpedia.org/article/Brain_connectivity) (directed “edges”). DCM generative models are causal in at least two senses:
 
 - DCM describes how experimental manipulations influence the dynamics of hidden (neuronal) states of the system using [ordinary differential equations](https://en.wikipedia.org/wiki/Ordinary_differential_equation). These evolution equations summarize the biophysical  mechanisms underlying the temporal evolution of states, given a set of unknown evolution parameters that determine both the presence/absence of edges in the graph and how these influence the dynamics of the system’s states.
@@ -13,14 +18,7 @@ DCM embraces a [graph-theoretic](https://en.wikipedia.org/wiki/Graph_theory) per
 
 The inversion of such models given neuroimaging data can then be used to identify the structure of brain networks and their specific modulation by the experimental manipulation (i.e. induced [plasticity](https://en.wikipedia.org/wiki/Neuroplasticity)). For example, showing that a given connection is modulated by the colour of some stimulus demonstrates that this connection conveys the colour information.
 
-
-# Preparing a vanilla DCM analysis in VBA
-
-Recall that DCM has many variants, which may be specific to neuroimaging modalities (e.g., EEG/MEG, intracranial LFP, fMRI, etc...). Although almost all variants of DCM are directly available from the [SPM academic freeware](http://www.fil.ion.ucl.ac.uk/spm/), only a few of them are already implemented in VBA. In particular, VBA includes DCM for fMRI time series. In what follows, we will briefly review how to prepare such vanilla DCM analysis.
-
-Note: we refer the reader to the [SPM documentation](http://www.fil.ion.ucl.ac.uk/spm/doc/) to help you design and preprocess a DCM-friendly experiment.
-
-## Crash-course on DCM for fMRI
+## A unique equation for multiple effect types
 
 As highligthed above, DCM relies on ordinary differential equations that specify how network nodes influence each other. For fMRI times series, the core DCM equation writes:
 
@@ -34,6 +32,12 @@ where $$x$$ is a vector of DCM hidden states that quantifies activity in each no
 > DCM users have to specify which entries in $$A$$, $$B$$, $$C$$ and $$D$$ matrices are non-zero. The Figure above depicts the correspondance between the entries of DCM matrices and the underlying types of edges in a typical DCM network model. Note that DCM matrices are oriented such that directed edges go from columns to rows.
 
 
+
+# Preparing a vanilla DCM analysis in VBA
+
+Recall that DCM has many variants, which may be specific to neuroimaging modalities (e.g., EEG/MEG, intracranial LFP, fMRI, etc...). Although almost all variants of DCM are directly available from the [SPM academic freeware](http://www.fil.ion.ucl.ac.uk/spm/), only a few of them are already implemented in VBA. In particular, VBA includes DCM for fMRI time series. In what follows, we will briefly review how to prepare such vanilla DCM analysis.
+
+Note: we refer the reader to the [SPM documentation](http://www.fil.ion.ucl.ac.uk/spm/doc/) to help you design and preprocess a DCM-friendly experiment.
 
 ## Extracting the fMRI timeseries
 
