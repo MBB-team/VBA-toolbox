@@ -153,7 +153,7 @@ homogeneous = 1; % are all nodes similar?
 options = prepare_fullDCM(A, B, C, D, TR, microDT, homogeneous,hA, hB, hC, hD,sources);
 ```
 
-Priors can be automatically set using the $$getPriors$$ function:
+Priors can be automatically set using the ```getPriors``` function:
 ```matlab
 nreg = 3; % number of network nodes
 n_t = 720; % number of fMRI time samples
