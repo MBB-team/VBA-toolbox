@@ -101,7 +101,8 @@ You now have to specify which entries of the DCM matrices are non-zero:
   The matrix $$C$$ defines which input (columns) enters which node (lines). Its size is $$n \times n_u$$, where $$n_u$$ is the number of inputs:
   
   ```matlab
-  C = [1 0 ; % first input enter node 1 
+  % first input enter node 1 
+  C = [1 0 ;
        0 0 ;
 	   0 0 ] ; 
   ```
