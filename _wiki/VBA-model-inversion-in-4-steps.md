@@ -8,7 +8,7 @@ This page summarizes the steps required for performing a model inversion with th
 
 In brief, in the aim of performing a model-based data analysis using VBA:
 
-- one **needs** to define evolution and observation functions, as well as creating the `dim` matlab structure (see below).
+- one **needs** to define evolution and observation functions.
 - one **can** provide further information about the model and/or its inversion (e.g. priors).
 
 > **TIP:** Many demonstration scripts are provided with the toolbox (e.g., see this [fast demo]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model)). We suggest you go through some of these to get started.
@@ -33,7 +33,7 @@ z = function_name(x_t, P, u_t, in) ;
 
 The VBA model inversion requires the user to specify some additional information:
 
-- **model dimensions** : `dim`
+- **model dimensions** : VBA stores these in the structure `dim`, which contains the following fields:
   - `n` : number of hidden states
   - `p` : output (data) dimension, ie. number of obervations per time sample
   - `n_theta` : number of evolution parameters
