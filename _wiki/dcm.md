@@ -37,7 +37,8 @@ where $$x$$ is a vector of DCM hidden states that quantifies activity in each no
 
 Recall that DCM has many variants, which may be specific to neuroimaging modalities (e.g., EEG/MEG, intracranial LFP, fMRI, etc...). Although almost all variants of DCM are directly available from the [SPM academic freeware](http://www.fil.ion.ucl.ac.uk/spm/), only a few of them are already implemented in VBA. In particular, VBA includes DCM for fMRI time series. In what follows, we will briefly review how to prepare such vanilla DCM analysis.
 
-> Note: we refer the reader to the [SPM documentation](http://www.fil.ion.ucl.ac.uk/spm/doc/) to help you design and preprocess a DCM-friendly experiment.
+> Note: we refer the reader to the [SPM documentation](http://www.fil.ion.ucl.ac.uk/spm/doc/) to help you design and preprocess a DCM-friendly experiment. See also [Daunizeau et al; (2011), Optimizing experimental design for comparing models of brain function, PloS Comp. Biol. 7(11): e1002280](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1002280).
+
 
 ## Extracting the fMRI timeseries
 
