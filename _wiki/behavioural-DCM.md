@@ -43,7 +43,7 @@ For further details, we refer the reader to [Rigoux & Daunizeau, 2015](http://ww
 In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to set the neuro-behavioural mapping.
 
 
-### Direct neural mapping
+## Direct neural mapping
 
 The most intuitive part of the neuro-behavioural mapping is a linear predictor that directly maps DCM nodes to behavioural predictors:
 ![direct neural mapping]({{ site.baseurl  }}/images/wiki/bdcm/mapping_ha.png){:width="50%"}
@@ -57,7 +57,7 @@ Ar = [ 0 1 0 ;
        0 0 1 ] ;
 ```
   
-### Modulated neural mapping
+## Modulated neural mapping
 
 Brain-to behaviour mappings may change according to experimental conditions (which are encoded in inputs `u`):
 ![modulated neural mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hb.png){:width="50%"}
@@ -70,7 +70,7 @@ Br{2} = [ 0 0 1 ;
           0 0 0 ] ; 
 ```
 
-### Direct input mapping
+## Direct input mapping
 
 One may also consider direct influences of inputs onto behavioural responses:
 ![cheating mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hc.png){:width="50%"}
@@ -86,7 +86,7 @@ Cr = [ 1 1 ;
        0 1 ] ; 
 ```
 
-### Quadratic neural mapping
+## Quadratic neural mapping
 
 Finally, similarly to DCM's quadratic gating effects, one may assume that brain-to behaviour mappings may be modulated by activity in other network nodes. This capture situations in which nodes interact to produce a response. Think of lesion mapping, for example. It may be that a lesion in region X alone may not produce any behavioural deficit. The same with region Y. But it may be that if both X and Y are lesioned, then a ebahviorual deficit is observed. This is the type of effect such interactions may predict:
 ![quadratic mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hd.png){:width="50%"}
