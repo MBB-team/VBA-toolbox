@@ -152,6 +152,10 @@ dim=options.dim;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
 
+Inversion results can be eyeballed using standard VBA's graphical output, or, alternatively, using DCM-specific tools (cf. function `spm_dcm_explore.m` described below).
+
+> Statistical inference on DCM parameters is strongly dependent upon one's experimental design. In particular, it may be that some rest-connectivity parameters (i.e. elements of the $$A$$ matrix) and hemodynamic parameters may be partly non-identifiable. We advise users to check potential non-identifiability issues using [VBA diagnostic tools]({{ site.baseurl }}/wiki/VBA-output-structure/).
+
 
 # A few advanced tricks
 
@@ -168,7 +172,7 @@ spm_dcm_explore(DCM) % eyeball inversion results
 
 where `DCM` is the variable saved in the SPM DCM-file and `TR` is the fMRI repetition time.
 
-The graphical output of `spm_decm_explore.m` is appended below:
+The graphical output of `spm_dcm_explore.m` is appended below:
 
 ![]({{ site.baseurl }}/images/wiki/tabs/dcm1.jpg)
 
@@ -194,7 +198,7 @@ The ```options``` structure now contains the set of confounds (encoded in the "n
 By default, vanilla DCM analyses relY upon a deterministic model of neural dynamics (cf. ordinary differential equation above). However, VBA can be used to invert *stochastic* DCMs ([Daunizeau et al., 2012](https://www.ncbi.nlm.nih.gov/pubmed/22579726)), whereby unpredictable neural perturbations are allowed to interact with responses evoked by the experimental manipulation. In formal terms, the equation above is augmented with stochastic state noise, which has to be estimated, along with other DCM parameters, given fMRI time series. It turns out that the inversion of stochastic and deterministic systems are qualitatively different from each other. Nevertheless, switching to stochastic DCM
 can be done simply by [changing VBA's priors on state noise precision]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps), or, alternatively, by setting ```stochastic = 1``` prior to calling ```getPriors```.
 
-> Note: stochastic DCM are notoriously difficult to invert. We refer the reader to the following two relevant references:
+> Note: stochastic DCM are notoriously difficult to invert. We refer the interested reader to the following two relevant works:
 - [Daunizeau et al. (2013), An electrophysiological validation of stochastic DCM for fMRI. Frontiers Comput. Neurosci. (2013), 6: 103](https://www.ncbi.nlm.nih.gov/pubmed/23346055)
 - [Daunizeau et al. (2012), Stochastic Dynamic Causal Modelling of fMRI data: should we care about neural noise? Neuroimage (2012),62: 464-481](https://www.ncbi.nlm.nih.gov/pubmed/22579726)
 
@@ -205,7 +209,7 @@ can be done simply by [changing VBA's priors on state noise precision]({{ site.b
 
 A number of VBA demonstration scripts have been written for DCM:
 
-- `demo_dcm_1region.m`: this script simulates and inverts a 1-node network model. We advise readers to have a look at this demo in the aim of getting more insight on the statistical [identifiability](https://en.wikipedia.org/wiki/Identifiability) of conncetivity parameters (including, e.g., local self-inhibitory connections) and neuro-vascular coupling parameters.
+- `demo_dcm_1region.m`: this script simulates and inverts a 1-node network model. We advise readers to have a look at this demo in the aim of getting more insight on the [statistical identifiability](https://en.wikipedia.org/wiki/Identifiability) of connectivity parameters (including, e.g., local self-inhibitory connections) and neuro-vascular coupling parameters.
 - `demo_dcm4fmri.m`: this script simulates and inverts a 3-nodes network model, with induced network plasticity. Emphasis is put on the influence of [neural noise](https://en.wikipedia.org/wiki/Neuronal_noise) on the system's dynamics. 
 - `demo_dcm4fmri_distributed.m`: this script simulates and inverts a 3-nodes network model (same as above). Here, the observation function has been augmented with unknown spatial profile of activation, which can be useful to capture non-trivial spatial encoding of experimentally controlled stimuli or observed behaviour.
 
