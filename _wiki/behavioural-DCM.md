@@ -101,7 +101,7 @@ Dr{1} = [ 0 0 0 ;
 
 # Combining fMRI and behavioural time series
 
-We assume that you have stored the fMRI time series in ```y_fmri``` (see [above]({{ site.baseurl }}/wiki/behavioural-DCM/#Preparing-a-vanilla-DCM-analysis)). The full observation matrix ```y``` should also include the behavioural observations (choices, reaction times, subjective ratings, pupil responses, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. You also need to inform VBA about the type of behavioural data (e.g., gaussian, multinomial ,etc...) you are dealing with. We refer the reader to [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding this sort of *mixed observations*.
+We assume that you have stored the fMRI time series in ```y_fmri``` (see [how to prepare a vanilla DCM analysis]({{ site.baseurl }}/wiki/dcm/#Preparing-a-vanilla-DCM-analysis)). The full observation matrix ```y``` should also include the behavioural observations (choices, reaction times, subjective ratings, pupil responses, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. We refer the reader to [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding this sort of *mixed observations*.
 
 Now, as VBA only deals with one observation function to map hidden states to the observation, we need to 1) create an "aggregated" observation function predicting all the data concurrently, and 2) inform VBA how to split the observations into fMRI and behavioural time series.
 
