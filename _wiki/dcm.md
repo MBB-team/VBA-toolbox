@@ -87,7 +87,7 @@ You now have to specify which entries of the DCM matrices are non-zero:
   <br/>
 
 * **Modulatory influences**:
-  The matrices $$B$$ define potential psycho-physiological influences. In VBA, $$B$$ is a cell-array (of size the number of inputs), where each cell is a matrix of same size as $$A$$ that specifies which network connection is modified by the corresponding input.
+  The matrices $$B$$ define potential psycho-physiological influences. In VBA, $$B$$ is a cell-array (of size the number of inputs $$n_u$$), where each cell is a matrix of same size as $$A$$ that specifies which network connection is modified by the corresponding input.
   
   ```matlab
   % the second input modulates the connection from node 2 to node 3
@@ -109,7 +109,7 @@ You now have to specify which entries of the DCM matrices are non-zero:
   <br/>
 
 * **Quadratic effects**:
-  The last set of matrices, the array $$D$$ explicits gating (interaction) effects. In VBA, $$D$$ is a cell-array (of size the number of nodes), where each cell is a matrix of same size as $$A$$ that specifies which network connection is modulated or gated by the corresponding node.
+  The last set of matrices (namely: $$D$$) captures gating (interaction or quadratic) effects. In VBA, $$D$$ is a cell-array (of size the number of nodes $$n$$), where each cell is a matrix of same size as $$A$$ that specifies which network connection is modulated or gated by the corresponding node.
   
   ```matlab
   % node 1 modulates the feedback connection from node 3 to node 2 
