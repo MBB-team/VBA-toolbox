@@ -189,7 +189,7 @@ Once the BDCM model has been inverted given mixed fMRI/behavioural times series,
 
 One of the main advantage of bDCM is its ability to predict the effect of brain lesions or dysconnectivity on behavioural responses. To do so, one simply needs to "switch off" the corresponding node or link, simulate the ensuing lesioned model, and summarize the predicted behavioural responses.
 
-In VBA, you can automatically test the effect of lesioning each node in turn, as follows:
+In VBA, you can automatically test the effect of lesioning each network node in an automatic manner using the built-in function `VBA_bDCM_lesion.m`, as follows:
 
 ```matlab
 % posterior and out come from @VBA_NLStateSpaceModel
@@ -200,17 +200,23 @@ results.lesion(2).y
 
 ```
 
+One can then summarize the predicted behavioural responses under different artificial lesions:
+
+
 ![bdcm-lesion]({{ site.baseurl }}/images/wiki/bdcm/bdcm_lesion.png){:width="95%"}
 
 > **Example of lesion analysis**
-If the 1st node is lesioned (left), then the normal behaviour (plain bars) is completly abolished (hatched bars). If the 2nd node is lesioned (right), we observe an increase in the response rate when the modulatory input is on, showing the loss of the feedback process.
+If the 1st node is lesioned (left), then the normal behaviour (plain bars) is completly abolished (hatched bars). If the 2nd node is lesioned (right), we observe an increase in the response rate when the modulatory input is on, showing the loss of feedback inhibition (net effect of connection from node 2 to node 1).
+
+
+Note that you may want to go beyond such "simple" artificial lesion analysis. In particular, you may be interested in disclosing non-trivial pairwise region-by-region interactions. This may be interesting in the presence of **functional redundancy**. For exemaple, lesioning a region X alone may not produce any behavioural deficit. The same with region Y. But it may be that if both X and Y are lesioned, then a behavioural deficit is observed. This type of region-by-region may be highly relevant when attempting to related bDCM post-hoc analyses to the neuropsychological studies on brain-damaged patients!
 
 
 ## Susceptibility analysis
 
 One may also want to ask which node and/or link is critical for funelling the impact of each input onto each behavioural output. This can be done using so-called "susceptibility analyses". 
 
-Critical here is the fact that measuring the behavioural distortion induced by removing a node or a link is not sufficient for measuring how important is that node or link. This is becaus eone has to account for potential **functional redundancy** in the system. In brief, if a given input can bypass this node or link to impact behavioural responses, then the corresponding input-output relationship is weakly susceptible to this node or link. We can measure this by measuring the additional additional distortion induced by switching off the input, having already removed the node/link. The amount of additional distortion directly measures functional redundancy. This is because if switching off the input induces additional distoritions, then this means that it did not have to flow through the corresponding node/link... The logic of such analysis is summarized below:
+Critical here is the fact that measuring the behavioural distortion induced by removing a node or a link is not sufficient for measuring how important is that node or link. This is because one has to account for potential functional redundancy in the system. In brief, if a given input can bypass this node or link to impact behavioural responses, then the corresponding input-output relationship is weakly susceptible to this node or link. We can measure this by measuring the additional additional distortion induced by switching off the input, having already removed the node/link. The amount of additional distortion directly measures functional redundancy. This is because if switching off the input induces additional distoritions, then this means that it did not have to flow through the corresponding node/link... The logic of such analysis is summarized below:
 
 ![bdcm-susceptibility-principle]({{ site.baseurl }}/images/wiki/bdcm/bdcm_susceptibility0.jpg)
 
