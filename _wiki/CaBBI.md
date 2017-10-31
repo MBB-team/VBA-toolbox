@@ -42,13 +42,13 @@ Below, we comment the demonstration scripts step by step:
 
 - **Step 1**: The downloaded data contains eight traces: pick the trace you want, e.g.:
 
-  ```matlab
+```matlab
 % file name of the fluorescence trace
 Fluor_trace_name = 'fluorescence_data7';
 ```
 
 - **Step 2**: specify the sampling rate (in Hz) of the fluorescence trace:
-  ```matlab
+```matlab
 sampling_rate = 22.6;  
 ```
 
@@ -60,8 +60,6 @@ degree = '4';
 
 - **Steps 5 to 7**: Specify VBA inversion options (including priors).
 ```matlab
-% assigning the generative model
-
 nFrames = numel(Fluor_trace); % number of recording frames
 dt = 0.2;  % [ms], time step size of the FHN model
 inF.dt = dt;
@@ -76,7 +74,7 @@ options.inG     = inG;
 ```
 
 - **Step 8**: VBA inversion of the FHN model given the observed fluorescence trace:
-  ```matlab
+```matlab
 f_fname = @f_CaBBI_QGIF; % CaBBI evolution function [depends upon the CaBBI demo script]
 g_fname = @g_CaBBI;  % CaBBI observation function
 u = zeros(1,numel(Fluor_trace)); % dummy system's input
