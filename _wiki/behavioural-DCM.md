@@ -193,14 +193,14 @@ In VBA, you can automatically test the effect of lesioning each network node in 
 
 ```matlab
 % posterior & out structures come from @VBA_NLStateSpaceModel
-results = VBA_bDCM_lesion(posterior, out); % lesion-induced behavioural responses
+results = VBA_bDCM_lesion(posterior, out);
 
 % behavioural timeseries predicted when node 2 is lesioned
 results.lesion(2).y 
 
 ```
 
-One can then summarize the predicted behavioural responses under different artificial lesions (e.g., node 1 versus node 2) and under different experimental conditions (cf. distinct input $$u_1 \times u_2$$ combinations):
+One can then summarize the predicted behavioural responses under different artificial lesions (e.g., node 1 versus node 2) and under different experimental conditions (e.g., distinct values for input $$u_2$$):
 
 
 ![bdcm-lesion]({{ site.baseurl }}/images/wiki/bdcm/bdcm_lesion.png){:width="95%"}
@@ -223,10 +223,10 @@ Critical here is the fact that measuring the behavioural distortion induced by r
 > Amount of explained variance in observed behavioural responses (top row) as a function of artificial esions performed on the network (bottom row). Left: un-lesioned network. Lesioning the link from node 2 to node 3 induces a loss of explained variance (red). Further switching off input $$u_1$$ induces an additional loss of explained variance (violet). This is because input $$u_1$$ can bypass the missing link to impact the behavioural response $$o$$ (by flowing directly through node 3). In contrast, switching off input $$u_2$$ (green) doesn ot induced any additional loss of explained variance. This is because input $$u_2$$ has no other route to pass through. In conclusion, the link from node 2 to node 3 is critical for funneling the impact of input $$u_2$$ onto behavioural response.
 
 
-In VBA, this can be performed automatically as follows: 
+In VBA, this can be performed automatically using the function `VBA_susceptibility`, as follows: 
 
 ```matlab
-% posterior and out come from @VBA_NLStateSpaceModel
+% posterior & out structures come from @VBA_NLStateSpaceModel
 results = VBA_susceptibility(posterior,out);
 
 % scoring results for each input (line) and connection (column)
