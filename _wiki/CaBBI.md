@@ -41,7 +41,6 @@ The Figure below is an example of the graphical output of `demo_CaIBB_FHN`:
 Below, we comment the demonstration scripts step by step:
 
 - **Step 1**: The downloaded data contains eight traces: pick the trace you want, e.g.:
-
 ```matlab
 % file name of the fluorescence trace
 Fluor_trace_name = 'fluorescence_data7';
@@ -94,7 +93,7 @@ if (count > 1) && ( (j-indices(count-1)) > ceil(refracPeriod/dt) )
 ...
 ```
 
-- **Step 11**: save the variables of interest. For example, the estimated decay time-constant of the calcium transients (see also Eq. 17 in [Rahmati et al. 2016](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004736) can be accessed as follows:
+- **Step 11**: save the variables of interest. For example, the estimated decay time-constant of the calcium transients (see also Eq. 17 in [Rahmati et al. 2016](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004736)) can be accessed as follows:
 ```matlab
 % in [sec]
 inferred_Tau_Ca = inF.Tau_Ca0 * exp(posterior.muTheta(1)) * (1/sampling_rate)/dt
