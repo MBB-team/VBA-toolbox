@@ -8,6 +8,8 @@ Behavioural Dynamic Causal Modelling -- or bDCM -- aims at decomposing the brain
 
 > We refer the interested reader to [Rigoux & Daunizeau (2015), Dynamic causal modelling of brain–behaviour relationships, Neuroimage 117: 202-221](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}.
 
+![]({{ site.baseurl }}/images/wiki/bdcm/bdcm-schema.png){:width="75%"}
+
 What follows is a practical guide to performing a bDCM analysis on your own dataset. 
 
 # Preparing a vanilla DCM analysis
@@ -41,8 +43,6 @@ Note that the behavioural predictor variable $$r$$ actually controls the first-o
 $$E[y_{behaviour}] = g_r(r)$$
 
 where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=\frac{1}{1+e^{-r}}$$ for binary choices).
-
-![]({{ site.baseurl }}/images/wiki/bdcm/bdcm-schema.png)
 
 In bDCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly estimated from both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to set the neuro-behavioural mapping.
 
@@ -192,15 +192,15 @@ One of the main advantage of bDCM is its ability to predict the effect of brain 
 In VBA, you can automatically test the effect of lesioning each network node in an automatic manner using the built-in function `VBA_bDCM_lesion.m`, as follows:
 
 ```matlab
-% posterior and out come from @VBA_NLStateSpaceModel
-results = VBA_bDCM_lesion(posterior, out) ;
+% posterior & out structures come from @VBA_NLStateSpaceModel
+results = VBA_bDCM_lesion(posterior, out); % lesion-induced behavioural responses
 
 % behavioural timeseries predicted when node 2 is lesioned
 results.lesion(2).y 
 
 ```
 
-One can then summarize the predicted behavioural responses under different artificial lesions:
+One can then summarize the predicted behavioural responses under different artificial lesions (e.g., node 1 versus node 2) and under different experimental conditions (cf. distinct input $$u_1 \times u_2$$ combinations):
 
 
 ![bdcm-lesion]({{ site.baseurl }}/images/wiki/bdcm/bdcm_lesion.png){:width="95%"}
