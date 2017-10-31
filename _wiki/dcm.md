@@ -128,7 +128,7 @@ VBA contains evolution and observation functions for vanilla DCM analysis of fMR
 %- prepare the DCM structure
 TR = 2; % sampling resolution (in secs)
 microDT = 1e-1; % micro_resolution = ODE solver time step (in secs)
-homogeneous = 1; % are all nodes similar?
+homogeneous = 1; % constrains identical neuro-vascular coupling parameters across ROIs
 options = prepare_fullDCM(A, B, C, D, TR, microDT, homogeneous);
 ```
 
@@ -147,7 +147,7 @@ The main VBA inversion routine can now be called to run the DCM analysis:
 
 ```matlab
 f_fname = @f_DCMwHRF; % DCM evolution function
-g_fname = @g_HRF3; %  % DCM obseravtion function
+g_fname = @g_HRF3; %  % DCM observation function
 dim=options.dim;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
