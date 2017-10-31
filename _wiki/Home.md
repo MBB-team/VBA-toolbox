@@ -31,7 +31,7 @@ title: "home"
 - [Bayesian model selection for group studies](BMS-for-group-studies)
 - [Bayesian model selection with large model spaces](Comparing-large-spaces-of-models)
 - [Volterra decompositions](Volterra-decomposition)
-- [Bayesian Model Averaging](VBA-BMA)
+- [Bayesian Model Averaging (BMA)](VBA-BMA)
 - [Setting the priors through Empirical Bayes](VBA-MFX)
 - [Setting "hard constraints" through parameter transformations](param-transform)
 - [A few useful stand-alone VBA functions](a-few-VBA-functions)
