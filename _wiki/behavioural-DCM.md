@@ -32,7 +32,11 @@ In addition to network dynamics, bDCM augments DCM's state space with hidden beh
 
 $$\frac{dr}{dt}= A_r x + \sum_i u_i B_r^{(i)}x + C_ru + \sum_j x_j D_r^{(j)}x - \alpha r$$
 
-where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called **neuro-behavioural mapping** (see below). Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes, i.e.:
+where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called **neuro-behavioural mapping** (see below).
+
+> You do not have to create an evolution function that implements bDCM hidden states dynamics. This is because VBA already possesses a built-in function that does exactly this, namely: `f_DCMwHRFext.m`. This function agregates the evolution function of vanilla DCM with the above behavioural predictor variables dynamics. In addition, VBA also includes dedicated functions that were designed to facilitate the preparation of bDCM analyses. These are described below.
+
+Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes, i.e.:
 
 $$E[y_{behaviour}] = g_r(r)$$
 
@@ -163,7 +167,7 @@ The main VBA inversion routine can now be called to run the behavioural DCM anal
 
 ```matlab
 f_fname = @f_DCMwHRFext; % bDCM evolution function
-g_fname = @g_DCMwHRFext; %  % bDCM obseravtion function
+g_fname = @g_DCMwHRFext; %  % default bDCM observation function
 dim=options.dim;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
