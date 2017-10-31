@@ -74,7 +74,7 @@ The inputs to the DCM are in general identical to the (un-convolved) regressors 
 You now have to specify which entries of the DCM matrices are non-zero:
 
 * **Static connectivity**:
-  The matrix ```A``` defines the network's invariant connectivity (columns=source nodes, lines=target nodes). Its size is $$n \times n$$, where $$n$$ is the number of network nodes.
+  The matrix $$A$$ defines the network's invariant connectivity (columns=source nodes, lines=target nodes). Its size is $$n \times n$$, where $$n$$ is the number of network nodes.
   
   ```matlab
   % node 1 projects on node 2
@@ -87,7 +87,7 @@ You now have to specify which entries of the DCM matrices are non-zero:
   <br/>
 
 * **Modulatory influences**:
-  The matrices ```B``` define potential psycho-physiological influences. In VBA, ```B``` is a cell-array (of size the number of inputs), where each cell is a matrix of same size as ```A``` that specifies which network connection is modified by the corresponding input.
+  The matrices $$B$$ define potential psycho-physiological influences. In VBA, $$B$$ is a cell-array (of size the number of inputs), where each cell is a matrix of same size as $$A$$ that specifies which network connection is modified by the corresponding input.
   
   ```matlab
   % the second input modulates the connection from node 2 to node 3
@@ -98,7 +98,7 @@ You now have to specify which entries of the DCM matrices are non-zero:
   <br/>
   
 * **Direct inputs**:
-  The matrix ```C``` defines which input (columns) enters which node (lines). Its size is $$n \times n_u$$, where $$n_u$$ is the number of inputs:
+  The matrix $$C$$ defines which input (columns) enters which node (lines). Its size is $$n \times n_u$$, where $$n_u$$ is the number of inputs:
   
   ```matlab
   C = [1 0 ; % first input enter node 1 
@@ -108,7 +108,7 @@ You now have to specify which entries of the DCM matrices are non-zero:
   <br/>
 
 * **Quadratic effects**:
-  The last set of matrices, the array ```D``` explicits gating (interaction) effects. In VBA, ```D``` is a cell-array (of size the number of nodes), where each cell is a matrix of same size as ```A``` that specifies which network connection is modulated or gated by the corresponding node.
+  The last set of matrices, the array $$D$$ explicits gating (interaction) effects. In VBA, $$D$$ is a cell-array (of size the number of nodes), where each cell is a matrix of same size as $$A$$ that specifies which network connection is modulated or gated by the corresponding node.
   
   ```matlab
   % node 1 modulates the feedback connection from node 3 to node 2 
