@@ -126,7 +126,7 @@ VBA contains evolution and observation functions for vanilla DCM analysis of fMR
 
 ```matlab
 %- prepare the DCM structure
-TR = 2; % sampling resolution (in secs)
+TR = 2; % fMRI sampling resolution (in secs)
 microDT = 1e-1; % micro_resolution = ODE solver time step (in secs)
 homogeneous = 1; % enforces identical hemodynamic params across ROIs
 options = prepare_fullDCM(A, B, C, D, TR, microDT, homogeneous);
