@@ -103,11 +103,7 @@ Dr{1} = [ 0 0 0 ;
 
 We assume that you have stored the fMRI time series in ```y_fmri``` (see [how to prepare a vanilla DCM analysis]({{ site.baseurl }}/wiki/dcm/#Preparing-a-vanilla-DCM-analysis)). The full observation matrix ```y``` should also include the behavioural observations (choices, reaction times, subjective ratings, pupil responses, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. We refer the reader to [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding this sort of *mixed observations*.
 
-Now, VBA only deals with one observation function to map hidden states to observed data. Therefore, we need to 1) create an *augmented* observation function predicting fMRI and behavioural data concurrently, and 2) inform VBA how to split the observations into fMRI and behavioural time series.
-
-## Creating an *augmented* observation function
-
-For a vanilla DCM, VBA already provides an observation function: `g_HRF3.m`. This will be the first ingredient of our (augmented) mixed observation function. The second element is a specific mapping of the behavioural response predictors $$r$$. Now if you have a DCM with 3 nodes and 2 behavioral (e.g., button) responses, the mixed observation function should look something like this:
+Now, VBA only deals with one observation function to map hidden states to observed data. Therefore, we need to create an *augmented* observation function predicting fMRI and behavioural data concurrently. For a vanilla DCM, VBA already provides an observation function: `g_HRF3.m`. This will be the first ingredient of our (augmented) mixed observation function. The second element is a specific mapping of the behavioural response predictors $$r$$. Now if you have a DCM with 3 nodes and 2 behavioral (e.g., button) responses, the mixed observation function should look something like this:
 
 ```matlab
 function g = mybDCM(x,P,u,in)
@@ -129,21 +125,6 @@ where ```g_myMapping1``` and ```g_myMapping2``` can be defined arbitrarily. Such
 > Note that bDCM response predictors $$r$$ are continuous and unbounded variables. So how do we deal with, e.g., choice data, which are binary? The simplest solution in this case is to use a sigmoid function, like `g_softmax4decoding.m`, that will transform $$r$$ into the probability of choosing, e.g., the first alternative... In fact, VBA already includes a default bDCM observation function, `g_DCMwHRFext.m`, that does exactly this. It will apply the vanilla DCM model to the first $$n$$ observations (where $$n$$ is the number of nodes), and treat all the remaining lines in the data matrix as binary behavioural responses (i.e. in this case, $$g_r$$ is the sigmoid mapping). If you want to implement another brain-to-behaviour mapping (that deals with, e.g., continuous responses), you will have to adapt `g_DCMwHRFext.m` accordingly.
 
 
-## Splitting the observations
-
-The only thing VBA still requires is information regarding which lines in the data matrix `y` correspond to the fMRI and to the behavioural responses, respectively (cf. [mixed observations]({{ site.baseurl }}/wiki/Multisources)). For the example given above, this should look like this:
-
-```matlab
-% specify distribution of observations
-
-% - three BOLD timeseries / nodes (gaussian) 
-  sources(1) = struct('out',1:3,'type',0);  
-  
-% - two binary motor responses (binomial) 
-  sources(2) = struct('out',4,'type',1);  % left  hand
-  sources(3) = struct('out',5,'type',1);  % right hand
-```
-
 
 # Running the inversion
 
@@ -164,6 +145,18 @@ n_t = 720; % number of fMRI time samples
 reduced_f = 1; % simplified HRF model
 stochastic = 0; % for deterministic DCM
 options.priors = getPriors(nreg,n_t,options,reduced_f,stochastic);
+```
+
+Note that we may need to inform VBA Re: how to split the observations into fMRI and behavioural time series. The motivation for doing this is twofold: (i) we may want VBA to adapt to distinct signal-to-noise ratios (this can be done by separating fMRI and behavioural data into different "sources"), and (ii) behavioural data may be non-gaussian (e.g., binary). This can be done using the `options` structure, as follows (for further details, see [mixed observations]({{ site.baseurl }}/wiki/Multisources)):
+
+
+```matlab
+% specify distribution of observations
+% - three BOLD timeseries / nodes (gaussian) 
+options.sources(1) = struct('out',1:3,'type',0);  
+% - two binary behavioural responses (binomial) 
+options.sources(2) = struct('out',4,'type',1);  % r1
+options.sources(3) = struct('out',5,'type',1);  % r2
 ```
 
 The main VBA inversion routine can now be called to run the behavioural DCM analysis:
