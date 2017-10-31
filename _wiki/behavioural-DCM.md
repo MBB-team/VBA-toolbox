@@ -28,7 +28,7 @@ We refer the reader to the [DCM wiki]({{ site.baseurl }}/wiki/dcm) for more deta
 
 # Upgrading DCM with behavioural predictions
 
-In addition to network dynamics, bDCM assumes that there are hidden behavioural predictor variables $$r$$ that obey a similar set of ordinary differential equations:
+In addition to network dynamics, bDCM augments DCM's state space with hidden behavioural predictor variables $$r$$ that obey a very similar set of ordinary differential equations:
 
 $$\frac{dr}{dt}= A_r x + \sum_i u_i B_r^{(i)}x + C_ru + \sum_j x_j D_r^{(j)}x - \alpha r$$
 
