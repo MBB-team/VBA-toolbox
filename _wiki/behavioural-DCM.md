@@ -88,7 +88,7 @@ Cr = [ 1 1 ;
 
 ## Quadratic neural mapping
 
-Finally, similarly to DCM's quadratic gating effects, one may assume that brain-to behaviour mappings may be modulated by activity in other network nodes. This captures situations in which nodes interact to produce a response. Think of lesion mapping, for example. It may be that a lesion in region X alone may not produce any behavioural deficit. The same with region Y. But it may be that if both X and Y are lesioned, then a behavioural deficit is observed. This is the type of effect that such interactions may predict:
+Finally, similarly to DCM's quadratic gating effects, one may assume that brain-to behaviour mappings may be modulated by activity in other network nodes. This captures situations in which nodes interact to produce a response:
 ![quadratic mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hd.png){:width="50%"}
 
 These nonlinear effects can be defined through the cell-array $$Dr$$ that specifies which node-to-response link is modulated by each node in turn (similarly to DCM's $$D$$ matrix):
