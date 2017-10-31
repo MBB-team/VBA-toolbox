@@ -7,7 +7,7 @@ title: "Dynamic Causal Modeling"
 
 # Crash-course on DCM
 
-Decomposing the relation existing between cognitive functions and their neurobiological "signature" (the spatio-temporal properties of brain activity) requires an understanding of how information is transmitted through brain networks. The ambition here is to ask questions such as: "what is the nature of the information that region A passes on to region B"? This stems from the notion of functional integration, which views function as an emergent property of brain networks. [Dynamic causal modelling](http://www.scholarpedia.org/article/Dynamic_causal_modeling) or DCM was developed specifically to address this question.
+Decomposing the relation existing between cognitive functions and their neurobiological "signature" (the spatio-temporal properties of brain activity) requires an understanding of how information is transmitted through brain networks. The ambition here is to ask questions such as: "*what is the nature of the information that region A passes on to region B*"? This stems from the notion of functional integration, which views function as an emergent property of brain networks. [Dynamic causal modelling](http://www.scholarpedia.org/article/Dynamic_causal_modeling) or DCM was developed specifically to address this question.
 
 ## What you cannot ignore
 
@@ -146,13 +146,7 @@ The main VBA inversion routine can now be called to run the DCM analysis:
 ```matlab
 f_fname = @f_DCMwHRF; % DCM evolution function
 g_fname = @g_HRF3; %  % DCM obseravtion function
-dim.n_theta = options.inF.ind5(end);
-if homogeneous
-    dim.n_phi = 2;
-else
-    dim.n_phi = 2*nreg;
-end  
-dim.n = 5*nreg;
+dim=options.dim;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
 
