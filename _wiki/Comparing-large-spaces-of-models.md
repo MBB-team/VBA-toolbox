@@ -1,5 +1,5 @@
 ---
-title: "Comparison for large model spaces"
+title: "Bayesian model selection with large model spaces"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
