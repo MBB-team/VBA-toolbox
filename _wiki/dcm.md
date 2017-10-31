@@ -24,7 +24,7 @@ As highligthed above, DCM relies on ordinary differential equations that specify
 
 $$\frac{dx}{dt}=Ax + \sum_i u_i B^{(i)}x + Cu + \sum_j x_j D^{(j)}x$$
 
-where $$x$$ is a vector of DCM hidden states that quantifies activity in each node of the relevant brain network and $$u$$ are user-specified inputs that drive or modulate activity in network nodes. Matrices $$A$$, $$B$$, $$C$$ and $$D$$ correspond to connection strengths, input modulations of connections, input-state couplings and state modulations of connections, respectively. They are estimated by fitting the DCM model to fMRI time series (accounting for the convolution-like effect of the neuro-vascular coupling).
+where $$x$$ is a vector of DCM hidden states that quantifies activity in each node of the relevant brain network and $$u$$ are user-specified inputs that drive or modulate activity in network nodes. Matrices $$A$$, $$B$$, $$C$$ and $$D$$ correspond to connection strengths, input modulations of connections, input-state couplings and state modulations of connections, respectively. They are estimated by fitting the DCM model to fMRI time series (accounting for the fMRI temporal smearing induced by the neuro-vascular coupling).
 
 
 ![]({{ site.baseurl }}/images/wiki/dcm0.jpg)
