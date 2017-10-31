@@ -53,14 +53,12 @@ sampling_rate = 22.6;
 ```
 
 - **Step 3**: polynomial de-trending method (low frequency drift removal). You can select the degree of the polynomial (either 3 or 4) which will be fitted to the data, e.g.:
-
 ```matlab
 % Polynomial degree (4 or 3)
 degree = '4';
 ```
 
 - **Steps 5 to 7**: Specify VBA inversion options (including priors).
-
 ```matlab
 % assigning the generative model
 
@@ -77,8 +75,7 @@ options.inF     = inF;
 options.inG     = inG;
 ```
 
-- **Step 8**: VBA inversion: inverting the FHN model for the given fluorescence trace
-
+- **Step 8**: VBA inversion of the FHN model given the observed fluorescence trace:
   ```matlab
 f_fname = @f_CaBBI_QGIF; % CaBBI evolution function [depends upon the CaBBI demo script]
 g_fname = @g_CaBBI;  % CaBBI observation function
@@ -92,18 +89,15 @@ dim.n_theta = 3; % number of evolution params
 - **Step 9**: Extracting the estimated Voltage and [Ca2+] traces (i.e. the posterior means on hidden states)
 
 - **Step 10**: Detecting spike times (or event onsets) from inferred voltage trace.
-
-To deal with neural noise, an artificial refractory period is enforced after each detected spike event (i.e. all up-crossing fluctuations within the refractory period will be discarded). You can specify this refractory period by modifying the following lines of code:
-
-  ```matlab
+> To deal with neural noise, an artificial refractory period is enforced after each detected spike event (i.e. all up-crossing fluctuations within the refractory period will be discarded). You can specify this refractory period by modifying the following lines of code:
+```matlab
 refracPeriod = 6; % here: 6 msec
 if (count > 1) && ( (j-indices(count-1)) > ceil(refracPeriod/dt) )
 ...
 ```
 
 - **Step 11**: save the variables of interest. For example, the estimated decay time-constant of the calcium transients (see also Eq. 17 in [Rahmati et al. 2016](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1004736) can be accessed as follows:
-
-  ```matlab
+```matlab
 % in [sec]
 inferred_Tau_Ca = inF.Tau_Ca0 * exp(posterior.muTheta(1)) * (1/sampling_rate)/dt
 ```
