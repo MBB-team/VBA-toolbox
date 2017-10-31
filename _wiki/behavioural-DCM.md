@@ -112,12 +112,12 @@ For a vanilla DCM, VBA already provides an observation function: `g_HRF3.m`. Thi
 ```matlab
 function g = mybDCM(x,P,u,in)
 % my dummy bDCM 'augmented' observation function
-xdcm = x(1:end-2); % vanilla DCM states
-g_fmri = g_HRF3(xdcm,P,u,in); % precited fMRI response
-xb = x(end-1:end); % 2 behavioural response predictors
-g_buttonResp1 = g_myMapping1(xb(1),P,u,in); % r1 mapping
-g_buttonResp2 = g_myMapping2(xb(2),P,u,in); % r2 mapping
-% mixed fMRI/bhavioural prediction is a 5 elements vector:
+xdcm = x(1:end-2); % vanilla DCM states (everything except the 2 last states)
+g_fmri = g_HRF3(xdcm,P,u,in); % predicted fMRI response (vanilla DCM observation function)
+xb = x(end-1:end); % 2 last states = behavioural response predictors (r1 and r2)
+g_buttonResp1 = g_myMapping1(xb(1),P,u,in); % dummy r1 mapping
+g_buttonResp2 = g_myMapping2(xb(2),P,u,in); % dummy r2 mapping
+% mixed fMRI/bhavioural prediction is a 5-elements vector:
 g = [g_fmri         ; % 3 lines for the 3 nodes
      g_buttonResp1  ; % r1 (e.g., left hand button press)
      g_buttonResp2] ; % r1 (e.g., right hand button press)
