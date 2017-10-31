@@ -26,13 +26,13 @@ The core steps of a bDCM analysis are identical to vanilla DCM. In particular, y
 We refer the reader to the [DCM wiki]({{ site.baseurl }}/wiki/dcm) for more detailed explanations on how to prepare a vanilla DCM analysis using VBA. 
 
 
-# Upgrading DCM with behavioural predictions
+# Setting the neuro-behavioural mapping
 
 In addition to network dynamics, bDCM augments DCM's state space with hidden behavioural predictor variables $$r$$ that obey a very similar set of ordinary differential equations:
 
 $$\frac{dr}{dt}= A_r x + \sum_i u_i B_r^{(i)}x + C_ru + \sum_j x_j D_r^{(j)}x - \alpha r$$
 
-where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called "*neuro-behavioural mapping*" (see below). Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes, i.e.:
+where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called "**neuro-behavioural mapping**" (see below). Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes, i.e.:
 
 $$E[y_{behaviour}] = g_r(r)$$
 
@@ -40,7 +40,7 @@ where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=\frac{1}{
 
 ![]({{ site.baseurl }}/images/wiki/bdcm/bdcm-schema.png)
 
-In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to set the neuro-behavioural mapping.
+In bDCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly estimated from both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to set the neuro-behavioural mapping.
 
 
 ## Direct neural mapping
