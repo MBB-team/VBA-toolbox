@@ -20,8 +20,8 @@ where $$x$$ is a vector of DCM hidden states that quantifies activity in each no
 
 The core steps of a bDCM analysis are identical to vanilla DCM. In particular, you will need to:
 - extract fMRI times series ```y_fmri``` in your regions of interest 
-- specify your inputs ```u```
-- setting the DCM connectivity structure (cf. ```A```, ```B```, ```C``` and ```D``` matrices)
+- specify your inputs $$u$$
+- setting the DCM connectivity structure (cf. $$A$$, $$B$$, $$C$$ and $$D$$ matrices)
 
 We refer the reader to the [DCM wiki]({{ site.baseurl }}/wiki/dcm) for more detailed explanations on how to prepare a vanilla DCM analysis using VBA. 
 
@@ -49,7 +49,7 @@ The most intuitive part of the neuro-behavioural mapping is a linear predictor t
 ![direct neural mapping]({{ site.baseurl  }}/images/wiki/bdcm/mapping_ha.png){:width="50%"}
 
 
-Such a linear mapping can be defined through the matrix ```Ar``` that specifies which node can impact on each behavioural response (columns=nodes, lines=responses):
+Such a linear mapping can be defined through the matrix $$Ar$$ that specifies which node can impact on each behavioural response (columns=nodes, lines=responses):
   
 ```matlab
 % 2 behavioural responses: r1 is influenced by node 2, and r2 is influenced by node 3
@@ -59,29 +59,29 @@ Ar = [ 0 1 0 ;
   
 ## Modulated neural mapping
 
-Brain-to behaviour mappings may change according to experimental conditions (which are encoded in inputs `u`):
+Brain-to behaviour mappings may change according to experimental conditions (which are encoded in inputs $$u$$):
 ![modulated neural mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hb.png){:width="50%"}
 
-Such modulatory effects can be defined through the cell-array `Br` that specifies which node-to-response link is modulated by each input in turn (similarly to DCM's `B` matrix above):
+Such modulatory effects can be defined through the cell-array $$Br$$ that specifies which node-to-response link is modulated by each input in turn (similarly to the $$B$$ matrix of vanilla DCM):
   
 ```matlab
-% the first response is predicted by the 3rd node modulated by the 2nd input
+% r1 is predicted by the 3rd node modulated by the 2nd input
 Br{2} = [ 0 0 1 ;   
           0 0 0 ] ; 
 ```
 
-## Direct input mapping
+## Direct input-to-output mapping
 
 One may also consider direct influences of inputs onto behavioural responses:
 ![cheating mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hc.png){:width="50%"}
 
-Although it seems counter-intuitive to assume that the impact of experimental manipulation may not be mediated by brain acitivity, this may be provide a useful reference point.
+Although it seems counter-intuitive to assume that the impact of experimental manipulation may bypass brain activity, this may provide a useful reference point for assessing the evidence for [*mediated* effects](https://en.wikipedia.org/wiki/Mediation_(statistics)).
 
-This type of "mapping" is implemented in the matrix `Cr`:
+This type of "direct mapping" is set through the $$Cr$$ matrix:
   
 ```matlab
-% the first response is predicted by a linear mixture of the first and second inputs
-% the second response is predicted by the last input only
+% r1 is predicted by a linear mixture of the first and second inputs
+% r2 is predicted by the last input only
 Cr = [ 1 1 ;   
        0 1 ] ; 
 ```
@@ -91,10 +91,10 @@ Cr = [ 1 1 ;
 Finally, similarly to DCM's quadratic gating effects, one may assume that brain-to behaviour mappings may be modulated by activity in other network nodes. This capture situations in which nodes interact to produce a response. Think of lesion mapping, for example. It may be that a lesion in region X alone may not produce any behavioural deficit. The same with region Y. But it may be that if both X and Y are lesioned, then a ebahviorual deficit is observed. This is the type of effect such interactions may predict:
 ![quadratic mapping]({{ site.baseurl }}/images/wiki/bdcm/mapping_hd.png){:width="50%"}
 
-These nonlinear effects can be defined through the cell-array `Dr` that specifies which node-to-response link is modulated by each node in turn (similarly to DCM's `D` matrix above):
+These nonlinear effects can be defined through the cell-array $$Dr$$ that specifies which node-to-response link is modulated by each node in turn (similarly to DCM's $$D$$ matrix):
   
 ```matlab
-% the 2nd response (line) is jointly predicted by the 1st (array index) and 3rd (column) nodes
+% the link from node 3 to r2 is modulated by activity in node 1
 Dr{1} = [ 0 0 0 ;   
           0 0 1 ] ; 
 ```
