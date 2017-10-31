@@ -159,7 +159,7 @@ options.sources(2) = struct('out',4,'type',1);  % r1
 options.sources(3) = struct('out',5,'type',1);  % r2
 ```
 
-The main VBA inversion routine can now be called to run the behavioural DCM analysis:
+The main VBA inversion routine can now be called to run the bDCM analysis:
 
 ```matlab
 f_fname = @f_DCMwHRFext; % bDCM evolution function
@@ -178,7 +178,7 @@ The 1st input evokes responses through the action of node 1. The 2nd input modul
 
 # Post-hoc bDCM analysis
 
-Once the BDCM model has been inverted given mixed fMRI/behavioural times series, one can then perform post-hoc analyses on the model. The objective here is twofold: (i) predict behavioural deficits that would arise from (artificial) lesions on either nodes or links within the network, and (ii) quantify the **importance** of network nodes or links for funnelling the impact of inputs onto behavioural outputs. As we will se below, VBA is equipped with specific tools for performing these two types of post-hoc analyses.
+Once the bDCM model has been inverted given mixed fMRI/behavioural times series, one can then perform post-hoc analyses on the model. The objective here is twofold: (i) predict behavioural deficits that would arise from (artificial) lesions on either nodes or links within the network, and (ii) quantify the **importance** of network nodes or links for funnelling the impact of inputs onto behavioural outputs. As we will se below, VBA is equipped with specific tools for performing these two types of post-hoc analyses.
 
 
 ## Artificial lesion analyses
