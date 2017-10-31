@@ -6,6 +6,8 @@ title: "Behavioural DCM"
 
 Behavioural Dynamic Causal Modelling -- or bDCM -- aims at decomposing the brain's transformation of stimuli into behavioural outcomes, in terms of the relative contribution of brain regions and their connections. In brief, bDCM places the brain at the interplay between stimulus and behaviour: behavioural outcomes arise from coordinated activity in (hidden) neural networks, whose dynamics are driven by experimental inputs. Estimating neural parameters that control network [connectivity](https://en.wikipedia.org/wiki/Connectivity_(graph_theory)) and [plasticity](https://en.wikipedia.org/wiki/Neuroplasticity) effectively performs a neurobiologically-constrained approximation to the brain's input–outcome transform. In other words, neuroimaging data essentially serves to enforce the realism of bDCM's decomposition of input–output relationships. In addition, post-hoc artificial lesions analyses allow us to predict induced behavioural deficits and quantify the importance of network features for funnelling input–output relationships. In turn, this enables one to bridge the gap with neuropsychological studies of brain-damaged patients. 
 
+We refer the interested reader to [Rigoux & Daunizeau (2015), Dynamic causal modelling of brain–behaviour relationships, Neuroimage 117: 202-221.](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}.
+
 What follows is a practical guide to performing a bDCM analysis on your own dataset. 
 
 # Preparing a vanilla DCM analysis
@@ -37,8 +39,6 @@ $$E[y_{behaviour}] = g_r(r)$$
 where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=\frac{1}{1+e^{-r}}$$ for binary choices).
 
 ![]({{ site.baseurl }}/images/wiki/bdcm/bdcm-schema.png)
-
-For further details, we refer the reader to [Rigoux & Daunizeau, 2015](http://www.sciencedirect.com/science/article/pii/S1053811915004231){:target="_blank"}.
 
 In behavioural DCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly fitted to both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to set the neuro-behavioural mapping.
 
