@@ -103,29 +103,33 @@ Dr{1} = [ 0 0 0 ;
 
 We assume that you have stored the fMRI time series in ```y_fmri``` (see [how to prepare a vanilla DCM analysis]({{ site.baseurl }}/wiki/dcm/#Preparing-a-vanilla-DCM-analysis)). The full observation matrix ```y``` should also include the behavioural observations (choices, reaction times, subjective ratings, pupil responses, etc.) ```y_behaviour```. This might be more tricky than it looks as the multiple sources of observations are usually recorded at different sampling rates. We refer the reader to [this page]({{ site.baseurl }}/wiki/Multisources) for details regarding this sort of *mixed observations*.
 
-Now, as VBA only deals with one observation function to map hidden states to the observation, we need to 1) create an "aggregated" observation function predicting all the data concurrently, and 2) inform VBA how to split the observations into fMRI and behavioural time series.
+Now, VBA only deals with one observation function to map hidden states to observed data. Therefore, we need to 1) create an *augmented* observation function predicting fMRI and behavioural data concurrently, and 2) inform VBA how to split the observations into fMRI and behavioural time series.
 
-### Mixing the predictors
+## Creating an *augmented* observation function
 
-For a vanilla DCM, VBA already provides an observation function: `g_HRF3.m`. This will be the first ingredient of our mixed observation function.
-
-The second element is a transformation for the response predictors. Note that the response predictors computed by the `f_DCMwHRFext.m` evolution function are continuous variable. If we deal with binary data, we need to map those values onto a probability of response between [0 1]. The simplest way in this case is to use a sigmoid function, like `g_softmax4decoding.m`, that will provide say a `g_buttonResp` predictor.
-
-Now if you have a DCM with 3 nodes and 2 behavioral (e.g., button) responses, the mixed observation function should be defined as follows:
+For a vanilla DCM, VBA already provides an observation function: `g_HRF3.m`. This will be the first ingredient of our (augmented) mixed observation function. The second element is a specific mapping of the behavioural response predictors $$r$$. Now if you have a DCM with 3 nodes and 2 behavioral (e.g., button) responses, the mixed observation function should look something like this:
 
 ```matlab
+function g = mybDCM(x,P,u,in)
+% my dummy bDCM 'augmented' observation function
+xdcm = x(1:end-2); % vanilla DCM states
+g_fmri = g_HRF3(xdcm,P,u,in); % precited fMRI response
+xb = x(end-1:end); % 2 behavioural response predictors
+g_buttonResp1 = g_myMapping1(xb(1),P,u,in); % r1 mapping
+g_buttonResp2 = g_myMapping2(xb(2),P,u,in); % r2 mapping
 % mixed fMRI/bhavioural prediction is a 5 elements vector:
 g = [g_fmri         ; % 3 lines for the 3 nodes
-     g_buttonResp1  ; % left  hand
-     g_buttonResp2] ; % right hand
+     g_buttonResp1  ; % r1 (e.g., left hand button press)
+     g_buttonResp2] ; % r1 (e.g., right hand button press)
+end
 ```
 
-Such an observation function can be saved and wrapped with appropriate input/output standards (see [this page]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps) for a complete description of the I/O structure of observation/evolution functions).
+where ```g_myMapping1``` and ```g_myMapping2``` can be defined arbitrarily. Such an observation function can be saved and wrapped with appropriate input/output standards (see [this page]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps) for a complete description of the I/O structure of VBA observation/evolution functions).
 
-> Note that VBA already includes a default bDCM observation function, `g_DCMwHRFext.m`, that does exactly this.
-It will apply the vanilla DCM model to the first $$n$$ observations (where $$n$$ is the number of nodes), and treat all the remaining lines in the data matrix as binary behavioural responses (i.e. in this case, $$g_r$$ is the sigmoid mapping). If you want to implement another brain-to-behaviour mapping (that deals with, e.g., continuous responses), you will have to adapt `g_DCMwHRFext.m` accordingly.
+> Note that bDCM response predictors $$r$$ are continuous and unbounded variables. So how do we deal with, e.g., choice data, which are binary? The simplest solution in this case is to use a sigmoid function, like `g_softmax4decoding.m`, that will transform $$r$$ into the probability of choosing, e.g., the first alternative... In fact, VBA already includes a default bDCM observation function, `g_DCMwHRFext.m`, that does exactly this. It will apply the vanilla DCM model to the first $$n$$ observations (where $$n$$ is the number of nodes), and treat all the remaining lines in the data matrix as binary behavioural responses (i.e. in this case, $$g_r$$ is the sigmoid mapping). If you want to implement another brain-to-behaviour mapping (that deals with, e.g., continuous responses), you will have to adapt `g_DCMwHRFext.m` accordingly.
 
-### Splitting the observations
+
+## Splitting the observations
 
 The only thing VBA still requires is information regarding which lines in the data matrix `y` correspond to the fMRI and to the behavioural responses, respectively (cf. [mixed observations]({{ site.baseurl }}/wiki/Multisources)). For the example given above, this should look like this:
 
