@@ -14,11 +14,7 @@ What follows is a practical guide to performing a bDCM analysis on your own data
 
 # Preparing a vanilla DCM analysis
 
-Recall that vanilla DCM relies on the following ordinary differential equation to describe how network nodes influence each other:
-
-$$\frac{dx}{dt}=Ax + \sum_i u_i B^{(i)}x + Cu + \sum_j x_j D^{(j)}x$$
-
-where $$x$$ is a vector of DCM hidden states that quantifies activity in each node of the relevant brain network and $$u$$ are user-specified inputs that drive or modulate activity in network nodes. Matrices $$A$$, $$B$$, $$C$$ and $$D$$ correspond to connection strengths, input modulations of connections, input-state couplings and state modulations of connections, respectively.
+Recall that vanilla DCM describes how network nodes influence each other using an ordinary differential equation, which is parameterized using $$A$$, $$B$$, $$C$$ and $$D$$ matrices. These correspond to connection strengths, input modulations of connections, input-state couplings and state modulations of connections, respectively.
 
 The core steps of a bDCM analysis are identical to vanilla DCM. In particular, you will need to:
 - extract fMRI times series ```y_fmri``` in your regions of interest 
