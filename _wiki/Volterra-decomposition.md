@@ -1,5 +1,5 @@
 ---
-title: "Volterra decomposition"
+title: "Volterra decompositions"
 ---
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
