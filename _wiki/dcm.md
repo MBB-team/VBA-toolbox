@@ -175,7 +175,7 @@ The graphical output of `spm_decm_explore.m` is appended below:
 
 ## Including confounds in DCM analyses
 
-Some experimental designs may be associated with a few anticipated confounding factors. These typically take the form of mixtures of regressors that may induce sample-to-sample variations in the fMRI times, above and beyond those that ared using DCM. VBA enables one to include these in the analysis as long as the corresponding "null design" matrix is known. For example, one may want to consider (non specific) slow trends, which may act as confounding factors. The following script exemplifies how to account for such confounds:
+Some experimental designs may be associated with a few anticipated confounding factors. These typically take the form of mixtures of regressors that may induce sample-to-sample variations in the fMRI time series, above and beyond those that are modelled using DCM. VBA enables one to include these in the analysis as long as the corresponding "null design" matrix is known. For example, one may want to consider (non specific) slow trends, which may act as confounding factors. The following script exemplifies how to account for such confounds:
 
 ```matlab
 nconfounds = 16; % number of basis functions
@@ -184,7 +184,9 @@ btype = 'Fourier'; % basis function type
 [u,options,dim] = addConfounds2dcm(X0,u,options,dim); % modifies the i/o of DCM inversion
 ```
 
-The ```options``` structure now contains the set of confounds (encoded in the matrix ```X0```), whose impact on fMRI times series will be estimated along with other DCM parameters...
+The ```options``` structure now contains the set of confounds (encoded in the "null design" matrix ```X0```), whose impact on fMRI times series will be estimated along with other DCM parameters...
+
+> Of course, any kind of "null design" matrix can be included as confounds in DCM. Note that including these confounds in the generative model is not equivalent to removing them prior to performing the DCM analysis!
 
 
 ## Stochastic DCM
