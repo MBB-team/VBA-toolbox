@@ -1,6 +1,6 @@
 function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
 % applies RFT to GLM-based contrast inference
-% function [out] = RFT_GLM_contrast(X,y,c,type,verbose)
+% function [stat,out] = RFT_GLM_contrast(X,y,c,type,verbose)
 % In brief, this function uses RFT to test linear mixtures of effects,
 % under the general linear model (GLM):
 %   y = X*beta + e
@@ -25,6 +25,7 @@ function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
 %   - u: set-inducing threshold (for cluster inference)
 %   - verbose: flag for displaying results (default is 0)
 % OUT:
+%   - stat:
 %   - out: RFT output structure (see RFT_main.m).
 
 % fill in default I/O
