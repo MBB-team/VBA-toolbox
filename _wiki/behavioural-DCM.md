@@ -135,7 +135,7 @@ In VBA, a generative model is defined in terms of an evolution function, an obse
 TR = 2; % sampling resolution (in secs)
 microDT = 1e-1; % micro_resolution = ODE solver time step (in secs)
 homogeneous = 1; % are all nodes similar?
-options = prepare_fullDCM(A, B, C, D, TR, microDT, homogeneous,hA, hB, hC, hD,sources);
+options = prepare_fullDCM(A,B,C,D,TR,microDT,homogeneous,Ar,Br,Cr,Dr);
 ```
 
 Priors can be automatically set using the ```getPriors``` function:
