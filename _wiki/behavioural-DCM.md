@@ -34,11 +34,11 @@ where $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices define the so-called **neur
 
 > You do not have to create an evolution function that implements bDCM hidden states dynamics. This is because VBA already possesses a built-in function that does exactly this, namely: `f_DCMwHRFext.m`. This function agregates the evolution function of vanilla DCM with the above behavioural predictor variables dynamics. In addition, VBA also includes dedicated functions that were designed to facilitate the preparation of bDCM analyses. These are described below.
 
-Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes, i.e.:
+Note that the behavioural predictor variable $$r$$ actually controls the first-order moment of observed behavioural outcomes $$y_{behaviour}$$, i.e.:
 
 $$E[y_{behaviour}] = g_r(r)$$
 
-where $$g_r$$ is some well-defined observation mapping (e.g., $$g_r(r)=\frac{1}{1+e^{-r}}$$ for binary choices).
+where $$g_r$$ is some arbitrary observation mapping. Note that the default bDCM observation funciton in VBA was developed for binary choices (cf. ```g_DCMwHRFext.m```); in this case,  $$g_r(r)=\frac{1}{1+e^{-r}}$$ is a simple sigmoidal mapping.
 
 In bDCM, all variables (including $$A$$, $$B$$, $$C$$, $$D$$, $$A_r$$, $$B_r$$, $$C_r$$ and $$D_r$$ matrices) are jointly estimated from both fMRI and behavioural time series. And as in vanilla DCM, users must specify the *model structure*, which reduces to indicating which entries of these matrices are non-zero. We will exemplify this below. In what follows, we focus on how to set the neuro-behavioural mapping.
 
