@@ -1,6 +1,7 @@
 function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
 % applies RFT to GLM-based contrast inference
-% function [stat,out] = RFT_GLM_contrast(X,y,c,type,verbose)
+% function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
+%
 % In brief, this function uses RFT to test linear mixtures of effects,
 % under the general linear model (GLM):
 %   y = X*beta + e
@@ -17,6 +18,7 @@ function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
 % matrix of size nxL, where L is the number of positions on the lattice.
 % RFT is then applied to derive p-values on topological features of the
 % statistical random field sampled at each position on the lattice.
+%
 % IN:
 %   - X: nXk design matrix
 %   - y: nXL data matrix
@@ -25,8 +27,11 @@ function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
 %   - u: set-inducing threshold (for cluster inference)
 %   - verbose: flag for displaying results (default is 0)
 % OUT:
-%   - stat:
+%   - stat:stat: vector containing the t- or F-values
+% (depending on the test type selected in the input) corresponding to each point in Y
 %   - out: RFT output structure (see RFT_main.m).
+% 
+% See also RFT_main.m
 
 % fill in default I/O
 out = [];
