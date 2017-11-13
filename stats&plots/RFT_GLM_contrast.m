@@ -27,7 +27,7 @@ function [stat,out] = RFT_GLM_contrast(X,y,c,type,u,verbose)
 %   - u: set-inducing threshold (for cluster inference)
 %   - verbose: flag for displaying results (default is 0)
 % OUT:
-%   - stat:stat: vector containing the t- or F-values
+%   - stat: vector containing the t- or F-values
 % (depending on the test type selected in the input) corresponding to each point in Y
 %   - out: RFT output structure (see RFT_main.m).
 % 
