@@ -17,7 +17,7 @@ if ~isfield(options,'priors')
 end
 
 % fill in VBA's priors structure with default priors
-options.priors = check_struct(options.priors,default_priors);
+options.priors = VBA_check_struct(options.priors,default_priors);
 
 % check dimension and infinite precision priors
 if dim.n_theta > 0 % This finds which evolution params to update

@@ -134,7 +134,7 @@ switch type
         vhat = sum((y-yhat).^2,1)./trR;
         V = vhat.*(c'*iC*c);
         stat = (c'*b)./sqrt(V);
-        pv = 1 - spm_Tcdf(stat,df);
+        pv = 1 - VBA_spm_Tcdf(stat,df);
         for i=1:p
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
@@ -181,7 +181,7 @@ switch type
         for i=1:p
             vhat(i) = sum(e(:,i).^2)./trR;
             stat(i) = ((yhat(:,i)'*M*yhat(:,i))./(y(:,i)'*R*y(:,i))).*(trR./trM);
-            pv(i) = 1 - spm_Fcdf(stat(i),df(1),df(2));
+            pv(i) = 1 - VBA_spm_Fcdf(stat(i),df(1),df(2));
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
@@ -290,7 +290,7 @@ colorbar('peer',handles.ha(5))
 set(handles.ha(5),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'xgrid','on','ygrid','off')
 xlabel(handles.ha(5),'independent variables')
 ylabel(handles.ha(5),'dependent variables')
-title(handles.ha(5),'design matrix')
+VBA_title(handles.ha(5),'design matrix')
 pos = get(handles.ha(5),'position');
 
 % axes for parameter estimates
@@ -309,7 +309,7 @@ axis(handles.ha(3),'equal')
 axis(handles.ha(3),'tight')
 colorbar('peer',handles.ha(3))
 colormap(cool)
-title(handles.ha(3),'parameters'' correlation matrix')
+VBA_title(handles.ha(3),'parameters'' correlation matrix')
 set(handles.ha(3),'clim',[-1,1],'xdir','normal','ydir','reverse','xtick',[1:k],'ytick',[1:k])
 
 % display contrast
@@ -326,7 +326,7 @@ switch type
 end
 set(handles.ha(4),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'ygrid','on')
 xlabel(handles.ha(4),'independent variables')
-title(handles.ha(4),'constrast')
+VBA_title(handles.ha(4),'constrast')
 box(handles.ha(4),'off')
 
 % display test results (p-value and F-test)
@@ -420,7 +420,7 @@ plot(ha,ge,pe*sc,'r')
 xlabel(ha,'residual bins')
 ylabel(ha,'# samples per bin')
 legend(ha,{'histogram of residuals','empirical distribution of residuals','gaussian approximation'})
-title(ha,'residuals'' normality')
+VBA_title(ha,'residuals'' normality')
 xl = get(ha,'xlim');
 yl = get(ha,'ylim');
 ht = text(xl(1)+dx/2,yl(2),['Kolmogorov-Smirnov test: p=',num2str(ud.all.ks(ind),3)],'color','r','parent',ha);
@@ -439,7 +439,7 @@ ht = text(mih+(mah-mih)/32,yl(2)-0.1*diff(yl),['V[residuals]=',num2str(ve,3)],'c
 set(ha,'xlim',[mih,mah])
 xlabel(ha,'predicted data')
 ylabel(ha,'residuals'' moments')
-title(ha,'residuals'' homoscedasticity')
+VBA_title(ha,'residuals'' homoscedasticity')
 try;getSubplots;end
 
 function myData(e1,e2)
@@ -462,7 +462,7 @@ axis(ud.handles.ha(1),'tight')
 xlabel(ud.handles.ha(1),'predicted data')
 ylabel(ud.handles.ha(1),'observed data')
 grid(ud.handles.ha(1),'on')
-title(ud.handles.ha(1),'data alignement')
+VBA_title(ud.handles.ha(1),'data alignement')
 
 cla(ud.handles.ha(6))
 hp = plot(ud.handles.ha(6),ud.yhat(:,ind),'linestyle','-','marker','.','color',[1,0,0]);
@@ -472,7 +472,7 @@ axis(ud.handles.ha(6),'tight')
 xlabel(ud.handles.ha(6),'data dimensions')
 ylabel(ud.handles.ha(6),'data')
 grid(ud.handles.ha(6),'on')
-title(ud.handles.ha(6),'data fit')
+VBA_title(ud.handles.ha(6),'data fit')
 
 % parameter estimates
 cla(ud.handles.ha(2))
@@ -501,7 +501,7 @@ for j=1:k
 end
 set(ud.handles.ha(2),'xtick',[1:1:k],'xlim',[0.5,k+0.5],'ygrid','on')
 xlabel(ud.handles.ha(2),'independent variables')
-title(ud.handles.ha(2),'parameter estimates')
+VBA_title(ud.handles.ha(2),'parameter estimates')
 strp = ['p=',num2str(ud.pv(ind),'%3.3f'),' (',ud.type,'=',num2str(ud.stat(ind),'%3.3f'),')'];
 set(ud.handles.ht(1),'string',strp);
 

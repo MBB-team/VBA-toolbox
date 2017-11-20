@@ -18,16 +18,16 @@ try,dof;catch;dof=NaN;end
 u = vec(u);
 switch type
     case 'norm'
-        P = 1-spm_Ncdf(u,0,1);
+        P = 1-VBA_spm_Ncdf(u,0,1);
         EC = (L./fwhm).*(sqrt(4*log(2))./(2*pi)).*exp(-u.^2./2);
         HC = c*P + EC;
     case 't'
-        P = 1 - spm_Tcdf(u,dof);
+        P = 1 - VBA_spm_Tcdf(u,dof);
         EC = (L./fwhm).*(sqrt(4*log(2))/(2*pi))*(1+u.^2/dof).^((1-dof)/2);
         HC = c*P + EC;
     case 'F'
         b = gammaln(dof(2)/2) + gammaln(dof(1)/2);
-        P = 1 - spm_Fcdf(u,dof(1),dof(2));
+        P = 1 - VBA_spm_Fcdf(u,dof(1),dof(2));
         EC = (L./fwhm).*(sqrt(4*log(2))/(2*pi)).*exp(gammaln((sum(dof)-1)/2)-b)*2^(1/2)...
             *(dof(1)*u/dof(2)).^(1/2*(dof(1)-1)).*(1+dof(1)*u/dof(2)).^(-1/2*(sum(dof)-2));
         HC = c*P + EC;
