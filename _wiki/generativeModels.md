@@ -98,7 +98,7 @@ Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
 
 $$ {Q_x}^{-1} = \left[\begin{array}{cc} r & 0 \\ 0 & 1  \end{array}\right] $$
 
-with $$r \rightarrow \infty $$. This ensures that state noise $$\eta$$ only enters at the level of dummy states $$w$$, which is then rescaled by $$\sigma\left(x\right)$$ before perturbing hidden states $$x$$. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
+with $$r \rightarrow \infty $$. This ensures that state noise $$\eta$$ only enters at the level of dummy states $$w$$, which is then rescaled by $$\beta\left(x\right)$$ before perturbing hidden states. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
 Finally, one defines the observation function on the augmented state-space as follows:
 
