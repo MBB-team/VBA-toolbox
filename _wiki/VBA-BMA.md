@@ -12,7 +12,7 @@ In brief, BMA marginalizes over models to derive posterior densities on model pa
 
 $$p(\theta\mid y) = \sum_{m_i} p(m_i\mid y) p(\theta\mid y,m_i)$$
 
-where $$m_i$$ are the set of candidate models, $$p(m_i\mid y)$$ is the posterior probability over model $$m_i$$, and $$p(\theta\mid y,m_i)$$ is the posterior density on model parameters conditional on model $$m_i$$. The latter posterior density is a decent proxy for one's information on parameters $$\theta$$ only if $$p(m_i\mid y) \approx 1$$. Otherwise, uncertainty regarding the correct model will automatically translate in unceratinty regarding model parameters...
+where $$m_i$$ are the set of candidate models, $$p(m_i\mid y)$$ is the posterior probability over model $$m_i$$, and $$p(\theta\mid y,m_i)$$ is the posterior density on model parameters conditional on model $$m_i$$. The latter posterior density is a decent proxy for one's information on parameters $$\theta$$ only if $$p(m_i\mid y) \approx 1$$. Otherwise, uncertainty regarding the correct model will automatically translate in uncertainty regarding model parameters...
 
 
 In VBA, BMA can be performed by first inverting the candidate models, and then calling the BMA routine:
