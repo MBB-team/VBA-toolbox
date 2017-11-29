@@ -24,8 +24,8 @@ Under FFX assumptions, the posterior probability of a given model is expressed a
 $$ p(m\mid y_1,\dots,y_n )\propto p(y_1,\dots,y_n\mid m)p(m)= p(y_1\mid m)\dots p(y_n\mid m)p(m) $$
 
 Thus, FFX-BMS simply proceeds as follows:
-- for each subject, invert each model and get the corresponding (log-) model evidence
-- sum the log-evidences over subjects (cf. equation above)
+- for each subject, invert each model and get the corresponding (log-) model evidence,
+- sum the log-evidences over subjects (cf. equation above),
 - compare models as usual (i.e. [as in a single-subject study]({{ site.baseurl }}/wiki/Bayesian-modelling-introduction)) based upon summed log-evidences.
 
 > FFX-BMS is valid whenever one may safely assume that the group of subjects is homogeneous (i.e., subjects are best described by the same model $$m$$).
@@ -61,7 +61,7 @@ f  = out.Ef ;
 EP = out.ep ;
 ```
 
-> *Protected* exceedance probabilities (PEPs) are an extention of this notion. They correct EPs for the possiblity that observed differences in model evidences (over subjects) are due to chance ([Rigoux et al., 2014](https://www.ncbi.nlm.nih.gov/pubmed/24018303)). They can be retieved as follows: `EP = (1-out.bor)*out.ep + out.bor/length(out.ep)`, where `out.bor` is the Bayesian Omnibus Risk (BOR), i.e. the posterior probability that model frequencies are all equal.
+> **Protected exceedance probabilities (PEPs)** are an extention of this notion. They correct EPs for the possiblity that observed differences in model evidences (over subjects) are due to chance ([Rigoux et al., 2014](https://www.ncbi.nlm.nih.gov/pubmed/24018303)). They can be retieved as follows: `PEP = (1-out.bor)*out.ep + out.bor/length(out.ep)`, where `out.bor` is the Bayesian Omnibus Risk (BOR), i.e. the posterior probability that model frequencies are all equal.
 
 
 The graphical output of `VBA_groupBMC.m` is appended below (with random log-evidences, with `K=4` and `n=16`):
