@@ -23,12 +23,12 @@ Under FFX assumptions, the posterior probability of a given model is expressed a
 
 $$ p(m\mid y_1,\dots,y_n )\propto p(y_1,\dots,y_n\mid m)p(m)= p(y_1\mid m)\dots p(y_n\mid m)p(m) $$
 
-> Thus, FFX-BMS simply proceeds as follows:
+Thus, FFX-BMS simply proceeds as follows:
 - for each subject, invert each model and get the corresponding (log-) model evidence
 - sum the log-evidences over subjects (cf. equation above)
 - compare models as usual (i.e. [as in a single-subject study]({{ site.baseurl }}/wiki/Bayesian-modelling-introduction)) based upon summed log-evidences.
 
-FFX-BMS is valid whenever one may safely assume that the group of subjects is homogeneous (i.e., subjects are best described by the same model $$m$$).
+> FFX-BMS is valid whenever one may safely assume that the group of subjects is homogeneous (i.e., subjects are best described by the same model $$m$$).
 
 ## RFX-BMS
 
