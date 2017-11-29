@@ -35,7 +35,7 @@ Diagnostics include estimated state- and measurement noise time-series, noise hi
 
 # Kernels
 
-This tab shows the [Volterra decomposition](https://en.wikipedia.org/wiki/Volterra_series) of data and system’s states onto the set of the system's inputs. Would the system be linear, Volterra kernels would be the [impulse response function](https://en.wikipedia.org/wiki/Impulse_response) of the system.
+This tab shows the [Volterra decomposition]({{ site.baseurl }}/wiki/Volterra-decomposition) of data and system’s states onto the set of the system's inputs. Would the system be linear, Volterra kernels would be the [impulse response function](https://en.wikipedia.org/wiki/Impulse_response) of the system.
 
 > **TIP:** Volterra weights (y-axis) are plotted against time lag (x-axis) for each input. Positive weights mean that the system's output increases with the corresponding (lagged) input.
 
