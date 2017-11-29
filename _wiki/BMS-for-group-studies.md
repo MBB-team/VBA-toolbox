@@ -61,7 +61,7 @@ f  = out.Ef ;
 EP = out.ep ;
 ```
 
-> **Protected exceedance probabilities (PEPs)** are an extention of this notion. They correct EPs for the possiblity that observed differences in model evidences (over subjects) are due to chance ([Rigoux et al., 2014](https://www.ncbi.nlm.nih.gov/pubmed/24018303)). They can be retieved as follows: `PEP = (1-out.bor)*out.ep + out.bor/length(out.ep)`, where `out.bor` is the Bayesian Omnibus Risk (BOR), i.e. the posterior probability that model frequencies are all equal.
+> **Protected exceedance probabilities (PEPs)** are an extention of this notion. They correct EPs for the possiblity that observed differences in model evidences (over subjects) are due to chance ([Rigoux et al., 2014](https://www.ncbi.nlm.nih.gov/pubmed/24018303)). They can be retieved as follows: `PEP = (1-out.bor)*out.ep + out.bor/length(out.ep)`, where `out.bor` is the **Bayesian Omnibus Risk (BOR)**, i.e. the posterior probability that model frequencies are all equal.
 
 
 The graphical output of `VBA_groupBMC.m` is appended below (with random log-evidences, with `K=4` and `n=16`):
