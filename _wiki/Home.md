@@ -20,7 +20,7 @@ title: "home"
 
 - [VBA: results and diagnostics](VBA-output-structure)
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
-- [Ten simple rules for VBA](10-simple-rules)
+- [10 simple rules for VBA](10-simple-rules)
 
 
 ## Advanced VBA tricks
