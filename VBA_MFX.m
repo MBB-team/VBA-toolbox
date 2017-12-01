@@ -94,6 +94,7 @@ if dim.n >0
         'b_vX0'     , ones(dim.n,1)    ...
     ) ;
 end
+opt.priors_group = priors_group;
 
 if isempty(u)
     for i=1:ns

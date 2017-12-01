@@ -102,6 +102,8 @@ VBA_disp(' ',options)
 VBA_disp(['VBA with hyperparameters adjustment: initialization (using prior hyperparameters)'],options)
 options.figName = 'VBA with hyperparameters adjustment: initialization';
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+try,options.priors.iQy=out.options.priors.iQy;end
+try,options.priors.iQx=out.options.priors.iQx;end
 F = out.F;
 if nphi>0
     Elp = VBA_psi(options.priors.a_phi) - log(options.priors.b_phi);

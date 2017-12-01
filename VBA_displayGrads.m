@@ -51,11 +51,15 @@ else
     imagesc(J-J2,'parent',ha),colorbar
     xlabel(ha,'analytic-numerical')
     ha = subplot(2,2,3,'parent',hf(1));
+    mij = min([J(:);J2(:)]);
+    maj = max([J(:);J2(:)]);
     imagesc(J,'parent',ha),colorbar
     xlabel(ha,'analytic')
+    set(ha,'clim',[mij,maj])
     ha = subplot(2,2,4,'parent',hf(1));
     imagesc(J2,'parent',ha),colorbar
     xlabel(ha,'numerical')
+    set(ha,'clim',[mij,maj])
 end
 
 try; getsubplots; end
