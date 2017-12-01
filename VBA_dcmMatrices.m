@@ -1,14 +1,29 @@
-function [A,B,C,D,dim] = VBA_dcmMatrices(out,theta)
-%VBA_DCMMATRICES matrices A,B, C D of a DCM
+function [A,B,C,D,dim] = VBA_dcmMatrices(options,theta)
+% [A,B,C,D,dim] = VBA_dcmMatrices(out,theta)
+% DCM parameters are often given in a vector form (like as the output of a
+% model inversion usin VBA_NLStateSpaceModel) that is harder to read than
+% the original matrix form.
+% This function helps reconstructing all the connectivity matrices A, B, C,
+% and D describing a DCM given a DCM structure (indicator matrices) and a
+% set of connectivity weights given in vector form.
+%
+% IN:
+%   - options: structure containing a description of the DCM, eg.  
+%              the output of the prepare_fullDCM(...) function
+%   - theta  : parameters used to fill in the DCM matrices (eg posterior.muTheta or prior.muTheta)
+% OUT:
+%   - A,B,C,D: matrices describing the DCM with actual connectivity weights
+%   - dim    : dimensions of the DCM
 
 
 try 
-    inF = out.options.inF{1};
+    inF = options.inF{1};
 catch
-    inF = out.options.inF;
+    inF = options.inF;
 end
-n = numel(inF.n1);
-nu = out.dim.u-1;
+
+[n,nu] = size(inF.C) ;
+
 try
 nr = numel(inF.r);
 catch

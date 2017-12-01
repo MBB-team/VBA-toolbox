@@ -46,7 +46,7 @@ n_t = size(fb.inH.u0,2)+1; % number of trials
 options.binomial = 1;
 options.skipf = zeros(1,n_t);
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
+[y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,zeros(2,n_t),Inf,Inf,options,x0,fb);
 hf = figure('color',[1 1 1]);
 ha = axes('parent',hf,'nextplot','add');
 plot(ha,y,'kx')

@@ -72,7 +72,7 @@ fb.h_fname = @h_goNogo;
 fb.indy = 2;
 fb.indfb = 1;
 fb.inH.u = u;
-[y_choice,x,x0,eta,ee,uu] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,[0;0],Inf,[],opt{truemodel},x0,fb);
+[y_choice,x,x0,eta,ee,uu] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,[0;0],Inf,[],opt{truemodel},x0,fb);
 y_value = x + randn(size(x))./sqrt(sigma);
 
 U = zeros(3,n_t);

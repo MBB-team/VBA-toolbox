@@ -58,7 +58,7 @@ if disp
         xp = [gridx(indt:end),fliplr(gridx(indt:end))];
         fill(xp,yp,'r','parent',ha,'facecolor',0.8*[1 0.75 0.75],'edgecolor','none');
         plot(ha,[gridx(indt),gridx(indt)],[0,f(indt)],'r--')
-        title(ha,['P(x>',num2str(t,3),') = ',num2str(p,3)])
+        VBA_title(ha,['P(x>',num2str(t,3),') = ',num2str(p,3)])
     else
         yp1 = [f(1:indt1),zeros(size(f(1:indt1)))];
         xp1 = [gridx(1:indt1),fliplr(gridx(1:indt1))];
@@ -68,7 +68,7 @@ if disp
         fill(xp2,yp2,'r','parent',ha,'facecolor',0.8*[1 0.75 0.75],'edgecolor','none');
         plot(ha,[gridx(indt1),gridx(indt1)],[0,f(indt1)],'r--')
         plot(ha,[gridx(indt2),gridx(indt2)],[0,f(indt2)],'r--')
-        title(ha,['P(x<',num2str(t(1),3),' or x>',num2str(t(2),3),') = ',num2str(p,3)])
+        VBA_title(ha,['P(x<',num2str(t(1),3),' or x>',num2str(t(2),3),') = ',num2str(p,3)])
     end
     plot(ha,gridx,f,'k')
     box(ha,'off')

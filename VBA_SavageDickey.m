@@ -34,7 +34,7 @@ if dim1.n_theta > 0
     Sf0 = pr1.SigmaTheta;
     mr0 = pr2.muTheta;
     Sr0 = pr2.SigmaTheta;
-    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    [dF,mr,Sr] = VBA_spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
     po2.muTheta = mr;
     po2.SigmaTheta = Sr;
     F2 = F2 +dF;
@@ -46,7 +46,7 @@ if dim1.n_phi > 0
     Sf0 = pr1.SigmaPhi;
     mr0 = pr2.muPhi;
     Sr0 = pr2.SigmaPhi;
-    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    [dF,mr,Sr] = VBA_spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
     po2.muPhi = mr;
     po2.SigmaPhi = Sr;
     F2 = F2 +dF;
@@ -58,7 +58,7 @@ if dim1.n > 0
     Sf0 = pr1.SigmaX0;
     mr0 = pr2.muX0;
     Sr0 = pr2.SigmaX0;
-    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    [dF,mr,Sr] = VBA_spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
     po2.muX0 = mr;
     po2.SigmaX0 = Sr;
     F2 = F2 +dF;
@@ -72,7 +72,7 @@ if isfield(po1,'a_sigma') && ~isempty(po1.a_sigma)
     mr0 = pr2.a_sigma./pr2.b_sigma;
     Sr0 = pr2.a_sigma./(pr2.b_sigma.^2);
     for iSource = 1:numel(po1.a_sigma)
-        [dF,mr,Sr] = spm_log_evidence(mf(iSource),Sf(iSource),mf0(iSource),Sf0(iSource),mr0(iSource),Sr0(iSource));
+        [dF,mr,Sr] = VBA_spm_log_evidence(mf(iSource),Sf(iSource),mf0(iSource),Sf0(iSource),mr0(iSource),Sr0(iSource));
         po2.b_sigma(iSource) = mr/Sr;
         po2.a_sigma(iSource) = po2.b_sigma(iSource)*mr;
         F2 = F2 +dF;
@@ -86,7 +86,7 @@ if isfield(po1,'a_alpha') && ~isempty(po1.a_alpha) && ~isinf(po1.a_alpha)
     Sf0 = pr1.a_alpha./(pr1.b_alpha^2);
     mr0 = pr2.a_alpha./pr2.b_alpha;
     Sr0 = pr2.a_alpha./(pr2.b_alpha^2);  
-    [dF,mr,Sr] = spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
+    [dF,mr,Sr] = VBA_spm_log_evidence(mf,Sf,mf0,Sf0,mr0,Sr0);
     po2.b_alpha = mr./Sr;
     po2.a_alpha = po2.b_alpha.*mr;
     F2 = F2 +dF;

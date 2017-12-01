@@ -52,7 +52,7 @@ if isDCM
       % normal DCM
       idxResp = 1:dim.p;
    end
-   ind = check_struct(ind,        ...
+   ind = VBA_check_struct(ind,        ...
         'u'     , 1:dim.u       , ...
         'phi'   , []            , ...
         'theta' , idxConnect    , ...
@@ -60,7 +60,7 @@ if isDCM
     );  
 else
     % all params
-    ind = check_struct(ind,       ...
+    ind = VBA_check_struct(ind,       ...
         'u'     , 1:dim.u       , ...
         'phi'   , 1:dim.n_phi   , ...
         'theta' , 1:dim.n_theta , ...
@@ -189,7 +189,7 @@ end
 function v = mutilation_score(posterior,out,ind,varargin)
 
     % default is no mutilation
-    mutilation = check_struct(struct,'u',0,'phi',0,'theta',0);
+    mutilation = VBA_check_struct(struct,'u',0,'phi',0,'theta',0);
     
     % set mutilation from args
     for iArg = 1:2:numel(varargin)
@@ -227,7 +227,7 @@ end
 % compute the trajectory moments for a mutilated model
 function [muy] = laplace_mutilated(posterior,out,mutilation)
     
-    mutilation = check_struct(mutilation,'u',0,'phi',0,'theta',0);
+    mutilation = VBA_check_struct(mutilation,'u',0,'phi',0,'theta',0);
 
     mutilation_ratio = 0;
     % define input
