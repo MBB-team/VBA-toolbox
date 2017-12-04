@@ -39,6 +39,7 @@ catch
     flag='unbounded';
 end
 
+
 % initialize dummy variables
 [n,k] = size(Y);
 in.A = A;
@@ -56,6 +57,15 @@ in.indInC = find(C~=0);
 in.indC = np+1:np+length(in.indInC);
 in.flag = flag;
 
+% deal with NaN and/or missing data
+inan = find(isnan(Y));
+Y(inan) = 0;
+if ~isempty(inan)
+    options.isYout = zeros(size(Y));
+    options.isYout(inan) = 1;
+    options.isYout = options.isYout';
+end
+
 % call VBA inversion routine
 y = Y';
 u = Y';
@@ -67,8 +77,8 @@ options.inG = in;
 options.priors.muPhi = zeros(dim.n_phi,1);
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
 options.DisplayWin = 0;
-options.verbose = 0;
-[posterior,out] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);
+options.verbose = 1;
+[posterior,out] = VBA_hyperparameters(y,u,[],g_fname,dim,options);
 
 % wrap-up SEM estimates
 mP = posterior.muPhi;
