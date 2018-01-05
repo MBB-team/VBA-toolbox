@@ -469,6 +469,6 @@ n = size(V,1);
 S = 0.5*n*(1+log(2*pi)) + 0.5*VBA_logDet(V);
 
 function il = infLimit(a,b)
-il = isinf(a).*isequal(b,0);
+il = isinf(a).*eq(b,0);
 
 
