@@ -39,9 +39,16 @@ catch
     dim.p = size(y,1);
 end
 
+if isfield(options,'sources') && (numel(options.sources)>1 || options.sources.type >0)
+    error('*** VBA_hyperparameters is only defined for unique gaussian sources\n');
+end
+
+    
 % specify minimal default options
 options.tStart = tic;
-options = VBA_check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1,'kernelSize',16);
+options = VBA_check_struct(options,'sources',struct(),'DisplayWin',1,'verbose',1,'kernelSize',16);
+options.sources=VBA_check_struct(options.sources,'type',0,'out',dim.p);
+
 kernelSize0 = options.kernelSize;
 options.kernelSize = 0;
 
