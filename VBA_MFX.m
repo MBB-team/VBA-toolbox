@@ -1,4 +1,4 @@
-function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group)
+function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group, options_group)
 % VB treatment of mixed-effects analysis
 % function [posterior,out] = VBA_MFX(y,u,f_fname,g_fname,dim,options)
 % This function approaches model inversion from an empirical Bayes
@@ -22,6 +22,12 @@ function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options
 %   the moments of the parent population distributions (for observation and
 %   evolution parameters, as well as for initial conditions, if
 %   applicable). See p_group subfields below.
+%   - options_group: Structure containing options for MFX. Fields:
+%     .TolFun - Minimum change in the free energy, default is 2e-2
+%     .MaxIter - Maximum number of iterations, default is 16
+%     .DisplayWin - Do we want a graphical output?
+%     .verbose - Do we want verbose text output?
+%
 % OUT:
 %   - p_sub/o_sub: nsx1 cell arrays containng the VBA outputs of the
 %   within-subject model inversions.
@@ -51,16 +57,33 @@ function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options
 %       (initialization).
 
 
+
 ns = length(y); % # subjects
 dim.ns = ns;
+
+if exist('options_group', 'var')
+    opt  = options_group;
+else
+    opt = [];
+end
+
 opt.dim = dim;
 opt.g_fname = g_fname;
 opt.f_fname = f_fname;
-opt.verbose = 1;
-opt.TolFun = 1e-2;
-opt.MaxIter = 16;
-o_group.tStart = tic;
+
+
+% set default options
+opt = VBA_check_struct(opt, ...
+    'TolFun'     , 2e-2  , ...     % Minimum change in the free energy
+    'MaxIter'    , 16    , ...     % Maximum number of iterations
+    'DisplayWin' , 1     , ...     % VB display window
+    'verbose'    , 1       ...     % matlab window messages
+    ) ;
+
 o_group.options = opt;
+o_group.tStart  = tic;  % start time
+
+
 [o_group.options] = VBA_displayMFX([],[],[],o_group,1,'off');
 
 
@@ -76,7 +99,7 @@ if dim.n_phi > 0
         'SigmaPhi'   , eye(dim.n_phi)     , ... % prior variance on population average
         'a_vPhi'     , ones(dim.n_phi,1)  , ... % prior shape param on population variance
         'b_vPhi'     , ones(dim.n_phi,1)    ... % prior rate param on population variance
-    ) ;
+        ) ;
 end
 if dim.n_theta > 0
     priors_group = VBA_check_struct(priors_group, ...
@@ -84,16 +107,17 @@ if dim.n_theta > 0
         'SigmaTheta'   , eye(dim.n_theta)     , ...
         'a_vTheta'     , ones(dim.n_theta,1)  , ...
         'b_vTheta'     , ones(dim.n_theta,1)    ...
-    ) ;
+        ) ;
 end
 if dim.n >0
-	priors_group = VBA_check_struct(priors_group, ...
+    priors_group = VBA_check_struct(priors_group, ...
         'muX0'      , zeros(dim.n,1) , ...
         'SigmaX0'   , eye(dim.n)     , ...
         'a_vX0'     , ones(dim.n,1)  , ...
         'b_vX0'     , ones(dim.n,1)    ...
-    ) ;
+        ) ;
 end
+opt.priors_group = priors_group;
 
 if isempty(u)
     for i=1:ns
@@ -143,7 +167,7 @@ o_sub = cell(ns,1);
 if opt.verbose
     fprintf(1,'%6.2f %%',0)
 end
-kernelSize0 = 0; % max lag of volterra kernel 
+kernelSize0 = 0; % max lag of volterra kernel
 for i=1:ns
     if opt.verbose
         fprintf(1,repmat('\b',1,8))
@@ -320,7 +344,7 @@ while ~stop
     
     o_group.F = F;
     o_group.it = it;
-        
+    
     if it == 1
         % store initial within-subject VBA model inversion
         o_group.initVBA.p_sub = p_sub;
@@ -329,7 +353,7 @@ while ~stop
     else
         [o_group.options] = VBA_displayMFX(p_sub,o_sub,p_group,o_group);
     end
-
+    
     dF = F(it+1) - F(it);
     if abs(dF) <= opt.TolFun || it >= opt.MaxIter
         stop = 1;
@@ -468,6 +492,6 @@ n = size(V,1);
 S = 0.5*n*(1+log(2*pi)) + 0.5*VBA_logDet(V);
 
 function il = infLimit(a,b)
-il = isinf(a).*isequal(b,0);
+il = isinf(a).*eq(b,0);
 
 

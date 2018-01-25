@@ -4,7 +4,7 @@ function logs = VBA_unit_tests(logs)
 
 
 %% find demos
-[~,list]=system('find . -name demo*') ;
+[~,list]=system('find . -name demo_*') ;
 
 demos = {};
 for p = strsplit(list)  
