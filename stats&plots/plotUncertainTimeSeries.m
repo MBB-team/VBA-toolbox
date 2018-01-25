@@ -34,7 +34,9 @@ try
     if ~isax
         hf = figure('color',ones(1,3));
         haf = axes('parent',hf);
-        box(haf,'off')
+        box(haf,'off');
+    else
+        
     end
 catch
     hf = figure('color',ones(1,3));
@@ -63,7 +65,7 @@ if indEnd > 1
     % Plot first moment
     hp = plot(haf,dTime,muX(ind,1:indEnd)');
     % Add confidence intervals
-    if sum(SX(:)) ~= 0
+    %if sum(SX(:)) ~= 0
         set(haf,'nextplot','add')
         for i = 1:n
             yp = [muX(ind(i),1:indEnd)+sc*sqrt(SX(ind(i),1:indEnd)),fliplr(muX(ind(i),1:indEnd)-sc*sqrt(SX(ind(i),1:indEnd)))];
@@ -71,7 +73,7 @@ if indEnd > 1
             col = get(hp(i),'color');
             hf(i) = fill(xp,yp,'r','parent',haf,'facecolor',col,'edgealpha',0,'facealpha',0.25);
         end
-    end
+    %end
     set(haf,'ygrid','on')
     axis(haf,'tight')
     if ~isempty(color)
@@ -101,7 +103,6 @@ try % only when no parent handle has been specified
     set(hh(1),'position',[0.4 0.02 pos(3:4)])
     hh(2) = uicontrol('style','text','string','Change error bars','units','normalized','position',[0.5 0.02 0.2 0.0476],'backgroundcolor',ones(1,3));
 end
-
 
 
 function [] = dox(e1,e2)
