@@ -1,8 +1,8 @@
 function [g,dgdx,dgdP] = g_logistic(x,P,u,in)
 % derives the probability of outcome variable y=1, under the logistic model
-g = sig(in.X*P);
+g = sig(u'*P);
 dgdx = [];
-dgdP = in.X'*diag(g.*(1-g));
+dgdP = u*diag(g.*(1-g));
 
 
 
