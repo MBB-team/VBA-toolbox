@@ -1,26 +1,64 @@
-% demo for GLM inference
+function [posterior, out] = demo_GLM()
+% // VBA toolbox //////////////////////////////////////////////////////////
+% [posterior, out] = demo_GLM()
+%
+% demo of multiple regression (GLM) inference
 
+% Specify the linear model
+% =========================================================================
+
+% number of observations
 n = 8;
-X = [vec(1:n),ones(n,1)];
-b = randn(2,1);
-sigma = 1;
-y0 = X*b;
-y = y0 + randn(size(y0))/sigma;
 
-options.inG.X = X;
-g_fname = @g_GLM;
-% priors.muPhi = zeros(4,1);         % prior mean on observation params
-priors.SigmaPhi = 1e0*eye(2); % prior covariance on observation params
-% priors.a_sigma = 1;             % Jeffrey's prior
-% priors.b_sigma = 1;             % Jeffrey's prior
-options.priors = priors;        % include priors in options structure
-% options.inG = inG;              % input structure (grid)
-dim.n_phi = 2;                  % nb of observation parameters
-dim.n_theta = 0;                % nb of evolution parameters
-dim.n=0;                        % nb of hidden states
+% design matrix (each regressor is entered as a column)
+X = [ ones(n,1)    ... % constant (intercept)
+      (1:n)'       ] ; % linear trend
+
+% Generate artificial data
+% =========================================================================
+
+% Draw random effect strength
+nRegressor = size(X,2);
+b = randn(nRegressor,1);
+
+% Simulate random data with precision sigma
+sigma = 1;    % precision = 1 / variance
+y0    = X*b;  % model prediction
+y = y0 + randn(n,1)/sigma;
+
+% Prepare options structure for the inversion
+% =========================================================================
+
+% model definition
+% -------------------------------------------------------------------------
+g_fname = @g_GLM  ;
+options.inG.X = X ; % will be used by g_GLM
+
+% define priors
+% -------------------------------------------------------------------------
+% % default priors are N(0,1) for all parameters. 
+% % uncomment the following lines to change the default
+% % prior mean on observation params (beta values)
+%   priors.muPhi = zeros(nRegressor,1);    
+% % prior covariance on observation params
+%   priors.SigmaPhi = 1e0*eye(nRegressor); 
+% % hyperpriors
+%   priors.a_sigma = 1; % Jeffrey's priors
+%   priors.b_sigma = 1; % Jeffrey's priors
+% % include priors in options structure
+%   options.priors = priors;        
+
+% define model dimensions
+% -------------------------------------------------------------------------
+dim.n_phi = nRegressor;  % nb of observation parameters
+dim.n_theta = 0;         % nb of evolution parameters
+dim.n=0;                 % nb of hidden states 
+
+% Run the estimation 
+% =========================================================================
+
 % Call inversion routine
 [posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
 
-
-%---- Display results ----%
+% Display results
 displayResults(posterior,out,y,[],[],[],b,[],sigma);
