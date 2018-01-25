@@ -50,7 +50,7 @@ options.priors.SigmaTheta = 1e2*eye(dim.n_theta);
 f_fname = @f_Hampton;
 g_fname = @g_Hampton;
 u = [zeros(2,1),[o;a]];
-[posterior,out] = VBA_hyperparameters(a,u,f_fname,g_fname,dim,options);
+[posterior,out] = VBA_NLStateSpaceModel(a,u,f_fname,g_fname,dim,options);
 
 
 
