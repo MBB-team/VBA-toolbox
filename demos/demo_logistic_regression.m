@@ -35,7 +35,7 @@ options.dim = dim;
 
 % Specify distribution for binary data (default is gaussian)
 % -------------------------------------------------------------------------
-options.binomial = 1;
+options.sources.type = 1; 
 
 % Simulate artificial data
 % =========================================================================
