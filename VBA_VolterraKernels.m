@@ -51,13 +51,6 @@ if isfield(out.options,'orthU') && out.options.orthU
 end
 
 % configurate kernel estimation
-if out.options.binomial
-    g_fname = @g_convSig;
-    opt.binomial = 1;
-else
-    g_fname = @g_conv0;
-    opt.binomial = 0;
-end
 [opt.inG.dgdp] = VBA_conv2glm(u,nt); % build convolution matrices
 if isfield(out.options,'detrendU') && ~~out.options.detrendU
     VBA_disp('Warning: detrending inputs for Volterra decompositions.',out.options)
@@ -89,10 +82,21 @@ end
 for k = 1:p
     y = out.y(k,:)';
     if var(y)>eps % only if var(y)>0
-        if ~opt.binomial
-            opt.priors.a_sigma = 1;
-            opt.priors.b_sigma = var(y);
+        
+        % find source tpye
+        sInd = cellfun(@(x) ismember(k,x), {out.options.sources.out});
+        switch out.options.sources(sInd).type
+            case 0
+                g_fname = @g_conv0;
+                opt.sources.type = 0;
+                opt.priors.a_sigma = 1;
+                opt.priors.b_sigma = var(y);
+            case {1,2}
+                g_fname = @g_convSig;
+                opt.sources.type = 1;
         end
+        
+        
         [pk,ok] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,opt);
         kernels.y.R2(k) = ok.fit.R2;
         if out.options.verbose
@@ -114,7 +118,7 @@ for k = 1:p
 end
 
 % 2- Volterra kernels of simulated system
-opt.binomial = 0;
+opt.sources.type = 0;
 kernels.g.m = zeros(p,nt,nu);
 kernels.g.v = zeros(p,nt,nu);
 kernels.g.R2 = zeros(p,1);
