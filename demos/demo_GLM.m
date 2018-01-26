@@ -1,8 +1,22 @@
 function [posterior, out] = demo_GLM()
 % // VBA toolbox //////////////////////////////////////////////////////////
-% [posterior, out] = demo_GLM()
 %
-% demo of multiple regression (GLM) inference
+% [posterior, out] = demo_GLM()
+% Demo of multiple regression (General Linear Model) inference
+%
+% The problem is to fit observations with a linear combination
+% of regressors. Formally, this can be written as:
+%
+% $$ y = X.\beta + \vareps $$
+%
+% where $y$ is the set of observations, $X$ is the design matrix containing
+% the regressors, $\beta$ is a vector of parameters defining the respective 
+% weight of the regressors, and $\vareps ~ N(0,\sigma^)$ is some measurment
+% noise.
+% The objective is thus to estimate $\beta$ and $\sigma^2$ from the data
+% given X.
+%
+% /////////////////////////////////////////////////////////////////////////
 
 % Specify the linear model
 % =========================================================================
