@@ -53,9 +53,9 @@ else
     alpha = [];
 end
 
-if ~options.binomial
+try % if there are gaussian sources
     sigma = options.priors.a_sigma./options.priors.b_sigma;
-else
+catch
     sigma = [];
 end
 
