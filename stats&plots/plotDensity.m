@@ -92,10 +92,17 @@ str{1} = sprintf(['Dimensions of the model:','\n ',...
     '    - hidden states: n=',num2str(dim.n),'\n ',...
     '    - evolution parameters: n_theta=',num2str(dim.n_theta),'\n ',...
     '    - observation parameters: n_phi=',num2str(dim.n_phi),'\n ']);
-if options.binomial
-    tmp = ' (binomial data)';
+if numel(options.sources) > 1
+    tmp = ' (multisources)';
 else
-    tmp = [];
+    switch options.sources.type
+        case 0
+            tmp = ' (gaussian data)';
+        case 1
+            tmp = ' (binomial data)';
+        case 2
+            tmp = ' (multinomial data)';
+    end
 end
 if dim.n >= 1
     if isinf(options.priors.a_alpha) ...
