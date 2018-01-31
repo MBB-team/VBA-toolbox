@@ -59,11 +59,13 @@ with a measurement noise precision $$\sigma \rightarrow \infty$$  (in practice, 
 
 > Evolution parameters include $$c$$ and $$\theta_1,...,\theta_p$$, which can be estimated using VBA in the usual way. Note that in this example, there is no observation parameter.
 
-Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics are driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
+Now, there is yet another problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics are driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
 $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
 where $$r \rightarrow \infty $$ to ensure that the past history of hidden states is transfered without distortion. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
+
+Finally, we recommand to adjust *[VBA's Kalman backward lag]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#controlling-the-lagged-kalman-forward-pass)* to the order of the AR(p) process, as follows: `options.backwardLag = p ;`. This is necessary to properly account for the delayed influence of the states' history.
 
 > Tip: The augmented state-space of AR(p) processes can be generalized to model any form of delayed dynamical system!
 
