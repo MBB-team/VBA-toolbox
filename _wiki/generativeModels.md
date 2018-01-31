@@ -39,7 +39,7 @@ $$ x_t= c+ \sum_{i=1}^{p}\theta_i x_{t-i} +\eta_t $$
 
 where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters, and $$\eta_t$$ is assumed to be i.i.d. Gaussian random noise.
 
-In principle, the non-Markovian structure of AR(p) processes eschews VBA's identification of [Markovian systems](https://en.wikipedia.org/wiki/Markov_chain), i.e. systems whose evolution depends solely upon their current state. But in fact, a very simple solution to this apparent issue is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following $$p\times 1$$ augmented state variable:
+In principle, VBA only deals with [Markovian systems](https://en.wikipedia.org/wiki/Markov_chain), i.e. systems whose evolution depends solely upon their current state. Thus, the non-Markovian structure of AR(p) processes should eschew any VBA-based system identification. But in fact, a very simple solution to this apparent issue is to augment the native state-space of AR(p) processes with dummy states that are copies of past instances of native states. As we will see, this allows us to describe any non-Markovian system in terms of a (higher-dimensional) Markovian system. Let us define $$z_t$$ as the following $$p\times 1$$ augmented state variable:
 
 $$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}\end{array}\right] = f(z_t) $$
 
@@ -51,6 +51,8 @@ where $$A$$ and $$L_1,...,L_{p-1}$$ are $$p\times 1$$ vectors given by:
 
 $$ A = \left[\begin{array}{l} \theta_1 \\ \theta_2 \\ \vdots \\ \theta_p \end{array}\right], L_1 = \left[\begin{array}{l} 1 \\ 0 \\ \vdots \\ 0 \end{array}\right], ..., L_{p-1} = \left[\begin{array}{l} 0 \\ \vdots \\ 1 \\ 0 \end{array}\right] $$
 
+One can see that the native unidimensional AR(p) process is now described in terms of Markovian dynamics on a p-dimensional state-space $$z$$, whose evolution function $$f(z)$$ is compatible with VBA analyses.
+
 The corresponding observation function would then simply be given by:
 
 $$ g(z_t) = {L_1}^T z_t = x_t$$
@@ -59,7 +61,7 @@ with a measurement noise precision $$\sigma \rightarrow \infty$$  (in practice, 
 
 > Evolution parameters include $$c$$ and $$\theta_1,...,\theta_p$$, which can be estimated using VBA in the usual way. Note that in this example, there is no observation parameter.
 
-Now, there is yet another problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics are driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
+Now, there is a last problem to fix. Recall that, when inverting stochastic models, VBA assumes that hidden states's dynamics are driven by a mixture of deterministic (the evolution function) and ramdom forces (state noise), i.e.: $$z_{t+1} = f(z_t) + \eta_t$$. State noise is required for AR(p) processes because it eventually triggers observed variations in $$x_t$$. However, we do not want state noise to perturb the "copy-paste" operation performed on the $$p-1$$ last entries of $$z_t$$. In principle, this can be achieved by resetting the state noise precision matrix $${Q_x}^{-1}$$ as the following diagonal matrix:
 
 $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \cdots & r  \end{array}\right] $$
 
@@ -67,7 +69,7 @@ where $$r \rightarrow \infty $$ to ensure that the past history of hidden states
 
 Finally, we recommend that the *[VBA's Kalman backward lag]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#controlling-the-lagged-kalman-forward-pass)* be adjusted to the order of the AR(p) process, as follows: `options.backwardLag=p`. This is necessary to properly account for the delayed influence of the states' history.
 
-> Tip: The augmented state-space of AR(p) processes can be generalized to model any form of delayed dynamical system!
+> It is straightforward to generalize the above "augmented state-space" trick to multivariate AR(p) proceses, or, in fact, to any form of non-Markovian dynamics (including, e.g., delayed dynamical systems...)!
 
 
 # ARCH models
