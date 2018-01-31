@@ -74,7 +74,7 @@ options.backwardLag = 10 ;
 
 The main effect of increasing the lag is to average across more data points when deriving the hidden states, hence improving the precision (and the temporal smoothness) of the estimate.
 
-> **TIP:** The ensuing [computational cost](https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations) scales with $$k^2$$. This means that the backward lag induces a trade-off between estimation efficiency and computational load. When setting the backward lag, one may aim at finding the minimal value that still yields robust inference.
+> **TIP:** The ensuing [computational cost](https://en.wikipedia.org/wiki/Computational_complexity_of_mathematical_operations) scales with $$k^2 \times n^2$$, where $$n$$ is the states' dimension and $$k$$ is the Kalman backward lag. This means that the backward lag induces a trade-off between estimation efficiency and computational load. When setting the backward lag, one may aim at finding the minimal value that still yields robust inference.
 
 
 # Controlling VBA's algorithmic convergence
