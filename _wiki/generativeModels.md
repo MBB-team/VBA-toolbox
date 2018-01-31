@@ -65,7 +65,7 @@ $$ {Q_x}^{-1} = \left[\begin{array}{cccc} 1 & 0 & \cdots & 0 \\ 0 & r & \cdots &
 
 where $$r \rightarrow \infty $$ to ensure that the past history of hidden states is transfered without distortion. Practically speaking, this can be approximated by changing the matrix `options.priors.iQx{t}` as above, with $$r$$ set to an appriately high value (e.g., $$10^4$$).
 
-Finally, we recommand to adjust *[VBA's Kalman backward lag]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#controlling-the-lagged-kalman-forward-pass)* to the order of the AR(p) process, as follows: `options.backwardLag = p ;`. This is necessary to properly account for the delayed influence of the states' history.
+Finally, we recommend that the *[VBA's Kalman backward lag]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#controlling-the-lagged-kalman-forward-pass)* be adjusted to the order of the AR(p) process, as follows: `options.backwardLag=p`. This is necessary to properly account for the delayed influence of the states' history.
 
 > Tip: The augmented state-space of AR(p) processes can be generalized to model any form of delayed dynamical system!
 
@@ -107,6 +107,8 @@ Finally, one defines the observation function on the augmented state-space as fo
 $$ g(z_t) = {L_1}^T z_t = x_t$$
 
 with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in practice, $$10^4$$ or so).
+
+Note that, as for AR(p) processes, we recommend that the *[VBA's Kalman backward lag]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#controlling-the-lagged-kalman-forward-pass)* be increased as much as possible (at least `options.backwarLag=2`, but preferably more...).
 
 > The computational cost incurred when emulating ARCH models using homoscedastic state-space models is twofold: (i) an increase in the dimensionality of the system, and (ii) some form of nonlinearity in the evolution function. In fact, this intuition generalizes to any form of heteroscedasticity.
 
