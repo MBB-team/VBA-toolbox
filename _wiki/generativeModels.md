@@ -39,7 +39,7 @@ $$ x_t= c+ \sum_{i=1}^{p}\theta_i x_{t-i} +\eta_t $$
 
 where $$c$$ and $$\theta_1,...,\theta_p$$ are constant parameters, and $$\eta_t$$ is assumed to be i.i.d. Gaussian random noise.
 
-Strictly speaking, VBA only deals with [Markovian systems](https://en.wikipedia.org/wiki/Markov_chain), i.e. systems whose evolution depends solely upon their current state. Thus, the non-Markovian structure of AR(p) processes should prevent any VBA-based system identification. But in fact, a very simple solution to this apparent issue is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following $$p\times 1$$ augmented state variable:
+In principle, the non-Markovian structure of AR(p) processes eschews VBA's identification of [Markovian systems](https://en.wikipedia.org/wiki/Markov_chain), i.e. systems whose evolution depends solely upon their current state. But in fact, a very simple solution to this apparent issue is to augment the state-space with dummy states that are copies of past instances of native states. Let us define $$z_t$$ as the following $$p\times 1$$ augmented state variable:
 
 $$ z_t = \left[\begin{array}{l} x_t \\ x_{t-1} \\ \vdots \\ x_{t-p+1} \end{array}\right] \implies z_{t+1} = \left[\begin{array}{l} x_{t+1} \\ x_{t} \\ \vdots \\ x_{t-p+2}\end{array}\right] = f(z_t) $$
 
