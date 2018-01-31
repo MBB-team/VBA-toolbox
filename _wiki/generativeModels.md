@@ -110,7 +110,7 @@ with a measure measurement noise precision $$\sigma \rightarrow \infty$$ (in pra
 
 Note that, as for AR(p) processes, we recommend that the *[VBA's Kalman backward lag]({{ site.baseurl }}/wiki/Controlling-the-inversion-using-VBA-options/#controlling-the-lagged-kalman-forward-pass)* be increased as much as possible (at least `options.backwarLag=2`, but preferably more...).
 
-> The computational cost incurred when emulating ARCH models using homoscedastic state-space models is twofold: (i) some form of nonlinearity in the evolution function, and (ii) an increase in the dimensionality of the system. Note that the latter cost is somehow paid *twice* here, since the computational load of vBA's inversion is of the order $$k^2 \times n^2$$, where $$n$$ is the states' dimension and $$k$$ is the Kalman backward lag. In fact, this intuition generalizes to any form of heteroscedasticity.
+> The computational cost incurred when emulating ARCH models using homoscedastic state-space models is twofold: (i) some form of nonlinearity in the evolution function, and (ii) an increase in the dimensionality of the system. Note that the latter cost is somehow paid *twice* here, since the computational load of VBA's inversion scales with the Kalman backward lag.
 
 
 # Covariance component models
