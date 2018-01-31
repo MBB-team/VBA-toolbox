@@ -94,7 +94,7 @@ $$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{arr
 
 Since the deterministic flow of dummy states is null, their stochastic dynamics are solely driven by state noise, i.e. $$w_t = \eta_t$$. 
 
-> Both the native deterministic flow $$a(x)$$ and the state-dependent standard-deviation $$\beta(x)$$ can be parameterized through evolution parameters (i.e.: $$a(x)=a(x,\theta)$$ and $$\beta(x)=\beta(x,\theta)$$), which can then be estimated using VBA.
+> Both the native deterministic flow $$a(x)$$ and the state-dependent standard-deviation $$\beta(x)$$ can be parameterized through evolution parameters, i.e.: $$a(x)=a(x,\theta)$$ and $$\beta(x)=\beta(x,\theta)$$. These can then be estimated using VBA.
 
 Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
 
