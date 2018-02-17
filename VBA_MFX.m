@@ -364,10 +364,10 @@ end
 fprintf([' done.','\n'])
 o_group.date = clock;
 o_group.dt = toc(o_group.tStart);
-o_group.options.binomial = o_sub{1}.options.binomial;
+o_group.options.sources = o_sub{1}.options.sources;
 for i=1:ns
     o_group.within_fit.F(i) = o_sub{i}.F(end);
-    o_group.within_fit.R2(i) = o_sub{i}.fit.R2;
+    o_group.within_fit.R2(i,:) = o_sub{i}.fit.R2;
     o_group.within_fit.LLH0(i) = VBA_LMEH0(o_sub{i}.y,o_sub{i}.options);
     o_sub{i}.options.kernelSize = kernelSize0;
     [tmp,o_sub{i}] = VBA_getDiagnostics(p_sub{i},o_sub{i});

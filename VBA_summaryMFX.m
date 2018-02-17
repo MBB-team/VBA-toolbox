@@ -24,7 +24,7 @@ str{3} = sprintf(['Dimensions of the MFX analysis:','\n ',...
     '    - hidden states: n=',num2str(out.options.dim.n),'\n ',...
     '    - evolution parameters: n_theta=',num2str(out.options.dim.n_theta),'\n ',...
     '    - observation parameters: n_phi=',num2str(out.options.dim.n_phi)]);
-str{4} = sprintf(['Within-subject generative model:','\n']);
+str{4} = sprintf('\nWithin-subject generative model:\n');
 if isa(out.options.g_fname,'function_handle')
     gfn = func2str(out.options.g_fname);
 else
@@ -37,25 +37,33 @@ if out.options.dim.n >= 1
         ffn = out.options.f_fname;
     end
     str{4} = sprintf([str{4},...
-        '    - observation function: ',gfn,'\n',...
-        '    - evolution function: ',ffn]);
+        '       - observation function: ',gfn,'\n',...
+        '       - evolution function: ',ffn]);
 else
-    str{4} = sprintf([str{4},'    - observation function: ',gfn]);
+    str{4} = sprintf([str{4},'     - observation function: ',gfn]);
 end
 mF = mean(out.within_fit.F(:));
 sF = std(out.within_fit.F(:));
 mF0 = mean(out.within_fit.LLH0(:));
 sF0 = std(out.within_fit.LLH0(:));
 str{5} = sprintf([...
-    '    - Bayesian log model evidences: <log p(y|m)> = ',num2str(mF,'%4.3e'),' +/- ',num2str(sF,'%4.3e'),'\n',...
-    '    - Bayesian log evidences under the null: <log p(y|H0)> = ',num2str(mF0,'%4.3e'),' +/- ',num2str(sF0,'%4.3e')]);
-if ~out.options.binomial
+    '\n     - Bayesian log model evidences: <log p(y|m)> = ',num2str(mF,'%4.3e'),' +/- ',num2str(sF,'%4.3e'),'\n',...
+    '     - Bayesian log evidences under the null: <log p(y|H0)> = ',num2str(mF0,'%4.3e'),' +/- ',num2str(sF0,'%4.3e')]);
+
+if any([out.options.sources.type]==0)
     R2str = 'coefficient of determination: <R2>';
-else
-    R2str = 'balanced classification accuracy <Acc>';
+    mR = mean(out.within_fit.R2);
+    sR = std(out.within_fit.R2);
+    str{6} = sprintf([...
+        '\n     - ',R2str,' = ',num2str(mR,'%4.3f '),' +/- ',num2str(sR,'%4.3e ')]);
 end
-mR = mean(out.within_fit.R2(:));
-sR = std(out.within_fit.R2(:));
-str{6} = sprintf([...
-    '    - ',R2str,' = ',num2str(mR,'%4.3f'),' +/- ',num2str(sR,'%4.3e')]);
+
+if any([out.options.sources.type]>0)
+    R2str = 'balanced classification accuracy <Acc>';
+    mR = mean(out.within_fit.R2);
+    sR = std(out.within_fit.R2);
+    str{7} = sprintf([...
+        '\n     - ',R2str,' = ',num2str(mR,'%4.3f '),' +/- ',num2str(sR,'%4.3f ')]);
+end
+
 
