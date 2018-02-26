@@ -53,7 +53,7 @@ fb = struct( ...
 % learning rate
 theta = sigm(0.65,struct('INV',1)); % 0.65, once sigm transformed
 % inverse temperature 
-phi = log(3); % will be exp transformed
+phi = log(2.5); % will be exp transformed
 % initial state
 x0 = [.5; .5];
 
