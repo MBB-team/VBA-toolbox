@@ -168,7 +168,13 @@ if opt.verbose
     fprintf(1,'%6.2f %%',0)
 end
 kernelSize0 = 0; % max lag of volterra kernel
-n_t = dim.n_t;  % save here to acces subject specific trial numbers later
+
+% save here to acces subject specific trial numbers later
+if numel(dim.n_t) == 1
+    n_t = repmat(dim.n_t,1,ns);
+else
+    n_t = dim.n_t;
+end
 
 for i=1:ns
     if opt.verbose
