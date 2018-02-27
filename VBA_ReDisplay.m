@@ -111,7 +111,11 @@ end
 
 function mySummary(hfig) 
 
-    try hfig; catch, hfig = get(gco,'parent'); end
+    try 
+        hfig;
+    catch
+        hfig = get(gco,'parent');
+    end
     cleanPanel(hfig);
 
     ud = get(hfig,'userdata');

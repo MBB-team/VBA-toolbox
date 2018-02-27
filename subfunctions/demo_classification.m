@@ -11,11 +11,11 @@ close all
 
 % simulate binary data
 n = 32; % data sample size
-p = 16; % number of features
+p = 10; % number of features
 X = randn(n,p); % feature matrix
 b = 1+randn(p,1); % feature weights
 e = randn(n,1); % additional noise
-y = sig(X*b+e)>0.5;
+y = +(sig(X*b+e)>0.5);
 
 % classify data using default set-up
 k = n; % number of folds (k=n: leave-one-out cross-validation)

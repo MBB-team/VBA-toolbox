@@ -168,6 +168,14 @@ if opt.verbose
     fprintf(1,'%6.2f %%',0)
 end
 kernelSize0 = 0; % max lag of volterra kernel
+
+% save here to acces subject specific trial numbers later
+if numel(dim.n_t) == 1
+    n_t = repmat(dim.n_t,1,ns);
+else
+    n_t = dim.n_t;
+end
+
 for i=1:ns
     if opt.verbose
         fprintf(1,repmat('\b',1,8))
@@ -203,6 +211,9 @@ for i=1:ns
     options{i} = VBA_check_struct(options{i},'kernelSize',16);
     kernelSize0 = max([kernelSize0,options{i}.kernelSize]);
     options{i}.kernelSize = 0;
+    
+    dim.n_t = n_t(i);  % subject number of trials
+    
     [p_sub{i},o_sub{i}] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options{i});
     % store options for future inversions
     options{i} = o_sub{i}.options;
@@ -492,6 +503,6 @@ n = size(V,1);
 S = 0.5*n*(1+log(2*pi)) + 0.5*VBA_logDet(V);
 
 function il = infLimit(a,b)
-il = isinf(a).*isequal(b,0);
+il = isinf(a).*eq(b,0);
 
 

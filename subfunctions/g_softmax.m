@@ -9,7 +9,10 @@ function  [ gx,dgdx,dgdP ] = g_softmax(x,P,u,in )
 % OUT:
 %   - gx : P(a=1|x)
 
-beta = exp(P(1)); % inverse temperature
+% inverse temperature
+% -------------------------------------------------------------------------
+beta = exp(P(1)); % exp: [-Inf,Inf] -> [0 Inf]
+
 dQ = (x(1)-x(2));
 if length(P)>1
     gx = sig( beta*dQ + P(2));

@@ -1,22 +1,33 @@
 function [g,dgdx,dgdP] = g_ttest(x,P,u,in)
-    % scenarios
-    switch in.hypothesis
-        case 'null'
-            % prediction
-            g = [P(1) ; P(1)]; % H0-prediction
-            % derivative
-            dgdP = zeros(2);
-            dgdP(1,1) = 1;
-            dgdP(2,1) = 1;
-            
-        case 'alternative'
-            % prediction
-            g = [P(1) ; P(2)]; % H1-prediction
-            % derivative
-            dgdP = eye(2);
-    end
-    
-    
-    % derivative
-    dgdx = [];
+
+% transformations
+%%% normal priors on phi_1 
+sP = P;
+dsPdP = ones(numel(P),1);
+%%% sparse laplace priors on phi_2 
+[sP(2),dsPdP(2)] = sparsify(P(2),log(2));
+
+
+% prediction
+g = [sP(1) ; 
+     sP(1) + sP(2) ];
+
+% derivatives
+dgdP = diag(dsPdP,0);
+dgdP(1,2) = 1*dsPdP(1);
+dgdx = [];
+
+
+% % prediction
+% g = [sP(1) - sP(2)/2; 
+%      sP(1) + sP(2)/2 ];
+% 
+% % derivatives
+% dgdP = zeros(2);
+% dgdP(1,1) = dsPdP(1);
+% dgdP(2,1) = -(1/2)*dsPdP(2);
+% dgdP(1,2) = dsPdP(1);
+% dgdP(2,2) = +(1/2)*dsPdP(2);
+% dgdx = [];
+
 end

@@ -4,7 +4,8 @@ function logs = VBA_unit_tests(logs)
 
 
 %% find demos
-[~,list]=system('find . -name demo*') ;
+vba_info = VBA_version();
+[~,list]=system(['find ' vba_info.path ' -name demo_*']) ;
 
 demos = {};
 for p = strsplit(list)  
@@ -14,7 +15,7 @@ for p = strsplit(list)
 end
 
 % setup for base
-setup = 'pause off; warning off; ' ;
+setup = 'pause off; warning off; clear all; close all; ' ;
 
 
 %% run demos
