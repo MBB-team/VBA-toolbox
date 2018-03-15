@@ -12,7 +12,7 @@ rng('default'); % reproducible random-number generation
 sigma = 1;
 nsample = [10 30 100];
 d = [0.1 0.5 1];
-n_iteration = 1e3;
+n_iteration = 1e1; % MUST be increased to a larger number (eg 1e3) for real test
 n_null = numel(nsample)*numel(n_iteration);
 n_alternative = n_null*numel(d);
 

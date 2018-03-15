@@ -3,7 +3,13 @@ function [options] = VBA_displayMFX(p_sub,o_sub,p_group,o_group,init,within)
 
 options = o_group.options;
 try;init;catch;init=0;end
+
+if ~options.DisplayWin
+    return
+end
+
 try;within;catch;within='on';end
+
 
 if init
     pos0 = get(0,'screenSize');
