@@ -45,14 +45,9 @@ catch
     if sum(SX(:)) ~= 0
         noButton = 0;
     end
-    % Preset axes limits
-    if indEnd > 1
-        set(haf,'xlim',[dTime(1),dTime(end)],'nextplot','add');
-    else
-        set(haf,'xlim',[0.2,n+0.8],'xtick',1:n,'nextplot','add');
-    end
+    % Preset axes limits  
 end
-
+    
 % Get display indices
 if ~exist('ind','var') || isempty(ind)
     ind = [1:n];
@@ -76,6 +71,7 @@ if indEnd > 1
     %end
     set(haf,'ygrid','on')
     axis(haf,'tight')
+    set(haf,'xlim',[dTime(1),dTime(end)],'nextplot','add');
     if ~isempty(color)
         set(hp,'color',color)
         set(hf,'FaceColor',color)
@@ -88,6 +84,7 @@ else
         set(hp,'FaceColor',color)
         set(hf,'color',color)
     end
+    set(haf,'xlim',[0.2,n+0.8],'xtick',1:n,'nextplot','add');
 end
 
 % Add confidence intervals scaling control

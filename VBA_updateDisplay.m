@@ -114,18 +114,50 @@ end
 
 % check time dimension
 if isequal(dTime,1) && size(y,1) > 1
-    gx = gx';
-    vy = vy';
-    y = y';
+    
+    n_s = numel(options.sources);
+    n_t = max(cellfun(@numel,{options.sources.out}));
+    
+    new_y = nan(n_s,n_t);
+    new_gx = nan(n_s,n_t);
+    new_vy = nan(n_s,n_t);
+    new_isYout = ones(n_s,n_t);
+    
+    for si=1:n_s
+        s_idx = options.sources(si).out;
+        
+        n_t_s = numel(options.sources(si).out);
+        
+        new_y(si, 1:n_t_s) = y(s_idx)';
+        new_gx(si, 1:n_t_s) = gx(s_idx)';
+        new_vy(si, 1:n_t_s) = vy(s_idx)';
+        
+        try 
+            new_isYout(si, 1:n_t_s) = options.isYout(s_idx)';
+        catch
+            new_isYout(si, 1:n_t_s) = 0;
+        end
+      
+    end
+    
+    y = new_y;
+    vy = new_vy;
+    gx = new_gx;
+    options.isYout = new_isYout;
+    
+    
+    dTime = 1:size(y,2);
+
     if options.dim.n > 0
         mux = mux';
         vx = vx';
+        
+        mux(:,end+1:n_t) = nan;
+        vx(:,end+1:n_t) = nan;
     end
-    try
-        options.isYout = options.isYout';
-    end
-    dTime = 1:size(y,2);
-    for si=1:numel(options.sources)
+    
+    
+    for si=1:n_s
         options.sources(si).out = si;
     end
 end
