@@ -47,6 +47,7 @@ switch form
         K = size(suffStat.d,1);
         try
             r = gamrnd(repmat(vec(suffStat.d),1,N),1,K,N);
+            r(isinf(r)) = realmax;
             y = r ./ repmat(sum(r,1),K,1);
         catch
             y = zeros(K,N);
