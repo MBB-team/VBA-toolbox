@@ -254,10 +254,10 @@ while ~stop
                 set(handles.hp(k),'ydata',pk(k,:),'color',col(k,:));
             end
         end
-        [Ef,Vf] = Dirichlet_moments(posterior.d);
+        [Ef,Vf] = VBA_dirichlet_moments(posterior.d);
         cla(handles.ha(8))
         try
-            plotUncertainTimeSeries(Ef,diag(Vf),[],handles.ha(8));
+            plotUncertainTimeSeries(Ef,Vf,[],handles.ha(8));
         catch
             bar(Ef,'parent',handles.ha(8),'facecolor',0.8*[1 1 1])
         end
@@ -494,14 +494,6 @@ for i=1:n
     tmp = tmp.^2;
     d(i,:) = sum(tmp,1);
 end
-
-function [E,V] = Dirichlet_moments(a)
-% derives the firs- and second-order moments of a Dirichlet density
-a0 = sum(a);
-E = a./a0;
-V = -a*a';
-V = V - diag(diag(V)) + diag(a.*(a0-a));
-V = V./((a0+1)*a0^2);
 
 function colors = getColors(n)
 hf = figure('visible','off');
