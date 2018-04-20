@@ -64,6 +64,7 @@ if indEnd > 1
         set(haf,'nextplot','add')
         for i = 1:n
             yp = [muX(ind(i),1:indEnd)+sc*sqrt(SX(ind(i),1:indEnd)),fliplr(muX(ind(i),1:indEnd)-sc*sqrt(SX(ind(i),1:indEnd)))];
+            yp(isnan(yp)) = nanmean(yp);
             xp = [dTime,fliplr(dTime)];
             col = get(hp(i),'color');
             hf(i) = fill(xp,yp,'r','parent',haf,'facecolor',col,'edgealpha',0,'facealpha',0.25);

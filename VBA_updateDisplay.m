@@ -112,7 +112,7 @@ if options.dim.n_phi > 0
     vphi = VBA_getVar(posterior.SigmaPhi,indEnd);
 end
 
-% check time dimension
+%% Vertical time encoding
 if isequal(dTime,1) && size(y,1) > 1
     
     n_s = numel(options.sources);
@@ -145,18 +145,14 @@ if isequal(dTime,1) && size(y,1) > 1
     gx = new_gx;
     options.isYout = new_isYout;
     
-    
-    dTime = 1:size(y,2);
-
-    if options.dim.n > 0
+    if options.dim.n > 0 
         mux = mux';
         vx = vx';
-        
-        mux(:,end+1:n_t) = nan;
-        vx(:,end+1:n_t) = nan;
     end
     
-    
+    dTime = 1:n_t;
+
+        
     for si=1:n_s
         options.sources(si).out = si;
     end
@@ -309,6 +305,8 @@ drawnow
             colormap(flipud(colormap('bone')));
             plot(display.ha(1),multi2num(y_s_on),'.r');
         end
+        
+        set(display.ha(1),'XLim',[1 find(~isnan(y_s),1,'last')])
         
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
