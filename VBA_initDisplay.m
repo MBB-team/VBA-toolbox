@@ -81,7 +81,7 @@ currentSource = ud.currentSource;
 % Create axes for measured and predicted data
 if options.dim.n_t == 1
     xlim = [1,options.dim.p];
-    xl = 'data dimensions';
+    xl = 'data dimension';
 else
     xlim = [1,options.dim.n_t];
     xl = 'time';
@@ -195,6 +195,10 @@ else
         sprintf('time')));
     styleLabel(ylabel(h, ...
         sprintf('<x | %s>',data_conditioner)));
+end
+if (options.dim.n_t == 1)
+    styleLabel(xlabel(h, ...
+        sprintf('state dimension')));
 end
 display.ha(3) = h;
 
