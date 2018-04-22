@@ -178,7 +178,9 @@ options.verbose = false;
 % simulate choices
 % -------------------------------------------------------------------------
 
-u = [nan(2, n_t); cues];
+u = [nan(2, n_t); 
+    nan(2,1), cues(:, 1 : end - 1) ;
+    cues];
 
 [y,x,x0,eta,e,u] = simulateNLSS( ...
     n_t, ... number of trials
