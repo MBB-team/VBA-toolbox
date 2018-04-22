@@ -5,7 +5,6 @@ function [posterior, out]=demo_Qlearning(choices, feedbacks)
 % Demo of Q-learning simulation and inference
 %
 % This is a simple example of reinforcement learning algorithm.
-% This demo 
 %
 % Background:
 % ~~~~~~~~~~~
@@ -47,7 +46,7 @@ u = [ nan, choices(1:end-1)   ;  % previous choice
 % specify model
 % =========================================================================
 f_fname = @f_Qlearning; % evolution function (Q-learning)
-g_fname = @g_softmax; % observation function (softmax mapping)
+g_fname = @g_QLearning; % observation function (softmax mapping)
 
 % provide dimensions
 dim = struct( ...
@@ -60,7 +59,7 @@ dim = struct( ...
 % -------------------------------------------------------------------------
 % use the default priors except for the initial state
 options.priors.muX0 = [0.5; 0.5];
-options.priors.SimaX0 = 0.1 * eye(2);
+options.priors.SigmaX0 = 0.1 * eye(2);
 
 % options for the simulation
 % -------------------------------------------------------------------------

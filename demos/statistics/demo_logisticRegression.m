@@ -1,6 +1,6 @@
-function [posterior, out] = demo_logistic_regression()
+function [posterior, out] = demo_logisticRegression()
 % // VBA toolbox //////////////////////////////////////////////////////////
-% [posterior, out] = demo_logistic_regression()
+% [posterior, out] = demo_logisticRegression()
 %
 % this function exemplifies the use of the logistic model to perform a
 % regression on binary data

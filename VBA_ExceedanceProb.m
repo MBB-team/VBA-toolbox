@@ -1,4 +1,4 @@
-function ep = VBA_ExceedanceProb(mu,Sigma,form,verbose)
+function ep = VBA_ExceedanceProb(mu,Sigma,form,verbose,Nsamp)
 % calculates the exceedance probability for mutivariate Gaussian variables
 % function ep = VBA_ExceedanceProb(mu,Sigma)
 % IN:
@@ -12,13 +12,13 @@ function ep = VBA_ExceedanceProb(mu,Sigma,form,verbose)
 
 try, form; catch, form = 'gaussian'; end 
 try, verbose; catch, verbose=0; end
+try, Nsamp; catch, Nsamp=1e4; end
 
 K = size(mu,1);
 ep = ones(K,1);
 c = [1;-1];
 switch form
     case 'gaussian'
-        Nsamp = 1e4;
         r_samp = VBA_sample('gaussian',struct('mu',mu,'Sigma',Sigma),Nsamp,verbose)';
         [y,j] = max(r_samp,[],2);
         tmp = histc(j,1:length(mu))';
@@ -34,8 +34,10 @@ switch form
         end
         ep = ep./sum(ep);
     case 'dirichlet'
-        Nsamp = 1e4;
         r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose)';
+        if isweird(r_samp)
+            error('*** Could not compute the exceedance probability because of numerical instabilities.');
+        end
         [y,j] = max(r_samp,[],2);
         tmp = histc(j,1:length(mu))';
         ep = tmp/Nsamp;

@@ -33,14 +33,24 @@ for i=1:ns
     [y{i}] = simulateNLSS(dim.n_t,f_fname,g_fname,theta(:,i),phi(:,i),u{i},Inf,Inf,options{i},x0(:,i));
 end
 
-
+% TO REMOVE: obsolete syntax ??
 % priors_group.QPhi = 0.*eye(dim.n_phi);
 % priors_group.QTheta = 0.*eye(dim.n_theta);
 % priors_group.QX0 = 0.*eye(dim.n);
 % priors_group.QPhi(2,2) = 0; % ffx
-% priors_group.SigmaPhi = eye(dim.n_phi);
-% priors_group.SigmaPhi(2,2) = 0; % fix population mean to 0
-[p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options);%,priors_group);
+priors_group.muPhi = ones(dim.n_phi,1);
+priors_group.SigmaPhi = eye(dim.n_phi);
+
+% TEST CASES (to comment/uncomment)
+% 1. fix population mean to 0 for phi(1)
+priors_group.SigmaPhi(1,1) = 0; 
+% 2. fixed-effect over the population for phi(1)
+priors_group.a_vPhi = ones(dim.n_phi,1);
+priors_group.b_vPhi = ones(dim.n_phi,1); 
+priors_group.a_vPhi(1) = Inf; 
+priors_group.b_vPhi(1) = 0; 
+
+[p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group);%,priors_group);
 
 % extract within-subject parameter estimates
 for i=1:ns
