@@ -9,6 +9,14 @@ function [posterior,out] = VBA_onlineWrapper(y,u,f_fname,g_fname,dim,options)
 % variables. See VBA_NLStateSpaceModel.m for I/O arguments.
 % NB: this online wrapper does not deal with ODE state-space models.
 
+if numel(options.sources) > 1
+    error('*** online inversion is not yet compatible with multisource observations');
+end
+
+if options.sources.type > 1
+    error('*** online inversion is not yet compatible with multinomial observations');
+end
+
 tStart = tic;
 
 %------------------ Check input consistency ---------------%
@@ -37,7 +45,7 @@ if dim.n_theta >= 1
 end
 posterior.a_alpha = zeros(1,dim.n_t);
 posterior.b_alpha = zeros(1,dim.n_t);
-if ~options.binomial
+if options.sources.type == 0
     posterior.a_sigma = zeros(1,dim.n_t);
     posterior.b_sigma = zeros(1,dim.n_t);
 end
@@ -235,7 +243,7 @@ catch
     posterior.a_alpha(t) = [];
     posterior.b_alpha(t) = [];
 end
-if ~options.binomial
+if options.sources.type == 0
     try
         posterior.a_sigma(t) = OL_posterior.a_sigma;
         posterior.b_sigma(t) = OL_posterior.b_sigma;
@@ -250,7 +258,7 @@ suffStat.vy(:,t) = OL_out.suffStat.vy;
 suffStat.dx(:,t) = OL_out.suffStat.dx;
 suffStat.dy(:,t) = OL_out.suffStat.dy;
 suffStat.Salpha = OL_out.suffStat.Salpha;
-if ~options.binomial
+if options.sources.type == 0
     suffStat.Ssigma = OL_out.suffStat.Ssigma;
 else
     suffStat.logL = OL_out.suffStat.logL;
