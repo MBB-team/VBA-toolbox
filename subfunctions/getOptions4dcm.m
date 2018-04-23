@@ -77,3 +77,5 @@ priors.b_sigma = 1e0;
 options.priors = priors;
 options.updateHP = 1;
 options.inF.linearized = lin;
+
+options.sources = struct('type', 0, 'out', 1:dim.p);
