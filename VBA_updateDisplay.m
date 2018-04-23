@@ -306,7 +306,7 @@ drawnow
             plot(display.ha(1),multi2num(y_s_on),'.r');
         end
         
-        set(display.ha(1),'XLim',[1 find(~isnan(y_s),1,'last')])
+        set(display.ha(1),'XLim',[1 find(~any(isnan(y_s)),1,'last')])
         
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
