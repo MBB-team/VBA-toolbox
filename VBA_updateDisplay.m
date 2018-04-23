@@ -296,8 +296,14 @@ drawnow
             [~,p_vr,p_vl] = plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
             for i=1:numel(p_l)
                 set(p_mi(i),'MarkerEdgeColor',get(p_l(i),'Color'))
-                set(p_vl(i),'Color',get(p_l(i),'Color'))
-                set(p_vr(i),'FaceColor',get(p_l(i),'Color'))
+                try
+                    set(p_vl(i),'Color',get(p_l(i),'Color'))
+                    set(p_vr(i),'FaceColor',get(p_l(i),'Color'))
+
+                catch
+                    set(p_vl(i),'FaceColor',get(p_l(i),'Color'))
+                    set(p_vr(i),'Color',get(p_l(i),'Color'))
+                end
             end
         else
             imagesc(gx(s_out,:),'Parent',display.ha(1));
@@ -306,7 +312,7 @@ drawnow
             plot(display.ha(1),multi2num(y_s_on),'.r');
         end
         
-        set(display.ha(1),'XLim',[1 find(~any(isnan(y_s)),1,'last')])
+        set(display.ha(1),'XLim',[1-eps find(~any(isnan(y_s)),1,'last')+eps])
         
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))

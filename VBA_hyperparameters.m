@@ -234,10 +234,10 @@ while ~stop
         if nphi >0
             EP = posterior.a_phi/posterior.b_phi;
             VP = EP/posterior.b_phi;
-            set(ha(2),'xlim',[-.2,it+0.8],'xtick',[])
             logCI = log(EP+sqrt(VP)) - log(EP);
             plotUncertainTimeSeries(log(EP),logCI.^2,it,ha(2));
             set(ha(2),'ygrid','on','xgrid','off')
+            set(ha(2),'xlim',[-.2,it+0.8],'xtick',[])
         end
         if ntheta >0
             EP = posterior.a_theta/posterior.b_theta;
