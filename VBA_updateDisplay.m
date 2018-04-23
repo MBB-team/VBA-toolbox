@@ -311,9 +311,7 @@ drawnow
             colormap(flipud(colormap('bone')));
             plot(display.ha(1),multi2num(y_s_on),'.r');
         end
-        
-        set(display.ha(1),'XLim',[1-eps find(~any(isnan(y_s)),1,'last')+eps])
-        
+                
         % update top-right subplot: predicted VS observed data
         cla(display.ha(2))
         % plot identity
