@@ -32,7 +32,7 @@ dim.p = 1;
 dim.n_t = ntrials;
 options.inG = in;
 options.dim = dim;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.DisplayWin = 0;
 
 % Build time series of hidden states and observations

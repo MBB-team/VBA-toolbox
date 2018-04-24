@@ -30,7 +30,7 @@ opt{1}.inF.indu = 1; % feedback
 opt{1}.inF.inda = 2; % last choice
 opt{1}.priors.a_alpha = Inf; % deterministic system
 opt{1}.priors.b_alpha = 0; % [id]
-opt{1}.binomial = 1; % binary (go/nogo) choices
+opt{1}.sources.type = 1; % binary (go/nogo) choices
 opt{1}.skipf = zeros(1,n_t);
 opt{1}.skipf(1) = 1; % apply identity mapping from x0 to x1.
 
@@ -116,11 +116,11 @@ for i=1:1
     opt{i}.figName = opt{i}.inF.model;
     opt{i}.DisplayWin = 1;
     str{i} = opt{i}.figName;
-    opt{i}.binomial = 1;
+    opt{i}.sources.type = 1;
     [p{i,1},o{i,1}] = VBA_NLStateSpaceModel(y_choice,uu,f_fname,g_fname,d{i},opt{i});
     F(i,1) = o{i,1}.F;
     % invert models on value data
-    opt{i}.binomial = 0;
+    opt{i}.sources.type = 0;
     [p{i,2},o{i,2}] = VBA_NLStateSpaceModel(y_value,uu,f_fname,@g_Id,d{i},opt{i});
     F(i,2) = o{i,2}.F;
 end

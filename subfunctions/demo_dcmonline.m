@@ -114,6 +114,7 @@ eb = zeros(1,nblocks);
 vb = zeros(1,nblocks);
 
 % on-line experiment
+
 for tt=1:nblocks
     
     % 1- find best design given current information
@@ -129,16 +130,26 @@ for tt=1:nblocks
     U(:,(tt-1)*n_t+1:tt*n_t) = u{ind};
     fprintf(1,['Optimizing design (block ',num2str(tt),')...  OK.'])
     fprintf(1,'\n')
-    plot(ha,tt,e(:,tt)','o')
-    legend(ha,{'u_{att} = off','u_{att} = on'})
+    plot(ha,tt,e(1,tt)','ro')
+    plot(ha,tt,e(2,tt)','go')
+    legend(ha,{'u_{att} = off','u_{att} = on'},'Location','southeast','Orientation','horizontal')
     
     % 2- simulate BOLD response to chosen design under true model
     fprintf(1,['-- Simulating data (block ',num2str(tt),')...  '])
     [y,x,x0,eta,ee] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u{ind},alpha,sigma,o4design{truemodel},x0);
     Y(:,(tt-1)*n_t+1:tt*n_t) = y;
     x0 = x(:,end);
-    plot(ha2,(tt-1)*n_t+1:tt*n_t,y')
-    legend(ha2,{'V1','V5'})
+           
+    try
+        set(pl(1), 'XData', 1 : tt*n_t);
+        set(pl(1), 'YData', [get(pl(1), 'YData') y(1,:)]);
+        set(pl(2), 'XData', 1 : tt*n_t);
+        set(pl(2), 'YData', [get(pl(2), 'YData') y(2,:)]);
+    catch
+        pl(1) = plot(ha2,1:n_t,y(1,:),'m');
+        pl(2) = plot(ha2,1:n_t,y(2,:),'b');
+    end  
+    legend(ha2,{'V1','V5'},'Location','southeast','Orientation','horizontal')
     fprintf(1,[' OK.'])        
     fprintf(1,'\n')
     drawnow
@@ -163,7 +174,7 @@ for tt=1:nblocks
         OUT(j,tt).out = out;
         OUT(j,tt).posterior = posterior;
     end
-    plot(ha3,tt,F(1,tt)-F(2,tt),'o')
+    plot(ha3,tt,F(1,tt)-F(2,tt),'k*')
     
     eb(tt) = OUT(1,tt).posterior.muTheta(OUT(1,tt).out.options.inF.indB{2});
     vb(tt) = OUT(1,tt).posterior.SigmaTheta(OUT(1,tt).out.options.inF.indB{2},OUT(1,tt).out.options.inF.indB{2});

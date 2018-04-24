@@ -33,7 +33,7 @@ priors.SigmaX0 = 1e1*eye(dim.n);
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 options.priors = priors;
-options.binomial = 1;
+options.sources.type = 1; % one binomial observation;
 options.verbose = 0;
 
 tau = 8;
@@ -94,7 +94,7 @@ for i=1:Nmcmc
     d.n_phi = tau*nu +1;
     opt.priors.muPhi = zeros(d.n_phi,1);
     opt.priors.SigmaPhi = 1e1*eye(d.n_phi);
-    opt.binomial = 1;
+    opt.sources.type = 1;
     opt.DisplayWin = 0;
     opt.verbose = 0;
     [posterior,out] = VBA_NLStateSpaceModel(y',[],[],@g_convSig,d,opt);

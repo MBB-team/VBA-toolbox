@@ -27,7 +27,7 @@ inF.kaub = 1.4;
 inF.thub = 1;
 inF.rf = 1;
 inG.respmod = 'taylor';
-options.binomial = 1;
+options.sources.type = 1 ; % binomial observation;
 options.inF = inF;
 options.inG = inG;
 options.skipf = zeros(1,nt);
@@ -78,7 +78,7 @@ end
 opt0 = [];
 opt0.backwardLag = 32;
 opt0.priors = priors;
-opt0.binomial = 1;
+opt0.sources.type = 1;
 opt0.verbose = 1;
 opt0.MaxIter = 3;
 opt0.kernelSize = 32;
@@ -135,7 +135,7 @@ priors = [];
 priors.a_alpha = Inf;
 priors.b_alpha = 0;
 opt1.priors = priors;
-opt1.binomial = 1;
+opt1.sources.type = 1;
 opt1.figName = 'augmented Q-learning model';
 [p1,o1] = VBA_NLStateSpaceModel(y,u,@f_Qlearn_gammaLR,@g_softmax,d1,opt1);
 

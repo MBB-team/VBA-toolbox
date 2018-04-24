@@ -55,6 +55,13 @@ dim.u = size(u,1);
 %% ________________________________________________________________________
 %  check VBA's options structure
 
+if isfield(options,'binomial') % check for legacy binomial field
+    options.sources = struct('type', options.binomial , ...
+                             'out' , 1:dim.p          );
+    options = rmfield(options, 'binomial');                    
+    fprintf('*** WARNING: options.binomial is now deprecated. Please use ''options.sources.type = 1'' to specify a binary observation distribution.\n');
+end
+
 % set defaults 
 options = VBA_check_struct(options, ...
     'decim'      , 1     , ...     % Micro-time resolution
@@ -78,21 +85,31 @@ options = VBA_check_struct(options, ...
     'verbose'    , 1     , ...     % matlab window messages
     'OnLine'     , 0     , ...     % On-line version (true when called from VBA_OnLineWrapper.m)
     'delays'     , []    , ...     % delays
-    'binomial'   , 0     , ...     % not binomial data
     'kernelSize' , 16    , ...     % max lag of Volterra kernels
     'nmog'       , 1     , ...     % split-Laplace VB?
     'UNL'        , 0     , ...     % un-normalized likelihood?
     'UNL_width'  , 4     , ...     % for partition function estimation
     'UNL_ng'     , 64      ...     % for partition function estimation
 ) ;
-
+ 
 options = VBA_check_struct(options, ...
-    'isYout'    , zeros(dim.p,dim.n_t)            , ... % excluded data
-    'skipf'     , zeros(1,dim.n_t)                , ... % steady evolution
-    'sources'   , struct('type', options.binomial , ... % multisource
-                         'out' , 1:dim.p  )         ...
-) ;                       
+    'isYout'    , zeros(dim.p,dim.n_t)    , ... % excluded data
+    'skipf'     , zeros(1,dim.n_t)        , ... % steady evolution
+    'sources'   , struct()                  ...
+) ;
 
+options.sources = VBA_check_struct(options.sources, ...
+    'type', 0        , ... % default to gaussian
+    'out' , 1:dim.p  );
+                     
+
+% % retrocompatibility
+% if ~isfield(options,'binomial') && numel(options.sources)==1
+%         options.binomial = options.sources.type;
+% end
+
+    
+    
 options.backwardLag = min([max([floor(round(options.backwardLag)),1]),dim.n_t]);
 options.kernelSize  = min([dim.n_t,options.kernelSize]);
 
@@ -130,10 +147,6 @@ assert(isequal(size(priors.SigmaPhi),dim.n_phi*[1,1]),'*** Dimension of options.
 assert(size(priors.muTheta,1)==dim.n_theta,'*** Dimension of options.priors.muTheta does not match dim.n_theta!')
 assert(isequal(size(priors.SigmaTheta),dim.n_theta*[1,1]),'*** Dimension of options.priors.SigmaTheta does not match dim.n_theta!')
 
-% TODO remove the two tests below as they should be already taken care of
-% if options.binomial
-%     priors = rmfield(priors,{'a_sigma','b_sigma'});
-% end
 if dim.n>0 && isempty(options.params2update.x0)
     options.updateX0 = 0;
 end

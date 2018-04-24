@@ -39,9 +39,16 @@ catch
     dim.p = size(y,1);
 end
 
+if isfield(options,'sources') && (numel(options.sources)>1 || options.sources.type >0)
+    error('*** VBA_hyperparameters is only defined for unique gaussian sources\n');
+end
+
+    
 % specify minimal default options
 options.tStart = tic;
-options = VBA_check_struct(options,'binomial',0,'DisplayWin',1,'verbose',1,'kernelSize',16);
+options = VBA_check_struct(options,'sources',struct(),'DisplayWin',1,'verbose',1,'kernelSize',16);
+options.sources=VBA_check_struct(options.sources,'type',0,'out',dim.p);
+
 kernelSize0 = options.kernelSize;
 options.kernelSize = 0;
 
@@ -227,10 +234,10 @@ while ~stop
         if nphi >0
             EP = posterior.a_phi/posterior.b_phi;
             VP = EP/posterior.b_phi;
-            set(ha(2),'xlim',[-.2,it+0.8],'xtick',[])
             logCI = log(EP+sqrt(VP)) - log(EP);
             plotUncertainTimeSeries(log(EP),logCI.^2,it,ha(2));
             set(ha(2),'ygrid','on','xgrid','off')
+            set(ha(2),'xlim',[-.2,it+0.8],'xtick',[])
         end
         if ntheta >0
             EP = posterior.a_theta/posterior.b_theta;

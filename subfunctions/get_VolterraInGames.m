@@ -35,7 +35,7 @@ dim.n_phi = tau*2 +1;
 opt.inG = inG;
 opt.priors.muPhi = zeros(dim.n_phi,1);
 opt.priors.SigmaPhi = 1e0*eye(dim.n_phi);
-opt.binomial = 1;
+opt.sources.type = 1;
 opt.DisplayWin = 0;
 opt.verbose = 0;
 

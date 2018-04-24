@@ -37,7 +37,7 @@ dim.p = p;
 g_fname = @g_sigm_binomial;     % observation function
 
 % Call inversion routine
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.gradF = 0;
 options.priors.SigmaPhi = 1e-1*eye(2);
 options.DisplayWin = 0;

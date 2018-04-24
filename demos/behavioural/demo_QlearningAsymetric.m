@@ -72,14 +72,14 @@ options.priors.SigmaX0 = 0.01 * eye (dim.n);
 %options.priors.SigmaTheta = diag([0.1 0.1]);
 
 options.priors.muPhi = log(2.5);
-options.priors.SigmaPhi = 0.1;
+options.priors.SigmaPhi = 1;
 
 % options for the simulation
 % -------------------------------------------------------------------------
 % number of trials
 n_t = numel(data.choices); 
 % fitting binary data
-options.binomial = 1;
+options.sources.type = 1;
 options.verbose = false;
 
 % invert model
@@ -140,6 +140,8 @@ contingencies = contingencies(p);
 test = [1 1 1 1 2 2 2 2; % choose A and avoid B 
         3 4 5 6 3 4 5 6];
 
+test = repmat(test,1,10);
+    
 cues = [cues test];
 contingencies = [contingencies nan(1, size(test,2))];
    
@@ -172,7 +174,7 @@ x0 = 0.5 * ones(6,1);
 % number of trials
 n_t = numel(contingencies); 
 % fitting binary data
-options.binomial = 1;
+options.sources.type = 1;
 options.verbose = false;
 
 % simulate choices

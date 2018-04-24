@@ -37,6 +37,14 @@ function [muX,SigmaX,suffStat] = VBA_EKF(y,u,posterior,dim,options,flag)
 %   - SigmaX: covariance matrices of the variational posterior pdf of
 %       the dynamic hidden-states.
 
+if numel(options.sources) > 1
+    error('*** EKF is not yet compatible with multisource observations');
+end
+
+if options.sources.type > 1
+    error('*** EKF is not yet compatible with multinomial observations');
+end
+
 % By default, this function implements an EKF:
 if ~exist('flag','var') || isempty(flag)
     flag = 1;
@@ -101,7 +109,7 @@ switch flag
     case {1,2}
         try
             alpha = posterior.a_alpha(end)./posterior.b_alpha(end);
-            if ~options.binomial
+            if options.sources.type == 0
                 sigma = posterior.a_sigma(end)./posterior.b_sigma(end);
             end
         catch
@@ -144,7 +152,7 @@ if flag>=1
     % get predicted observation at the mode
     [gx(:,1),dG_dX] = VBA_evalFun('g',muX(:,1),phi,u(:,1),options,dim,1);
     suffStat.dy(:,1) = y(:,1) - gx(:,1);
-    if ~options.binomial
+    if options.sources.type == 0
         suffStat.vy(:,1) = diag( sigma.^-1.*pinv(iQy{1}) + dG_dX'*SigmaX{1}*dG_dX );
         suffStat.dy2 = suffStat.dy2 + suffStat.dy(:,1)'*iQy{1}*suffStat.dy(:,1);
     else
@@ -182,7 +190,7 @@ for t = 1:dim.n_t-1
         % get predicted observation at the mode
         [gx(:,t+1),dG_dX] = VBA_evalFun('g',muX(:,t+1),phi,u(:,t+1),options,dim,t+1);
         suffStat.dy(:,t+1) = y(:,t+1) - gx(:,t+1);
-        if ~options.binomial
+        if options.sources.type == 0
             suffStat.vy(:,t+1) = diag( sigma.^-1.*pinv(iQy{t+1}) + dG_dX'*SigmaX{t+1}*dG_dX );
             suffStat.dy2 = suffStat.dy2 + suffStat.dy(:,t+1)'*iQy{t+1}*suffStat.dy(:,t+1);
         else

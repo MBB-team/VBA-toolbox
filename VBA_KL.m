@@ -33,7 +33,7 @@ switch distrib
         DKL = 0.5*(-VBA_logDet(vv) + trace(vv) + (m1-m2)'*iv2*(m1-m2) - n);
         
         if nargout > 1
-            DJS = VBA_JensenShannon({m1,m2},{v1,v2},0.5*ones(2,1));
+            DJS = VBA_JensenShannon({m1,m2},{v1,v2});
         end
         
     case 'Gamma'

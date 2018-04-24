@@ -36,7 +36,7 @@ options.verbose = 'summary messages in MATLAB main window';
 options.finalEval = 'Externally-specified function evaluation: end of VB algo';
 options.figName = 'Name of the display figure';
 options.delays = 'dim.nX1 vector for delay embedding';
-options.binomial = 'flag for binomial observations';
+options.sources = 'Type and dimension of the data distribution(s)';
 
 
 

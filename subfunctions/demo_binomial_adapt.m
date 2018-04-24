@@ -40,7 +40,7 @@ dim.n_theta = 4;                % nb of evolution parameters
 dim.n=2;                        % nb of hidden states
 
 % Call inversion routine
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 priors.muTheta = 0.*ones(dim.n_theta,1);
 priors.SigmaTheta = 1e2*eye(dim.n_theta);
 priors.SigmaX0 = 1e2*eye(dim.n);

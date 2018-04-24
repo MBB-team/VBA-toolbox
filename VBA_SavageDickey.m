@@ -94,8 +94,12 @@ if isfield(po1,'a_alpha') && ~isempty(po1.a_alpha) && ~isinf(po1.a_alpha)
 end   
 
 function priors = checkPriors(priors,dim)
+
+options.sources = struct('type', 0 , ...
+                         'out' , 1:dim.p          );
+                     
 fn                  = fieldnames(priors);
-priors0             = VBA_priors(dim,struct('binomial',0));
+priors0             = VBA_priors(dim,options);
 fn0                 = fieldnames(priors0);
 io                  = ismember(fn0,fn);
 ind                 = find(io==0);

@@ -9,6 +9,7 @@ function [posterior,out] = VBA_onlineWrapper(y,u,f_fname,g_fname,dim,options)
 % variables. See VBA_NLStateSpaceModel.m for I/O arguments.
 % NB: this online wrapper does not deal with ODE state-space models.
 
+
 tStart = tic;
 
 %------------------ Check input consistency ---------------%
@@ -21,6 +22,13 @@ tStart = tic;
 options.OnLine = 1;
 [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
 
+if numel(options.sources) > 1
+    error('*** online inversion is not yet compatible with multisource observations');
+end
+
+if options.sources.type > 1
+    error('*** online inversion is not yet compatible with multinomial observations');
+end
 
 %------------------- Initialize variables ------------------%
 [suffStat] = VBA_getSuffStat(options,[],1);
@@ -37,7 +45,7 @@ if dim.n_theta >= 1
 end
 posterior.a_alpha = zeros(1,dim.n_t);
 posterior.b_alpha = zeros(1,dim.n_t);
-if ~options.binomial
+if options.sources.type == 0
     posterior.a_sigma = zeros(1,dim.n_t);
     posterior.b_sigma = zeros(1,dim.n_t);
 end
@@ -78,6 +86,7 @@ end
 OL_options.updateX0 = 1;
 OL_options.GnFigs = 0;
 OL_options.DisplayWin = 0;
+OL_options.isYout = options.isYout(:,1);
 OL_dim.n_t=1;
 OL_y = y(:,1);
 OL_u = u(:,1);
@@ -150,15 +159,17 @@ for t =2:dim.n_t
         OL_posterior,OL_out,posterior,suffStat,t,options);
     
     % update display
-    VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'precisions')
+    options_OL = options;
+    options_OL.isYout = options_OL.isYout(:,1:t);
+    VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'precisions')
     if dim.n_phi > 0
-        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'phi')
+        VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'phi')
     end
     if dim.n > 0
-        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'X')
+        VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'X')
     end
     if dim.n_theta > 0
-        VBA_updateDisplay(posterior,suffStat,options,y(:,1:t),t,'theta')
+        VBA_updateDisplay(posterior,suffStat,options_OL,y(:,1:t),t,'theta')
     end
 end
 
@@ -235,7 +246,7 @@ catch
     posterior.a_alpha(t) = [];
     posterior.b_alpha(t) = [];
 end
-if ~options.binomial
+if options.sources.type == 0
     try
         posterior.a_sigma(t) = OL_posterior.a_sigma;
         posterior.b_sigma(t) = OL_posterior.b_sigma;
@@ -250,7 +261,7 @@ suffStat.vy(:,t) = OL_out.suffStat.vy;
 suffStat.dx(:,t) = OL_out.suffStat.dx;
 suffStat.dy(:,t) = OL_out.suffStat.dy;
 suffStat.Salpha = OL_out.suffStat.Salpha;
-if ~options.binomial
+if options.sources.type == 0
     suffStat.Ssigma = OL_out.suffStat.Ssigma;
 else
     suffStat.logL = OL_out.suffStat.logL;

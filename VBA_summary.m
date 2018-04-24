@@ -41,10 +41,17 @@ str{3} = sprintf(['Dimensions of the model:','\n ',...
     '    - evolution parameters: n_theta=',num2str(out.dim.n_theta),'\n ',...
     '    - observation parameters: n_phi=',num2str(out.dim.n_phi),'\n ',...
     '    - inputs: n_u=',num2str(out.dim.u)]);
-if out.options.binomial
-    tmp = ' (binomial data)';
+if numel(out.options.sources)>1
+    tmp = ' (multisource)';
 else
-    tmp = [];
+    switch out.options.sources.type
+        case 0
+            tmp = ' (gaussian data)';
+        case 1
+            tmp = ' (binomial data)';
+        case 2
+            tmp = ' (multinomial data)';
+    end
 end
 if out.options.UNL
     so = 'un-normalized likelihood';

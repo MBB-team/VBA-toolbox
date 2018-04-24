@@ -61,7 +61,7 @@ x0 = [.5; .5];
 % number of trials
 n_t = numel(contingencies); 
 % fitting binary data
-options.binomial = 1;
+options.sources.type = 1;
 % Normally, the expected first observation (choice) is g(x1), ie. after
 % a first iteratition x1 = f(x0). The skipf flag will prevent this evolution
 % and thus set x1 = x0

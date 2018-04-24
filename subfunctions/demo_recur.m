@@ -69,7 +69,7 @@ set(hf,'position',[1290 266 560 857])
 %% invert k-ToM model
 options.skipf = zeros(1,N);
 options.skipf(1) = 1;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.DisplayWin = 1;
 options.priors.SigmaTheta = 1e2*eye(dim.n_theta); % relax evol param
 options.priors.SigmaX0 = 0*eye(dim.n);

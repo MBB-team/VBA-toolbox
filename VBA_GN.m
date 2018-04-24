@@ -31,48 +31,66 @@ function [posterior,suffStat] = VBA_GN(y,posterior,suffStat,dim,u,options,flag)
 % iterations...
 
 switch flag
+    
+    % for stochastic evolution, update hidden states with (lagged) message passing algorithm
     case 'X'
         if numel(options.sources)>1 || options.sources(1).type==2
-            error('*** Stochastic multichannel VB is not yet supported !');
+            error('*** Stochastic multisources or multinomial VB is not yet supported !');
         end
         indIn = options.params2update.x;
         PreviousMu = posterior.muX;
-        if ~options.binomial
+        switch options.sources(1).type
+            case 0 % gaussian
             fname = @VBA_IX_lagged;
-        else
+            case 1 % binomial
             fname = @VBA_IX_lagged_binomial;
         end
         s1 = 'I(<X>) =';
         s2 = '<dX>';
+    
+    % update initial state
     case 'X0'
         indIn = options.params2update.x0;
         PreviousMu = posterior.muX0(indIn);
         fname = @VBA_IX0;
         s1 = 'I(<X0>) =';
         s2 = '<dX0>';
+      
+    % update observation paramters 
     case 'Phi'
         indIn = options.params2update.phi;
         PreviousMu = posterior.muPhi(indIn);
-        if options.UNL % to be rationalized...
-            fname = @VBA_Iphi_UNL;
-        else
-            if  numel(options.sources)>1 || options.sources(1).type==2
-                fname = @VBA_Iphi_extended;
-            else
-                if options.nmog > 1
-                    if options.extended
-                        error('*** Splitted multichannel VB is not yet supported !');
-                    end
-                    fname = @VBA_Iphi_split;
-                elseif options.binomial
-                    fname = @VBA_Iphi_binomial;
-                else
-                    fname = @VBA_Iphi;
-                end
+        
+        % un-normalized likelihood
+        if options.UNL 
+            if numel(options.sources)>1 
+                error('*** un-normalized likelihood is only supported for mono-source VB!');
             end
+            fname = @VBA_Iphi_UNL;
+            
+        % MoG split
+        elseif options.nmog > 1
+            if numel(options.sources)>1 || options.sources(1).type == 2 
+                error('*** MoG Split is only supported for mono-source (gaussian or binomial) VB!');
+            end
+            fname = @VBA_Iphi_split;
+            
+        % legacy gaussian observation code
+        elseif numel(options.sources)==1 && options.sources(1).type==0
+            fname = @VBA_Iphi;
+
+        % legacy binomial observation code
+        elseif numel(options.sources)==1 && options.sources(1).type==1    
+            fname = @VBA_Iphi_binomial;
+
+        % multisource or multinomial observations 
+        else
+            fname = @VBA_Iphi_extended;
         end
         s1 = 'I(<Phi>) =';
         s2 = '<dPhi>';
+     
+    % update evolution paramters 
     case 'Theta'
         indIn = options.params2update.theta;
         PreviousMu = posterior.muTheta(indIn);

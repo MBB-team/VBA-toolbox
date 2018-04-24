@@ -11,7 +11,7 @@ dim.n = 0;
 
 
 g_fname = @g_classif;
-options.binomial = 1;
+options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.priors.muPhi = zeros(dim.n_phi,1);
 options.priors.SigmaPhi = 1e0*eye(dim.n_phi);
 options.DisplayWin = 0;
