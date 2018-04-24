@@ -58,7 +58,8 @@ dim.u = size(u,1);
 if isfield(options,'binomial') % check for legacy binomial field
     options.sources = struct('type', options.binomial , ...
                              'out' , 1:dim.p          );
-    fprintf('*** WARNING: options.binomial will soon be deprecated. Use options.sources to specify the observation distribution.\n');
+    options = rmfield(options, 'binomial');                    
+    fprintf('*** WARNING: options.binomial is now deprecated. Please use ''options.sources.type = 1'' to specify a binary observation distribution.\n');
 end
 
 % set defaults 
@@ -102,10 +103,10 @@ options.sources = VBA_check_struct(options.sources, ...
     'out' , 1:dim.p  );
                      
 
-% retrocompatibility
-if ~isfield(options,'binomial') && numel(options.sources)==1
-        options.binomial = options.sources.type;
-end
+% % retrocompatibility
+% if ~isfield(options,'binomial') && numel(options.sources)==1
+%         options.binomial = options.sources.type;
+% end
 
     
     
