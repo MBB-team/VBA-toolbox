@@ -9,13 +9,6 @@ function [posterior,out] = VBA_onlineWrapper(y,u,f_fname,g_fname,dim,options)
 % variables. See VBA_NLStateSpaceModel.m for I/O arguments.
 % NB: this online wrapper does not deal with ODE state-space models.
 
-if numel(options.sources) > 1
-    error('*** online inversion is not yet compatible with multisource observations');
-end
-
-if options.sources.type > 1
-    error('*** online inversion is not yet compatible with multinomial observations');
-end
 
 tStart = tic;
 
@@ -29,6 +22,13 @@ tStart = tic;
 options.OnLine = 1;
 [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
 
+if numel(options.sources) > 1
+    error('*** online inversion is not yet compatible with multisource observations');
+end
+
+if options.sources.type > 1
+    error('*** online inversion is not yet compatible with multinomial observations');
+end
 
 %------------------- Initialize variables ------------------%
 [suffStat] = VBA_getSuffStat(options,[],1);
