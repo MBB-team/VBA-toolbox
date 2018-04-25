@@ -1,4 +1,30 @@
-function [ddydphi,d2gdx2,logL,dy,dy2,vy]=VBA_get_dL(gx,dG_dPhi,y,type,Qy,sigmaHat)
+function [ddydphi, d2gdx2, logL, dy, dy2, vy]= VBA_get_dL (gx, dG_dPhi, y, type, Qy, sigmaHat)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% [ddydphi, d2gdx2, logL, dy, dy2, vy]= VBA_get_dL (gx, dG_dPhi, y, type, Qy, sigmaHat)
+% Compute usefull intermediate values describing the misfit between a model
+% prediction and an observation.
+%
+% IN:
+%   - gx: model prediction about the observation y (1st order moment)
+%   - dG_dPhi: derivative of gx wrt observation parameters
+%   - y: actual observation
+%   - type: flag defining the distribution of the observation (0: gaussian,
+%     1: Bernouilli, 2: categorical)
+%   - Qy: scaling matrix of the 2nd order moment of the prediction (only 
+%     gaussian observations)
+%   - sigmaHat: scaling factor of the 2nd order moment of the prediction 
+%     (only gaussian observations)
+%
+% OUT:
+%   - ddydphi: gradient of the prediction error wrt observation parameters
+%   - d2gdx2: hessian of the prediction
+%   - logL: log-likelihood of the observation given the prediction
+%   - dy: prediction error
+%   - dy2: normalized squared deviation 
+%   - vy: prediction variance
+%     
+% /////////////////////////////////////////////////////////////////////////
 
 if nargin<5
 end
