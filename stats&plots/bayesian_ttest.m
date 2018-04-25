@@ -128,7 +128,7 @@ ep = 1./(1+exp(-logBayesFactor));
 h = (ep>=0.95);
 
 % posterior estimates
-p = VBA_BMA({p0;p1},[F0;F1]);
+p = VBA_BMA([p0;p1],[F0;F1]);
 % posterior.mu = p.muPhi ;
 posterior.mu = [ p.muPhi(1) , sparsify(p.muPhi(2),log(2)) ];
 
