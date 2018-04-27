@@ -59,13 +59,13 @@ However, this (asymptotic) equivalence does not hold for model comparison. This 
 
 According to the [Neyman-Pearson lemma](https://en.wikipedia.org/wiki/Neyman%E2%80%93Pearson_lemma), the most powerful test to compare such two hypotheses or models is the likelihood-ratio test, i.e.:
 
-$$\frac{p(y\mid m_1)}{p(y\mid m_2)} > K$$
+$$\frac{p(y\mid m_1)}{p(y\mid m_2)} = BF_{12} > K$$
 
-where $$K$$ is set to control some [statistical risk](https://en.wikipedia.org/wiki/Risk_(statistics)) (see below). This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity above is known as the [Bayes' factor](https://en.wikipedia.org/wiki/Bayes_factor), and is used whenever one wants to select between two models. Practically speaking, the Bayes' factor induces three types of statistical decisions:
+where $$K$$ is set to control some [statistical risk](https://en.wikipedia.org/wiki/Risk_(statistics)) (see below). This motivates the use of model evidences to perform statistical testing (e.g. testing the null) within a Bayesian framework. In fact, the quantity $$BF_{12}$$ is known as the [Bayes' factor](https://en.wikipedia.org/wiki/Bayes_factor), and is used whenever one wants to select between two models. Practically speaking, the Bayes' factor $$BF_{12}$$ induces three types of statistical decisions:
 
-- $$K>20$$:      model $$m_1$$ is selected
-- $$0.05<K<20$$: no model is selected
-- $$K<0.05$$:    model $$m_2$$ is selected
+- $$BF_{12}>20$$:      model $$m_1$$ is selected
+- $$0.05<BF_{12}<20$$: no model is selected
+- $$BF_{12}<0.05$$:    model $$m_2$$ is selected
 
 
 The critical thing to note is that the model evidence $$p\big( y\mid m\big)$$ is not a simple measure of model fit: there is an inherent **penalization for model complexity**. This penalization is intimately related to the priors. In brief, a simple model has tight priors: at the limit, the simplest model has no unknown parameters (infinite prior [precision](https://en.wikipedia.org/wiki/Precision_(statistics))). More complex models are equipped with vague priors, which will be updated to a larger extent once the data has been observed. However, this flexibility has a cost: that of confusing noise $$\epsilon$$ with variations in the data that are induced by $$g(\vartheta)$$. This is called "[over-fitting](https://en.wikipedia.org/wiki/Overfitting)" the data, and results in greater error when extrapolating model predictions. This is exemplified in the figure below:
