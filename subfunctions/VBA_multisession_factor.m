@@ -19,6 +19,12 @@ out.options.inG = out.options.inG{1:end-1};
 out.options.f_fname = multisession.f_fname;  
 out.options.g_fname = multisession.g_fname;   
 
+out.u(end, :) = [];
+
+out.options.dim = multisession.dim_original;
+out.dim = multisession.dim_original;
+
+
 for i=1:numel(out.options.multisession.split)
 
     idx_X0 = multisession.indices.X0(:,i);

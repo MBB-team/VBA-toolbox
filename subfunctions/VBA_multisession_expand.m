@@ -1,5 +1,7 @@
-function [f_fname_multi,g_fname_multi,dim_multi,options,u_multi] = VBA_multisession_expand(f_fname,g_fname,dim,options,u)
-% [f_fname_multi,g_fname_multi,dim_multi,options,u_multi] = VBA_multisession_expand(f_fname,g_fname,dim,options,u)
+function [f_fname_multi, g_fname_multi, dim_multi, options, u_multi] = VBA_multisession_expand (f_fname, g_fname, dim, options, u)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% [f_fname_multi, g_fname_multi, dim_multi, options, u_multi] = VBA_multisession_expand (f_fname, g_fname, dim, options, u)
 % prepare model to be fitted to multisession data. In particular, it:
 % - duplicates the parameter set for each session, unless specified 
 %   otherwise by multisession.fixed structure
@@ -7,11 +9,21 @@ function [f_fname_multi,g_fname_multi,dim_multi,options,u_multi] = VBA_multisess
 %   parameters are used in each session
 % The reverse operation can be performed by VBA_multisession_factor
 % to reconstruct within session parameters and states from the expanded model
-%% check args
+%
+% IN:
+%   - 
+% OUT:
+%   - 
+% /////////////////////////////////////////////////////////////////////////
 
-%% check if multisession is required
-if ~isfield(options,'multisession') || ~isfield(options.multisession,'split') || numel(options.multisession.split) < 2 ... % no need for multisession
-        || (isfield(options.multisession,'expanded') && options.multisession.expanded) % already went there before, no need to expand again
+
+%% if no multisession required
+% =========================================================================
+
+if ~ isfield (options, 'multisession') ...
+|| ~ isfield (options.multisession, 'split') ...
+|| numel (options.multisession.split) < 2 ... % no need for multisession
+|| (isfield (options.multisession, 'expanded') && options.multisession.expanded) % already went there before, no need to expand again
     f_fname_multi = f_fname;
     g_fname_multi = g_fname;
     dim_multi = dim;
@@ -20,83 +32,131 @@ if ~isfield(options,'multisession') || ~isfield(options.multisession,'split') ||
 end
 
     
-%% extract sessions
-% ensure horizontal vector for looping...
+%% check mutisession options
+% =========================================================================
+
+% ensure that vector is horizontal
 options.multisession.split = options.multisession.split(:)';
 
-if sum(options.multisession.split) ~= dim.n_t
-    error('*** Multisession: partition covers %d datapoints but data has %d.',sum(options.multisession.split),dim.n_t);
+% check that partition of observation is correct
+if sum (options.multisession.split) ~= dim.n_t
+    error ('*** Multisession: partition covers %d datapoints but data has %d.', sum (options.multisession.split), dim.n_t);
 end
 
-n_session = numel(options.multisession.split);
-session_id = ones(1,dim.n_t);
-for i=cumsum(options.multisession.split(1:end-1))
-    session_id(i+1:end) = session_id(i+1:end) + 1;
+% extract dimensions
+n_session = numel (options.multisession.split);
+
+%% extract sessions number and onset
+% =========================================================================
+
+% recursively compute the session number of each observation
+session_id = ones (1, dim.n_t);
+for i = cumsum (options.multisession.split(1 : end - 1))
+    session_id(i + 1 : end) = session_id( i + 1 : end) + 1;
 end
 
-for i=cumsum(options.multisession.split(1:end-1))
-    session_id(i+1) = -session_id(i+1) ; % signal beginning of a session
+% signal beginning of a session with a negative session number
+for i = cumsum (options.multisession.split(1 : end - 1))
+    session_id(i + 1) = - session_id(i + 1) ; 
 end
 
-% = append session number to inputs
+%% append session indices to inputs
+% =========================================================================
+
+% reshape for microtime
 if options.microU
-    session_id = repmat(session_id,options.decim,1);
+    session_id = repmat (session_id, options.decim, 1);
     session_id = session_id(:)';
 end
 
-dim_multi = dim;
-
+% store
 u_multi = [u; session_id] ;
+
+% adjust dimension accordingly
+dim_multi = dim;
 dim_multi.u = dim.u+1 ;
 
 
-%% duplicate parameters
+%% reshape priors to deal with duplicate parameters
+% =========================================================================
+
 priors_multi = options.priors;
 
-% = get indexes of duplicated parameters
-theta_multi = 1:dim.n_theta;
-phi_multi   = 1:dim.n_phi;
-X0_multi    = 1:dim.n;
+% get initial indices of parameters
+% -------------------------------------------------------------------------
+theta_multi = 1 : dim.n_theta;
+phi_multi   = 1 : dim.n_phi;
+X0_multi    = 1 : dim.n;
 
-% = restrict fixed parameters
-options.multisession = VBA_check_struct(options.multisession,'fixed',struct);
-fixed = VBA_check_struct(options.multisession.fixed, ...
-    'theta'   , []   , ...
-    'phi'     , []   , ...
-    'X0'      , []     ...
+% get indices of parameters to duplicate for each sessions
+% -------------------------------------------------------------------------
+% No fixed parameters by default
+options.multisession = VBA_check_struct (options.multisession, 'fixed', struct);
+fixed = VBA_check_struct (options.multisession.fixed, ...
+    'theta', [], ...
+    'phi', [], ...
+    'X0', [] ...
 );
-% syntactic sugar handling 
-if isequal(fixed.theta ,'all'), fixed.theta = 1:dim.n_theta; end
-if isequal(fixed.phi   ,'all'), fixed.phi   = 1:dim.n_phi; end
-%if isequal(fixed.X0    ,'all'), fixed.X0    = 1:dim.n; end
-    
-theta_multi = setdiff(theta_multi,fixed.theta);
-phi_multi   = setdiff(phi_multi  ,fixed.phi  );
-%X0_multi    = setdiff(X0_multi   ,fixed.X0   );
+% syntactic sugar: specify 'all' to fix all parameters
+if isequal (fixed.theta, 'all')
+    fixed.theta = 1 : dim.n_theta; 
+end
+if isequal (fixed.phi, 'all')
+    fixed.phi = 1 : dim.n_phi;
+end
+% get non-fixed parameters
+theta_multi = setdiff(theta_multi, fixed.theta);
+phi_multi   = setdiff(phi_multi, fixed.phi  );
 
-% = expand (duplicate) priors and dimensions to cover all sessions
+% expand (duplicate) priors and dimensions to cover all sessions
+% -------------------------------------------------------------------------
+
 priors = options.priors;
 
-try
-[priors_multi.muX0, priors_multi.SigmaX0, dim_multi.n] ...
-    = expand_param(priors.muX0,priors.SigmaX0,X0_multi,n_session) ;
-end
-try
-[priors_multi.muTheta, priors_multi.SigmaTheta, dim_multi.n_theta] ...
-    = expand_param(priors.muTheta,priors.SigmaTheta,theta_multi,n_session) ;
-end
-[priors_multi.muPhi, priors_multi.SigmaPhi, dim_multi.n_phi] ...
-    = expand_param(priors.muPhi,priors.SigmaPhi,phi_multi,n_session) ;
+% hidden state
+dim_multi.n = expanded_dimension (dim.n, X0_multi, n_session);
 
+if isfield (priors, 'muX0') 
+    switch numel (priors.muX0) 
+        case dim_multi.n % expanded prior
+            priors_multi.muX0 = priors.muX0;
+            priors_multi.SigmaX0 = priors.SigmaX0;
+        case dim.n % collapsed prior
+            [priors_multi.muX0, priors_multi.SigmaX0] = expand_param(priors.muX0,priors.SigmaX0,X0_multi,n_session) ;
+        otherwise
+            error('*** Inconsistent prior dimension.')
+    end
+end
 
-% = restrict initial hidden states
-    % enforce covariance across states (duplication is needed for evolution
-    % independance)
-%     for i = fixed.X0
-%         X0_cor = i + (0:n_session-1)*dim.n;
-%         priors_multi.SigmaX0(X0_cor,X0_cor) = priors_multi.SigmaX0(i,i);
-%     end
-    
+% evolution
+dim_multi.n_theta = expanded_dimension (dim.n_theta, theta_multi, n_session);
+
+if isfield (priors, 'muTheta') 
+    switch numel (priors.muTheta) 
+        case dim_multi.n_theta % expanded prior
+            priors_multi.muTheta = priors.muTheta;
+            priors_multi.SigmaTheta = priors.SigmaTheta;
+        case dim.n_theta % collapsed prior
+            [priors_multi.muTheta, priors_multi.SigmaTheta] = expand_param(priors.muTheta,priors.SigmaTheta,theta_multi,n_session) ;
+        otherwise
+            error('*** Inconsistent prior dimension.')
+    end
+end
+
+% observation
+dim_multi.n_phi = expanded_dimension (dim.n_phi, phi_multi, n_session);
+
+if isfield (priors, 'muPhi') 
+    switch numel (priors.muPhi) 
+        case dim_multi.n_phi % expanded prior
+            priors_multi.muPhi = priors.muPhi;
+            priors_multi.SigmaPhi = priors.SigmaPhi;
+        case dim.n_phi % collapsed prior
+           [priors_multi.muPhi, priors_multi.SigmaPhi] = expand_param(priors.muPhi,priors.SigmaPhi,phi_multi,n_session) ;
+        otherwise
+            error('*** Inconsistent prior dimension.')
+    end
+end
 
 
 options.priors = priors_multi;
@@ -116,6 +176,7 @@ multisession.indices = indices;
 multisession.f_fname = f_fname;
 multisession.g_fname = g_fname;
 multisession.dim = dim_multi;
+multisession.dim_original = dim;
 multisession.X0_multi = X0_multi;
 multisession.theta_multi = theta_multi;
 multisession.phi_multi = phi_multi;
@@ -216,10 +277,10 @@ function  [gx,dG_dX,dG_Phi] = g_multi(Xt,Phi,ut,in)
 end
 
 %% some shortcuts
-function [mu_multi,sigma_multi,dim_multi] = expand_param(mu,sigma,idx,n_session)
+function [mu_multi,sigma_multi] = expand_param(mu,sigma,idx,n_session)
 % concatenate priors means and variances accross sessions
 
-% = initial and ifnal dimensions
+% = initial and final dimensions
 n1 = numel(mu);
 n2 = n1 + (n_session-1)*numel(idx);
 
@@ -231,10 +292,11 @@ mu_multi = [mu ; repmat(mu(idx),n_session-1,1)];
 sigma_temp = kron(eye(n_session-1), sigma(idx,idx));
 sigma_multi = [sigma,           zeros(n1,n2-n1);
                zeros(n2-n1,n1)  sigma_temp];
-
-% = dimension          
-dim_multi = n2;                    
                     
+end
+
+function n = expanded_dimension (n, idx, n_session)
+    n = n + (n_session - 1) * numel(idx);
 end
 
 function indices = param_indices(n,idx,n_session)
