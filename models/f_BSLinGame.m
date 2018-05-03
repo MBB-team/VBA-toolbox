@@ -25,7 +25,7 @@ function [ fx ] = f_BSLinGame(x,theta,u,in)
 % OUT:
 %   - fx: updated sufficient statistics of log-odds of P(o=1)
 
-if isweird(u) % e.g., 1st trial
+if VBA_isWeird (u) % e.g., 1st trial
     fx = x;
     return
 end

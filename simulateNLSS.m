@@ -206,7 +206,7 @@ for t = 1:dim.n_t
         }, options);
     end
     
-    if isweird({x(:,t)}) %,y(:,t)
+    if VBA_isWeird ({x(:,t)}) %,y(:,t)
         break
     end
     

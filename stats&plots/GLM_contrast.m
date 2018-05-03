@@ -69,7 +69,7 @@ end
 
 % check basic numerical requirements
 try
-    if isweird(y)
+    if VBA_isWeird (y)
         disp('Error: data contains weird values!')
         return
     end

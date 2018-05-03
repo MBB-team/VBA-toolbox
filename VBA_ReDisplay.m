@@ -560,7 +560,7 @@ function myDiagnosticsi(hObject,evt,si)
     xlabel(handles.hdiagnostics(2),ti,'fontsize',8)
     ylabel(handles.hdiagnostics(2),'e(t) = y(t)-g(x(t))','fontsize',8)
     % display autocorrelation of residuals
-    if ~isweird(dy.R) && out.dim.n_t > 1
+    if ~ VBA_isWeird (dy.R) && out.dim.n_t > 1
         handles.hdiagnostics(3) = subplot(4,2,7,'parent',hPanel);
         plot(handles.hdiagnostics(3),[-out.options.dim.n_t:out.options.dim.n_t-1],fftshift(dy.R)')
         axis(handles.hdiagnostics(3),'tight')

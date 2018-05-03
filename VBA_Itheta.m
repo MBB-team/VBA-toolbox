@@ -66,7 +66,7 @@ for t=1:dim.n_t-1
     end
     
     % Accelerate divergent update
-    if isweird({dx2,dF_dX,dF_dTheta})
+    if VBA_isWeird ({dx2, dF_dX, dF_dTheta})
         div = 1;
         break
     end
@@ -88,7 +88,7 @@ deltaMuTheta = SigmaTheta*tmp;
 
 % variational energy
 Itheta = -0.5.*dtheta0(indIn)'*iQ*dtheta0(indIn) -0.5*alphaHat.*dx2;
-if isweird({Itheta,SigmaTheta}) || div
+if VBA_isWeird ({Itheta, SigmaTheta}) || div
     Itheta = -Inf;
 end
 

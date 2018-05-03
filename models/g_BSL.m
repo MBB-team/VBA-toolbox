@@ -13,7 +13,7 @@ function [gx] = g_BSL(x,phi,u,in)
 % OUT:
 %   - gx: P(y_t=1|y_{t-1})
 
-if isweird(u) % e.g., 1st trial
+if VBA_isWeird (u) % e.g., 1st trial
     gx = 0.5;
     return
 end

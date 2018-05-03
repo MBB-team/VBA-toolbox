@@ -71,7 +71,7 @@ useq = u; % remove agent's previous move
 useq(2) = [];
 K = inFseq.K; % sequence depth
 yb = useq(2:K+1); % previous outcomes
-if isweird(yb)
+if VBA_isWeird (yb)
     h_seq = 1/2;
 else
     if K >0

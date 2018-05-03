@@ -45,7 +45,7 @@ it = 1;
 itmax = 10;
 while ~stop
     [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
-    if (~isweird(y) && ~isweird(x)) || it >= itmax
+    if ~ VBA_isWeird ({x, y}) || it >= itmax
         stop = 1;
     else
         it = it+1;
@@ -60,7 +60,7 @@ getSubplots
 
 
 % Call inversion routine
-if (~isweird(y) && ~isweird(x))
+if ~ VBA_isWeird ({x, y}) 
     [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
     
     

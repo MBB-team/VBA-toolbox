@@ -37,7 +37,7 @@ for t=1:dim.n_t
         s2 = s2 + Zi;
         
         % Accelerate divergent update
-        if isweird({EUi,Ui,Zi,d2Uidx2,d2UidP2})
+        if VBA_isWeird({EUi,Ui,Zi,d2Uidx2,d2UidP2})
             div = 1;
             break
         end

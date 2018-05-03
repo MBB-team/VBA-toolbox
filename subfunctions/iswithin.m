@@ -1,13 +1,13 @@
 function [flag] = iswithin(X,bounds)
 % true if all elements of X is within bounds
-% function [flag] = isweird(X)
+% function [flag] = iswithin(X, bounds)
 % IN:
 %   - X: N-D matrix (or cell array of matrices) to be checked
 %   - bounds: a 2X1 vector that defines an interval on the real line
 % OUT:
 %   - flag: 1 if all elements of X are within the bounds, 0 if not
 
-if ~~isweird(X)
+if VBA_isWeird (X)
     flag = 0;
     return
 end

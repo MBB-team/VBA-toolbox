@@ -39,7 +39,7 @@ for t=1:dim.n_t
     % evaluate observation function at current mode
     try
         [gx(:,t),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
-        if isweird(gx(find(options.isYout(:,t)==0),t)) 
+        if VBA_isWeird (gx(find (options.isYout(:, t) == 0), t)) 
             VBA_disp('',options)
             VBA_disp('Error: could not initialize VB scheme: model generates NaN or Inf!',options)
             posterior = [];
@@ -127,7 +127,7 @@ for t=1:dim.n_t
     end
     
     % Accelerate divergent update
-    if isweird({dy(find(options.isYout(:,t)==0),t),dG_dPhi(:,find(options.isYout(:,t)==0)),dG_dX})
+    if VBA_isWeird ({dy(find(options.isYout(:,t)==0),t), dG_dPhi(:,find(options.isYout(:,t)==0)), dG_dX})
         div = 1;
         VBA_disp(' ',options)
         VBA_disp('Error: Output of evolution or observation function is weird (nan or inf)   ...',options)

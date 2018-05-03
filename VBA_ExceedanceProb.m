@@ -35,7 +35,7 @@ switch form
         ep = ep./sum(ep);
     case 'dirichlet'
         r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose)';
-        if isweird(r_samp)
+        if VBA_isWeird (r_samp)
             error('*** Could not compute the exceedance probability because of numerical instabilities.');
         end
         [y,j] = max(r_samp,[],2);

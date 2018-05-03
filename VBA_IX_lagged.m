@@ -128,7 +128,7 @@ for t = 2:dim.n_t
     end
     
     % Accelerate divergent update
-    if isweird({dy2,dx2,dG_dX{t},dF_dX{t-1},SigmaX.current{t}})
+    if VBA_isWeird ({dy2, dx2, dG_dX{t}, dF_dX{t-1}, SigmaX.current{t}})
         div = 1;
         break
     end
@@ -169,7 +169,7 @@ deltaMuX = muX - X;
 
 % variational energy
 IX = -0.5.*sigmaHat.*dy2 -0.5*alphaHat.*dx2;
-if isweird(IX) || div
+if VBA_isWeird (IX) || div
     IX = -Inf;
 end
 

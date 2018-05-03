@@ -23,7 +23,7 @@ function [fx] = f_kToM(x,P,u,inF)
 %   - fx: updated hidden states
 % [see RecToMfunction.m]
 
-if isweird(u) % e.g., 1st trial
+if VBA_isWeird (u) % e.g., 1st trial
     fx = x;
     return
 end

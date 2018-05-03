@@ -104,7 +104,7 @@ end
 
 %--- Simulate time series of hidden states and observations
 x = NaN;
-while isweird(x)
+while VBA_isWeird (x)
     [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 end
 

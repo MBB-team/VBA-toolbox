@@ -40,7 +40,7 @@ if out.options.microU && ~isequal(out.options.decim,1)
 else % do not change input
     u = out.u(:,1:out.dim.n_t);
 end
-if isweird(u)
+if VBA_isWeird (u)
     VBA_disp('Warning: zero-padding weird inputs for Volterra decompositions.',out.options)
     i0 = isinf(u) | isnan(u) | ~isreal(u);
     u(i0) = 0;

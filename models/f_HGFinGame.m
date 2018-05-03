@@ -19,7 +19,7 @@ function fx = f_HGFinGame(x,P,u,in)
 %   - fx: the updated posterior sufficient statistics (having observed o).
 
 
-if isweird(u) % e.g., 1st trial
+if VBA_isWeird (u) % e.g., 1st trial
     fx = x;
     return
 end

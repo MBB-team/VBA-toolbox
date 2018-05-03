@@ -45,7 +45,7 @@ for t=1:dim.n_t
         d2LLdP2 = d2LLdP2 + d2LLdP2t;
         
         % Accelerate divergent update
-        if isweird({LL,dLLdP,d2LLdP2,Ey,Vy})
+        if VBA_isWeird ({LL, dLLdP, d2LLdP2, Ey, Vy})
             div = 1;
             break
         end
@@ -67,14 +67,14 @@ for t=1:dim.n_t
         mayPause = 0;
         if ~isempty(Phi)
             dLLdPt2 = numericDiff(@VBA_evalAL,2,[],Phi,beta,u(:,t),y(:,t),options);
-            if ~isweird(dLLdPt2)
+            if ~ VBA_isWeird (dLLdPt2)
                 [hf] = VBA_displayGrads(dLLdPt',dLLdPt2,'Gradients wrt parameters',options.g_fname,'g');
                 mayPause = 1;
             else
                 VBA_disp('VBA check_grads: Warning: weird numerical gradients!!!')
             end
             d2LLdP2t2 = numericDiff(@numericDiff,4,@VBA_evalAL,2,[],Phi,beta,u(:,t),y(:,t),options);
-            if ~isweird(dLLdPt2)
+            if ~ VBA_isWeird (dLLdPt2)
                 [hf] = VBA_displayGrads(d2LLdP2t,d2LLdP2t2,'Hessians wrt parameters',options.g_fname,'g');
                 mayPause = 1;
             else
@@ -109,7 +109,7 @@ deltaMuPhi = SigmaPhi*tmp;
 
 % variational energy
 Iphi = -0.5.*dphi0(indIn)'*iQ*dphi0(indIn) + LL;
-if isweird({Iphi,SigmaPhi})
+if VBA_isWeird ({Iphi, SigmaPhi})
     Iphi = -Inf;
 end
 

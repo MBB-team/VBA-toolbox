@@ -58,7 +58,7 @@ posterior = [];
 out = [];
 
 %------------------- Dummy call ------------------------%
-if isweird(y)
+if VBA_isWeird(y)
     disp('Error: there is a numerical trouble with provided data!')
     return
 end
@@ -168,7 +168,7 @@ while ~stop
     %--------------- Termination condition ---------------%
     dF = diff(suffStat.F);
     dF = dF(end);
-    if (  ( (abs(dF)<=options.TolFun)||it==options.MaxIter ) &&  it >=options.MinIter  ) || isweird(dF)
+    if (  ( (abs(dF)<=options.TolFun)||it==options.MaxIter ) &&  it >=options.MinIter  ) || VBA_isWeird(dF)
         stop  = 1;
         if abs(dF) <= options.TolFun
             out.CV = 1;

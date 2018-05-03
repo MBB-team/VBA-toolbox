@@ -1,7 +1,7 @@
 function [hf] = displaySimulations(y,x,eta,e)
 % plots simulated time series (including state-space SVD projections)
 
-if isweird({y,x,eta,e})
+if VBA_isWeird ({y, x, eta, e})
     hf = [];
     return
 end

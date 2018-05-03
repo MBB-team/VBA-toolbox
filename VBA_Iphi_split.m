@@ -136,7 +136,7 @@ for t=1:dim.n_t
     end
     
     % Accelerate divergent update
-    if isweird(dy2) || isweird(dG_dPhi) || isweird(dG_dX)
+    if VBA_isWeird ({dy2, dG_dPhi, dG_dX})
         div = 1;
         break
     end
@@ -170,7 +170,7 @@ deltaMuPhi = SigmaPhi*tmp;%split.s(1).*SigmaPhi*tmp;
 
 % variational energy
 Iphi = -0.5.*dphi0(indIn)'*iQ*dphi0(indIn) -0.5*sigmaHat.*dy2;
-if isweird(Iphi) || isweird(SigmaPhi) || div
+if VBA_isWeird ({Iphi, SigmaPhi}) || div
     Iphi = -Inf;
 end
 

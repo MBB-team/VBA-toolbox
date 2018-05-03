@@ -26,7 +26,7 @@ function [fx] = f_Hampton(x,P,u,in)
 % OUT:
 %   - fx: updated hidden states
 
-if isweird(u) % e.g., 1st trial
+if VBA_isWeird (u) % e.g., 1st trial
     fx = x;
     return;
 end

@@ -238,7 +238,7 @@ else
     % Check input arguments consistency (and fill in priors if necessary)
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     
-    if isweird(y(~options.isYout))
+    if VBA_isWeird (y(~ options.isYout))
         disp('Error: VBA detected a numerical issue with provided data!')
         return
     end
@@ -344,7 +344,7 @@ while ~stop
     %--------------- Termination condition ---------------%
     dF = diff(suffStat.F);
     dF = dF(end);
-    if (  ( (abs(dF)<=options.TolFun)||it==options.MaxIter ) &&  it >=options.MinIter  ) || isweird(dF)
+    if (  ( (abs(dF)<=options.TolFun)||it==options.MaxIter ) &&  it >=options.MinIter  ) || VBA_isWeird (dF)
         stop  = 1;
         if abs(dF) <= options.TolFun
             out.CV = 1;

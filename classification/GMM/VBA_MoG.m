@@ -391,7 +391,7 @@ if it<options.MinIter
     return
 end
 dF = F(it) - F(it-1);
-if isweird(F) || abs(dF)<=options.TolFun || it>=options.MaxIter
+if VBA_isWeird (F) || abs(dF)<=options.TolFun || it>=options.MaxIter
     stop = 1;
 end
 

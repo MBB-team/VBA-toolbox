@@ -45,7 +45,7 @@ deltaMuX0 = SigmaX0*tmp;
 
 % variational energy
 IX0 = -0.5.*dx0'*iQ*dx0 - 0.5*alphaHat.*dx2;
-if isweird(IX0)
+if VBA_isWeird (IX0)
     div = 1;
     IX0 = -Inf;
 else

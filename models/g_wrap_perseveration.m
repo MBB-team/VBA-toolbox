@@ -26,7 +26,7 @@ P0 = P(in.indP0); % OBS params of the native OBS function
 g0 = feval(in.g0,x,P0,u,in.in0); % P(y_t=1) without persevration
 
 lastMove = u(2);
-if isweird(lastMove)
+if VBA_isWeird (lastMove)
     gx = g0; % no perseveration
 else
     dV = invsigmoid(g0); % V1-V0

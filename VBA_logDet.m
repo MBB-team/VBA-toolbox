@@ -23,7 +23,7 @@ elseif isequal(subQ,diag(diag(subQ))) % diagonal matrix
     dQ = diag(subQ);
     ldQ = sum(log(dQ(abs(dQ)>t)));
 else % full matrix
-    if ~isweird(subQ)
+    if ~ VBA_isWeird (subQ)
         ev = eig(subQ);
     else
         ev = 0;
