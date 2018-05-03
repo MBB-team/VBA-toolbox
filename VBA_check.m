@@ -118,7 +118,7 @@ for i=1:numel(options.sources)
         if ~isempty(y)
             isYoutSource = options.isYout(options.sources(i).out,:);
             ySource = y(options.sources(i).out,:);
-            if ~isbinary(ySource(~isYoutSource))
+            if ~ VBA_isBinary (ySource(~ isYoutSource))
                 error('*** Data should be binary!')
             end
             if islogical(ySource(~isYoutSource))

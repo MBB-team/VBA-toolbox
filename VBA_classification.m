@@ -72,7 +72,7 @@ try
         return
     end
 end
-if ~isbinary(y)
+if ~ VBA_isBinary (y)
     disp('Error: data should be binary!')
     return
 end
