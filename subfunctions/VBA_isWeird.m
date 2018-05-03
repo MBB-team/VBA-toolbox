@@ -2,7 +2,7 @@ function [flag] = VBA_isWeird (X)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
 % [flag] = VBA_isWeird (X)
-% check if matrix X contains any Infs, NaNs or non real entries
+% check if X contains any Infs, NaNs or non real entries
 %
 % IN:
 %   - X: matrix, cell array of matrices, or structure to be checked

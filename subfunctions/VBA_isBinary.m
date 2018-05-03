@@ -21,10 +21,10 @@ switch class (X)
         flag = all (ismember (X(:), [0, 1]));   
         
     case 'cell'
-        flag = any (cellfun (@VBA_isBinary, X));
+        flag = all (cellfun (@VBA_isBinary, X));
         
     case 'struct'
-        flag = any (structfun (@VBA_isBinary, X));
+        flag = all (structfun (@VBA_isBinary, X));
     
     otherwise
         flag = NaN;
