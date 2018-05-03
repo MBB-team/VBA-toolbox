@@ -60,7 +60,7 @@ out = [];
 for i=1:N
     [x0,theta,phi] = sampleFromPriors(options,dim);
     [y,x] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
-    if ~ VBA_isWeird ({x, y}) && isInRange(x,lx) && isInRange(y,ly)
+    if ~ VBA_isWeird ({x, y}) && VBA_isInRange (x, lx) && VBA_isInRange (y, ly)
         Y(:,:,i) = y;
         X(:,:,i) = x;
         fprintf(1,repmat('\b',1,8))
@@ -162,19 +162,6 @@ if dim.n_phi > 0
     end
 else
     phi = [];
-end
-
-
-
-function flag = isInRange(x,lx)
-if isempty(x) || isempty(lx)
-    flag = 1;
-    return
-end
-nx = size(x,1);
-flag = 1;
-for i=1:nx
-    flag = flag & ~any(x(i,:)<lx(i,1)|x(i,:)>lx(i,2));
 end
 
 

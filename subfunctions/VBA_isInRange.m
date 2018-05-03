@@ -1,7 +1,7 @@
-function [flag] = VBA_isWithin (X, bounds)
+function [flag] = VBA_isInRange (X, bounds)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% [flag] = VBA_isWithin (X, bounds)
+% [flag] = VBA_isInRange (X, bounds)
 % check if all elements of X are within bounds
 %
 % IN:
@@ -24,10 +24,10 @@ switch class (X)
         flag = ~ any (X(:) < min (bounds) | X(:) > max(bounds));
                 
     case 'cell'
-        flag = all (cellfun (@ (Y) VBA_isWithin (Y, bounds), X));
+        flag = all (cellfun (@ (Y) VBA_isInRange (Y, bounds), X));
         
     case 'struct'
-        flag = all (structfun (@ (Y) VBA_isWithin (Y, bounds), X));
+        flag = all (structfun (@ (Y) VBA_isInRange (Y, bounds), X));
     
     otherwise
         flag = NaN;
