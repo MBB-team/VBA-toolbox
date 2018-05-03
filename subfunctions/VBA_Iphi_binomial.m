@@ -43,7 +43,7 @@ for t=1:dim.n_t
     [gx(:,t),dG_dX,dG_dPhi] = VBA_evalFun('g',posterior.muX(:,t),Phi,u(:,t),options,dim,t);
     
     % fix numerical instabilities
-    gx(:,t) = checkGX_binomial(gx(:,t));
+    gx(:,t) = VBA_finiteBinomial (gx(:,t));
     
     % store states dynamics if ODE mode
     if isequal(options.g_fname,@VBA_odeLim)

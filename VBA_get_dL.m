@@ -43,7 +43,7 @@ switch type
         logL = logL + 0.5*VBA_logDet(Qy*sigmaHat) - 0.5*log(2*pi) ;
         
     case 1 %--- binomial
-        gx = checkGX_binomial(gx);
+        gx = VBA_finiteBinomial (gx);
         vy = gx.*(1-gx) ;
         ddydphi = dG_dPhi*(dy./vy);
         temp = y./(gx).^2 - (y-1)./(1-gx).^2;
@@ -52,7 +52,7 @@ switch type
         dy2 = sum(temp);
         
    case 2   %--- multinomial       
-        gx = checkGX_binomial(gx);
+        gx = VBA_finiteBinomial (gx);
         vy = gx.*(1-gx) ;
         ddydphi = dG_dPhi*(y./gx);
         d2gdx2 = dG_dPhi*diag(y./gx.^2)*dG_dPhi';

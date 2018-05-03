@@ -89,7 +89,7 @@ n=in.n;
 tdf=in.tdf;
 % initialize VB sufficient statistics
 pxi = zeros(1,n+1);
-pxi(1) = checkGX_binomial(1./(1+exp(-prior(2))));
+pxi(1) = VBA_finiteBinomial (1./(1+exp(-prior(2))));
 switch in.flag
     case {1,2}
         Ex = zeros(1,n+1);
@@ -114,13 +114,13 @@ F = zeros(n+1,1);
 F(1) = freeEnergy(pxi(1),Ex(:,1),Vx(:,1),u,prior,Theta,in);
 for i = 1:n
     % update xi
-    [sx] = checkGX_binomial(1./(1+exp(-Ex(i))));
+    [sx] = VBA_finiteBinomial (1./(1+exp(-Ex(i))));
     lsx = log(sx);
     Elsx = lsx + 0.5.*Vx(i).^2.*(sx.^2-sx);
     p(1) = -0.5.*(iva.*delta1 + Elsx +l2pi - Theta(1));
     p(2) = -0.5.*(iva.*delta2 + Elsx-Ex(i) +l2pi - Theta(1));
     p = exp(p-max(p));
-    pxi(i+1) = checkGX_binomial(p(1)./sum(p));
+    pxi(i+1) = VBA_finiteBinomial (p(1)./sum(p));
     switch in.flag
         case {1,2}
             % update x1
@@ -209,7 +209,7 @@ delta2 = sum((u - mu(:,2)).^2);
 iva = exp(Theta(1));
 Sqp = -pxi.*log(pxi) - (1-pxi).*log(1-pxi);
 l2pi = log(2*pi);
-[sx] = checkGX_binomial(1./(1+exp(-Ex(1,:))));
+[sx] = VBA_finiteBinomial (1./(1+exp(-Ex(1,:))));
 sx = sx(:)';
 lsx = log(sx);
 if size(Ex,1) < 2

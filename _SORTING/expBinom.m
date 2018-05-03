@@ -1,6 +1,6 @@
 function [I,NextSigma,NextdeltaMu] = expBinom(x,mu,va,p)
 % OTO: varational energy (and curvature) of associative strength
-[sx] = checkGX_binomial(1./(1+exp(-x)));
+[sx] = VBA_finiteBinomial (1./(1+exp(-x)));
 lsx = log(sx);
 if ~isinf(va)
     iva = va.^-1;

@@ -49,7 +49,7 @@ S0 = kron(eye(lag),posterior.SigmaX0);
 [gx(:,1),dG_dX{1},dG_dPhi{1}] = VBA_evalFun('g',X(:,1),posterior.muPhi,u(:,1),options,dim,1);
 
 % fix numerical instabilities
-gx(:,1) = checkGX_binomial(gx(:,1));
+gx(:,1) = VBA_finiteBinomial (gx(:,1));
 
 % check infinite precision transition pdf
 iQ = VBA_inv(iQx{1},indIn{1},'replace');
@@ -97,7 +97,7 @@ for t = 2:dim.n_t
     [gx(:,t),dG_dX{t},dG_dPhi{t}] = VBA_evalFun('g',X(:,t),posterior.muPhi,u(:,t),options,dim,t);
     
     % fix numerical instabilities
-    gx(:,t) = checkGX_binomial(gx(:,t));
+    gx(:,t) = VBA_finiteBinomial (gx(:,t));
     
     % remove irregular trials
     yin = find(~options.isYout(:,t));
