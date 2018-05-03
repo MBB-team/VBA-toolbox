@@ -143,7 +143,7 @@ opt1.figName = 'augmented Q-learning model';
 % extract and plot Volterra kernels
 o1_v = o1;
 o1_v.u = uu;
-[kernels] = VBA_VolterraKernels(p1,o1_v);
+[kernels] = VBA_getVolterraKernels(p1,o1_v);
 mk = squeeze(kernels.x.m(3,:,:))';
 vk = squeeze(kernels.x.v(3,:,:))';
 ha = subplot(2,1,2,'parent',hf);

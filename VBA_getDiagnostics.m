@@ -30,7 +30,7 @@ try; out.fit; catch; out.fit = VBA_fit(posterior,out); end
 % derive Volterra kernels
 if out.dim.n_t>1 && out.options.kernelSize>0
     try
-        kernels = VBA_VolterraKernels(posterior,out);
+        kernels = VBA_getVolterraKernels(posterior,out);
     catch
         VBA_disp('  *** could not derive kernels!\n',out.options);
         kernels = [];

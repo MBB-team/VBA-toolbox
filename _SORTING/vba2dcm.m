@@ -101,7 +101,7 @@ end
 try
     kernels = out.diagnostics.kernels;
 catch
-    [kernels] = VBA_VolterraKernels(posterior,out,ceil(32/TR));
+    [kernels] = VBA_getVolterraKernels(posterior,out,ceil(32/TR));
 end
 DCM.H1 = kernels.g.m;
 DCM.K1 = kernels.x.m(out.options.inF.n5,:,:);

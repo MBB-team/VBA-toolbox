@@ -1,4 +1,4 @@
-function [kernels] = VBA_VolterraKernels(posterior,out,nt)
+function [kernels] = VBA_getVolterraKernels(posterior,out,nt)
 % Estimation of the system's 1st-order Volterra kernels
 % function [my,vy,mg,vg,mx,vx] = VBA_VolterraKernels(posterior,out)
 % IN:
