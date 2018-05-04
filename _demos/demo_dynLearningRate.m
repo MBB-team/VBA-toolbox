@@ -114,7 +114,7 @@ for t=1:size(u,2)
 end
 o0_v = o0;
 o0_v.u = uu;
-[kernels] = VBA_VolterraKernels(p0,o0_v);
+[kernels] = VBA_getVolterraKernels(p0,o0_v);
 hf = figure('color',[1 1 1],'name','Volterra decomposition');
 mk = squeeze(kernels.x.m(3,:,:))';
 vk = squeeze(kernels.x.v(3,:,:))';

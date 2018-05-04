@@ -1,6 +1,6 @@
 function [kernels] = VBA_getVolterraKernels(posterior,out,nt)
 % Estimation of the system's 1st-order Volterra kernels
-% function [my,vy,mg,vg,mx,vx] = VBA_VolterraKernels(posterior,out)
+% function [my,vy,mg,vg,mx,vx] = VBA_getVolterraKernels(posterior,out)
 % IN:
 %   - posterior,out: the output of the VBA system inversion. Note that the
 %   Volterra kernels are estimated given the input stored in out.u.
