@@ -1,9 +1,5 @@
+function demo_MFX
 % this demo exemplifies the use of mixed-effects analysis in VBA
-
-clear all
-close all
-clc
-dbstop if error
 
 ns = 8; % #subjects
 dim.n_phi = 2;
@@ -43,18 +39,18 @@ priors_group.SigmaPhi = eye(dim.n_phi);
 
 % TEST CASES (to comment/uncomment)
 % 1. fix population mean to 0 for phi(1)
-priors_group.SigmaPhi(1,1) = 0; 
+priors_group.SigmaPhi(1,1) = 0;
 % 2. fixed-effect over the population for phi(1)
 priors_group.a_vPhi = ones(dim.n_phi,1);
-priors_group.b_vPhi = ones(dim.n_phi,1); 
-priors_group.a_vPhi(1) = Inf; 
-priors_group.b_vPhi(1) = 0; 
+priors_group.b_vPhi = ones(dim.n_phi,1);
+priors_group.a_vPhi(1) = Inf;
+priors_group.b_vPhi(1) = 0;
 
 [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group);%,priors_group);
 
 % extract within-subject parameter estimates
 for i=1:ns
-    % with MFX-type priors 
+    % with MFX-type priors
     Theta(:,i,1) = p_sub{i}.muTheta;
     Phi(:,i,1) = p_sub{i}.muPhi;
     X0(:,i,1) = p_sub{i}.muX0;
@@ -118,4 +114,44 @@ for j=1:2
     ylabel(ha,'estimated')
     legend(ha,leg)
 end
+
+end
+
+%% ########################################################################
+function [out] = addBestLinearPredictor(ho,verbose)
+% fits a GLM on current graphical object (and adds the line on the graph)
+try,ho;catch,ho=gco;end
+try,verbose;catch,verbose=1;end
+if ~isequal(get(ho,'type'),'line')
+    disp('addbestLinearPredictor: current graphical object is not a line plot!')
+    out = [];
+    return
+end
+out.gco = ho;
+try, verbose; catch; verbose = 0; end
+x = vec(get(ho,'xdata'));
+n = length(x);
+X = [x,ones(n,1)];
+y = vec(get(ho,'ydata'));
+[pv,stat,df,out] = GLM_contrast(X,y,[1;0],'F',verbose);
+if ~verbose
+    out.pv = pv;
+    out.stat = stat;
+    out.df = df;
+end
+try
+    set(out.handles.hf,'name','addbestLinearPredictor on current graphical object')
+end
+ha = get(ho,'parent');
+status = get(ha,'nextplot');
+xlim = get(ha,'xlim');
+ylim = get(ha,'ylim');
+set(ha,'nextplot','add');
+col = get(ho,'color');
+yhat = [vec(xlim),ones(2,1)]*out.b;
+out.hp = plot(ha,xlim,yhat','color',col)
+set(ha,'nextplot',status,'xlim',xlim,'ylim',ylim);
+
+end
+
 

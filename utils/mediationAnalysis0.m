@@ -58,10 +58,6 @@ try;alpha=options.alpha;catch;alpha=0.05;end
 try;verbose=options.verbose;catch;verbose=1;end
 try;display=options.display;catch;display=1;end
 
-% % normalize the variables
-% Y = normalize(Y);
-% X = normalize(X);
-% M = normalize(M);
 
 % regress Y on X
 [p1,stat1,df1,a1] = GLM_contrast([ones(n,1),X],Y,[0;1],'F',0);

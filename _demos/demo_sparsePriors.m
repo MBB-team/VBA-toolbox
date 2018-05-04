@@ -1,3 +1,4 @@
+function demo_sparsePriors
 % demonstrates how to implement sparse priors with VBA
 % The trick is to use a continuous transform of GLM parameters, such that
 % Gaussian priors are mapped onto fat-tailed distributions. More precisely,
@@ -7,12 +8,6 @@
 % (i.e. "lasso") estimator.
 % Note: using such "sparse transformation" makes the native GLM model
 % non-linear, which implies potential local minima.
-
-% function demo_sparsePriors
-
-close all
-clear all
-
 
 % 0- look at the qualitative properties of the "sparse" transformation 
 mu = 0;
@@ -174,7 +169,21 @@ xlabel(ha,'simulated')
 ylabel(ha,'estimated')
 
 
+end
 
+%% ########################################################################
+
+function yn = normalize(y)
+
+yn = zeros(size(y));
+for i=1:size(y,2)
+    y0 = y(:,i);
+    my = mean(y0);
+    sy = std(y0);
+    yn(:,i) = (y0 - my)./sy;
+end
+
+end
 
 
 

@@ -10,7 +10,11 @@ if ~exist('flag','var'), flag = 0; end
 if ~exist('suffStat','var'), suffStat = struct(); end
 
 dim = options.dim;
-dim.online = elvis(flag, dim.n_t, 1); 
+if flag
+    dim.online = dim.n_t;
+else
+    dim.online = 1;
+end 
 
 suffStat = VBA_check_struct(suffStat, ...
     'F'     , []                                    , ...

@@ -13,7 +13,7 @@ kaf = [-3:0.2:3];
 
 try
 
-    load phi.mat
+    load demo_stability_hrf.mat
     % get max eigenvalue
     P = [0;0;0;0;0;0];
     for i=1:n
