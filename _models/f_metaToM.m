@@ -27,10 +27,10 @@ ot = u(1); % opponent's last move
 fx = NaN(size(x)); % initialize updated states
 
 % 1- update P(agent=kToM)
-Pi0 = sigmoid(x(inF.meta.indx)); % prior P(agent=1)
+Pi0 = VBA_sigmoid(x(inF.meta.indx)); % prior P(agent=1)
 % partial forgetting of prior belief on opponent's type?
 if inF.meta.diluteP
-    dc = sigmoid(P(inF.meta.indP)); % dilution coefficient
+    dc = VBA_sigmoid(P(inF.meta.indP)); % dilution coefficient
     Pi0 = (1-dc).*Pi0 + dc./2;
 end
 
@@ -48,7 +48,7 @@ if level==0 % 0-ToM [should be useless]
     ELL = ot.*Els1 + (1-ot).*Els0;
     h_kToM = exp(ELL); % P(o|k-ToM)
 else
-    Pk = sigmoid(x(1:(level-1))); % P(k'), with k'=0,...,k-1
+    Pk = VBA_sigmoid(x(1:(level-1))); % P(k'), with k'=0,...,k-1
     Pk = [Pk;max(0,1-sum(Pk))]; % insert last P(k'=k-1)  
     f = zeros(level,1); % E[x(theta)]
     Vx = zeros(level,1); % V[x(theta)]

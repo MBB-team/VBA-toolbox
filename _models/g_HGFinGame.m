@@ -29,10 +29,10 @@ a = 0.36; % for E[s(x)] when x~n(mu,Sig)
 % Get the agent's prediction about her opponent's next move, ie P(o=1).
 mx = x(2); % E[log-odds of P(o=1)]
 Vx = exp(x(3)); % V[log-odds of P(o=1)]
-Po = sigmoid(mx/(sqrt(1+a*Vx))); % P(o=1)
+Po = VBA_sigmoid(mx/(sqrt(1+a*Vx))); % P(o=1)
 
 % Make decision based upon the likely opponent's next move
 DV = fplayer(Po,exp(P(1)),player,game); % incentive for a=1
-gx = sigmoid(DV+P(2)); % P(a=1) with bias
+gx = VBA_sigmoid(DV+P(2)); % P(a=1) with bias
 
 

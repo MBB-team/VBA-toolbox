@@ -92,11 +92,11 @@ else % k-ToM with k>0
             Els1 = Elogsig(f,Vx);
             Els0 = Elogsig(-f,Vx);
             % get prior P(k')
-            P0 = sigmoid(x(1:(level-1))); % P(k), with k=0,...,k'-2
+            P0 = VBA_sigmoid(x(1:(level-1))); % P(k), with k=0,...,k'-2
             P0 = [P0;max(0,1-sum(P0))]; % insert last P(k=k'-1)
             % partial forgetting of prior belief on opponent's level?
             if inF.diluteP % [not in Devaine et al. (20014)!]
-                dc = sigmoid(P(2)); % dilution coefficient
+                dc = VBA_sigmoid(P(2)); % dilution coefficient
                 P0 = (1-dc).*P0 + dc./(level.*ones(level,1));
             end
             % update P(k')
@@ -206,7 +206,7 @@ function fPar_k = updatePar(Par_k,theta,ot,in)
 % NB: VB update of opponent's params does not account for potential
 % identifiability issues between params (cf. mean-field assumption)
 Pk = in.Pk; % updated P(k)
-Proba = sigmoid(in.f); % P(o=1|k)
+Proba = VBA_sigmoid(in.f); % P(o=1|k)
 df = in.df; % d[x(theta)]/dtheta
 indV = 2:2:length(Par_k); % indices of E[theta]
 indMu = 1:2:length(Par_k); % indices of V[theta]

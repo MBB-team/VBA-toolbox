@@ -33,7 +33,7 @@ if level==0 % 0-ToM
     
     mx = x(1); % E[log-odds of P(o=1)]
     Vx = exp(x(2)); % V[log-odds of P(o=1)]
-    Po = sigmoid(mx/(sqrt(1+a*Vx))); % P(o=1)
+    Po = VBA_sigmoid(mx/(sqrt(1+a*Vx))); % P(o=1)
     
 else
     
@@ -42,7 +42,7 @@ else
     % there is a constraint of normalization, ie sum_k' P(k') = 1. Thus,
     % one only needs to keep track of k'-1 probabilities (the last one is,
     % by construction, 1-sum_k' P(k')).
-    Pk = sigmoid(x(1:(level-1))); % P(k'), with k'=0,...,k-1
+    Pk = VBA_sigmoid(x(1:(level-1))); % P(k'), with k'=0,...,k-1
     Pk = [Pk;max(0,1-sum(Pk))]; % insert last P(k'=k-1)
     
     % Get P(o=1|k'). Note: the agent's prediction P(o=1|k') depends upon
@@ -64,7 +64,7 @@ else
         Sig = exp(x(indlev(j).Par(2:2:2*ntotPar))); % V[theta|k'=j-1]
         Vx(j) = sum(Sig.*df.^2); % V[x(theta)|k'=j-1]
     end
-    Es = sigmoid(f./sqrt(1+a*Vx)); % E[sigm(x(theta))]
+    Es = VBA_sigmoid(f./sqrt(1+a*Vx)); % E[sigm(x(theta))]
     
     % Get P(o=1) = sum_k P(o=1|k')*P(k')
     Po = Pk'*Es; % k-ToM's belief about her opponent's next move
@@ -74,8 +74,8 @@ end
 % Make decision based upon P(o=1)
 DV = fplayer(Po,exp(P(1)),player,game); % incentive for a=1
 if length(P)==1
-    gx = sigmoid(DV); % P(a=1)
+    gx = VBA_sigmoid(DV); % P(a=1)
 else % P(2) = bias
-    gx = sigmoid(DV+P(2)); % P(a=1) with bias
+    gx = VBA_sigmoid(DV+P(2)); % P(a=1) with bias
 end
 

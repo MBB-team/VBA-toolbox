@@ -29,10 +29,10 @@ else % trial OK
     % -- learning rule --
     m0 = x(1); % current E[log-odds]
     V0 = exp(x(2)); % current V[log-odds]
-    p0 = sigmoid(m0); % current estimate of P(o=1)
+    p0 = VBA_sigmoid(m0); % current estimate of P(o=1)
     volatility = exp(theta(1));
     V = 1./((1./(volatility+V0))+w*p0*(1-p0)); % updated V[log-odds]
     m = m0 + w*V*(u(1)-p0); % updated E[log-odds] (Laplace-Kalman update rule)
     % wrap-up
-    fx = [invsigmoid(sigmoid(m));log(V)]; % for numerical purposes
+    fx = [VBA_sigmoid(VBA_sigmoid(m),'inverse',true);log(V)]; % for numerical purposes
 end    

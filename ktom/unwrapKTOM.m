@@ -19,7 +19,7 @@ if K > 1
     
     % plot belief about opponent's sophistication
     na = 3;
-    Pk = sigmoid(x(1:(K-1),:)); % P(k), with k=0,...,k'-2
+    Pk = VBA_sigmoid(x(1:(K-1),:)); % P(k), with k=0,...,k'-2
     Pk = [Pk;1-sum(Pk,1)]; % insert last P(k=k'-1)
     ha(1) = subplot(na,1,1,'parent',hf,'nextplot','add');
     plot(ha(1),Pk')
@@ -42,10 +42,10 @@ ha(2) = subplot(na,1,na-1,'parent',hf,'nextplot','add');
 if K >0
     Po = NaN(K,nt);
     for k=1:K
-        Po(k,:) = sigmoid(x(inG.indlev(k).f,1:nt));
+        Po(k,:) = VBA_sigmoid(x(inG.indlev(k).f,1:nt));
     end
 else
-    Po = sigmoid(x(1,:));
+    Po = VBA_sigmoid(x(1,:));
 end
 plot(ha(2),Po')
 plot(ha(2),[1,nt],[1,1]./2,'color',0.5*[1 1 1])

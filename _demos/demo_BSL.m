@@ -102,7 +102,7 @@ box(ha,'off')
 m0 = x(1:2^K,:); % E[log-odds]
 V0 = exp(x((2^K)+1:2^(K+1),:)); % V[log-odds]
 a = 0.368;
-EP = sigmoid(m0./(1+a*sqrt(V0)));
+EP = VBA_sigmoid(m0./(1+a*sqrt(V0)));
 VP = EP.*(1-EP).*(1-1./(1+a*sqrt(V0)));
 
 ha = subplot(2,1,2,'parent',hf);

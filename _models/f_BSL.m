@@ -49,10 +49,10 @@ else
     indSeq = 1;
 end
 V = V0 + volatility; % by default: inflated V[log-odds]
-p0 = sigmoid(m0(indSeq)); % current estimate of P(y=1)
+p0 = VBA_sigmoid(m0(indSeq)); % current estimate of P(y=1)
 V(indSeq) = 1./((1./V(indSeq))+ w*p0*(1-p0)); % updated V[log-odds]
 m(indSeq) = m0(indSeq) + w*V(indSeq)*(y-p0); % updated E[log-odds] (Laplace-Kalman update rule)
-fx = [invsigmoid(sigmoid(m));log(V)]; % wrap-up
+fx = [VBA_sigmoid(VBA_sigmoid(m),'inverse',true);log(V)]; % wrap-up
 
 
  

@@ -32,5 +32,5 @@ else
     dV = invsigmoid(g0); % V1-V0
     beta = P(in.indbeta); % perseveration weight
     Bt = 2*lastMove - 1; % 1 if y_{t-1}=1 and -1 otherwise 
-    gx = sigmoid(dV + beta.*Bt); % perseverative tendency
+    gx = VBA_sigmoid(dV + beta.*Bt); % perseverative tendency
 end
