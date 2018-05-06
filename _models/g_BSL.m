@@ -29,6 +29,6 @@ else
 end
 m = x(indSeq);
 v = exp(x((2^K)+indSeq));
-gx = sig(phi(2)+exp(phi(1)).*m./sqrt(1+a*v)); % E[sigm(log-odds of P(y))]
+gx = VBA_sigmoid(phi(2)+exp(phi(1)).*m./sqrt(1+a*v)); % E[sigm(log-odds of P(y))]
 
 

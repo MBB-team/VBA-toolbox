@@ -34,7 +34,7 @@ for i=1:2
 end
 dV = V(:,1)-V(:,2);
 dv = dV'*P;
-gx = sig(dv);
+gx = VBA_sigmoid(dv);
 dsdx = gx.*(1-gx);
 dgdx = [];
 dgdp = dsdx*dV;

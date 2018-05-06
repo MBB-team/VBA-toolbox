@@ -15,7 +15,7 @@ p = 10; % number of features
 X = randn(n,p); % feature matrix
 b = 1+randn(p,1); % feature weights
 e = randn(n,1); % additional noise
-y = +(sig(X*b+e)>0.5);
+y = +(VBA_sigmoid(X*b+e)>0.5);
 
 % classify data using default set-up
 k = n; % number of folds (k=n: leave-one-out cross-validation)
@@ -41,7 +41,7 @@ for i=1:Nmc
     X = randn(n,p); % feature matrix
     b = ones(p,1); % feature weights
     e = randn(n,1); % additional noise
-    y = sig(X*b+e)>0.5;
+    y = +(VBA_sigmoid(X*b+e)>0.5);
     % apply classifier
     for j=1:length(v)
         options.priors.SigmaPhi = v(j).*eye(p);

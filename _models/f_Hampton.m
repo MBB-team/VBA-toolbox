@@ -33,9 +33,9 @@ end
 
 o = u(1); % opponent's last choice (o)
 a = u(2); % agent's last choice (a)
-p0 = sigmoid(x(1)); % previous estimate of P(o=1)
-eta = sig(P(1)); % weight of PE1
-lambda = sig(P(2)); % weight of PE2
+p0 = VBA_sigmoid(x(1)); % previous estimate of P(o=1)
+eta = VBA_sigmoid(P(1)); % weight of PE1
+lambda = VBA_sigmoid(P(2)); % weight of PE2
 beta = exp(P(3)); % opponent's temperature
 
 % derive first-order prediction error

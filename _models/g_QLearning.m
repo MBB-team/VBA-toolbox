@@ -25,9 +25,9 @@ beta = exp (P(1)); % exp: [-Inf,Inf] -> [0 Inf]
 
 % offset
 try
-    offset = P(2);
+    const = P(2);
 catch 
-    offset = 0;
+    const = 0;
 end
 
 % Behavioural prediction
@@ -47,7 +47,8 @@ end
 dQ = x(idx(2))-x(idx(1));
 
 % make prediction
-gx = sig(beta * dQ + offset);
+gx = VBA_sigmoid(beta * dQ + const);
+
 
 % Compute gradients
 % =========================================================================

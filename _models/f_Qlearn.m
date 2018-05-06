@@ -16,7 +16,7 @@ function  [fx,dfdx,dfdP] = f_Qlearn(x,P,u,in)
 %   - fx: updated action values
 %   - dfdx/dfdP: gradients for VBA inversion
 
-alpha = sig(P(1)); % learning rate
+alpha = VBA_sigmoid(P(1)); % learning rate
 a = 2-u(1); % index of agent's last chosen action
 r = u(2); % feedback
 fx = x; % identity mapping

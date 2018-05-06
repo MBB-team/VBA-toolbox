@@ -24,7 +24,7 @@ for i=1:out.dim.n_phi
     pr2.SigmaPhi(i,:) = 0; % set prior covariances to 0
     pr2.SigmaPhi(:,i) = 0; % set prior covariances to 0
     [F2] = VBA_SavageDickey(posterior,out.options.priors,out.F,out.dim,pr2);
-    PP.phi(i) = sig(F2-out.F);
+    PP.phi(i) = VBA_sigmoid(F2-out.F);
 end
 
 % evolution parameters
@@ -34,7 +34,7 @@ for i=1:out.dim.n_theta
     pr2.SigmaTheta(i,:) = 0; % set prior covariances to 0
     pr2.SigmaTheta(:,i) = 0; % set prior covariances to 0
     [F2] = VBA_SavageDickey(posterior,out.options.priors,out.F,out.dim,pr2);
-    PP.theta(i) = sig(F2-out.F);
+    PP.theta(i) = VBA_sigmoid(F2-out.F);
 end
 
 % initial conditions
@@ -44,6 +44,6 @@ for i=1:out.dim.n
     pr2.SigmaX0(i,:) = 0; % set prior covariances to 0
     pr2.SigmaX0(:,i) = 0; % set prior covariances to 0
     [F2] = VBA_SavageDickey(posterior,out.options.priors,out.F,out.dim,pr2);
-    PP.X0(i) = sig(F2-out.F);
+    PP.X0(i) = VBA_sigmoid(F2-out.F);
 end
 

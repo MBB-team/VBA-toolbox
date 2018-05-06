@@ -51,7 +51,7 @@ fx = x;
 delta = feedback - x(prevActionIdx);
 
 % asymmetric learning rate 
-alpha = sig(P(1) + sign (delta) * P(2)); % sig: [-Inf,Inf] -> [0 1]
+alpha = VBA_sigmoid(P(1) + sign (delta) * P(2)); % [-Inf,Inf] -> [0 1]
 
 % update Q-value
 fx(prevActionIdx) = x(prevActionIdx) + alpha*delta; % update chosen value

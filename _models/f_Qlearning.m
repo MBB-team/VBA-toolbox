@@ -31,7 +31,7 @@ function  [fx,dfdx,dfdp] = f_Qlearning(x,P,u,in)
 % acceptable range for each parameter.
 
 % learning rate 
-alpha = sig(P); % sig: [-Inf,Inf] -> [0 1]
+alpha = VBA_sigmoid(P); % [-Inf,Inf] -> [0 1]
 
 
 % Apply delta-rule to update action values

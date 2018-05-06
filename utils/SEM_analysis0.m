@@ -90,7 +90,7 @@ if dim.n_phi>0
             mP = exp(mP);
             vP = vP.*exp(2*mP); % Laplace approx
         case 'sigm'
-            mP = sig(mP);
+            mP = VBA_sigmoid(mP);
             vP = vP.*(mP.*(1-mP)).^2; % Laplace approx
     end
 end
@@ -116,7 +116,7 @@ switch in.flag
     case 'exp'
         P = exp(P);
     case 'sigm'
-        P = sig(P);
+        P = VBA_sigmoid(P);
 end
 A = in.A;
 A(in.indInA) = P(in.indA);

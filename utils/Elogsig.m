@@ -18,4 +18,4 @@ c = 0.781;
 d = 0.870;
 
 tmp = (m+b.*V.^c)./sqrt(1+a.*V.^d);
-Els = log(sig(tmp));
+Els = log(VBA_sigmoid(tmp));

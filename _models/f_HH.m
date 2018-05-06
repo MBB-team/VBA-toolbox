@@ -24,9 +24,9 @@ ENa = 115;
 EL = 10.6;
 
 V = Xt(1);
-m = mySig(Xt(2));
-n = mySig(Xt(3));
-h = mySig(Xt(4));
+m = VBA_sigmoid(Xt(2));
+n = VBA_sigmoid(Xt(3));
+h = VBA_sigmoid(Xt(4));
 
 an = (0.1 - 0.01*V)./(exp(1-0.1*V)-1);
 am = (2.5 - 0.1*V)./(exp(2.5-0.1*V)-1);
@@ -43,7 +43,4 @@ xdot = [ (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + 1e0*ut)/C
         (ah*(1-h) - bh*h)/(h-h.^2+r)   ];
 
 fx = Xt + deltat.*xdot;
-
-function sx = mySig(x)
-sx = 1./(1+exp(-x));
 

@@ -15,9 +15,9 @@ beta = exp(P(1)); % exp: [-Inf,Inf] -> [0 Inf]
 
 dQ = (x(1)-x(2));
 if length(P)>1
-    gx = sig( beta*dQ + P(2));
+    gx = VBA_sigmoid( beta*dQ + P(2));
 else
-    gx = sig( beta*dQ );
+    gx = VBA_sigmoid( beta*dQ );
 end
 dgdx = zeros(size(x,1),1);
 dgdx(1) = beta*gx*(1-gx);

@@ -21,5 +21,5 @@ function [sg,dsdx,dgdp] = g_convSig(x,P,u,in)
 % SEE ALSO: g_conv0
 
 [g,dsdx,dgdp] = g_conv0(x,P,u,in);
-sg = sig(g);
+sg = VBA_sigmoid(g);
 dgdp = dgdp*diag(sg.*(1-sg));
