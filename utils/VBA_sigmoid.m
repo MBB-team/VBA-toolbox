@@ -107,8 +107,8 @@ if params.inverse
     end
     
     % inverse sigmoid transformation
-    lx = params.scale .* (x - params.offset) .^-1  - 1;
-    y = params.center - params.slope .^-1 .* log (lx) ;
+    lx = params.scale * (x - params.offset) .^-1  - 1;
+    y = params.center - params.slope ^-1 * log (lx) ;
     
     % skip derivatives, they are generally not used in inverse case
     dsdx = [];
