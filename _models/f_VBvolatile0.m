@@ -21,9 +21,9 @@ function [fx] = f_VBvolatile0(x,P,u,in)
 % transform and define states and parameters
 x(3) = exp(x(3)); % variance on second-level states is in log-space
 x(5) = exp(x(5)); % variance on third-level states is in log-space
-ka = in.lev2*sgm(P(1),in.kaub);
+ka = in.lev2 * VBA_sigmoid(P(1), 'scale', in.kaub);
 om = P(2); % volatility rescaling
-th = sgm(P(3),in.thub);
+th = VBA_sigmoid(P(3), 'scale', in.thub);
 vol = exp(ka*x(4)+om);
 fx = zeros(size(x));
 
@@ -31,12 +31,12 @@ fx = zeros(size(x));
 fx(1) = u(1); % trivial first-level states
 
 % 2nd level
-s1h = sgm(x(2),1)*(1-sgm(x(2),1)); % likelihood precision
-pe1 = fx(1) - sgm(x(2),1); % prediction error
+s1h = VBA_sigmoid(x(2))*(1-VBA_sigmoid(x(2))); % likelihood precision
+pe1 = fx(1) - VBA_sigmoid(x(2)); % prediction error
 s2h = x(3) + vol; % 2nd-level prediction variance
 fx(3) = 1/(s2h^-1 + s1h); % posterior variance
 fx(2) = x(2) + fx(3)*pe1; % 2nd-level update
-fx(2) = invsigmoid(sigmoid(fx(2))); % for numerical purposes
+fx(2) = VBA_sigmoid(VBA_sigmoid(fx(2)),'inverse',true); % for numerical purposes
 
 % 3rd level
 pi3h = 1/(x(5)+th);

@@ -9,7 +9,7 @@ end
 [n,n_t] = size(posterior.muX);
 if n==5
     
-    ka = out.options.inF.lev2*sgm(posterior.muTheta(1),out.options.inF.kaub);
+    ka = out.options.inF.lev2* VBA_sigmoid(posterior.muTheta(1), 'scale', out.options.inF.kaub);
     om = posterior.muTheta(2);
     mux = posterior.muX([2,4],:);
     sx = exp(posterior.muX([3,5],:));
@@ -43,7 +43,7 @@ if n==5
     x = posterior.muX;
     x(3,:) = exp(x(3,:));
     x(5,:) = exp(x(5,:));
-    s1h = sgm(x(2,:),1).*(1-sgm(x(2,:),1)); % likelihood precision
+    s1h = VBA_sigmoid(x(2,:)).*(1-VBA_sigmoid(x(2,:))); % likelihood precision
     s2h = x(3,:) + exp(ka*x(4,:)+om); % 2nd-level prediction variance
     lr = 1./(s2h.^-1 + s1h); % posterior variance
     ha(3) = subplot(2,2,3,'parent',hf,'nextplot','add','ygrid','on','xlim',[1,n_t]);
@@ -53,7 +53,7 @@ if n==5
     
 else
     
-    ka = out.options.inF.lev2*sgm(posterior.muTheta(1),out.options.inF.kaub);
+    ka = out.options.inF.lev2*VBA_sigmoid(posterior.muTheta(1),'scale',out.options.inF.kaub);
     om = posterior.muTheta(2);
     mux = posterior.muX([2,4,7,9],:);
     sx = exp(posterior.muX([3,5,8,10],:));
@@ -90,7 +90,7 @@ else
     
     x = posterior.muX;
     x([3,5,8,10],:) = exp(x([3,5,8,10],:));
-    s1h = sgm(x([2,7],:),1).*(1-sgm(x([2,7],:),1)); % likelihood precision
+    s1h = VBA_sigmoid(x([2,7],:)).*(1-VBA_sigmoid(x([2,7],:))); % likelihood precision
     s2h = x([3,8],:) + exp(ka*x([4,9],:)+om); % 2nd-level prediction variance
     lr = 1./(s2h.^-1 + s1h); % posterior variance
     ha(3) = subplot(2,2,3,'parent',hf,'nextplot','add','ygrid','on','xlim',[1,n_t]);

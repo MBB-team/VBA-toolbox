@@ -31,7 +31,7 @@ switch in.respmod
         error(['Invalid or missing response model specification: ', respmod]);
 end
 
-p1 = sgm(x1,1); % E[P(R|a=1)]
-p0 = sgm(x0,1); % E[P(R|a=0)]
-gx = sgm((p1-p0)*exp(P(1))+P(2),1); % P(a=1)
+p1 = VBA_sigmoid(x1); % E[P(R|a=1)]
+p0 = VBA_sigmoid(x0); % E[P(R|a=0)]
+gx = VBA_sigmoid((p1-p0)*exp(P(1))+P(2)); % P(a=1)
 
