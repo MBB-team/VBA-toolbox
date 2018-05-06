@@ -72,7 +72,7 @@ else % k-ToM with k>0
         % max-entropic belief about opponent's level
         Pk = 1./level.*ones(1,level);
         if level>1
-            fx(1:(level-1)) = invsigmoid(Pk(1:(end-1)));
+            fx(1:(level-1)) = VBA_sigmoid(Pk(1:(end-1)), 'inverse', true);
         end
     else % trial OK
         ot = u(1); % opponent's last move
@@ -104,7 +104,7 @@ else % k-ToM with k>0
             Pk = P0.*exp(w.*LL);
             Pk = Pk./sum(Pk); % posterior P(k')
             % store posterior P(k') in hidden-states vector
-            fx(1:(level-1)) = invsigmoid(Pk(1:(end-1))); % only k'<k-1
+            fx(1:(level-1)) = VBA_sigmoid(Pk(1:(end-1)), 'inverse', true); % only k'<k-1
         end
     end
     
@@ -157,7 +157,7 @@ else % k-ToM with k>0
 %         inG.k = in.k; % [useless]
         inG.player = 3-inF.player; % reverse player role
         inG.indlev = indlevj; % indexing of opponent's hidden states
-        f_new = invsigmoid(fobs(X,Parobs,oa,inG)); % x(params)
+        f_new = VBA_sigmoid(fobs(X,Parobs,oa,inG), 'invserse', true); % x(params)
         fx(indlev(j).f) = f_new; % store in hidden-states
         
         % 2.4- get numerical derivative of x(params) wrt EVOL params       
@@ -170,7 +170,7 @@ else % k-ToM with k>0
             Par = Parev;
             Par(l) = Par(l) + dP; % P <-- P + dP
             Xpdp = RecToMfunction(X0,Par,oa,inL); % modify hidden states' evolution
-            fpdp = invsigmoid(fobs(Xpdp,Parobs,oa,inG)); % get E[x(P+dP)]
+            fpdp = VBA_sigmoid(fobs(Xpdp,Parobs,oa,inG), 'inverse', true); % get E[x(P+dP)]
             dfdP(l) = (fpdp-f_new)./dP; % derive gradient wrt param #l
         end
         fx(indlev(j).df(1:NParev)) = dfdP; % store in hidden-states
@@ -184,7 +184,7 @@ else % k-ToM with k>0
             end
             Par = Parobs;
             Par(l) = Par(l) + dP; % P <-- P + dP
-            fpdp = invsigmoid(fobs(X,Par,oa,inG)); % get E[x(P+dP)]
+            fpdp = VBA_sigmoid(fobs(X,Par,oa,inG), 'inverse', true); % get E[x(P+dP)]
             dfdP(l) = (fpdp-f_new)./dP; % derive gradient wrt param #l
         end
         fx(indlev(j).df(NParev+(1:NParobs))) = dfdP; % store in hidden-states
@@ -216,6 +216,6 @@ E0 = Par_k(indMu); % prior mean
 Eu = E0 + Pk.*Vu.*(ot-Proba).*df; % posterior mean
 fPar_k = zeros(size(Par_k)); % = [...,E[param_i];V[param_i];...]
 fPar_k(indV) = log(Vu);
-fPar_k(indMu) = invsigmoid(sigmoid(Eu)); % for numerical purposes
+fPar_k(indMu) = VBA_sigmoid(sigmoid(Eu), 'inverse', true); % for numerical purposes
 end
 

@@ -17,9 +17,9 @@ switch model
         g = @g_sig;
         theta = [];
         if rand>0.5
-            phi = [0;invsigmoid(0.65)]; % bias =65%
+            phi = [0;VBA_sigmoid(0.65, 'inverse', true)]; % bias =65%
         else
-            phi = [0;invsigmoid(0.35)]; % bias =35%
+            phi = [0;VBA_sigmoid(0.35, 'inverse', true)]; % bias =35%
         end
         inF = struct('game',game,'player',role);
         inG = [];
@@ -62,7 +62,7 @@ switch model
     case 'Inf'
         f = @f_Hampton;
         g = @g_Hampton;
-        theta = [invsigmoid(0.25);invsigmoid(0.25);0]; % (invsigmoid-) weight (PE1), (invsigmoid-) weight (PE2), (log-) opponent's temp
+        theta = [VBA_sigmoid(0.25,'inverse',true);VBA_sigmoid(0.25,'inverse',true);0]; % (invsigmoid-) weight (PE1), (invsigmoid-) weight (PE2), (log-) opponent's temp
         phi = [-1;0]; % (-log) temperature and bias
         inF = struct('game',game,'player',role);
         inG = struct('game',game,'player',role);

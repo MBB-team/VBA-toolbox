@@ -89,7 +89,7 @@ end
 
 % VB update of P(agent=kToM)
 Pi = Pi0.*h_kToM./(Pi0.*h_kToM+(1-Pi0).*h_seq);
-fx(inF.meta.indx) = invsigmoid(Pi);
+fx(inF.meta.indx) = VBA_sigmoid(Pi, 'inverse', true);
 
 
 % 2- update k-ToM belief

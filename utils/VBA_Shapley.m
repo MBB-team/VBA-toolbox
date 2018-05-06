@@ -53,7 +53,10 @@ else
     else
         options.obsIdx = 1:out.dim.p ;
     end
-    options = parseargs(options,varargin{:});
+    parser = inputParser;
+    parser.parse (varargin{:});
+    options = parser.Results;
+    %options = parseargs(options,varargin{:});
 end
 
 %% Prepare perturbation scheme

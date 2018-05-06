@@ -29,7 +29,7 @@ lastMove = u(2);
 if VBA_isWeird (lastMove)
     gx = g0; % no perseveration
 else
-    dV = invsigmoid(g0); % V1-V0
+    dV = VBA_sigmoid(g0, 'inverse', true); % V1-V0
     beta = P(in.indbeta); % perseveration weight
     Bt = 2*lastMove - 1; % 1 if y_{t-1}=1 and -1 otherwise 
     gx = VBA_sigmoid(dV + beta.*Bt); % perseverative tendency

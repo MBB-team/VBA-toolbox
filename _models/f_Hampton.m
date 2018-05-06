@@ -59,5 +59,5 @@ PE2 = a-q0;
 % "influence" learning rule
 p = p0 + eta*PE1 + lambda*k1*p0*(1-p0)*PE2; % P(o=1)
 p = max([min([p,1]),0]); % bound p between 0 and 1
-fx = invsigmoid(p); % for numerical reasons
+fx = VBA_sigmoid(p,'inverse',true); % for numerical reasons
 
