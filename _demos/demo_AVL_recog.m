@@ -25,7 +25,7 @@ switch flag
         
         % assume static cue-outcome association
         x2 = randn.*ones(1,n_t);
-        sx2 = sigm(x2);
+        sx2 = VBA_sigmoid(x2);
         sx2 = sx2(:)';
         
     case 2

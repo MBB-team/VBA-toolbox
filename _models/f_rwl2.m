@@ -19,16 +19,16 @@ elseif u(in.inda) >= 0.5 % last choice was 'go'
     switch in.model
         case 'utility' % weigths on feedbacks
             r = P(in.indR(u(in.indu)+2))*u(in.indu);
-            alpha = sigm(P(in.indAlpha));
+            alpha = VBA_sigmoid(P(in.indAlpha));
         case 'learning' % different learning rates
             r = P(in.indR)*u(in.indu);
-            alpha = sigm(P(in.indAlpha(u(in.indu)+2)));
+            alpha = VBA_sigmoid(P(in.indAlpha(u(in.indu)+2)));
         case 'both'
             r = P(in.indR(u(in.indu)+2))*u(in.indu);
-            alpha = sigm(P(in.indAlpha(u(in.indu)+2)));
+            alpha = VBA_sigmoid(P(in.indAlpha(u(in.indu)+2)));
         case 'none'
             r = P(in.indR)*u(in.indu);
-            alpha = sigm(P(in.indAlpha));
+            alpha = VBA_sigmoid(P(in.indAlpha));
         otherwise
             error
     end

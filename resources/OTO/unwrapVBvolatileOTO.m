@@ -22,14 +22,14 @@ if n==5
     box(ha,'off')
     
     ha(2) = subplot(2,2,2,'parent',hf,'nextplot','add','ygrid','on','xlim',[1,n_t]);
-    plot(ha(2),sigm(mux(1,:)));
+    plot(ha(2),VBA_sigmoid(mux(1,:)));
     mv = exp(ka*mux(2,:)+om);
     plot(ha(2),mv,'g');
     
     % plot belief about outcome probability
     er1 = mux(1,:) - sqrt(sx(1,:));
     er2 = mux(1,:) + sqrt(sx(1,:));
-    yp = [sigm(er2),fliplr(sigm(er1))];
+    yp = [VBA_sigmoid(er2),fliplr(VBA_sigmoid(er1))];
     xp = [1:size(mux,2),fliplr(1:size(mux,2))];
     hfi = fill(xp,yp,'r','facecolor','b','edgealpha',0,'facealpha',0.25,'parent',ha(2));
     ev1 = exp(ka*(mux(2,:)-sqrt(sx(2,:)))+om);
@@ -70,7 +70,7 @@ else
     mv = exp(ka*mux([2,4],:)+om);
     col = getColors(4);
     for i=1:2
-        plot(ha(2),sigm(mr(i,:)),'color',col(2*(i-1)+1,:));
+        plot(ha(2),VBA_sigmoid(mr(i,:)),'color',col(2*(i-1)+1,:));
         plot(ha(2),mv(i,:),'color',col(2*(i-1)+2,:));
     end
     er1 = mux([1,3],:) - sqrt(sx([1,3],:));
@@ -78,7 +78,7 @@ else
     ev1 = exp(ka*(mux(2,:)-sqrt(sx(2,:)))+om);
     ev2 = exp(ka*(mux(2,:)+sqrt(sx(2,:)))+om);
     for i=1:2
-        yp = [sigm(er2(i,:)),fliplr(sigm(er1(i,:)))];
+        yp = [VBA_sigmoid(er2(i,:)),fliplr(VBA_sigmoid(er1(i,:)))];
         xp = [1:size(mux,2),fliplr(1:size(mux,2))];
         hfi = fill(xp,yp,'r','facecolor',col(2*(i-1)+1,:),'edgealpha',0,'facealpha',0.25,'parent',ha(2));
         yp = [ev2,fliplr(ev1)];

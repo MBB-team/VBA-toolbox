@@ -90,7 +90,7 @@ options.verbose = false;
 % -------------------------------------------------------------------------
 fprintf('=============================================================\n');
 fprintf('\nEstimated parameters: \n');
-fprintf('  - avg. learning rate: %3.2f\n', sigm(posterior.muTheta(1)));
+fprintf('  - avg. learning rate: %3.2f\n', VBA_sigmoid(posterior.muTheta(1)));
 fprintf('  - learning rate asym: %3.2f\n', posterior.muTheta(2));
 fprintf('  - inverse temp.: %3.2f\n\n', exp(posterior.muPhi));
 fprintf('=============================================================\n');

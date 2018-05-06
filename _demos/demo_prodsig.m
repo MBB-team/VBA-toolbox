@@ -6,7 +6,7 @@ clear all
 
 x = -50:5e-2:50;
 nx = length(x);
-s1 = sigm(x);
+s1 = VBA_sigmoid(x);
 
 a = -2:4; % slope
 b = 0;%-4:4; % inflexion point

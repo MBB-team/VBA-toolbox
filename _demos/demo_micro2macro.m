@@ -24,7 +24,7 @@ b = 2;
 dx = 2e-2;
 x = -0.5:dx:2;
 
-sx = sigm(x);
+sx = VBA_sigmoid(x);
 Ux = 2*sx-1;
 d2Udx2 = 2*sx.*(1-sx).*(1-2.*sx);
 
@@ -88,7 +88,7 @@ EU2 = zeros(N,length(mu));
 for i=1:length(mu)
     for ii=1:N
         X = mu(i) + sqrt(v).*randn;
-        EU2(ii,i) = 2*sigm(X)-1;
+        EU2(ii,i) = 2*VBA_sigmoid(X)-1;
     end
 end
 EU2 = mean(EU2,1);

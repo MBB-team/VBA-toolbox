@@ -41,7 +41,7 @@ if isfield(in,'fullDCM') && in.fullDCM
         in.ind2 = [in.ind2:2:2*nreg];
     end
 else
-    [E0,dsdp] = sigm(P(1)-0.6633,struct('beta',1,'G0',1,'INV',0));
+    [E0,dsdp] = VBA_sigmoid(P(1)-0.6633);
     E0 = E0(:);
     try
         epsilon = exp(P(2));

@@ -9,8 +9,8 @@ function [fx] = f_HRF(Xt,P,ut,in)
 % Get parameters
 [E0,V0,tau0,kaf,kas,epsilon,alpha] = BOLD_parameters;
 if ~isempty(P)
-    iE0 = sigm(E0,struct('beta',1,'G0',1,'INV',1));
-    E0 = sigm(P(1)+iE0,struct('beta',1,'G0',1,'INV',0));
+    iE0 = VBA_sigmoid(E0,'inverse',true);
+    E0 = VBA_sigmoid(P(1)+iE0);
     tau0 = tau0.*exp(P(2));
     kaf = kaf.*exp(P(3));
     kas = kas.*exp(P(4));

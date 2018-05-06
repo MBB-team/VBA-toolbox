@@ -50,7 +50,7 @@ fb = struct( ...
 % define parameteters of the simulated agent    
 % -------------------------------------------------------------------------
 % learning rate
-theta = sigm(0.65,struct('INV',1)); % 0.65, once sigm transformed
+theta = VBA_sigmoid(0.65,'inverse',true); % 0.65, once sigm transformed
 % inverse temperature 
 phi = log(2.5); % will be exp transformed
 % initial state

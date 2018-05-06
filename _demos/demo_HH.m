@@ -46,9 +46,9 @@ title(ha,'input current')
 xlabel('time')
 ha = subplot(3,1,2,'parent',hf,'nextplot','add');
 col = getColors(2);
-m = sigm(x(2,:));
-n = sigm(x(3,:));
-h = sigm(x(4,:));
+m = VBA_sigmoid(x(2,:));
+n = VBA_sigmoid(x(3,:));
+h = VBA_sigmoid(x(4,:));
 p(1,:) = m.^3.*h;
 p(2,:) = n.^4;
 for i=1:2

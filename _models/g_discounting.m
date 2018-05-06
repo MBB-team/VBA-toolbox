@@ -23,4 +23,4 @@ switch in.model
 end
 dv = v(1) - v(2);
 b = exp(-P(in.ind.logb));
-gx = sigm(b.*dv);
+gx = VBA_sigmoid(b.*dv);

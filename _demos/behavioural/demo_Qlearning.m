@@ -80,7 +80,7 @@ options.skipf = [1 zeros(1,n_t-1)];
 % -------------------------------------------------------------------------
 fprintf('=============================================================\n');
 fprintf('\nEstimated parameters: \n');
-fprintf('  - learning rate: %3.2f\n', sigm(posterior.muTheta));
+fprintf('  - learning rate: %3.2f\n', VBA_sigmoid(posterior.muTheta));
 fprintf('  - inverse temp.: %3.2f\n\n', exp(posterior.muPhi));
 fprintf('=============================================================\n');
 
