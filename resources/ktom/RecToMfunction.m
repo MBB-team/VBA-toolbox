@@ -157,7 +157,7 @@ else % k-ToM with k>0
 %         inG.k = in.k; % [useless]
         inG.player = 3-inF.player; % reverse player role
         inG.indlev = indlevj; % indexing of opponent's hidden states
-        f_new = VBA_sigmoid(fobs(X,Parobs,oa,inG), 'invserse', true); % x(params)
+        f_new = VBA_sigmoid(fobs(X,Parobs,oa,inG), 'inverse', true); % x(params)
         fx(indlev(j).f) = f_new; % store in hidden-states
         
         % 2.4- get numerical derivative of x(params) wrt EVOL params       
@@ -216,6 +216,6 @@ E0 = Par_k(indMu); % prior mean
 Eu = E0 + Pk.*Vu.*(ot-Proba).*df; % posterior mean
 fPar_k = zeros(size(Par_k)); % = [...,E[param_i];V[param_i];...]
 fPar_k(indV) = log(Vu);
-fPar_k(indMu) = VBA_sigmoid(sigmoid(Eu), 'inverse', true); % for numerical purposes
+fPar_k(indMu) = VBA_sigmoid(VBA_sigmoid(Eu), 'inverse', true); % for numerical purposes
 end
 
