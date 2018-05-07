@@ -9,7 +9,6 @@ end
 if in.x
     [Sx,dsdx,dsdp] = VBA_sigmoid(x);
 else
-    [Sx,dsdp,dsdx] = sigm(Phi,in,x);
+    [Sx,dsdp,dsdx] = VBA_sigmoid(Phi);
     dsdp = diag(dsdp);
-    pause()
 end
