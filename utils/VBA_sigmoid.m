@@ -140,7 +140,7 @@ else
     end
     
     % actual computation
-    dsdx = params.slope * (y - params.offset) * (1 - (y - params.offset) ./ params.scale);
+    dsdx = params.slope * (y - params.offset) .* (1 - (y - params.offset) ./ params.scale);
     
     % compute derivatives with respect to parameters
     % ---------------------------------------------------------------------
