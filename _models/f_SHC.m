@@ -57,11 +57,11 @@ x1 = x(ind1);
 x2 = x(ind2);
 
 % High level
-[SX2,dsdx2] = sigm(x2,G0,beta);
+[SX2,dsdx2] = VBA_sigmoid(x2,'scale',G0,'slope',beta);
 ff{2} = K(2).*(-lambda*x2 - R2*SX2);
 
 % Low level
-[SX1,dsdx1] = sigm(x1,G0,beta);
+[SX1,dsdx1] = VBA_sigmoid(x1,'scale',G0,'slope',beta);
 R1eff = R1{1}.*SX2(1) + R1{2}.*SX2(2) + R1{3}.*SX2(3);
 ff{1} = K(1).*(-lambda*x1 - R1eff*SX1);
 
@@ -84,15 +84,3 @@ df_dx(ind2(3),ind1) = [-K(1).*dsdx2(3).*R1{3}*SX1]';
 fx = Xt + deltat.*f;
 dF_dX = eye(length(Xt)) + deltat.*df_dx;
 
-
-
-function [Sx,dsdx] = sigm(x,G0,beta)
-bx = beta*x;
-indn = find(bx<=-1e2);
-indp = find(bx>=1e2);
-Sx = G0./(1+exp(-bx));
-dsdx = G0./(1+exp(-bx)).^2.*beta.*exp(-bx);
-Sx(indn) = 0;
-Sx(indp) = G0;
-dsdx(indn) = 0;
-dsdx(indp) = 0;

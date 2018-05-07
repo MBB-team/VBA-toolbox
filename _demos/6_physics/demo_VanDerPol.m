@@ -17,8 +17,8 @@ phi     = [];
 u       = [];
 
 % Build options structure for temporal integration of SDE
-inG.G0 = 50;
-inG.beta = 5;
+inG.scale = 50;
+inG.slope = 5;
 inF.deltat = deltat;
 options.inF     = inF;
 options.inG     = inG;

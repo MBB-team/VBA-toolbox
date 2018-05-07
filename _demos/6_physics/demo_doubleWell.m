@@ -13,12 +13,13 @@ deltat = 2e-2;
 alpha   = 6e-1/deltat;
 sigma   = 1e2;
 theta   = [-2;3;1.5];
-phi     = [1;1];
+phi     = [1;0.5];
 
 
 % Build options structure for temporal integration of SDE
 inG.G0 = 50;
-inG.beta = 0.5;
+inG.scale = 50;
+
 inF.deltat = deltat;
 inF.a   = -2;
 inF.b   = 3;
@@ -34,7 +35,7 @@ priors.muTheta = 0.*ones(length(theta),1);
 priors.muTheta(3) = 1.5;
 priors.SigmaTheta = 1e-1*eye(3);
 % priors.SigmaTheta(3,3) = 0;
-priors.muPhi = 1*ones(length(phi),1);
+priors.muPhi = [1; .5];
 priors.SigmaPhi = 0e0*eye(2);
 priors.SigmaPhi(1,1) = 0;
 priors.a_alpha = 1e2;

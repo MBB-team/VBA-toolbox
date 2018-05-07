@@ -2,11 +2,7 @@ function [fx,dfdx,dfdp] = f_ARn(x,theta,u,in)
 
 % AR(1) evolution function with exponential decay
 n = size(x,1);
-in.G0 = 1;
-in.S0 = 0;
-in.beta = 1;
-in.INV = 0;
-[alpha,dsda] = sigm(theta(1:n),in,[]);
+[alpha,dsda] = VBA_sigmoid(theta(1:n));
 xf = theta(n+1:2*n);
 fx = x + -alpha(:).*(x-xf);
 

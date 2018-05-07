@@ -1,3 +1,3 @@
 function [Sx] = g_sig_u(x,Phi,u,in)
 % sigmoid observation mapping
-[Sx] = sigm(u,struct('mat',1),Phi);
+[Sx] = VBA_sigmoid(u,'slope',exp(Phi(1)),'center',Phi(2));

@@ -13,12 +13,12 @@ sigma   = 1e4;
 theta   = [1.4;0.3];
 phi     = [];
 inF.deltat = 1;
-inG.G0 = 50;
-inG.beta = 0.1;
+inG.scale = 50;
+inG.slope = 0.1;
 
 % Build options structure for temporal integration of SDE
 options.inF     = inF;
-options.inG     = [];
+options.inG     = struct;
 % options.u0      = 0*ones(2,1);  % initial condition: input value
 
 
