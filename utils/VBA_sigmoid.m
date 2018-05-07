@@ -126,9 +126,9 @@ else
     % ---------------------------------------------------------------------
     if params.finite > 0
         minY = params.offset + epsilon;
-        y(y <= minY) = minY(y <= minY);
+        y(y <= minY) = minY;
         maxY = params.offset + params.scale - epsilon;
-        y(y >= maxY) = maxY(y >= maxY);
+        y(y >= maxY) = maxY;
     end
     
     % compute derivatives with respect to value
