@@ -31,7 +31,7 @@ ha = axes('parent',hf);
 
 for i=1:na
     for j=1:nb
-        s2 = sigm(x,[],[a(i);b(j)]);
+        s2 = VBA_sigmoid(x, 'slope', exp(a(i)), 'center', b(j));
         s12 = s1.*s2;
         cla(ha)
         plot(ha,x,s1,'b--')
