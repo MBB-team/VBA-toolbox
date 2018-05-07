@@ -20,6 +20,7 @@ phi     = [];
 % Build options structure for temporal integration of SDE
 inF.deltat = deltat;
 options.inF     = inF;
+options.inG     = struct;
 options.backwardLag = 4;
 % options.checkGrads = 1;
 

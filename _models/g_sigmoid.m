@@ -18,7 +18,7 @@ end
 if size(Phi,1) >=2
     [Sx,dsdx,dsdp] = sigm(Xt,inG,Phi(2:end));
 else
-    [Sx,dsdx] = sigm(Xt,inG);
+    [Sx,dsdx] = VBA_sigmoid(Xt,inG);
 end
 
 gx              = G*Sx(:);

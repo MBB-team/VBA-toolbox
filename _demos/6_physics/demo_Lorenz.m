@@ -18,8 +18,9 @@ u       = [];
 
 
 % Build options structure for temporal integration of SDE
-inG.G0 = 50;
-inG.beta = 0.2;
+inG.scale = 50;
+inG.slope = 0.2;
+
 inF.deltat = deltat;
 options.inF     = inF;
 options.inG     = inG;
