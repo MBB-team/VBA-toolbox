@@ -8,17 +8,22 @@ catch
 end
 
 if in.x % for learning effects (sigmoid parameters evolve over time)
-    [Sx, ~, dsdx] = VBA_sigmoid(u,'slope',exp(x(1)),'center',x(2));
+    [Sx, ~, dsdx] = VBA_sigmoid(u, ...
+        'slope', exp(x(1)), ...
+        'center', x(2), ...
+        'derivatives', {'slope','center'});
     
-    dsdx = flipud(dsdx);
     dsdx(1,:) = dsdx(1,:) * exp(x(1));  
     dsdp = [];
    
 else
-    [Sx, ~, dsdp] = VBA_sigmoid(u,'slope',exp(Phi(1)),'center',Phi(2));
+    [Sx, ~, dsdp] = VBA_sigmoid(u,...
+        'slope', exp(Phi(1)), ...
+        'center',Phi(2), ...
+        'derivatives', {'slope','center'});
    
-    dsdp = flipud(dsdp);
     dsdp(1,:) = dsdp(1,:) * exp(Phi(1)); 
+    dsdx = [];
 end
 
 

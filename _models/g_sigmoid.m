@@ -15,8 +15,9 @@ try
     G = Phi(1).*G;
 end
 
-if size(Phi,1) >=2
-    [Sx,dsdx,dsdp] = sigm(Xt,inG,Phi(2:end));
+if size(Phi,1) >=2    
+    [Sx,dsdx, dsdp] = VBA_sigmoid(Xt,inG,'slope',exp(Phi(2)),'derivatives',{'slope'});
+    dsdp = dsdp * exp(Phi(2));   
 else
     [Sx,dsdx] = VBA_sigmoid(Xt,inG);
 end

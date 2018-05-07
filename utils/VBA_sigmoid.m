@@ -29,6 +29,8 @@ function [y, dsdx, dsdp] = VBA_sigmoid(x, varargin)
 %       * 'finite'  : boundaries that enforce precision to be finite and 
 %                     derivative to stay numerically non zero (default = 1e-9)
 %                     Set to 0 to deactivate
+%       * 'derivatives' : cell array of parameter names wrt which dsdp must be
+%                         computed (in given order). 
 %                   
 % 
 %   Note that if the 'inverse' flag is set to true, the derivatives will
@@ -59,6 +61,7 @@ epsilon = 1e-9;
 
 parser = inputParser;
 parser.PartialMatching = false;
+parser.keepUnmatched = true;
 
 % define parameters
 % -------------------------------------------------------------------------
@@ -66,6 +69,7 @@ parser.PartialMatching = false;
 % flags
 parser.addParameter ('inverse', false, @islogical);
 parser.addParameter ('finite', true, @(z) VBA_isInRange(z, [0 1e-2]));
+parser.addParameter ('derivatives', {}, @iscellstr);
 
 % x transfomations
 parser.addParameter ('slope', 1, @isnumeric);
@@ -161,11 +165,21 @@ else
         ((vec (x) - vec(params.center)) / params.slope) .* vec (dsdx) ... d_slope
         );
 
-    % remove derivatives if default was used (not an actual parameter)
-    idxDefault = ismember ({'center','lapseRate','offset','scale','slope'}, parser.UsingDefaults);
-    dsdp(:,idxDefault) = [];
+    % keep only those passed s parameter
+    derivables = {'center','lapseRate','offset','scale','slope'};
+    if isempty(params.derivatives)
+         params.derivatives = setdiff(derivables, parser.UsingDefaults);
+    end
+    dIdx = cellfun(@(l) find(strcmp (derivables, l)), params.derivatives);
+    
+    dsdp = dsdp(:,dIdx);
     
     % set derived parameter as first dimension
-    dsdp = squeeze(reshape(dsdp', [size(dsdp,2) dims]));
+    dims(dims==1) = [];
+    dsdp = reshape(dsdp', [size(dsdp,2) dims]);
+
+
+
+end
 
 end
