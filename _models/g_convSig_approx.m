@@ -22,6 +22,7 @@ function [sg] = g_convSig_approx(x,P,u,in)
 
 % [g,~,dgdp] = g_conv_approx(x,P,u,in);
 g = g_conv_approx(x,P,u,in);
-sg = sigm(g,struct('mat',1));
+sg = VBA_sigmoid(g);
+
 % dsdx = [];
 % dsdp = dgdp*diag(sg.*(1-sg));
