@@ -158,7 +158,7 @@ else
         1 - 2 * vec (sx), ... d_lapseRate
         ones(numel(x),1), ... d_offset
         vec (sx), ... d_scale
-        ((vec (x) - vec(params.center)) / params.slope) * vec (dsdx) ... d_slope
+        ((vec (x) - vec(params.center)) / params.slope) .* vec (dsdx) ... d_slope
         );
 
     % remove derivatives if default was used (not an actual parameter)
