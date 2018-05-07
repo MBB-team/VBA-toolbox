@@ -61,7 +61,7 @@ epsilon = 1e-9;
 
 parser = inputParser;
 parser.PartialMatching = false;
-parser.keepUnmatched = true;
+parser.KeepUnmatched = true;
 
 % define parameters
 % -------------------------------------------------------------------------
