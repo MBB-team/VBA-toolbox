@@ -40,7 +40,7 @@ elseif numel(x2)==1
 else
     testType  = '2sample';
     x = [x1;x2]';
-    mean_x  = nanmean(x);
+    mean_x  = VBA_nanmean(x);
 end
 
 %% model definitions
@@ -69,7 +69,7 @@ g_fname = @g_ttest;
 %  H0: phi_2 = 0 ; H1: phi_2 ~= 0 
 
 % observation parameters
-priors_1.muPhi = [ nanmean(x1) ; 0 ];  
+priors_1.muPhi = [ VBA_nanmean(x1) ; 0 ];  
 priors_1.SigmaPhi = diag([1e3*nanstd(x1),1e3*nanstd(x2)]);      
 % observation noise parameters
 % (jeffrey's uninformative priors on precision)     

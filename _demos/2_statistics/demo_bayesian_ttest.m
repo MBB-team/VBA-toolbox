@@ -103,10 +103,10 @@ f=figure;
 %%% false positive rate
 subplot(2,2,1);hold on;
 x_bin = findgroups(report.null.nsample);
-x_mean = splitapply(@nanmean,report.null.nsample,x_bin);
-y_mean = splitapply(@nanmean,report.null.h_student,x_bin);
+x_mean = splitapply(@VBA_nanmean,report.null.nsample,x_bin);
+y_mean = splitapply(@VBA_nanmean,report.null.h_student,x_bin);
 plot(x_mean,y_mean,'b');
-y_mean = splitapply(@nanmean,report.null.h_bayes,x_bin);
+y_mean = splitapply(@VBA_nanmean,report.null.h_bayes,x_bin);
 plot(x_mean,y_mean,'r');
 legend('student','bayes');
 xlabel(' sample size (n) ');
@@ -117,12 +117,12 @@ ylim([0 1]);
 %%% true positive rate
 subplot(2,2,2);hold on;
 x_bin = findgroups(report.alternative.nsample);
-x_mean = splitapply(@nanmean,report.alternative.nsample,x_bin);
+x_mean = splitapply(@VBA_nanmean,report.alternative.nsample,x_bin);
 for i_effect_size = 1:numel(d)
     subset = (report.alternative.d == d(i_effect_size));
-    y_mean = splitapply(@nanmean,report.alternative.h_student(subset),x_bin(subset));
+    y_mean = splitapply(@VBA_nanmean,report.alternative.h_student(subset),x_bin(subset));
     p(i_effect_size) = plot(x_mean,y_mean,'b','LineWidth',scaling*i_effect_size);
-    y_mean = splitapply(@nanmean,report.alternative.h_bayes(subset),x_bin(subset));
+    y_mean = splitapply(@VBA_nanmean,report.alternative.h_bayes(subset),x_bin(subset));
     plot(x_mean,y_mean,'r','LineWidth',scaling*i_effect_size);
 end
 legend([p(1) p(2) p(3)],{'d=0.1','d=0.5','d=1'});
@@ -134,10 +134,10 @@ ylim([0 1]);
 %%% confidence
 subplot(2,2,3);hold on;
 x_bin = findgroups(report.null.nsample);
-x_mean = splitapply(@nanmean,report.null.nsample,x_bin);
-y_mean = splitapply(@nanmean,report.null.ep_student,x_bin);
+x_mean = splitapply(@VBA_nanmean,report.null.nsample,x_bin);
+y_mean = splitapply(@VBA_nanmean,report.null.ep_student,x_bin);
 plot(x_mean,y_mean,'b');
-y_mean = splitapply(@nanmean,report.null.ep_bayes,x_bin);
+y_mean = splitapply(@VBA_nanmean,report.null.ep_bayes,x_bin);
 plot(x_mean,y_mean,'r');
 xlabel(' sample size (n) ');
 ylabel(' confidence = 1 - p (%) ');
@@ -145,12 +145,12 @@ ylim([0 1]);
 
 subplot(2,2,4);hold on;
 x_bin = findgroups(report.alternative.nsample);
-x_mean = splitapply(@nanmean,report.alternative.nsample,x_bin);
+x_mean = splitapply(@VBA_nanmean,report.alternative.nsample,x_bin);
 for i_effect_size = 1:numel(d)
     subset = (report.alternative.d == d(i_effect_size));
-    y_mean = splitapply(@nanmean,report.alternative.ep_student(subset),x_bin(subset));
+    y_mean = splitapply(@VBA_nanmean,report.alternative.ep_student(subset),x_bin(subset));
     plot(x_mean,y_mean,'b','LineWidth',scaling*i_effect_size);
-    y_mean = splitapply(@nanmean,report.alternative.ep_bayes(subset),x_bin(subset));
+    y_mean = splitapply(@VBA_nanmean,report.alternative.ep_bayes(subset),x_bin(subset));
     plot(x_mean,y_mean,'r','LineWidth',scaling*i_effect_size);
 end
 xlabel(' sample size (n) ');
