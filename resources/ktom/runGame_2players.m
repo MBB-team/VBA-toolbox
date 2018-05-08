@@ -40,10 +40,10 @@ x1 = [];
 x2 = [];
 x1(:,1) = x01 + stdx.*randn(size(x01));
 x2(:,1) = x02;
-g1(1) = feval(g_p1,x1(:,1),phi1,NaN(3,1),inG1);
+g1(1) = g_p1(x1(:,1),phi1,NaN(3,1),inG1);
 tmp = VBA_sample('multinomial',struct('p',[g1(1);1-g1(1)],'n',1),1,0);
 y1(1) = tmp(1);
-g2(1) = feval(g_p2,x2(:,1),phi2,NaN(3,1),inG2);
+g2(1) = g_p2(x2(:,1),phi2,NaN(3,1),inG2);
 tmp = VBA_sample('multinomial',struct('p',[g2(1);1-g2(1)],'n',1),1,0);
 y2(1) = tmp(1);
 rew(1,1) = payoffTable2(2-y1(1),2-y2(1),1);
@@ -60,15 +60,15 @@ for t=2:nt
         u2 = [y1(t-1);y2(t-1);y1(t-2)];
     end
     % learn
-    x1(:,t) = feval(f_p1,x1(:,t-1),theta1,u1,inF1);
-    x2(:,t) = feval(f_p2,x2(:,t-1),theta2,u2,inF2);
+    x1(:,t) = f_p1(x1(:,t-1),theta1,u1,inF1);
+    x2(:,t) = f_p2(x2(:,t-1),theta2,u2,inF2);
     % perturb learning
     x1(:,t) = x1(:,t) + stdx.*randn(size(x1(:,t)));
     % act
-    g1(t) = feval(g_p1,x1(:,t),phi1,u1,inG1);
+    g1(t) = g_p1(x1(:,t),phi1,u1,inG1);
     tmp = VBA_sample('multinomial',struct('p',[g1(t);1-g1(t)],'n',1),1,0);
     y1(t) = tmp(1);
-    g2(t) = feval(g_p2,x2(:,t),phi2,u2,inG2);
+    g2(t) = g_p2(x2(:,t),phi2,u2,inG2);
     tmp = VBA_sample('multinomial',struct('p',[g2(t);1-g2(t)],'n',1),1,0);
     y2(t) = tmp(1);
     % perf

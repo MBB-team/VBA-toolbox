@@ -79,7 +79,7 @@ dim = VBA_check_struct(dim, ...
 
 try, options.inG; catch, options.inG = []; end
 try, U = u(:,1);  catch, U = zeros(size(u,1),1); end
-dim.p = size(feval(g_fname,zeros(dim.n,1),phi,U,options.inG),1);
+dim.p = size(g_fname(zeros(dim.n,1),phi,U,options.inG),1);
 
 options.dim=dim;
 % --- check priors
@@ -193,7 +193,7 @@ for t = 1:dim.n_t
     if feedback && t < dim.n_t
         % get feedback on system's output
         if ~isempty(fb.h_fname)
-            u(fb.indfb,t+1) = feval(fb.h_fname,y(:,t),t,fb.inH);
+            u(fb.indfb,t+1) = fb.h_fname(y(:,t),t,fb.inH);
         end
         u(fb.indy,t+1) = y(:,t);
     end   

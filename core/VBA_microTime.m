@@ -57,14 +57,14 @@ for t=1:options.dim.n_t
         if options.skipf(t)
             x(:,indT) = f_Id(x(:,indT-1),theta,u(:,tu),[]);
         else
-            x(:,indT) = feval(options.f_fname,x(:,indT-1),theta,u(:,tu),options.inF);
+            x(:,indT) = options.f_fname(x(:,indT-1),theta,u(:,tu),options.inF);
         end
         if isfield(out,'suffStat') && isfield(out.suffStat,'dx') && ...
                 ~isempty(out.suffStat.dx) && isequal(i,options.decim)
             % add state noise to evolution mapping
             x(:,indT) = x(:,indT) + out.suffStat.dx(:,t);
         end
-        [gx(:,indT)] = feval(options.g_fname,x(:,indT),phi,u(:,tu),options.inG);
+        [gx(:,indT)] = options.g_fname(x(:,indT),phi,u(:,tu),options.inG);
     end
 end
 
