@@ -1,7 +1,5 @@
+function demo_sparsify()
 % see demo_sparsePriors
-
-close all
-clear all
 
 % 0- evaluate the "sparsify" function
 x = -4:0.01:4;
@@ -103,5 +101,9 @@ errorbar(ha,me',se')
 xlabel(ha,'sparsity')
 ylabel(ha,'SSE')
 
+end
 
-
+function sse = SSE(x,y)
+% sum-of-squared distance between x and y
+sse = sum((vec(x)-vec(y)).^2);
+end
