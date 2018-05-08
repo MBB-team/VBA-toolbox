@@ -444,12 +444,6 @@ for i=1:n
     end
 end
 
-function [iy,ix,Max] = maxMat(A)
-% finds the x/y indices of the max value of a matrix
-[my,iyx] = max(A,[],1);
-[Max,ix] = max(my);
-iy = iyx(ix);
-
 function [eta,Z] = dummyHierarchical(y,K,options)
 % This function operates a (dummy) hierarchical clustering algorthm, which
 % stops whenever the desired number of clusters is attained. This is used
@@ -463,7 +457,7 @@ if options.verbose
 end
 d = -dist(eta);
 for i = 1:n-K
-    [i1,i2] = maxMat(d-diag(Inf*ones(size(eta,2),1)));
+    [~,i1,i2] = VBA_maxMat(d-diag(Inf*ones(size(eta,2),1)));
     newZ = eye(size(eta,2));
     newZ(min([i1,i2]),max([i1,i2])) = 1;
     newZ(max([i1,i2]),:) = [];
