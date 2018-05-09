@@ -89,8 +89,8 @@ else % k-ToM with k>0
                 Vx(j) = Sig'*df.^2; % V[x(theta)|k'=j-1]
             end
             % derive E[log sigm(x(theta))] -> correction of Devaine et al. (20014)!
-            Els1 = Elogsig(f,Vx);
-            Els0 = Elogsig(-f,Vx);
+            Els1 = VBA_Elogsig(f,Vx);
+            Els0 = VBA_Elogsig(-f,Vx);
             % get prior P(k')
             P0 = VBA_sigmoid(x(1:(level-1))); % P(k), with k=0,...,k'-2
             P0 = [P0;max(0,1-sum(P0))]; % insert last P(k=k'-1)

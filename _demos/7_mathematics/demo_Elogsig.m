@@ -12,8 +12,8 @@ for i=1:length(gridM)
         lsx2 = log(1-VBA_sigmoid(X));
         Els1(i,j) = mean(lsx1);
         Els2(i,j) = mean(lsx2);
-        Els01(i,j) = Elogsig(m,V);
-        Els02(i,j) = Elogsig(-m,V);
+        Els01(i,j) = VBA_Elogsig(m,V);
+        Els02(i,j) = VBA_Elogsig(-m,V);
     end
 end
 
