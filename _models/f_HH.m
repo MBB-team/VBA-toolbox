@@ -24,10 +24,9 @@ ENa = 115;
 EL = 10.6;
 
 V = Xt(1);
-m = fastSigmoid(Xt(2));
-n = fastSigmoid(Xt(3));
-h = fastSigmoid(Xt(4));
-
+m = VBA_sigmoid(Xt(2));
+n = VBA_sigmoid(Xt(3));
+h = VBA_sigmoid(Xt(4));
 
 an = (0.1 - 0.01*V)./(exp(1-0.1*V)-1);
 am = (2.5 - 0.1*V)./(exp(2.5-0.1*V)-1);
@@ -46,11 +45,3 @@ xdot = [ (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + 1e0*ut)/C
 fx = Xt + deltat.*xdot;
 
 end
-
-function z = fastSigmoid(z)
-z = 1 ./ (1 + exp(-z));
-z(z<1e-9) = 1e-9;
-z(z>(1-1e-9)) = (1-1e-9);
-
-end
-
