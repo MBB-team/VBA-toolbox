@@ -14,7 +14,13 @@ function [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options)
 %% ________________________________________________________________________
 %  check model dimension
 
-
+% set default if static model
+if isempty(f_fname)
+    dim = VBA_check_struct(dim, ...
+        'n_theta', 0, ...
+        'n', 0);
+end
+    
 % check if hidden state dimension:
 assert( ...
      isfield(dim,'n')          ... exists,
