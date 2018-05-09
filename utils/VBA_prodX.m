@@ -1,14 +1,18 @@
-function [gx,dgdx,d2gdx2] = prodX(X1,X2)
-% This function calculates the 1st and 2nd order derivatives of the product
+function [gx, dgdx, d2gdx2] = VBA_prodX (X1, X2)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% [gx, dgdx, d2gdx2] = VBA_prodX (X1, X2)
+% calculates the 1st and 2nd order derivatives of the dot product X1' * X2
 % of two vectors X1 and X2
-
-% function [gx,dgdx,d2gdx2] = prodX(X1,X2)
+%
 % IN:
 %   - X1,X2: two vectors of same size (one of them can be a scalar)
 % OUT:
 %   - gx: the product of the two vectors (X1'*X2)
 %   - dgdx: the 1st order derivative of the product
 %   - d2gdx2: the 2nd order derivative of the product
+%
+% /////////////////////////////////////////////////////////////////////////
 
 if ~isequal(size(X1),size(X2))
     if ~isequal(numel(X1),1) && ~isequal(numel(X2),1)

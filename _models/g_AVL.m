@@ -23,7 +23,6 @@ dledy = 1;
 
 if le > 0
     
-    % [le,dledy] = logExp(y,[ 1 1 0 ]);
     gx = 0.5.*exp(-Phi(1)).*log(le);
     
     dydx = [    2*exp(Phi(1)-Phi(2)).*(2*u(in.uc)-1)
