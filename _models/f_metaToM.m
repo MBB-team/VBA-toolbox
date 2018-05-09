@@ -43,8 +43,8 @@ indlev = defIndlev(level,ntotPar); % states indexing
 if level==0 % 0-ToM [should be useless]
     mx = xktom(1); % E[log-odds of P(o=1)]
     Vx = exp(xktom(2)); % V[log-odds of P(o=1)]
-    Els1 = Elogsig(mx,Vx);
-    Els0 = Elogsig(-mx,Vx);
+    Els1 = VBA_Elogsig(mx,Vx);
+    Els0 = VBA_Elogsig(-mx,Vx);
     ELL = ot.*Els1 + (1-ot).*Els0;
     h_kToM = exp(ELL); % P(o|k-ToM)
 else
@@ -58,8 +58,8 @@ else
         Sig = exp(xktom(indlev(j).Par(2:2:2*ntotPar))); % V[theta|k'=j-1]
         Vx(j) = sum(Sig.*df.^2); % V[x(theta)|k'=j-1]
     end
-    Els1 = Elogsig(f,Vx);
-    Els0 = Elogsig(-f,Vx);
+    Els1 = VBA_Elogsig(f,Vx);
+    Els0 = VBA_Elogsig(-f,Vx);
     ELL = ot.*Els1 + (1-ot).*Els0;
     h_kToM = exp(Pk'*ELL); % P(o|k-ToM)
 end
@@ -81,8 +81,8 @@ else
     end
     m = xseq(indSeq);
     v = exp(xseq((2^K)+indSeq));
-    Els1 = Elogsig(m,v);
-    Els0 = Elogsig(-m,v);
+    Els1 = VBA_Elogsig(m,v);
+    Els0 = VBA_Elogsig(-m,v);
     ELL = ot.*Els1 + (1-ot).*Els0;
     h_seq = exp(ELL); % P(o|seq)
 end
