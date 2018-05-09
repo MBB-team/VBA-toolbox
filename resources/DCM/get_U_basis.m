@@ -39,5 +39,5 @@ else
             u = [];
             return
     end
-    [u] = feval(u_fname,[],eye(n),ut,in);
+    [u] = u_fname([],eye(n),ut,in);
 end

@@ -105,7 +105,7 @@ end
 
 % Get variational energy (I) and propose move (deltaMu)
 try
-   [I,Sigma,deltaMu,suffStat2] = feval(fname,PreviousMu,y,posterior,suffStat,dim,u,options);
+   [I,Sigma,deltaMu,suffStat2] = fname(PreviousMu,y,posterior,suffStat,dim,u,options);
     PreviousI = I;
 catch err
     VBA_disp(['Warning: could not evaluate variational energy on ',flag,'!'],options)
@@ -137,7 +137,7 @@ while ~stop
     mu = PreviousMu + deltaMu;
     try
         % get next move and energy step
-        [I,Sigma,NextdeltaMu,suffStat2] = feval(fname,mu,y,posterior,suffStat,dim,u,options);
+        [I,Sigma,NextdeltaMu,suffStat2] = fname(mu,y,posterior,suffStat,dim,u,options);
         % get increment in variational/free energy
         [rdf,deltaI,F] = getCostIncrement(I,PreviousI,mu,Sigma,suffStat2,options,posterior,flag);
     catch

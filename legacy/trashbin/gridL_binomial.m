@@ -35,7 +35,8 @@ for i=1:n1
     end
 end
 
-[iy,ix,Max] = maxMat(logP);
+[~, iy, ix] = VBA_maxMat(logP);
+
 bestPhi = [gridPhi1(iy),gridPhi2(ix)];
 
 if options.verbose

@@ -5,7 +5,7 @@ function logs = VBA_unit_tests(logs)
 
 %% find demos
 vba_info = VBA_version();
-[~,list]=system(['find ' vba_info.path ' -name demo_*']) ;
+[~,list]=system(['find ' vba_info.path ' -name demo_*.m']) ;
 
 demos = {};
 for p = strsplit(list)  

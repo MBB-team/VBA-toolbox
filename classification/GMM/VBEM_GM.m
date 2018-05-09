@@ -332,7 +332,7 @@ Z = eye(n);
 eta = y;
 while size(Z,1) > K
     C = corrcoef(eta);
-    [i,j] = maxMat(C-diag(Inf*ones(n,1)));
+    [~,i,j] = VBA_maxMat(C-diag(Inf*ones(n,1)));
     newZ = eye(n);
     newZ(i,j) = 1;
     newZ(j,:) = [];

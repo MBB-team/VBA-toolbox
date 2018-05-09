@@ -41,8 +41,7 @@ nArgIn = nargin(fname);
 if nArgIn<0 || isequal(nArgs,nArgIn)
 
     %-- evaluate function fname at the specified argument (at x)  --%
-    f = feval(fname,Arg{:});
-    fx = vec(f);   
+    fx = vec(fname(Arg{:}));
     
     %-- evaluate the perturbation df of the function fname in the
     % neighbourhood of the specified argument (ie at x + dx) and
@@ -59,7 +58,7 @@ if nArgIn<0 || isequal(nArgs,nArgIn)
             dx = 1e-4;
         end
         xpdx{nArg2diff}(i) = xpdx{nArg2diff}(i) + dx;
-        dfdx(i,:) = (vec(feval(fname,xpdx{:})) - fx)'./dx;
+        dfdx(i,:) = (vec(fname(xpdx{:})) - fx)'./dx;
     end
     
 else
@@ -69,6 +68,6 @@ else
 end
 
 
-function vx = vec(X)
-vx = X(:);  % returns column vector
+function X = vec(X)
+X = X(:);  % returns column vector
 

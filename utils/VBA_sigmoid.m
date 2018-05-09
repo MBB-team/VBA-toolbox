@@ -175,9 +175,12 @@ else
     dsdp = dsdp(:,dIdx);
     
     % set derived parameter as first dimension
-    dims(dims==1) = [];
-    dsdp = reshape(dsdp', [size(dsdp,2) dims]);
-
+    if all(dims == 1)
+        dsdp = dsdp';
+    else
+        dims(dims==1) = [];
+        dsdp = reshape(dsdp', [size(dsdp,2) dims]);
+    end
 
 
 end

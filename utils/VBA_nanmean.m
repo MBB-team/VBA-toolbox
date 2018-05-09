@@ -48,7 +48,3 @@ count(i) = ones(size(i));
 
 y = sum(x,dim)./count;
 y(i) = i + NaN;
-
-
-
-% $Id: nanmean.m,v 1.1 2004/07/15 22:42:13 glaescher Exp glaescher $
