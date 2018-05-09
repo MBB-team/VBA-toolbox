@@ -1,4 +1,4 @@
-function [fx] = f_HH(Xt,Theta,ut,inF)
+function [fx] = f_HH(Xt, Theta, ut, inF)
 % Hodgkin-Hoxley membrane potential evolution function
 % function [fx] = f_HH(Xt,Theta,ut,inF)
 % IN:
@@ -44,3 +44,4 @@ xdot = [ (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + 1e0*ut)/C
 
 fx = Xt + deltat.*xdot;
 
+end

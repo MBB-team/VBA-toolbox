@@ -56,6 +56,14 @@ function [y, dsdx, dsdp] = VBA_sigmoid(x, varargin)
 % truncature for finite sigmoid
 epsilon = 1e-9;
 
+%% Shrtcut
+% =========================================================================
+% quick version!
+if nargin == 1 && nargout == 1
+    y = epsilon + (1 - 2 * epsilon) ./ (1 + exp (- x));
+    return
+end
+
 %% Parse arguments
 % =========================================================================
 
