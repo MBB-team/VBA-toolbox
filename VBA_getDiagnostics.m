@@ -241,7 +241,7 @@ else
         S(ind+1:ind+out.dim.n,ind+1:ind+out.dim.n) = SP;
     end
 end
-C = cov2corr(S);
+C = VBA_cov2corr(S);
 C = C + diag(NaN.*diag(C));
 tick = [0];
 ltick = [];

@@ -303,7 +303,7 @@ handles.ha(6) = subplot(3,2,3,'parent',handles.hf,'nextplot','add','visible','on
 
 % parameters' correlation matrix
 handles.ha(3) = subplot(3,2,5,'parent',handles.hf,'nextplot','add');
-imagesc(cov2corr(iC),'parent',handles.ha(3))
+imagesc(VBA_cov2corr(iC),'parent',handles.ha(3))
 axis(handles.ha(3),'square')
 axis(handles.ha(3),'equal')
 axis(handles.ha(3),'tight')

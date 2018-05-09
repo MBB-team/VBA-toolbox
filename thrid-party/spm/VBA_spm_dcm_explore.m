@@ -107,7 +107,7 @@ catch
     DCM = myspm_dcm_test(DCM);
 end
 ud.Pp = DCM.sdr; % posterior proba for P=0 (using SD-ratios)
-ud.Pcorr = cov2corr(DCM.Cp); % posterior correlation matrix
+ud.Pcorr = VBA_cov2corr(DCM.Cp); % posterior correlation matrix
 for i=1:ud.dim.l
     PSS(i)  = sum(DCM.y(:,i).^2);
     RSS(i)  = sum(DCM.R(:,i).^2);

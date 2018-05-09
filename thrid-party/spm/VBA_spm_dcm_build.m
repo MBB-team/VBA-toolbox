@@ -73,7 +73,7 @@ catch % old DCM structure
     DCM.options.stochastic = 0;
     DCM.options.two_state = 0;
 end
-ud.Pcorr = cov2corr(DCM.Cp);
+ud.Pcorr = VBA_cov2corr(DCM.Cp);
 pos0 = get(0,'screenSize');
 pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
 [pathstr,filename,ext] = fileparts(DCM.filename);
@@ -795,15 +795,3 @@ end
 
 try;getSubplots; end
 
-
-function [C] = cov2corr(V)
-% computes correlation matrix from covariance matrix
-
-dv = diag(V);
-n = size(V,1);
-C = zeros(n,n);
-for i=1:n
-    for j=1:n
-        C(i,j) = V(i,j)./sqrt(dv(i).*dv(j));
-    end
-end

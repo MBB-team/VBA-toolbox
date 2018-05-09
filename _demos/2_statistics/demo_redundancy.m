@@ -33,7 +33,7 @@ for i=1:ny
     s1(i) = p1.SigmaPhi;
     m2(i) = ones(2,1)'*p2.muPhi;
     s2(i) = ones(2,1)'*p2.SigmaPhi*ones(2,1);
-    c = cov2corr(p2.SigmaPhi);
+    c = VBA_cov2corr(p2.SigmaPhi);
     c2(i) = c(1,2);
 end
 
