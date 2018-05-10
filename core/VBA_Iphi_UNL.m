@@ -66,14 +66,14 @@ for t=1:dim.n_t
     if options.checkGrads
         mayPause = 0;
         if ~isempty(Phi)
-            dLLdPt2 = numericDiff(@VBA_evalAL,2,[],Phi,beta,u(:,t),y(:,t),options);
+            dLLdPt2 = VBA_numericDiff(@VBA_evalAL,2,[],Phi,beta,u(:,t),y(:,t),options);
             if ~ VBA_isWeird (dLLdPt2)
                 [hf] = VBA_displayGrads(dLLdPt',dLLdPt2,'Gradients wrt parameters',options.g_fname,'g');
                 mayPause = 1;
             else
                 VBA_disp('VBA check_grads: Warning: weird numerical gradients!!!')
             end
-            d2LLdP2t2 = numericDiff(@numericDiff,4,@VBA_evalAL,2,[],Phi,beta,u(:,t),y(:,t),options);
+            d2LLdP2t2 = VBA_numericDiff(@numericDiff,4,@VBA_evalAL,2,[],Phi,beta,u(:,t),y(:,t),options);
             if ~ VBA_isWeird (dLLdPt2)
                 [hf] = VBA_displayGrads(d2LLdP2t,d2LLdP2t2,'Hessians wrt parameters',options.g_fname,'g');
                 mayPause = 1;

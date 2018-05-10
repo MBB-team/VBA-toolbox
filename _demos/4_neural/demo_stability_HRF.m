@@ -18,7 +18,7 @@ try
     P = [0;0;0;0;0;0];
     for i=1:n
         for j=1:n
-            J = numericDiff(@f_HRF,1,[xg1(i);xg2(j);0;0],P,0,[]);
+            J = VBA_numericDiff(@f_HRF,1,[xg1(i);xg2(j);0;0],P,0,[]);
             lm(i,j) = max(real(eig(J)));
         end
     end
@@ -62,7 +62,7 @@ catch
             P = [0;0;kaf(l);kas(k);0;0];
             for i=1:n
                 for j=1:n
-                    J = numericDiff(@f_HRF,1,[xg1(i);xg2(j);0;0],P,0,[]);
+                    J = VBA_numericDiff(@f_HRF,1,[xg1(i);xg2(j);0;0],P,0,[]);
                     lm(i,j) = max(real(eig(J)));
                 end
             end

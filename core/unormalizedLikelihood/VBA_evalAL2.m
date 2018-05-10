@@ -100,9 +100,9 @@ if ~deriv(1)
         dUdx = zeros(1,dim.n);
     else
         if deriv(3)
-            dUdx = numericDiff(g_fname,1,Xt,P,ut,yt,in);
+            dUdx = VBA_numericDiff(g_fname,1,Xt,P,ut,yt,in);
         else
-            [d2Udx2,dUdx] = numericDiff(@numericDiff,3,g_fname,1,Xt,P,ut,yt,in);
+            [d2Udx2,dUdx] = VBA_numericDiff(@numericDiff,3,g_fname,1,Xt,P,ut,yt,in);
             deriv(3) = 1;
         end
     end
@@ -111,7 +111,7 @@ if ~deriv(3)
     if dim.n==0
         d2Udx2 = zeros(dim.n,dim.n);
     else
-        d2Udx2 = numericDiff(@getDU,3,g_fname,2,Xt,P,ut,yt,in);
+        d2Udx2 = VBA_numericDiff(@getDU,3,g_fname,2,Xt,P,ut,yt,in);
     end
 end
 if ~deriv(2)
@@ -119,9 +119,9 @@ if ~deriv(2)
         dUdx = zeros(1,dim.n);
     else
         if deriv(4)
-            dUdp = numericDiff(g_fname,2,Xt,P,ut,yt,in);
+            dUdp = VBA_numericDiff(g_fname,2,Xt,P,ut,yt,in);
         else
-            [d2Udp2,dUdp] = numericDiff(@numericDiff,4,g_fname,2,Xt,P,ut,yt,in);
+            [d2Udp2,dUdp] = VBA_numericDiff(@numericDiff,4,g_fname,2,Xt,P,ut,yt,in);
             deriv(4) = 1;
         end
     end
@@ -130,7 +130,7 @@ if ~deriv(4)
     if dim.n_phi==0
         d2Udx2 = zeros(dim.n_phi,dim.n_phi);
     else
-        d2Udp2 = numericDiff(@getDU,4,g_fname,3,Xt,P,ut,yt,in);
+        d2Udp2 = VBA_numericDiff(@getDU,4,g_fname,3,Xt,P,ut,yt,in);
     end
 end
 
