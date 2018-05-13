@@ -6,7 +6,7 @@ function iA = VBA_invComplex (A)
 % complex matrix inversion
 %
 % IN:
-%   - A: matric to invert, potentially complex
+%   - A: matrix to invert, potentially complex
 %
 % OUT:
 %   - iA: inverse of A
