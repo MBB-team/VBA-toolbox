@@ -45,13 +45,13 @@ gp = [1e-1,0.25,1,10];
 str = cell(length(gp),1);
 col = 'brgm';
 for i=1:length(gp)
-    SX = sparseTransform(X,gp(i));
+    SX = VBA_sparsifyPrior (X, log(2), gp(i));
 %     SX = normalize(SX);
     [n,x] = hist(SX,1e2);
     n = n./sum(n);
     plot(ha,x,n,col(i))
     str{i} = ['P=',num2str(gp(i))];
-    sgx = sparseTransform(gx,gp(i));
+    sgx = VBA_sparsifyPrior (gx, log(2), gp(i));
     plot(ha2,gx,sgx,col(i))
     plot(ha3,x,-log(n),col(i))
 end
@@ -75,22 +75,22 @@ p = 32;
 n = 64;
 sigma = 1;
 A = randn(p,n);
-phi1 = sparseTransform(X(randperm(n)),1);
+phi1 = VBA_sparsifyPrior(X(randperm(n)));
+
 y1 = A*phi1 + sqrt(sigma.^-1)*randn(p,1);
 
 dims.n = 0;
 dims.n_theta = 0;
 dims.n_phi = n;
 options.inG.X = A;
-options.inG.sparseP = 1;
 % options.priors.muPhi = 1e-2*ones(n,1);
 options.checkGrads = 0;
 [posterior,out] = VBA_NLStateSpaceModel(y1,[],[],@g_GLMsparse,dims,options);
 set(gcf,'tag','dummy','name','"sparse" sim, "sparse" priors')
 hf = figure('color',[1 1 1],'name','estimation accuracy');
 ha = subplot(2,3,1,'parent',hf,'nextplot','add');
-plot(ha,phi1,sparseTransform(posterior.muPhi,1),'k.')
-tmp = corrcoef(phi1,sparseTransform(posterior.muPhi,1));
+plot(ha,phi1, VBA_sparsifyPrior (posterior.muPhi),'k.')
+tmp = corrcoef(phi1, VBA_sparsifyPrior(posterior.muPhi));
 r = tmp(2,1);
 plot(ha,[min(phi1),max(phi1)],[min(phi1),max(phi1)],'r')
 title(ha,['sparse sim, sparse priors, F=',num2str(out.F),' ,r=',num2str(r)])
@@ -139,8 +139,8 @@ y2 = A*phi2 + sqrt(sigma.^-1)*randn(p,1);
 [posterior,out] = VBA_NLStateSpaceModel(y2,[],[],@g_GLMsparse,dims,options);
 set(gcf,'tag','dummy','name','Gaussian sim, "sparse" priors')
 ha = subplot(2,3,4,'parent',hf,'nextplot','add');
-plot(ha,phi2,sparseTransform(posterior.muPhi,1),'k.')
-tmp = corrcoef(phi2,sparseTransform(posterior.muPhi,1));
+plot(ha,phi2,VBA_sparsifyPrior (posterior.muPhi),'k.')
+tmp = corrcoef(phi2, VBA_sparsifyPrior (posterior.muPhi));
 r = tmp(2,1);
 plot(ha,[min(phi2),max(phi2)],[min(phi2),max(phi2)],'r')
 title(ha,['Gaussian sim, sparse priors, F=',num2str(out.F),' ,r=',num2str(r)])

@@ -5,7 +5,7 @@ function [g,dgdx,dgdP] = g_ttest(x,P,u,in)
 sP = P;
 dsPdP = ones(numel(P),1);
 %%% sparse laplace priors on phi_2 
-[sP(2),dsPdP(2)] = sparsify(P(2),log(2));
+[sP(2),dsPdP(2)] = VBA_sparsifyPrior (P(2));
 
 
 % prediction
@@ -13,7 +13,7 @@ g = [sP(1) ;
      sP(1) + sP(2) ];
 
 % derivatives
-dgdP = diag(dsPdP,0);
+dgdP = diag(dsPdP);
 dgdP(1,2) = 1*dsPdP(1);
 dgdx = [];
 

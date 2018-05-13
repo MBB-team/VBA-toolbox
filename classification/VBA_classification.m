@@ -109,7 +109,6 @@ options.DisplayWin = 0;
 options.verbose = 0;
 options.inG.X = X';
 options.inG.sparse = sparse;
-options.inG.sparseP = 1;
 options.n0 = 0; % number of dummy counts
 
 if ~isequal(k,0) % performing cross-validation scheme
@@ -140,7 +139,7 @@ if ~isequal(k,0) % performing cross-validation scheme
         acc(itest) = [y(itest)==ytest];  
         acc0(itest) = out.fit.acc;
         if sparse
-            P(:,i) = sparseTransform(posterior.muPhi,options.inG.sparseP);
+            P(:,i) = VBA_sparsifyPrior (posterior.muPhi);
         else
             P(:,i) = posterior.muPhi;
         end

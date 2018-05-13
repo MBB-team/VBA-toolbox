@@ -12,7 +12,7 @@ function [gx,dgdx,dgdp] = g_classif0(x,P,u,in)
 %   - dgdp: gradient of E[y|P] wrt P.
 
 if in.sparse
-    [sP,dsdP] = sparseTransform(P,in.sparseP);
+    [sP, dsdP] = VBA_sparsifyPrior(P);    
 else
     sP = P;
 end

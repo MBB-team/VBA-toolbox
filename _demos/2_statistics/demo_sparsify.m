@@ -6,8 +6,8 @@ x = -4:0.01:4;
 gridP = [-log(2),0,log(2)];
 for i = 1:length(gridP)
     P = gridP(i);
-    sx(i,:) = sparsify(x,P);
-    isx(i,:) = invSparsify(x,P);
+    sx(i,:) = VBA_sparsifyPrior (x, P);
+    isx(i,:) = VBA_sparsifyPrior (x, - P);
 end
 hf = figure('color',[1 1 1],'name','sparsify mappings');
 ha = subplot(2,2,1,'parent',hf,'nextplot','add');
@@ -35,7 +35,6 @@ sigma = 1;
 
 dims.n = 0;
 dims.n_theta = 0;
-options.inG.sparseP = 1;
 options.checkGrads = 0;
 options.MaxIter = 128;
 options.DisplayWin = 0;
@@ -63,7 +62,7 @@ for i=1:N1
         % L1 estimator
         dims.n_phi = n;
         [p2,o2] = VBA_NLStateSpaceModel(y1,[],[],@g_GLMsparse,dims,options);
-        Phat = sparseTransform(p2.muPhi,options.inG.sparseP);
+        Phat = VBA_sparsifyPrior (p2.muPhi);
         tmp = corrcoef(phi1,Phat);
         r(2,i,j) = tmp(2,1);
         e(2,i,j) = SSE(phi1,Phat);
@@ -71,7 +70,7 @@ for i=1:N1
         % adaptive sparse-estimator
         dims.n_phi = n+1;
         [p3,o3] = VBA_NLStateSpaceModel(y1,[],[],@g_GLMsparse2,dims,options);
-        Phat = sparsify(p3.muPhi(1:n),p3.muPhi(n+1));
+        Phat = VBA_sparsifyPrior (p3.muPhi(1:n), p3.muPhi(n+1));
         tmp = corrcoef(phi1,Phat);
         r(3,i,j) = tmp(2,1);
         se(i,j) = p3.muPhi(n+1);
