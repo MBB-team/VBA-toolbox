@@ -67,28 +67,13 @@ end
 %% Parse arguments
 % =========================================================================
 
-parser = inputParser;
-parser.PartialMatching = false;
-parser.KeepUnmatched = true;
-
-% define parameters
+% define inputParser
 % -------------------------------------------------------------------------
+persistent parser;
 
-% flags
-parser.addParameter ('inverse', false, @islogical);
-parser.addParameter ('finite', true, @(z) VBA_isInRange(z, [0 1e-2]));
-parser.addParameter ('derivatives', {}, @iscellstr);
-
-% x transfomations
-parser.addParameter ('slope', 1, @isnumeric);
-parser.addParameter ('center', 0, @isnumeric);
-
-% sig transformation
-parser.addParameter ('offset', 0, @isnumeric);
-parser.addParameter ('scale', 1, @(z) VBA_isInRange(z, [eps Inf]));
-
-% shortcut for lapse rate model
-parser.addParameter ('lapseRate', 0, @(z) VBA_isInRange(z, [0 0.5]));
+if isempty (parser)
+    parser = getParser ();
+end
 
 % parse arguments
 % -------------------------------------------------------------------------
@@ -130,17 +115,16 @@ if params.inverse
 else
     % evaluate sigmoid
     % ---------------------------------------------------------------------
-    lx = params.slope * (x - params.center);
-    sx = 1 ./ (1 + exp(- lx));
+    sx = 1 ./ (1 + exp(- params.slope * (x - params.center)));
     y = params.offset + params.scale * sx;
     
     % ensure finite precision ('finite' flag)
     % ---------------------------------------------------------------------
     if params.finite > 0
         minY = params.offset + epsilon;
-        y(y <= minY) = minY;
+        y = max(y,minY);
         maxY = params.offset + params.scale - epsilon;
-        y(y >= maxY) = maxY;
+        y = min(y,maxY);
     end
     
     % compute derivatives with respect to value
@@ -193,4 +177,30 @@ else
 
 end
 
+end
+
+function parser = getParser()
+
+parser = inputParser;
+parser.PartialMatching = false;
+parser.KeepUnmatched = true;
+
+% define parameters
+% -------------------------------------------------------------------------
+
+% flags
+parser.addParameter ('inverse', false, @islogical);
+parser.addParameter ('finite', true, @(z) VBA_isInRange(z, [0 1e-2]));
+parser.addParameter ('derivatives', {}, @iscellstr);
+
+% x transfomations
+parser.addParameter ('slope', 1, @isnumeric);
+parser.addParameter ('center', 0, @isnumeric);
+
+% sig transformation
+parser.addParameter ('offset', 0, @isnumeric);
+parser.addParameter ('scale', 1, @(z) VBA_isInRange(z, [eps Inf]));
+
+% shortcut for lapse rate model
+parser.addParameter ('lapseRate', 0, @(z) VBA_isInRange(z, [0 0.5]));
 end
