@@ -9,9 +9,9 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t             = 5e2;
-decim           = 2;
-deltat          = 7e-2/decim;         % 10Hz sampling rate
+n_t             = 1e3;
+decim           = 1;
+deltat          = 1e-1/decim;         % 10Hz sampling rate
 f_fname         = @f_HH;
 g_fname         = @g_Id;
 
@@ -46,7 +46,7 @@ options.backwardLag = 2;
 options.inF     = inF;
 options.inG     = inG;
 
-options.decim   = decim;
+%options.decim   = decim;
 dim.n_theta         = 5;
 dim.n_phi           = 0;
 dim.n               = 4;
