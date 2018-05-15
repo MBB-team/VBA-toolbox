@@ -75,7 +75,9 @@ if options.checkGrads && ~isequal(fname,@VBA_odeLim)
     end
     if mayPause
         pause
+        try
         close(setdiff(hf,0))
+        end
     end
 end
 

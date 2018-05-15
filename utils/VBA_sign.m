@@ -20,8 +20,8 @@ function [sx, dsdx] = VBA_sign (x, smoothness)
 % parameters
 % =========================================================================
 % higher values means slower change from -1 to 1. If Inf, then sx = sign(x) 
-if nargin < 2
-    smoothness = 1e-2;
+if nargin < 2 || ~ isscalar (smoothness)
+    smoothness = 1e-1;
 end
 
 % truncature to enforce non zero derivative

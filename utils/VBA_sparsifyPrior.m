@@ -30,7 +30,7 @@ if nargin < 2
 end
 
 if nargin < 3
-    smoothness = 1;
+    smoothness = []; % use VBA_sign default
 end
 
 % shortcuts
@@ -54,7 +54,7 @@ if nargout < 2
 end
 
 dsdx = d_signX .* (absX .^ exponent) ...
-     + exponent .* absX .^ (exponent - 1) .* signX .* d_absX;
+     + exponent .* absX .^ (exponent - 1) .* signX .* d_absX;      
 
 % wrt to logExponent
 % -------------------------------------------------------------------------
@@ -63,6 +63,3 @@ if nargout < 3
 end
 
 dsdp = (absX .^ exponent) .* signX .* log(absX) .* exponent;
-
-
-
