@@ -139,7 +139,7 @@ switch type
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
-            R2_a(i) = FtoR2(stat(i).^2,1,df);
+            R2_a(i) = VBA_FtoR2(stat(i).^2,1,df);
             [tmp,ks(i)] = VBA_kstest(nanzscore(e));
             if verbose && p>1
                 fprintf(1,repmat('\b',1,8))
@@ -185,7 +185,7 @@ switch type
             SS_tot = sum((y(:,i)-mean(y(:,i))).^2);
             SS_err = sum(e(:,i).^2);
             R2(i) = 1-(SS_err/SS_tot);
-            R2_a(i) = FtoR2(stat(i),df(1),df(2));
+            R2_a(i) = VBA_FtoR2(stat(i),df(1),df(2));
 %             SS_tot_a = sum((y_a(:,i)-mean(y_a(:,i))).^2);
 %             SS_err_a = sum((y_a(:,i)-yhat_a(:,i)).^2);
 %             R2_a(i) = 1-(SS_err_a/SS_tot_a);
@@ -490,7 +490,7 @@ for j=1:k
         uimenu(hcmenu, 'Label',['p=',num2str(ud.all.pv(j,ind),'%3.3f')]);
         uimenu(hcmenu, 'Label',['F=',num2str(ud.all.stat(j,ind),'%3.3f')]);
         uimenu(hcmenu, 'Label',['dof=[',num2str(ud.all.df(j,1,ind)),',',num2str(ud.all.df(j,2,ind)),']']);
-        R2 = FtoR2(ud.all.stat(j,ind),ud.all.df(j,1,ind),ud.all.df(j,2,ind));
+        R2 = VBA_FtoR2(ud.all.stat(j,ind),ud.all.df(j,1,ind),ud.all.df(j,2,ind));
         uimenu(hcmenu, 'Label',['R2=',num2str(R2*100,'%3.1f'),'%']);
     end
     set(get(hp,'children'),'uicontextmenu',hcmenu);
