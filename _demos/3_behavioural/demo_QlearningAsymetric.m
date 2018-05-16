@@ -110,6 +110,12 @@ if exist('simulation','var') % used simulated data from demo_QlearningSimulation
      );
 end
 
+% extract prediction error
+% =========================================================================
+for t = 1 : n_t - 1
+    PE(t) = sum(f_QlearningAsym (posterior.muX(:,t), [Inf; 0], u(:,t+1), []) - posterior.muX(:,t));
+end
+
 end
 
 function data = simulateQlearningAsym ()
