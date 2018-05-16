@@ -1,83 +1,96 @@
-% demo for dynamical systems simulations
+function [posterior, out] = demo_dynamicalSystem ()
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% [posterior, out] = demo_dynamicalSystem()
+% Demo of dynamical system simulation and inversion
+%
+%
+% Background:
+% ~~~~~~~~~~~
+%
+% /////////////////////////////////////////////////////////////////////////
 
-close all
-clear variables
+%% Define the model
+% =========================================================================
 
-% % simulate simple 1D linear system
-% f_fname = @f_L1;
-% g_fname = @g_Id;
-% n_t = 1e2;            % number of time samples
-% dt = 2e-2;               % micro-time resolution (in sec)
-% alpha = Inf;              % state noise precision
-% sigma = Inf;              % measurement noise precision
-% u = zeros(1,n_t);
-% % u(1) = 1;
-% dim.n_theta = 2;
-% dim.n_phi = 0;
-% dim.n = 1;
-% options.inF.dt = dt;
-% N = 16;
-% hf = figure('color',[1 1 1]);
-% ha = subplot(1,2,1,'parent',hf,'nextplot','add');
-% ha(2) = subplot(1,2,2,'parent',hf,'nextplot','add');
-% for i=1:N
-%     x0 = 4*randn;
-%     theta = [-1.2;1];
-%     [y,x] = simulateNLSS(n_t,f_fname,g_fname,theta,[],u,alpha,sigma,options,x0);
-%     plot(ha(1),[0:n_t-1].*dt,x)
-%     plot(ha(1),0,x0,'.')
-%     set(ha(1),'box','off','ygrid','on','xlim',[-0.5;2],'ylim',[-22;22]);
-%     xlabel(ha(1),'time (sec)')
-%     ylabel(ha(1),'x(t)')
-%     title(ha(1),['a=',num2str(theta(1),2)])
-%     theta = [1.2;1];
-%     [y,x] = simulateNLSS(n_t,f_fname,g_fname,theta,[],u,alpha,sigma,options,x0);
-%     plot(ha(2),[0:n_t-1].*dt,x)
-%     plot(ha(2),0,x0,'.')
-%     set(ha(2),'box','off','ygrid','on','xlim',[-0.5;2],'ylim',[-22;22]);
-%     xlabel(ha(2),'time (sec)')
-%     ylabel(ha(2),'x(t)')
-%     title(ha(2),['a=',num2str(theta(1),2)])
-% end
-% plot(ha(1),get(ha(1),'xlim'),[0,0],'r--')
-% plot(ha(2),get(ha(2),'xlim'),[0,0],'r--')
-% getSubplots
-
-
-
-% simulate alpha-kernel
+% Description of the dynamics
+% -------------------------------------------------------------------------
+% evolution is a simple parametric convolution of the input
 f_fname = @f_alpha;
+% states are directly observable (y = x + noise)
 g_fname = @g_Id;
-n_t = 1e3;            % number of time samples
-dt = 1e-1;               % micro-time resolution (in sec)
-alpha = Inf;              % state noise precision
-sigma = Inf;              % measurement noise precision
-u = zeros(1,n_t);
-times = ceil(n_t*rand(16,1));
-u(times) = 1;
-dim.n_theta = 2;
-dim.n_phi = 0;
-dim.n = 1;
+
+% evolution function has to be discretized over time:
+% - define size of a time step
+dt = 1e-1; % in sec
+% - store in the structure that will be passed to the evolution function
 options.inF.dt = dt;
 
-theta = [1/dt;1];
-x0 = [0;0];
-[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,[],u,alpha,sigma,options,x0);
+% Dimensions of the model
+% -------------------------------------------------------------------------
+% evolution parametesr
+dim.n_theta = 2;
+% observation parameters
+dim.n_phi = 0;
+% number of states
+dim.n = 1;
 
+%% Simulate data
+% =========================================================================
+
+% Define design, here inputs to be convolved
+% -------------------------------------------------------------------------
+% number of observations
+n_t = 1e4 / dt; 
+% baseline
+u = zeros (1, n_t);
+% random pulses
+nPulses = 16;
+u(randperm (n_t, nPulses)) = 1;
+
+% Parameters of the model to be simulated
+% -------------------------------------------------------------------------
+% evolution parameters
+theta = [1 / dt; 1];
+% observation parameters
+phi = [];
+% initial state
+x0 = [0;0];
+
+% state noise precision
+alpha = Inf; % deterministic  
+% observation precision
+sigma = Inf; % no noise
+
+% Simulate
+% -------------------------------------------------------------------------
+[y, x] = simulateNLSS (n_t, f_fname, g_fname, theta, phi, u, alpha, sigma, options, x0);
+
+% Display
+% -------------------------------------------------------------------------
 hf = figure('color',[1 1 1]);
-ha = subplot(1,2,1,'parent',hf,'nextplot','add');
-plot(ha(1),[0:n_t-1].*dt,u)
-set(ha(1),'box','off','ygrid','on','ylim',[-0.2,1.2]);
-xlabel(ha(1),'time (sec)')
-ylabel(ha(1),'u(t)')
-title(ha(1),['input u'])
-ha(2) = subplot(1,2,2,'parent',hf,'nextplot','add');
-plot(ha(2),[0:n_t-1].*dt,x(1,:))
-plot(ha(2),0,x0,'.')
-set(ha(2),'box','off','ygrid','on','ylim',[-0.2,1.2]);
-xlabel(ha(2),'time (sec)')
-ylabel(ha(2),'x(t)')
-title(ha(2),['output x'])
+
+timeline = (0 : n_t - 1) * dt;
+
+% plot inputs
+ha(1) = subplot (2, 1, 1, 'parent', hf);
+plot (ha(1), timeline, u);
+xlabel (ha(1), 'time (sec)');
+ylabel (ha(1), 'u(t)');
+title (ha(1), 'input u');
+
+% plot state trajectory
+ha(2) = subplot (2, 1, 2, 'parent', hf);
+plot (ha(2), timeline, x);
+xlabel (ha(2), 'time (sec)');
+ylabel (ha(2), 'x(t)');
+title (ha(2), 'output x');
+
+% make pretty
+set(ha, 'box', 'off', 'ygrid', 'on', 'ylim', [- 0.2, 1.2]);
+
+%% Perform model estimation, the BAD way
+% =========================================================================
 
 % show likelihood
 yg = [-0.2:1e-2:1.2];
