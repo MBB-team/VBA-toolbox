@@ -25,7 +25,7 @@ u = out.u;
 y = out.y;
 
 % get goodness-tof-fit metrics
-try; out.fit; catch; out.fit = VBA_fit(posterior,out); end
+try; out.fit; catch; out.fit = VBA_getFit(posterior,out); end
 
 % derive Volterra kernels
 if out.dim.n_t>1 && out.options.kernelSize>0

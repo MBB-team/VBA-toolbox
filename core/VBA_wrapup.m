@@ -26,7 +26,7 @@ out.it = it;
 out.suffStat = suffStat;
 out.date = clock;
 out.dt = toc(options.tStart);
-out.fit = VBA_fit(posterior,out);
+out.fit = VBA_getFit(posterior,out);
 if fromPause
     return
 end

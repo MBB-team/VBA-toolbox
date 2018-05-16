@@ -1,6 +1,6 @@
-function fit = VBA_fit(posterior,out)
+function fit = VBA_getFit(posterior,out)
 % derives standard model fit accuracy metrics
-% function fit = VBA_fit(posterior,out)
+% function fit = VBA_getFit(posterior,out)
 % IN:
 %   - posterior/out: output structures of VBA_NLStateSpaceModel.m
 % OUT:
