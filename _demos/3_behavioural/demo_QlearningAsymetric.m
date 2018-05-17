@@ -46,10 +46,10 @@ end
 y = data.choices;
 
 % inputs
-u = [ nan, data.choices(1 : end - 1) ;  % previous choice
-      nan, data.feedbacks(1 : end - 1) ; % previous feedback
-      nan(2,1), data.cues(:, 1 : end - 1) ; % previous pair
-      data.cues ]; % identity of the presented cues
+u = [ nan, data.choices ;  % previous choice
+      nan, data.feedbacks ; % previous feedback
+      nan(2, 1), data.cues ; % previous pair
+      data.cues, nan(2, 1) ]; % identity of the presented cues
 
 % specify model
 % =========================================================================
@@ -110,10 +110,15 @@ if exist('simulation','var') % used simulated data from demo_QlearningSimulation
      );
 end
 
-% extract prediction error
+% Recover predictions errors
 % =========================================================================
-for t = 1 : n_t - 1
-    PE(t) = sum(f_QlearningAsym (posterior.muX(:,t), [Inf; 0], u(:,t+1), []) - posterior.muX(:,t));
+% get cue values 
+Qvalues = posterior.muX;
+% trick: set learning rate to 1, no asymmetry, so that x(t+1) - x(t) = PE
+theta = [Inf; 0];
+% for each trial, recompute the state evolution
+for t = 1 : n_t
+    PE(t) = sum (f_QlearningAsym (Qvalues(:,t), theta, u(:,t+1), struct) - Qvalues(:,t));
 end
 
 end
