@@ -231,6 +231,7 @@ else
     [out.F0] = FE_null(L,options);
     out.bor = 1/(1+exp(F-out.F0));
     [out.Fffx] = FE_ffx(L,options);
+    out.pxp = out.ep * (1 - out.bor) + out.bor / numel(out.ep);
 end
 % pool evidence over families
 if ~isempty(options.families)
