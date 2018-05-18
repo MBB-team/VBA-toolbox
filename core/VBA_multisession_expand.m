@@ -51,6 +51,7 @@ dim_multi.u = dim.u+1 ;
 
 
 %% duplicate parameters
+options = VBA_fillInPriors (dim, options);
 priors_multi = options.priors;
 
 % = get indexes of duplicated parameters
