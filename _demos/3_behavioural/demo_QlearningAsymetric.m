@@ -90,8 +90,8 @@ options.verbose = false;
 % -------------------------------------------------------------------------
 fprintf('=============================================================\n');
 fprintf('\nEstimated parameters: \n');
-fprintf('  - avg. learning rate: %3.2f\n', VBA_sigmoid(posterior.muTheta(1)));
-fprintf('  - learning rate asym: %3.2f\n', posterior.muTheta(2));
+fprintf('  - positive learning rate: %3.2f\n', VBA_sigmoid(posterior.muTheta(1)+posterior.muTheta(2)));
+fprintf('  - negative learning rate: %3.2f\n', VBA_sigmoid(posterior.muTheta(1)-posterior.muTheta(2)));
 fprintf('  - inverse temp.: %3.2f\n\n', exp(posterior.muPhi));
 fprintf('=============================================================\n');
 
@@ -118,7 +118,7 @@ Qvalues = posterior.muX;
 theta = [Inf; 0];
 % for each trial, recompute the state evolution
 for t = 1 : n_t
-    PE(t) = sum (f_QlearningAsym (Qvalues(:,t), theta, u(:,t+1), struct) - Qvalues(:,t));
+    PE(t) =   sum (f_QlearningAsym (Qvalues(:,t), theta, u(:,t+1), struct) - Qvalues(:,t));
 end
 
 end
@@ -151,7 +151,7 @@ contingencies = contingencies(p);
 test = [1 1 1 1 2 2 2 2; % choose A and avoid B 
         3 4 5 6 3 4 5 6];
 
-test = repmat(test,1,10);
+test = repmat(test,1,0);
     
 cues = [cues test];
 contingencies = [contingencies nan(1, size(test,2))];
@@ -191,9 +191,9 @@ options.verbose = false;
 % simulate choices
 % -------------------------------------------------------------------------
 
-u = [nan(2, n_t); 
-    nan(2,1), cues(:, 1 : end - 1) ;
-    cues];
+u = [nan(2, n_t + 1); 
+    nan(2, 1), cues ;
+    cues, nan(2, 1)];
 
 [y,x,x0,eta,e,u] = simulateNLSS( ...
     n_t, ... number of trials
@@ -213,7 +213,7 @@ u = [nan(2, n_t);
 % simulation
 % =========================================================================
 data.choices = y;
-data.feedbacks = [u(2,2:end) nan];
+data.feedbacks = u(2, 2 : end);
 data.cues = cues;
 
 % Display stat of simulated behaviour

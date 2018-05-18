@@ -29,7 +29,7 @@ n = numel(x);
 % In the case there was no feedback, do nothing
 % =========================================================================
 
-if any(isnan(u))
+if isnan(u(2))
     fx = x;
     dfdx = eye(n);
     dfdp = zeros(numel(P),n);
