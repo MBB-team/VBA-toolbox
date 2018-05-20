@@ -1,7 +1,7 @@
-function [posterior, out] = demo_linearRegression ()
+function [posterior, out] = demo_staticModel ()
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% [posterior, out] = demo_linearRegression ()
+% [posterior, out] = demo_staticModel ()
 % Demo of simple linear Bayesian regression
 %
 % The problem is to fit observations with a linear combination
