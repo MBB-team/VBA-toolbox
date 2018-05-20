@@ -38,7 +38,6 @@ d2gdx2 = 0;
 dy2 = zeros(1,numel(options.sources));
 logL = zeros(1,numel(options.sources));
 
-
 if isequal(options.g_fname,@VBA_odeLim)
     clear VBA_odeLim
     muX = zeros(options.inG.old.dim.n,dim.n_t);
@@ -46,7 +45,7 @@ if isequal(options.g_fname,@VBA_odeLim)
 end
 div = 0;
 
-isTout = all (options.isYout);
+isTout = all (options.isYout, 1);
 
 %--- Loop over time series ---%
 for t=1:dim.n_t
