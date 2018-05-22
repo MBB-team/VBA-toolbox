@@ -55,9 +55,9 @@ sigma2 = 5;
 % + number of observation parameters, ie. here nuber of betas
 dim.n_phi = k;
 % number of inputs, ie. here number of regressors
-dim.u=k;
+dim.u = k;
 % + size of observations (number of predictions per input)
-dim.p=1;
+dim.p = 1;
 
 % call inversion routine
 [posterior,out] = VBA_NLStateSpaceModel(y,regressors,[],@g_linearRegression,dim,struct);
