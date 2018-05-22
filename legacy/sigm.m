@@ -6,6 +6,14 @@ warning ('*** The function `sigm` is now deprecated. Please see `VBA_sigmoid` fo
 warning (s);
 
 % fallback
+if nargin < 2
+    in = struct ();
+end
+
+if nargin < 3
+    Phi = [];
+end
+
 if isfield(in, 'G0')
     in.scale = in.G0;
     in = rmfield(in,'G0');
