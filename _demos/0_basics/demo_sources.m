@@ -53,8 +53,11 @@ function gx = g_source3 (~, phi, ut, ~)
     gx = gx(:) / sum (gx);
 end
 
-%% Simulate and estimate observations separately
+%% Simulate data 
 % =========================================================================
+
+% Experimental design
+% -------------------------------------------------------------------------
 
 % generate experimental design
 T = 50;
@@ -66,22 +69,38 @@ phi = [2; 1]; % observation parameters (scale and offset)
 % dimension of the models (here the same for all)   
 dim.n_phi = 2; % nb of observation parameters
 
-% options
-options = struct ();
 
-% simulate and invert respecive models
-options.sources.type = 0; % flag for gaussian observations
+% Simulations
+% -------------------------------------------------------------------------
+
+options.sources.type = 0; % flag for gaussian observations (default, can be omited)
 sigma = 0.1; % precision of the gaussian noise
-
 y1 = simulateNLSS(T,[],@g_source1,[],phi,u,Inf,sigma,options);
-[posterior.s1, out.s1] = VBA_NLStateSpaceModel(y1,u,[],@g_source1,dim,options);
 
 options.sources.type = 1; % flag for Bernoulli observations
 y2 = simulateNLSS(T,[],@g_source2,[],phi,u,Inf,[],options);
-[posterior.s2, out.s2] = VBA_NLStateSpaceModel(y2,u,[],@g_source2,dim,options);
 
 options.sources.type = 2; % flag for multinomial observations
 y3 = simulateNLSS(T,[],@g_source3,[],phi,u,Inf,[],options);
+
+% Inversion
+% -------------------------------------------------------------------------
+% Here, we will assume that the paramters are NOT shared across observations.
+% If we want to compare this to the hypothesis that the same parameters are 
+% generating the data, we can simply chain the inversion by carrying over 
+% the posterior as a prior for the next inversion. A better way is to
+% invert all data at once (see below).
+
+options.sources.type = 0; 
+[posterior.s1, out.s1] = VBA_NLStateSpaceModel(y1,u,[],@g_source1,dim,options);
+
+% options.priors = posterior.s1; % <~ uncomment for the shared parameter hypothesis
+options.sources.type = 1; 
+[posterior.s2, out.s2] = VBA_NLStateSpaceModel(y2,u,[],@g_source2,dim,options);
+
+
+% options.priors = posterior.s2; % <~ uncomment for the shared parameter hypothesis
+options.sources.type = 2; 
 [posterior.s3, out.s3] = VBA_NLStateSpaceModel(y3,u,[],@g_source3,dim,options);
 
 
@@ -103,15 +122,19 @@ function gx = g_sourceAll (xt, phi, ut, in)
     	g_source3 (xt, phi, ut, in));
 end
 
+options = struct ();
 % describe the type of distribution of the different lines of observations
-options.sources(1).out = 1; % selecting y1
+options.sources(1).out = 1; % selecting y1 line in y
 options.sources(1).type = 0; % flag for gaussian observations
 
-options.sources(2).out = 2; % selecting y2
+options.sources(2).out = 2; % selecting y2 line in y
 options.sources(2).type = 1; % flag for bernoulli observations
 
-options.sources(3).out = 3 : 7; % selecting y3 (5 lines!)
+options.sources(3).out = 3 : 7; % selecting y3 lines in y
 options.sources(3).type = 2; % flag for multinomial observations
+
+% note that we could generate new multisource data as following:
+% y = simulateNLSS(T,[],@g_sourceAll,[],phi,u,Inf,[],options);
 
 % call inversion routine
 [posterior.all, out.all] = VBA_NLStateSpaceModel(y,u,[],@g_sourceAll,dim,options);
@@ -122,20 +145,20 @@ options.sources(3).type = 2; % flag for multinomial observations
 post2str = @ (post) arrayfun (@ (m, v) sprintf('%3.2f (%3.2f)', m, v), post.muPhi, diag(post.SigmaPhi), 'UniformOutput', false);
 
 summary = table ( ...
-    phi, ...
     post2str (posterior.s1), ...
     post2str (posterior.s2), ...
     post2str (posterior.s3), ...
     mean([posterior.s1.muPhi, posterior.s2.muPhi, posterior.s3.muPhi],2), ...
     post2str (posterior.all), ...
+    phi, ...
     'RowNames', {'phi_1', 'phi_2'}, ...
-    'VariableNames', {'true', 'y1','y2','y3','mean','joint'});
+    'VariableNames', {'y1','y2','y3','mean','joint','true'});
 
 fprintf('Posterior parameter estimates:\n')
 disp (summary);
 
 p = softmax ([(out.s1.F + out.s2.F + out.s3.F), out.all.F]);
-fprintf ('\nPosterior probability of the joint model: %4.3f\n', p(2));
+fprintf ('\nPosterior probability of parameters being shared: %4.3f\n', p(2));
 
 
 end

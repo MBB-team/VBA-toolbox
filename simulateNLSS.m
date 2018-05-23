@@ -88,7 +88,7 @@ options.priors = VBA_check_struct(options.priors, ...
     'b_alpha', 1  ...
     ) ;
 
-if isinf(options.priors.a_alpha) && isequal(options.priors.b_alpha,0)
+if isempty(options.priors.a_alpha) || isinf(options.priors.a_alpha) && isequal(options.priors.b_alpha,0)
     options.priors.a_alpha = 1;
     options.priors.b_alpha = 1;
 end
