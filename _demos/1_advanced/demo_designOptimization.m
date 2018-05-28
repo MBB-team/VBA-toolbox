@@ -1,7 +1,7 @@
-function demo_designOptimisation ()
+function demo_designOptimization ()
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% [posterior, out] = demo_designOptimisation ()
+% [posterior, out] = demo_designOptimization ()
 % demo of off-line and online design optimisation
 %
 % This demo simulates a psychophysics paradigm similar to a signal
@@ -23,7 +23,7 @@ function demo_designOptimisation ()
 N = 50; 
 
 % true parameter values for the simulations 
-phi = [-0.5; 1]; % simulated parameters: [inflexion point, log-slope]
+phi = [- .5; 2.5]; % simulated parameters: [inflexion point, log-slope]
 
 % range of potential simuli
 uRange = linspace(- 1, 1, N);
