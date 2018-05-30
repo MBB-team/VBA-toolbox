@@ -257,7 +257,9 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
         hold off
         box off
         if idx == 1
-            legend({'posterior','true','data'},'Location','east');
+            text(.2,.6,'true model','Color',[0 .8 0]);
+            text(.2,.4,'observations','Color','k');
+            text(.2,.2,'predicted','Color','r');
         end
      
         % + parameters
@@ -265,15 +267,15 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
         subplot(3,3,6+idx);
         
         % posterior estimates
-        plotUncertainTimeSeries(posterior.muPhi-phi,sqrt(diag(posterior.SigmaPhi)),[],gca);
+        plotUncertainTimeSeries(posterior.muPhi,sqrt(diag(posterior.SigmaPhi)),[],gca);
         % true values
         hold on
-        plot(phi-phi,'o','MarkerFaceColor',[0 .8 0]);
+        plot(phi,'o','MarkerFaceColor',[0 .8 0]);
         % options
         set(gca,'XTickLabel',{'center','slope'})
-        ylim([-1 1])
+        ylim([-2 4])
         xlabel('parameter')
-        ylabel('posterior – true')
+        ylabel('posterior estimate')
         hold off
         box off
     end
