@@ -97,16 +97,9 @@ for i=1:length(bsi)
     SS_tot = sum((vec(y_temp)-mean(vec(y_temp))).^2);
     SS_err = sum((vec(y_temp)-vec(gx_temp)).^2);
     fit.R2(si) = 1-(SS_err/SS_tot);
-    % classification accuracies
-    bg = gx_temp>.5; % binarized model predictions
-    tp = sum(vec(y_temp).*vec(bg)); % true positives
-    fp = sum(vec(1-y_temp).*vec(bg)); % false positives
-    fn = sum(vec(y_temp).*vec(1-bg)); % false positives
-    tn = sum(vec(1-y_temp).*vec(1-bg)); %true negatives
-    P = tp + fn;
-    N = tn + fp;
-    fit.acc(si) = (tp+tn)./(P+N);
-    fit.bacc(si) = 0.5*(tp./P + tn./N);
+    % classification accuracies    
+    [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,:), out.y(idx,:), 1, out.options.isYout(idx,:));
+    
 end
 
 % 3- multinomial sources: goodness-of-fit
@@ -130,9 +123,7 @@ for i=1:length(msi)
     SS_err = sum((vec(y_temp)-vec(gx_temp)).^2);
     fit.R2(si) = 1-(SS_err/SS_tot);
     % classification accuracies [to be rationalized!]
-    fit.acc(si) = NaN;
-    fit.bacc(si) = NaN;
-%     fit.acc(si) = multinomial_accuracy(suffStat.gx(idx,:),out.y(idx,:),out.options.isYout(idx,:));
+    [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,:), out.y(idx,:), 2, out.options.isYout(idx,:));
     
 end
 
