@@ -152,7 +152,7 @@ else
     dsdp = cat (2, ...
         - vec (dsdx), ... % d_center
         1 - 2 * vec (sx), ... d_lapseRate
-        ones(numel(x),1), ... d_offset
+        ones(numel(sx),1), ... d_offset
         vec (sx), ... d_scale
         ((vec (x) - vec(params.center)) / params.slope) .* vec (dsdx) ... d_slope
         );
