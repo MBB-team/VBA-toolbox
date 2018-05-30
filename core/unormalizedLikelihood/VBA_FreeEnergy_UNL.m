@@ -35,7 +35,7 @@ if dim.n_phi > 0
     if ~isempty(indIn)
         ntot = length(indIn);
         Q = priors.SigmaPhi(indIn,indIn);
-        iQ = VBA_inv(Q,[]);
+        iQ = VBA_inv(Q);
         SSE = suffStat.dphi(indIn)'*iQ*suffStat.dphi(indIn);
         ldQ = - VBA_logDet(Q,[]);
         S = suffStat.Sphi - 0.5*length(indIn);

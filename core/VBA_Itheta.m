@@ -18,7 +18,7 @@ alphaHat = posterior.a_alpha./posterior.b_alpha;
 % Preallocate intermediate variables
 iQx = options.priors.iQx;
 Q = options.priors.SigmaTheta(indIn,indIn);
-iQ = VBA_inv(Q,[]);
+iQ = VBA_inv(Q);
 muTheta0 = options.priors.muTheta;
 Theta = muTheta0;
 Theta(indIn) = theta;
@@ -80,7 +80,7 @@ end
 
 % posterior covariance matrix
 iSigmaTheta = iQ + alphaHat.*d2fdx2(indIn,indIn);
-SigmaTheta = VBA_inv(iSigmaTheta,[]);
+SigmaTheta = VBA_inv(iSigmaTheta);
 
 % mode
 tmp = iQ*dtheta0(indIn) + alphaHat.*ddxdtheta(indIn);

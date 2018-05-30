@@ -94,7 +94,7 @@ if dim.n_phi > 0
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaPhi(indIn,indIn);
-        iQ = VBA_inv(Q,[]);
+        iQ = VBA_inv(Q);
         SSE = SSE + suffStat.dphi(indIn)'*iQ*suffStat.dphi(indIn);
         ldQ = ldQ - VBA_logDet(Q,[]);
         S = S + suffStat.Sphi - 0.5*length(indIn);
@@ -107,7 +107,7 @@ if dim.n_theta > 0
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaTheta(indIn,indIn);
-        iQ = VBA_inv(Q,[]);
+        iQ = VBA_inv(Q);
         SSE = SSE + suffStat.dtheta(indIn)'*iQ*suffStat.dtheta(indIn);
         ldQ = ldQ - VBA_logDet(Q,[]);
         S = S + suffStat.Stheta - 0.5*length(indIn);
@@ -120,7 +120,7 @@ if dim.n > 0
     if ~isempty(indIn)
         ntot = ntot + length(indIn);
         Q = priors.SigmaX0(indIn,indIn);
-        iQ = VBA_inv(Q,[]);
+        iQ = VBA_inv(Q);
         SSE = SSE + suffStat.dx0(indIn)'*iQ*suffStat.dx0(indIn);
         ldQ = ldQ - VBA_logDet(Q,[]);
         S = S + suffStat.SX0 - 0.5*length(indIn);

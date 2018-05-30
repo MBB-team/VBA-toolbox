@@ -33,11 +33,11 @@ dx0 = muX0-x0;
 
 % posterior covariance matrix terms
 Q = options.priors.SigmaX0(indIn,indIn);
-iQ = VBA_inv(Q,[]);
+iQ = VBA_inv(Q);
 iSigmaX0 = iQ + alphaHat.*dF_dX0(indIn,:)*iQx0(indIn,indIn)*dF_dX0(indIn,:)';
 
 % posterior covariance matrix
-SigmaX0 = VBA_inv(iSigmaX0,[]);
+SigmaX0 = VBA_inv(iSigmaX0);
 
 % mode
 tmp = iQ*dx0(indIn) + alphaHat.*dF_dX0(indIn,:)*iQx0(indIn,indIn)*dx;

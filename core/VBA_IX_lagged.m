@@ -113,7 +113,7 @@ for t = 2:dim.n_t
         SigmaX.inter{t-lag+1} = St(1:dim.n,dim.n+1:2*dim.n);
         
         % Predictive density (data space)
-        V = (1./sigmaHat).*VBA_inv(iQy{t-lag+1},[]) + dG_dX{t-lag+1}'*SigmaX.current{t-lag+1}*dG_dX{t-lag+1};
+        V = (1./sigmaHat).*VBA_inv(iQy{t-lag+1}) + dG_dX{t-lag+1}'*SigmaX.current{t-lag+1}*dG_dX{t-lag+1};
         if dim.n_phi > 0
             V = V + dG_dPhi{t-lag+1}'*posterior.SigmaPhi*dG_dPhi{t-lag+1};
         end
@@ -146,7 +146,7 @@ for k = 2:lag
     muX(:,dim.n_t-(lag-k)) = mt(ik);
     
     % Predictive density (data space)
-    V = (1./sigmaHat).*VBA_inv(iQy{dim.n_t-(lag-k)},[]) + dG_dX{dim.n_t-(lag-k)}'*SigmaX.current{dim.n_t-(lag-k)}*dG_dX{dim.n_t-(lag-k)};
+    V = (1./sigmaHat).*VBA_inv(iQy{dim.n_t-(lag-k)}) + dG_dX{dim.n_t-(lag-k)}'*SigmaX.current{dim.n_t-(lag-k)}*dG_dX{dim.n_t-(lag-k)};
     if dim.n_phi > 0
         V = V + dG_dPhi{dim.n_t-(lag-k)}'*posterior.SigmaPhi*dG_dPhi{dim.n_t-(lag-k)};
     end

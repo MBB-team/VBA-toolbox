@@ -28,7 +28,7 @@ switch distrib
     case 'Normal'
         
         n = size(m1,1);
-        iv2 = VBA_inv(v2,[]);
+        iv2 = VBA_inv(v2);
         vv = v1*iv2;
         DKL = 0.5*(-VBA_logDet(vv) + trace(vv) + (m1-m2)'*iv2*(m1-m2) - n);
         
