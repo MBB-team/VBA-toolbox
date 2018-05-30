@@ -64,13 +64,8 @@ for i=1:length(gsi)
     fit.AIC(si) = fit.LL(si) - fit.np;
     fit.BIC(si) = fit.LL(si) - 0.5*fit.np.*log(fit.ny(si));
     % coefficient of determination
-    y_temp = out.y(idx,:);
-    y_temp = y_temp(out.options.isYout(idx,:) == 0);
-    gx_temp = suffStat.gx(idx,:);
-    gx_temp = gx_temp(out.options.isYout(idx,:) == 0);
-    SS_tot = sum((vec(y_temp)-mean(vec(y_temp))).^2);
-    SS_err = sum((vec(y_temp)-vec(gx_temp)).^2);
-    fit.R2(si) = 1-(SS_err/SS_tot);
+    fit.R2(si) = VBA_r2 (suffStat.gx(idx,:), out.y(idx,:), out.options.isYout(idx,:));
+    
     % classification accuracies [irrelevant]
     fit.acc(si) = NaN;
     fit.bacc(si) = NaN;
@@ -90,13 +85,8 @@ for i=1:length(bsi)
     fit.AIC(si) = fit.LL(si) - fit.np;
     fit.BIC(si) = fit.LL(si) - 0.5*fit.np.*log(fit.ny(si));
     % coefficient of determination
-    y_temp = out.y(idx,:);
-    y_temp = y_temp(out.options.isYout(idx,:) == 0);
-    gx_temp = suffStat.gx(idx,:);
-    gx_temp = gx_temp(out.options.isYout(idx,:) == 0);
-    SS_tot = sum((vec(y_temp)-mean(vec(y_temp))).^2);
-    SS_err = sum((vec(y_temp)-vec(gx_temp)).^2);
-    fit.R2(si) = 1-(SS_err/SS_tot);
+    fit.R2(si) = VBA_r2 (suffStat.gx(idx,:), out.y(idx,:), out.options.isYout(idx,:));
+
     % classification accuracies    
     [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,:), out.y(idx,:), 1, out.options.isYout(idx,:));
     
@@ -114,14 +104,9 @@ for i=1:length(msi)
     % AIC/BIC
     fit.AIC(si) = fit.LL(si) - fit.np;
     fit.BIC(si) = fit.LL(si) - 0.5*fit.np.*log(fit.ny(si));
-    % coefficient of determination
-    y_temp = out.y(idx,:);
-    y_temp = y_temp(out.options.isYout(idx,:) == 0);
-    gx_temp = suffStat.gx(idx,:);
-    gx_temp = gx_temp(out.options.isYout(idx,:) == 0);
-    SS_tot = sum((vec(y_temp)-mean(vec(y_temp))).^2);
-    SS_err = sum((vec(y_temp)-vec(gx_temp)).^2);
-    fit.R2(si) = 1-(SS_err/SS_tot);
+    % coefficient of determination    
+    fit.R2(si) = VBA_r2 (suffStat.gx(idx,:), out.y(idx,:), out.options.isYout(idx,:));
+
     % classification accuracies [to be rationalized!]
     [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,:), out.y(idx,:), 2, out.options.isYout(idx,:));
     
