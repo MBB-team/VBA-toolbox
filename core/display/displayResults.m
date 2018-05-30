@@ -10,8 +10,10 @@ pos = get(hres,'position');
 set(hres,'name','Simulation results','position',[pos(1),pos(2)-pos(4),pos(3),2*pos(4)],'color',ones(1,3),'menubar','none');
 
 % parameters
-if ~isempty(theta)
     hs = subplot(2,2,1,'parent',hres);
+    if isempty(theta)
+    placeHolder(hs,'no evolution parameters')
+    else
     xtick = 1:out.dim.n_theta;
     set(hs,'xtick',xtick,'nextplot','add','xlim',[.2,out.dim.n_theta+.8])
     if ~out.options.OnLine
@@ -24,9 +26,12 @@ if ~isempty(theta)
     plotUncertainTimeSeries(muTheta,V,[],hs);
     VBA_title(hs,'theta')
     plot(hs,theta,'go')
-end
-if ~isempty(phi)
-    hs = subplot(2,2,2,'parent',hres);
+    end
+
+hs = subplot(2,2,2,'parent',hres);
+if isempty(phi)
+      placeHolder(hs,'no observation parameters')  
+else
     xtick = 1:out.dim.n_phi;
     set(hs,'xtick',xtick,'nextplot','add','xlim',[.2,out.dim.n_phi+.8])
     if ~out.options.OnLine
@@ -42,8 +47,11 @@ if ~isempty(phi)
 end
 
 % hyperparameters
+hs = subplot(2,2,3,'parent',hres);
 n_gs = sum([out.options.sources(:).type]==0);
-if n_gs>0 
+if n_gs == 0
+    placeHolder(hs,'no observation hyperparameters')  
+else
     sigmaHat = posterior.a_sigma./posterior.b_sigma;
     vs = posterior.a_sigma./(posterior.b_sigma.^2);
     lvs = log(sigmaHat+sqrt(vs)) - log(sigmaHat);
@@ -64,7 +72,6 @@ if n_gs>0
         lab={};
     end
     for i=1:n_gs, lab{end+1} = ['sigma' num2str(i)]; end
-    hs = subplot(2,2,3,'parent',hres);
     set(hs,'nextplot','add')
     plotUncertainTimeSeries(lm,lv.^2,[],hs);
     plot(hs,log([alpha;sigma(:)]),'go')
@@ -155,3 +162,16 @@ axis(hs,'tight')
 
 try getSubplots,end
 
+end
+
+% display low key text when usual plot is not required
+ function placeHolder(h,label)
+     xx = get(h,'XLim');
+     yy = get(h,'YLim');
+     t=text(mean(xx),mean(yy),label,'parent',h);
+     set(t, ...
+         'HorizontalAlignment','center'     , ...
+         'FontSize'           ,10           , ...
+         'Color'              ,[.6 .6 .6]   );
+    set(h,'Visible','off');
+ end
