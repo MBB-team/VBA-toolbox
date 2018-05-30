@@ -4,9 +4,9 @@ function [posterior, out] = demo_stochasticModel ()
 % [posterior, out] = demo_stochasticModel ()
 % Demo for stochastic system with binomial output
 %
-% This demo simulates and inverts a model of a stochastic auto-regressive 
-% (AR) dynamical system, which is observed through a nonlinear sigmoid 
-% mapping (binary observations).
+% This demo simulates and inverts a model of a stochastic dynamical system, 
+% which is observed through a nonlinear sigmoid mapping (binary 
+% observations).
 %
 % /////////////////////////////////////////////////////////////////////////
 
