@@ -190,7 +190,7 @@ for t = 1:dim.n_t
     
     
     % fill in next input with last output and feedback
-    if feedback && t <= dim.n_t
+    if feedback && t < dim.n_t
         % get feedback on system's output
         if ~isempty(fb.h_fname)
             u(fb.indfb,t+1) = fb.h_fname(y(:,t),t,fb.inH);
