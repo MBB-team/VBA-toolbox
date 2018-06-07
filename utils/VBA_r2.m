@@ -32,7 +32,7 @@ data(logical (isYout)) = nan;
 SS2_tot = sumall ((data(:) - VBA_nanmean(data(:))) .^2);
 SS2_err = sumall ((data(:) - pred(:)) .^2);
 
-r2 = 1 - (SS2_err / SS2_tot);
+r2 = max (0, 1 - (SS2_err / SS2_tot));
 
 end
 
