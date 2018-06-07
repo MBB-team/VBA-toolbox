@@ -12,7 +12,7 @@ function ep = VBA_ExceedanceProb(mu,Sigma,form,verbose,Nsamp)
 
 try, form; catch, form = 'gaussian'; end 
 try, verbose; catch, verbose=0; end
-try, Nsamp; catch, Nsamp=1e4; end
+try, Nsamp; catch, Nsamp=1e5; end
 
 K = size(mu,1);
 ep = ones(K,1);
@@ -34,12 +34,17 @@ switch form
         end
         ep = ep./sum(ep);
     case 'dirichlet'
-        r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose)';
-        if VBA_isWeird (r_samp)
-            error('*** Could not compute the exceedance probability because of numerical instabilities.');
+        r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose);
+        [y,j]  = max(r_samp);
+        if any (isnan (vec (y))) % remove failed samples in limit cases
+            j(isnan(y)) = []; 
+            Nsamp = numel(j);
+            warning('VBA_ExceedanceProb: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
         end
-        [y,j] = max(r_samp,[],2);
-        tmp = histc(j,1:length(mu))';
-        ep = tmp/Nsamp;
+        tmp    = histc(j,1:length(mu));
+        ep     = tmp/Nsamp;
+        
+    otherwise
+        error('*** VBA_ExceedanceProb: unrecognized option form = %s', form);
 end
 
