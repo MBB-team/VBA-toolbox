@@ -68,10 +68,10 @@ switch form
         try
             y = mnrnd(suffStat.n,suffStat.p,N)';
         catch
-            K = size(suffStat.p,1);
+            K = numel(suffStat.p);
             y = zeros(K,N);
             for i=1:suffStat.n
-                y = y + sampleFromArbitraryP(suffStat.p,eye(K),N)';
+                y = y + num2multi(VBA_sampleFromArbitraryP(suffStat.p, 1:K, N), K);
                 if verbose
                     fprintf(1,repmat('\b',1,8))
                     fprintf(1,'%6.2f %%',100*i/suffStat.n)

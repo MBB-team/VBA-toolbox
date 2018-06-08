@@ -18,7 +18,7 @@ for i = 1:n
         sumAlphak = sumAlphak+alpha(k);
     end
     for d=1:D
-        [y(d,i)] = sampleFromArbitraryP([lambda(d,k),1-lambda(d,k)]',[1,0]',1);
+        [y(d,i)] = VBA_sampleFromArbitraryP([lambda(d,k),1-lambda(d,k)]',[1,0]',1);
     end
     labels(i,k) = 1;
 end

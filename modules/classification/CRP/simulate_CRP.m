@@ -19,5 +19,5 @@ for i=2:n
    end
    p = [nk;alpha]./(alpha+i-1);
    gridX = [1:Ki+1]';
-   [x1(i)] = sampleFromArbitraryP(p,gridX,1);
+   [x1(i)] = VBA_sampleFromArbitraryP(p,gridX,1);
 end

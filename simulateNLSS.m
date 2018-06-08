@@ -171,12 +171,12 @@ for t = 1:dim.n_t
             % binomial
             case 1
                 for k=1:length(s_idx)
-                    y(s_idx(k),t) = sampleFromArbitraryP([gt(s_idx(k)),1-gt(s_idx(k))],[1,0]',1);
+                    y(s_idx(k),t) = VBA_sampleFromArbitraryP([gt(s_idx(k)),1-gt(s_idx(k))],[1,0]',1);
                 end
         	% multinomial
             case 2
                 resp = zeros(length(s_idx),1) ;
-                respIdx = sampleFromArbitraryP(gt(s_idx),1:length(s_idx),1) ;
+                respIdx = VBA_sampleFromArbitraryP(gt(s_idx),1:length(s_idx),1) ;
                 if ~isnan(respIdx)
                     resp(respIdx) = 1;
                     y(s_idx,t) = resp;

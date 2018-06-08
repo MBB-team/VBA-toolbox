@@ -61,7 +61,7 @@ opt{4}.inF.indAlpha = 2; % learning rates
 % sample random feedback sequence
 u = zeros(1,n_t);
 for t=1:n_t
-    [X] = sampleFromArbitraryP([2;1;2]./5,[1:3]',1);
+    [X] = VBA_sampleFromArbitraryP([2;1;2]./5,[1:3]',1);
     u(t) = feedbacks{X};
 end
 
