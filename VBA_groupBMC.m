@@ -169,9 +169,9 @@ end
 %-- wrap up VBA output
 out = wrapUp(L,posterior,priors,F,options);
 try
-    out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet',0);
+    out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet2',0);
     if ~isempty(out.options.families)
-        out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',0);
+        out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet2',0);
     end
 catch
     if options.verbose
@@ -219,7 +219,7 @@ out.F = F;
 [out.Ef,out.Vf] = Dirichlet_moments(posterior.a);
 % derive exceedance probabilities
 % out.ep = VBA_ExceedanceProb(out.Ef,out.Vf,'gaussian');
-out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet',0);
+out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet2',0);
 % store accuracy and entropy terms of the Free Energy
 [F,out.ELJ,out.Sqf,out.Sqm] = FE(L,posterior,priors);
 % derive Free Energy under the null:
@@ -237,8 +237,8 @@ if ~isempty(options.families)
     out.families.r = options.C'*posterior.r;
     out.families.a = options.C'*posterior.a;
     [out.families.Ef,out.families.Vf] = Dirichlet_moments(out.families.a);
-%     out.families.ep = VBA_ExceedanceProb(out.families.Ef,out.families.Vf,'gaussian');
-    out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',0);
+    % out.families.ep = VBA_ExceedanceProb(out.families.Ef,out.families.Vf,'gaussian');
+    out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet2',0);
 end
 
 
