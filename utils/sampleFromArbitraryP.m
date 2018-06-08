@@ -10,10 +10,10 @@ function [X] = sampleFromArbitraryP(p,gridX,N)
 %   - X: NX1 vector of samples
 
 try; N; catch, N=1; end
-p = vec(p);
+p = VBA_vec(p);
 
 if size(gridX,1)==1
-    gridX = vec(gridX);
+    gridX = VBA_vec(gridX);
 end
 k = size(gridX,2);
 

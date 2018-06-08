@@ -129,10 +129,10 @@ if ~isequal(get(ho,'type'),'line')
 end
 out.gco = ho;
 try, verbose; catch; verbose = 0; end
-x = vec(get(ho,'xdata'));
+x = VBA_vec(get(ho,'xdata'));
 n = length(x);
 X = [x,ones(n,1)];
-y = vec(get(ho,'ydata'));
+y = VBA_vec(get(ho,'ydata'));
 [pv,stat,df,out] = GLM_contrast(X,y,[1;0],'F',verbose);
 if ~verbose
     out.pv = pv;
@@ -148,7 +148,7 @@ xlim = get(ha,'xlim');
 ylim = get(ha,'ylim');
 set(ha,'nextplot','add');
 col = get(ho,'color');
-yhat = [vec(xlim),ones(2,1)]*out.b;
+yhat = [VBA_vec(xlim),ones(2,1)]*out.b;
 out.hp = plot(ha,xlim,yhat','color',col)
 set(ha,'nextplot',status,'xlim',xlim,'ylim',ylim);
 

@@ -38,6 +38,6 @@ switch in.model
     case 'basis'
         [tmp,i1] = min((in.gx-t).^2);
         [tmp,i2] = min((in.gy-R).^2);
-        v = vec(in.bf(i1,i2,:))'*P;
+        v = VBA_vec(in.bf(i1,i2,:))'*P;
 end
 

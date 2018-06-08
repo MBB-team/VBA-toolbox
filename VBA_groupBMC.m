@@ -103,10 +103,10 @@ if ~isempty(options.families)
             out = [];
             return
         end
-        tmp = [tmp;vec(indf)];
+        tmp = [tmp; VBA_vec(indf)];
         options.C(indf,i) = 1;
     end
-    if ~isequal(vec(unique(tmp)),vec(1:K))
+    if ~isequal(VBA_vec(unique(tmp)),VBA_vec(1:K))
         if numel(unique(tmp)) < K
             disp('Error: families do not cover the entire set of models!')
         else

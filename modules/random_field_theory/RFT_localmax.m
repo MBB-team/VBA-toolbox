@@ -17,7 +17,7 @@ L = length(X);
 X1 = [-Inf;X];
 X2 = [X;-Inf];
 imax = intersect(find(diff(X1)>0),find(diff(X2)<0));
-imax = vec(imax);
+imax = VBA_vec(imax);
 
 if ~isequal(imax(1),1) && X(1)>X(2)
     imax = [1;imax];

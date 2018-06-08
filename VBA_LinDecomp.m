@@ -34,7 +34,7 @@ dim.n_phi = inG.ind0;
 % set priors and invert model
 options.priors.muPhi = 1e-3*ones(dim.n_phi,1);
 options.priors.SigmaPhi = 1e2*eye(dim.n_phi);
-[posterior,out] = VBA_hyperparameters(vec(Y),[],[],g_fname,dim,options);
+[posterior,out] = VBA_hyperparameters(VBA_vec(Y),[],[],g_fname,dim,options);
 % recover A and B matrices from VBA posterior pdf
 A = NaN(n,k);
 B = NaN(k,p);
@@ -79,7 +79,7 @@ if out.options.DisplayWin
         SS_err = sum((Y(:)-Yhi(:)).^2);
         R2i = 1-(SS_err/SS_tot);
         dR2(i) = out.fit.R2 - R2i;
-        yhi(:,i) = vec(A(:,i)*B(i,:));
+        yhi(:,i) = VBA_vec(A(:,i)*B(i,:));
     end
     ha = subplot(3,2,5,'parent',hf);
     hb = bar(1:k,dR2);

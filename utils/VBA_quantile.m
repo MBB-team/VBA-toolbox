@@ -12,7 +12,7 @@ if isempty(X)
 end
 
 X(isnan(X)) = [];
-X = vec(X);
+X = VBA_vec(X);
 
 % compute quantiels
 n = numel(X);

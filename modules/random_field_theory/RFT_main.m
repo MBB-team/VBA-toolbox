@@ -105,7 +105,7 @@ else
 end
 
 if ~isempty(options.mask)
-    if length(options.mask)~=length(X) || ~isequal(vec(unique(options.mask)),[0;1])
+    if length(options.mask)~=length(X) || ~isequal(VBA_vec(unique(options.mask)),[0;1])
         disp(['RFT-1D: error: invalid mask provided!'])
         out = [];
         return
@@ -115,7 +115,7 @@ end
 out.options = options;
 out.verbose = verbose;
 
-X = vec(X);
+X = VBA_vec(X);
 if isempty(options.mask)
     L = length(X);
 else

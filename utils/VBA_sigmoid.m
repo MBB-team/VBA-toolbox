@@ -150,11 +150,11 @@ else
     dims = size(x);
     
     dsdp = cat (2, ...
-        - vec (dsdx), ... % d_center
-        1 - 2 * vec (sx), ... d_lapseRate
+        - VBA_vec (dsdx), ... % d_center
+        1 - 2 * VBA_vec (sx), ... d_lapseRate
         ones(numel(sx),1), ... d_offset
-        vec (sx), ... d_scale
-        ((vec (x) - vec(params.center)) / params.slope) .* vec (dsdx) ... d_slope
+        VBA_vec (sx), ... d_scale
+        ((VBA_vec (x) - VBA_vec(params.center)) / params.slope) .* VBA_vec (dsdx) ... d_slope
         );
 
     % keep only those passed s parameter

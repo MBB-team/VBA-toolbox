@@ -39,7 +39,7 @@ for i=1:na
         plot(ha,x,s2,'g--')
         plot(ha,x,s12,'r')
         drawnow
-        [posterior,out] = VBA_NLStateSpaceModel(vec(s12),vec(x),[],g_fname,dim,options);
+        [posterior,out] = VBA_NLStateSpaceModel(VBA_vec(s12),VBA_vec(x),[],g_fname,dim,options);
         P(i,j,1) = posterior.muPhi(1);
         P(i,j,2) = posterior.muPhi(2);
 %         pause

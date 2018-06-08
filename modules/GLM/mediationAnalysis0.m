@@ -129,7 +129,7 @@ end
 
 % store results
 out.p = [[p1;p2],[p3;p4]];
-out.b = [[a1.b(2);a2.b(2)],vec(a3.b(2:3))];
+out.b = [[a1.b(2);a2.b(2)],VBA_vec(a3.b(2:3))];
 out.sobel = sobel;
 out.montecarlo = montecarlo;
 out.conj = conj;

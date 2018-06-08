@@ -18,8 +18,8 @@ if ~isequal(na,nb)
     El = [];
     return
 else
-    a = vec(a);
-    b = vec(b);
+    a = VBA_vec(a);
+    b = VBA_vec(b);
 end
 
 if any(b<1)

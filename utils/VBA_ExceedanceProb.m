@@ -36,7 +36,7 @@ switch form
     case 'dirichlet'
         r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose);
         [y,j]  = max(r_samp);
-        if any (isnan (vec (y))) % remove failed samples in limit cases
+        if any (isnan (VBA_vec (y))) % remove failed samples in limit cases
             j(isnan(y)) = []; 
             Nsamp = numel(j);
             warning('VBA_ExceedanceProb: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));

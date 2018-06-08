@@ -48,7 +48,7 @@ opt.inG = inG;
 % opt.priors.a_sigma = sigma;
 % opt.priors.b_sigma = 1;
 % options.checkGrads = 1;
-[posterior,out] = VBA_NLStateSpaceModel(y',vec(u'),[],g_fname,dim,opt);
+[posterior,out] = VBA_NLStateSpaceModel(y',VBA_vec(u'),[],g_fname,dim,opt);
 
 plotUncertainTimeSeries(posterior.muPhi(1:end-1),sqrt(diag(posterior.SigmaPhi(1:end-1,1:end-1))))
 hold on

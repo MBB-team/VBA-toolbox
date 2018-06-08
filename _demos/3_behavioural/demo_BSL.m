@@ -30,7 +30,7 @@ x = zeros(dim.n,N);
 x(:,1:K) = repmat(x0,1,K); %initialize hidden states
 u(:,1:K) = NaN(K+1,K);
 for i=K+2:N
-    u(:,i) = flipud(vec(y(i-K-1:i-1)));
+    u(:,i) = flipud(VBA_vec(y(i-K-1:i-1)));
     if K==0 && i==1 % the issue only arises for 0-BSL (degenerated!)
         x(:,i) = f_BSL(x0,theta,u(:,i),options.inF);
     else

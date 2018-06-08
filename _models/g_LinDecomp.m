@@ -5,4 +5,4 @@ for i=1:in.n
     X(:,i) = P(in.ind(i).X);
     Y(i,:) = P(in.ind(i).Y)';
 end
-gx = vec(X*Y) + P(in.ind0);
+gx = VBA_vec(X*Y) + P(in.ind0);

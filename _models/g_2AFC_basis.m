@@ -30,7 +30,7 @@ V = zeros(length(P),2);
 for i=1:2
     [tmp,ix(i)] = min((in.gx-x(i)).^2);
     [tmp,iy(i)] = min((in.gy-y(i)).^2);
-    V(:,i) = vec(in.bf(ix(i),iy(i),:));
+    V(:,i) = VBA_vec(in.bf(ix(i),iy(i),:));
 end
 dV = V(:,1)-V(:,2);
 dv = dV'*P;

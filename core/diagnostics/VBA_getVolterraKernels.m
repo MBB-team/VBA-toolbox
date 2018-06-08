@@ -56,7 +56,7 @@ if isfield(out.options,'detrendU') && ~~out.options.detrendU
     VBA_disp('Warning: detrending inputs for Volterra decompositions.',out.options)
     Trend = [];
     for i=0:out.options.detrendU
-        Trend = [Trend,vec(1:out.dim.n_t).^i];
+        Trend = [Trend,VBA_vec(1:out.dim.n_t).^i];
     end
     Trend = VBA_orth(Trend,1);
     opt.inG.dgdp = [opt.inG.dgdp;Trend(:,2:out.options.detrendU+1)'];

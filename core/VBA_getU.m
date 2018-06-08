@@ -17,7 +17,7 @@ if options.microU && ~isequal(options.decim,1)
             nut = dim.u*options.decim;
             uu = zeros(nut,dim.n_t);
             for t=1:dim.n_t
-                uu(:,t) = vec(u0(:,(t-1)*options.decim+1:t*options.decim));
+                uu(:,t) = VBA_vec(u0(:,(t-1)*options.decim+1:t*options.decim));
             end
         case 'back2micro'
             u0 = u;

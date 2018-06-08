@@ -15,11 +15,11 @@ function [clusters,imax] = RFT_clusters(X,xc,verbose)
 
 
 try,verbose;catch,verbose=0;end
-X = vec(X);
+X = VBA_vec(X);
 % 1- find upcrossing clusters induced by xc
-B = [0;vec(X>xc);0];
+B = [0;VBA_vec(X>xc);0];
 n = length(X);
-in = vec(find(B==1));
+in = VBA_vec(find(B==1));
 if isempty(in)
     clusters = [];
     nc = 0;

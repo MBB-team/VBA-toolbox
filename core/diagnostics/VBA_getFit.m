@@ -47,7 +47,7 @@ for i=1:length(gsi)
     si=gsi(i);
     idx = out.options.sources(si).out;
     % sample size
-    fit.ny(si) = sum(1-vec(out.options.isYout(idx,:)));
+    fit.ny(si) = sum(1-VBA_vec(out.options.isYout(idx,:)));
     % log-likelihood
     if out.options.UNL % to be rationalized...
         fit.LL = out.suffStat.logL;
@@ -78,7 +78,7 @@ for i=1:length(bsi)
     si=bsi(i);
     idx = out.options.sources(si).out;
     % sample size
-    fit.ny(si) = sum(1-vec(out.options.isYout(idx,:)));
+    fit.ny(si) = sum(1-VBA_vec(out.options.isYout(idx,:)));
     % log-likelihood
     fit.LL(si) = out.suffStat.logL(si);
     % AIC/BIC

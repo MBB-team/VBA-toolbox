@@ -88,8 +88,8 @@ opt0.detrendU = 4;
 
 % check relation between identified learning rate and volatility of VB-learner:
 it = 1:400;
-X = [vec(p0.muX(3,:)),ones(nt,1)];
-Y = vec(sum(x([4,9],:),1));
+X = [VBA_vec(p0.muX(3,:)),ones(nt,1)];
+Y = VBA_vec(sum(x([4,9],:),1));
 [pv,stat,df,all] = GLM_contrast(X,Y,[1;0],'F',1,{'learning rate','CST'},{'volatility'});
 
 

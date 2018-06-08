@@ -31,7 +31,7 @@ if numel(y) == 1 % retrocompatibility
     warning('getHyperpriors: first argument should be a data vector');
 else
     y(isnan(y)) = [];
-    variance = var(vec(y));
+    variance = var(VBA_vec(y));
 end
 
 % residual variance

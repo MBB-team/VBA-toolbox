@@ -15,7 +15,7 @@ function [HC,EC] = RFT_expectedTopo(u,L,fwhm,c,type,dof)
 try;c;catch;c=1;end
 try,type;catch;type='norm';end
 try,dof;catch;dof=NaN;end
-u = vec(u);
+u = VBA_vec(u);
 switch type
     case 'norm'
         P = 1-VBA_spm_Ncdf(u,0,1);

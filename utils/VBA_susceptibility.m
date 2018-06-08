@@ -219,7 +219,7 @@ function v = score(y,muy,options,ind)
     muy(isYout==1) = [] ;
     
     % compute explained variance % ### TODO: multiline data
-    dy = vec(y) - vec(muy);
+    dy = VBA_vec(y) - VBA_vec(muy);
     v =  1 - mean(dy.^2)./var(y) ;
 end   
 

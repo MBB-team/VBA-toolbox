@@ -36,7 +36,7 @@ C = zeros(nc,nc,ns);
 for n=1:ns
     for i=1:nc
         for j=1:nc
-            tmp = corrcoef(vec(out.L(:,n,i)),vec(out.L(:,n,j)));
+            tmp = corrcoef(VBA_vec(out.L(:,n,i)),VBA_vec(out.L(:,n,j)));
             C(i,j,n) = tmp(2,1);
         end
     end
@@ -60,7 +60,7 @@ if isfield(out.options,'families') && ~isempty(out.options.families)
     tmp = [];
     for i=1:nf
         indf = out.options.families{i};
-        tmp = [tmp;vec(indf)];
+        tmp = [tmp;VBA_vec(indf)];
         C(indf,i) = 1;
     end
     C = ~C; % for display purposes (black => model belongs to the family)
@@ -76,7 +76,7 @@ if isfield(out.options,'families') && ~isempty(out.options.families)
     % display per-condition family-BMS
     C = zeros(nf,nc);
     for i=1:nc
-        C(:,i) = vec(out.VBA.cond(i).out.families.ep);
+        C(:,i) = VBA_vec(out.VBA.cond(i).out.families.ep);
     end
     handles.ha(5) = subplot(3,2,5,'parent',handles.hf,'nextplot','add');
     hi = imagesc(C','parent',handles.ha(5));
@@ -93,7 +93,7 @@ else
     % display per-condition BMS
     C = zeros(nm,nc);
     for i=1:nc
-        C(:,i) = vec(out.VBA.cond(i).out.ep);
+        C(:,i) = VBA_vec(out.VBA.cond(i).out.ep);
     end
     handles.ha(5) = subplot(3,2,5,'parent',handles.hf,'nextplot','add');
     hi = imagesc(C','parent',handles.ha(5));
@@ -136,7 +136,7 @@ if isfield(out,'factors')
         VBA_title(handles.ha(4),'design')
         set(handles.ha(4),'xlim',[0.5,nc+0.5],'xtick',[1:nc],'ylim',[0.5,nf+0.5],'ytick',[1:nf])
         handles.hc(end+1) = colorbar('peer',handles.ha(4));
-        set(handles.hc(end),'ytick',1:max(vec(C)))
+        set(handles.hc(end),'ytick',1:max(VBA_vec(C)))
         drawnow
         
         % display pEP of per-factor btw-condition stability 

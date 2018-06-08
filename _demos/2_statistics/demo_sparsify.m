@@ -108,5 +108,5 @@ end
 
 function sse = SSE(x,y)
 % sum-of-squared distance between x and y
-sse = sum(abs(vec(x)-vec(y)));
+sse = sum(abs(VBA_vec(x)-VBA_vec(y)));
 end

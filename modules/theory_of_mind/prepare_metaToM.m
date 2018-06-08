@@ -28,7 +28,7 @@ inF.seq.indx = inF.ktom.indx(end)+1:inF.ktom.indx(end)+2^(seq_length+1);
 inF.seq.indP = inF.ktom.indP+1;
 inG.seq.indx = inF.seq.indx;
 x0(inF.seq.indx) = zeros(2^(seq_length+1),1);
-x0 = vec(x0);
+x0 = VBA_vec(x0);
 
 
 

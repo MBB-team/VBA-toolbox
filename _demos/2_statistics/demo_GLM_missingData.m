@@ -34,7 +34,7 @@ options.priors = priors;
 options.inG = inG;
 [posterior,out] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,options);
 
-phi = [b;vec(X(inG.xmd))];
+phi = [b;VBA_vec(X(inG.xmd))];
 
 displayResults(posterior,out,g,[],[],[],phi,1/s.^2,[]);
 

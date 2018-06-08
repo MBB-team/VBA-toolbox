@@ -17,5 +17,5 @@ for i=1:length(gridM)
     end
 end
 
-figure,plot(vec(exp(Els1)),vec(exp(Els01)),'.')
-figure,plot(vec(exp(Els2)),vec(exp(Els02)),'.')
+figure,plot(VBA_vec(exp(Els1)),VBA_vec(exp(Els01)),'.')
+figure,plot(VBA_vec(exp(Els2)),VBA_vec(exp(Els02)),'.')

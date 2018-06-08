@@ -87,8 +87,8 @@ N = 4; % # 1D-DCT bsis functions
 X = Fourier2DBF(n1,n2,N,0);
 inb.ind.x = in.ind.t;
 inb.ind.y = in.ind.R;
-inb.gx = linspace(min(vec(R)),max(vec(R)),n1);
-inb.gy = linspace(min(vec(t)),max(vec(t)),n2);
+inb.gx = linspace(min(VBA_vec(R)),max(VBA_vec(R)),n1);
+inb.gy = linspace(min(VBA_vec(t)),max(VBA_vec(t)),n2);
 inb.bf = X;
 g_fname = @g_2AFC_basis;
 dim = [];
@@ -123,7 +123,7 @@ end
 Vu = zeros(size(X,1),size(X,2));
 for i=1:length(inb.gx)
     for j=1:length(inb.gy)
-        Vu(i,j) = vec(X(i,j,:))'*p0.SigmaPhi*vec(X(i,j,:));
+        Vu(i,j) = VBA_vec(X(i,j,:))'*p0.SigmaPhi*VBA_vec(X(i,j,:));
     end
 end
 

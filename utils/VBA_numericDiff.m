@@ -56,7 +56,7 @@ fArgs = varargin;
 % evaluate function at the specified argument
 % =========================================================================
 try
-    fx = vec(fName(fArgs{:}));
+    fx = VBA_vec(fName(fArgs{:}));
 catch 
     message = sprintf(...
         '*** VBA_numericDiff: Can not call %s with the provided arguments (nArgs = %d).', ...
@@ -81,6 +81,6 @@ dx (abs(dx) <= eps) = epsilon;
 for i = 1 : m
     xpdx = fArgs;
     xpdx{idxArg2Diff}(i) = xpdx{idxArg2Diff}(i) + dx(i);
-    dfdx(i,:) = (vec (fName (xpdx{:})) - fx)' / dx(i);
+    dfdx(i,:) = (VBA_vec (fName (xpdx{:})) - fx)' / dx(i);
 end
 

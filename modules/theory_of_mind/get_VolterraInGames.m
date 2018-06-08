@@ -76,7 +76,7 @@ W = zeros(tau*nu,1);
 for i=1:nu
     W((i-1)*tau+1:i*tau) = P(i+nu)*exp(-exp(P(i)).*[1:tau]);
 end
-[sg,dsdx,dsdp] = g_convSig(x,[vec(W);P(2*nu+1)],u,in);
+[sg,dsdx,dsdp] = g_convSig(x,[VBA_vec(W);P(2*nu+1)],u,in);
 
 
 function [W] = extractKernels_param(posterior,out)
