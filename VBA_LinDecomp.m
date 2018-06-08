@@ -97,7 +97,7 @@ if out.options.DisplayWin
         colorbar('peer',ha)
         title(ha,'components'' correlation')
     end
-    getSubplots
+    VBA_getSubplots ();
 end
 
 

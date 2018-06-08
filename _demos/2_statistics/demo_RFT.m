@@ -53,6 +53,6 @@ errorbar(sqrt(v*8*log(2)),mean(f'),std(f')/sqrt(N),'parent',ha)
 plot(ha,sqrt(v*8*log(2)),sqrt(v*8*log(2)),'k--')
 xlabel(ha,'smoothing kernel FWHM')
 ylabel(ha,'RFT-FWHM')
-getSubplots
+VBA_getSubplots ();
 
 %save RFT.mat

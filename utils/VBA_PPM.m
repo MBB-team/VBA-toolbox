@@ -74,7 +74,7 @@ if disp
     box(ha,'off')
     xlabel(ha,'effect of interest: x')
     ylabel(ha,'probability density function: p(x)')
-    try;getSubplots;end
+    try;VBA_getSubplots; end
 end
 
 

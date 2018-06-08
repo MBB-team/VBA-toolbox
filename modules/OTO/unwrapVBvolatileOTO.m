@@ -110,6 +110,6 @@ colorbar('peer',ha(4))
 set(ha(4),'clim',[-1,1])
 title(ha(4),'STATES'' CORRELATION')
 
-getSubplots
+VBA_getSubplots ();
 
 

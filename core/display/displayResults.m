@@ -160,7 +160,7 @@ VBA_title(hs,'y(t) vs <y(t)>')
 grid(hs,'on')
 axis(hs,'tight')
 
-try getSubplots,end
+try, VBA_getSubplots (); end
 
 end
 

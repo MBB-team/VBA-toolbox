@@ -99,5 +99,5 @@ ha = subplot(3,2,6,'parent',hf);
 plot(ha,Ux,EU2), title(ha,'E[U(x)] vs U(E[x])')
 
 
-getSubplots
+VBA_getSubplots ();
 

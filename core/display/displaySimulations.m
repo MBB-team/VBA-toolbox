@@ -97,5 +97,5 @@ axis(ha,'tight')
 VBA_title(ha,'measurement noise')
 xlabel(ha,'time')
 ylabel(ha,'e')
-getSubplots
+VBA_getSubplots ();
 

@@ -40,7 +40,7 @@ plot(ha,y-e,'r')
 hold(ha,'on')
 plot(ha,y,'kx')
 legend(ha,{'p(y=1|theta,phi,m)','binomial data samples'})
-getSubplots
+VBA_getSubplots ();
 dummy.options = options;
 [ha,hf] = unwrapVBvolatileOTO(struct('muX',x,'muTheta',theta),dummy);
 set(hf,'name','simulated volatile VB learner')

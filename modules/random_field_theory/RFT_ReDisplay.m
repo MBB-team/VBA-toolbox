@@ -102,7 +102,7 @@ ht = uicontrol('Style','text','units',unit,'position',pos,'backgroundcolor',bgc,
     'string',str,'horizontalAlignment','left','FontSize',11,'parent',out.hf);
 
 
-try,getSubplots,end
+try, VBA_getSubplots (); end
 
 
 

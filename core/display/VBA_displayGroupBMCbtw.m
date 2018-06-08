@@ -175,7 +175,7 @@ if ~isfield(out,'factors') || nf==1
     
 end
 
-try;getSubplots;end
+try;VBA_getSubplots ();end
 
 
 

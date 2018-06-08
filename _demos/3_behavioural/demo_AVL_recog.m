@@ -132,7 +132,7 @@ plot(ha,[miy,may],[miy,may],'r')
 grid(ha,'on')
 axis(ha,'tight')
 title(ha,'simulated vs observed cue-outcome association')
-getSubplots
+VBA_getSubplots ();
 
 
 % Now OBSERVE THE OBSERVER:

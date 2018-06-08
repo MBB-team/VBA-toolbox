@@ -106,7 +106,7 @@ for j=1:2
 end
 
 
-getSubplots
+VBA_getSubplots ();
 
 
 

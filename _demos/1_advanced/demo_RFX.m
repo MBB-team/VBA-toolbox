@@ -103,6 +103,6 @@ ylabel(ha,['log p(y|',models{1},') - log p(y|',models{2},')'])
 title(ha,'evidence for a group effect')
 box(ha,'off')
 
-getSubplots
+VBA_getSubplots ();
 
 

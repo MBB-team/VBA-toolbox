@@ -196,7 +196,7 @@ if o_group.it >= 1
     set(display.ha(4,1),'xtick',[0,o_group.it],'xticklabel',xl,'box','off');
 end
 
-getSubplots
+VBA_getSubplots ();
 
 
 function [] = VBAMFX_displayWithin(i1,i2)

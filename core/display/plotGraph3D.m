@@ -77,5 +77,5 @@ xlabel('time')
 ylabel('value')
 zlabel('probability density')
 colormap(flipud(autumn))
-try; getSubplots; end
+try, VBA_getSubplots (); end
 

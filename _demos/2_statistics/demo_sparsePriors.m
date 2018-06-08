@@ -68,7 +68,7 @@ plot(ha2,subgx(subgx<=0),-subgx(subgx<=0).^2,'k.')
 plot(ha3,subgx(subgx>=0).^2,subgx(subgx>=0).^2,'k.')
 plot(ha3,-subgx(subgx<=0).^2,subgx(subgx<=0).^2,'k.')
 
-getSubplots
+VBA_getSubplots ();
 
 % 1- simulate "sparse" GLM and invert
 p = 32;

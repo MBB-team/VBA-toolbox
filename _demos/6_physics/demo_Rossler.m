@@ -55,7 +55,7 @@ end
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e)
-getSubplots
+VBA_getSubplots ();
 % disp('--paused--')
 % pause
 

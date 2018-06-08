@@ -71,7 +71,7 @@ for i=1:4
     subplot(2,2,i),plot(x([i,i+4],:)'),title(ti{i})
 end
 drawnow
-getSubplots
+VBA_getSubplots ();
 
 
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);

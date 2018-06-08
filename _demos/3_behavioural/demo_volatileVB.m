@@ -45,7 +45,7 @@ plot(y-e,'r')
 hold on
 plot(y,'kx')
 legend({'p(y=1|theta,phi,m)','binomial data samples'})
-getSubplots
+VBA_getSubplots ();
 % pause
 
 dummy.options = options;

@@ -181,7 +181,7 @@ if options.DisplayWin
     for i=1:8
         handles.ha(i) = subplot(3,3,i,'parent',handles.hf,'box','off');
     end
-    try;getSubplots;end
+    try; VBA_getSubplots ();end
     plot(handles.ha(1),F,'ro')
     set(handles.ha(1),'nextplot','add','ygrid','on')
     imagesc(sqrt(dist(y)),'parent',handles.ha(6))
@@ -211,7 +211,7 @@ if options.DisplayWin
         end
         set(handles.ha(7),'xlim',bounds)
     end
-    getSubplots
+    VBA_getSubplots ();
 end
 
 % Main VB scheme

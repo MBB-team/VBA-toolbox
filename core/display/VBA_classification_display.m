@@ -149,7 +149,7 @@ all.handles.huic = uicontrol('parent',all.handles.hf,'style','text','units',...
 set(all.handles.hf,'userdata',all)
 
 
-try,getSubplots;end
+try, VBA_getSubplots (); end
 
 
 

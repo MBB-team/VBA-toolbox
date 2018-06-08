@@ -127,7 +127,7 @@ bar(x,n,'parent',ha)
 title(ha,'V[acc(train)]-V[acc(test)] (balanced)')
 
 
-getSubplots
+VBA_getSubplots ();
 
 
 

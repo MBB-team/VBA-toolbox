@@ -377,7 +377,7 @@ display.hpause = uicontrol('parent',display.hfp,'style','toggle','tag','VBLaplac
 %% actually display
 drawnow
 try
-    getSubplots
+    VBA_getSubplots ();
 end
 
 %% save handles and options

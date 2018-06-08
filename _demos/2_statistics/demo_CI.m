@@ -67,4 +67,4 @@ ylabel(ha,'STD[Y|y,m]')
 title(ha,'postdictive standard deviation')
 set(ha,'xlim',[min(X0),max(X0)])
 
-getSubplots
+VBA_getSubplots ();

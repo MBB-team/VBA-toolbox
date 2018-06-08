@@ -361,7 +361,7 @@ handles.ht(3) = uicontrol('parent',handles.hf,'style','pushbutton','units',un,'p
 
 all.handles = handles;
 
-try,getSubplots;end
+try,VBA_getSubplots ();end
 
 function pBP = myBreuschPaganTest(e,X)
 X = [X,ones(size(X,1),1)];
@@ -440,7 +440,7 @@ set(ha,'xlim',[mih,mah])
 xlabel(ha,'predicted data')
 ylabel(ha,'residuals'' moments')
 VBA_title(ha,'residuals'' homoscedasticity')
-try;getSubplots;end
+try;VBA_getSubplots ();end
 
 function myData(e1,e2)
 ud = get(e1,'userdata');

@@ -65,7 +65,7 @@ for i=1:Nmcmc
 %     legend({'p(y=1|theta,phi,m)','binomial data samples'})
 %     [p0,o0] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 %     displayResults(p0,o0,y,x,x0,[],phi,Inf,Inf)
-%     getSubplots
+%     VBA_getSubplots ();
 %     pause
     
     

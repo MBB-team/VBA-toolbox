@@ -140,5 +140,5 @@ plot(ha,[0,1],[0,1],'k--')
 set(ha,'xlim',[0,1],'ylim',[0,1])
 xlabel(ha,'sampled P(r1>r0)')
 ylabel(ha,'evaluated P(r1>r0|y)')
-getSubplots
+VBA_getSubplots ();
 

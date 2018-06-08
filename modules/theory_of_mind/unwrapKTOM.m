@@ -88,7 +88,7 @@ if K > 1
 end
 displayOpParams(ud,1)
 
-try,getSubplots;end
+try, VBA_getSubplots (); end
 
 end
 

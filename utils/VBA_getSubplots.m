@@ -1,46 +1,40 @@
-function getSubplots(ha,big)
-% adds contextmenu to (subplot) axes for whole window display
-% function getSubplots(ha,big)
+function VBA_getSubplots (ha, style)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% VBA_getSubplots (ha, style)
+% adds contextmenu to axes for whole window display of subplots
+%
 % IN:
-%   - ha: axis handle. If left empty, getSubplots equips all axes with its
-%   contextmenu.
-%   - big: structure containing the following fields:
-%       .LineWidth (default=2)
-%       .MarkerSize (default=24)
-%   These are used to reset the graphical object properties when extracting
-%   a subplot.
+%   - ha: optional axis handle. If left empty, equips all axes of the 
+%         current figure
+%   - style: optional structure that define the graphic style of the 
+%         extracted subpplot. It can contain the following fields:
+%     .LineWidth (default=2)
+%     .MarkerSize (default=24)
+%
+% /////////////////////////////////////////////////////////////////////////
 
+% check input parameters
+% =========================================================================
+if nargin < 1
+    ha = findobj(gcf, 'Type', 'axes');
+end
 
-try,ha;catch,ha=[];end
-if ~isempty(ha)
-    set(ha,'visible',get(ha,'visible')) % --> current axes = ha
-    [ha] = getSubplot([],[]);
-    return
+if nargin < 2
+    style = struct ();
 end
-try
-    big;
-    if ~isfield(big,'LineWidth')
-        big.LineWidth = 2;
-    end
-    if ~isfield(big,'MarkerSize')
-        big.MarkerSize = 24;
-    end
-catch
-    big.LineWidth = 2;
-    big.MarkerSize = 24;
-end
+
+VBA_check_struct (style, ...
+    'LineWidth', 2, ...
+    'MarkerSize', 24);
 
 % find all axes (and line objects) and insert uicontextmenus
-ha = findobj('Type','axes');
+% =========================================================================
 for i=1:length(ha)
     if ~isequal(get(ha(i),'Tag'),'legend')
-        hfig = get(ha(i),'parent');
-        % this deals with uipanel, etc:
-        while ~isequal(get(hfig,'type'),'figure')
-            hfig = get(hfig,'parent');
-        end
+        hfig = getParentFigure (ha(i));
         hcmenu = uicontextmenu('parent',hfig);
-        uimenu(hcmenu,'Label','Export axes to figure','Callback',@getSubplot,'userdata',big);
+        uimenu(hcmenu,'Label','Export axes to figure','Callback',@getSubplot,'userdata',style);
         set(ha(i),'uicontextmenu',hcmenu);
         hc = get(ha(i),'children');
         nc = length(hc);
@@ -55,22 +49,19 @@ for i=1:length(ha)
 end
 
 
-function [ha] = getSubplot(ho,tmp)
+% subfunctions
+% #########################################################################
+
+% callback that actually popup the axis to a new figure
+% =========================================================================
+function [ha] = getSubplot (~, ~)
 ha = gca;
-ud.op = get(ha,'parent');
-ud.pos = get(ha,'position');
-ud.unit = get(ha,'units');
-ud.fontsize = get(ha,'fontsize');
 ud.ha = ha;
-stop = 0;
-hp = ha;
-while ~stop
-    hp = get(hp,'parent');
-    if isequal(get(hp,'type'),'figure')
-        ud.col = get(hp,'colormap');
-        stop = 1;
-    end
-end
+ud.op = get (ha, 'parent');
+ud.pos = get (ha, 'position');
+ud.unit = get (ha, 'units');
+ud.fontsize = get (ha, 'fontsize');
+ud.col = get (getParentFigure (ha), 'colormap');
 
 % first deal with potential associated colorbars
 ud.hclb = [];
@@ -153,15 +144,12 @@ set(hlz,'fontsize',16);
 
 set(hf,'visible','on','userdata',ud,'DeleteFcn',{@closeFig,big})
 
-
+% callback that put back the axes in place when closing the popup
+% =========================================================================
 function closeFig(hf,e2,big)
 ud = get(hf,'userdata');
 try
-    hfig = ud.op;
-    % this deals with uipanel, etc:
-    while ~isequal(get(hfig,'type'),'figure')
-        hfig = get(hfig,'parent');
-    end
+    hfig = getParentFigure (ud.op);
     hcmenu = uicontextmenu('parent',hfig);
     uimenu(hcmenu,'Label','Export axes to figure','Callback',@getSubplot,'userdata',big);
     set(ud.ha,'parent',ud.op,'position',ud.pos,'units',ud.unit,'fontsize',ud.fontsize,'uicontextmenu',hcmenu)
@@ -198,7 +186,8 @@ try
     end
 end
 
-
+% 
+% =========================================================================
 function [haa] = findAxes4Colorbar(hclbi,hclb)
 pos0 = get(hclbi,'position');
 ha = intersect(findobj('type','axes'),get(get(hclbi,'parent'),'children'));
@@ -212,26 +201,27 @@ dx2 = pos0(1) - (pos(:,1)+pos(:,3));
 dy1 = pos0(2) - pos(:,2);
 dy2 = pos0(2) - (pos(:,2)+pos(:,4));
 switch get(hclbi,'Location')
-    case {'North','NorthOutside'}
+    case {'North', 'NorthOutside', 'north', 'northoutside'}
         ind = find(dy1>=0);
-        [tmp,subind] = min(dx1(ind).^2+dy2(ind).^2);
+        [~,subind] = min(dx1(ind).^2+dy2(ind).^2);
         haa = ha(ind(subind));
-    case {'South','SouthOutside'}
+    case {'South', 'SouthOutside', 'south', 'southoutside'}
         ind = find(dy1<=0);
-        [tmp,subind] = min(dx1(ind).^2+dy2(ind).^2);
+        [~,subind] = min(dx1(ind).^2+dy2(ind).^2);
         haa = ha(ind(subind));
-    case {'East','EastOutside'}
+    case {'East','EastOutside', 'east', 'eastoutside'}
         ind = find(dx1>=0);
-        [tmp,subind] = min(dy1(ind).^2+dx2(ind).^2);
+        [~,subind] = min(dy1(ind).^2+dx2(ind).^2);
         haa = ha(ind(subind));
-    case {'West','WestOutside'}
+    case {'West','WestOutside', 'west', 'westoutside'}
         ind = find(dx1<=0);
-        [tmp,subind] = min(dy1(ind).^2+dx2(ind).^2);
+        [~,subind] = min(dy1(ind).^2+dx2(ind).^2);
         haa = ha(ind(subind));
 end
         
-        
-    
-
-
-
+% get handle of hosting figure
+% =========================================================================        
+function h = getParentFigure (h)
+    while ~ isequal (get (h, 'type'), 'figure')
+        h = get(h,'parent');
+    end

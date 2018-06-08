@@ -98,7 +98,7 @@ for k = 1:K
     text(muk(1,k),muk(2,k),num2str(k),'color',col(k,:),'parent',handles.ha,'HorizontalAlignment','center','VerticalAlignment','middle','FontSize',14);
 end
 grid(handles.ha,'on')
-try;getSubplots;end
+try;VBA_getSubplots ();end
 
 function lp = getLogNormpdf(muk,vark,X,Y)
 ng = length(X);

@@ -165,6 +165,6 @@ plot(Eu(:),v(:),'.','parent',ha)
 title(ha,'comp')
 xlabel(ha,'estimated utility')
 ylabel(ha,'simulated utility')
-getSubplots
+VBA_getSubplots ();
 
 

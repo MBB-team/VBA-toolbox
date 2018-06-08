@@ -214,7 +214,7 @@ function myDeterministic(hfig)
         VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
     end
     
-    try getSubplots ; end
+    try, VBA_getSubplots (); end
 
     uicontrol( ...
         'parent'          , hfig                        , ...
@@ -290,7 +290,7 @@ function myPriors(hfig)
         VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
     end
 
-    try getSubplots ; end
+    try, VBA_getSubplots (); end
 
 function myConv(hfig)
 
@@ -338,7 +338,7 @@ function myConv(hfig)
         ylabel(ha,'Free energy differences')
         box(ha,'off')
         try
-            getSubplots ;
+            VBA_getSubplots ();
         end
     end
 
@@ -422,7 +422,7 @@ function myKerneli(hObject,evt)
 
     ud.handles = handles;
     set(hfig,'userdata',ud);
-    try, getSubplots; end
+    try, VBA_getSubplots (); end
 
 function myDiagnostics(hfig)
 
@@ -508,7 +508,7 @@ function myDiagnostics(hfig)
     colormap(display.ha(6),col);
     try display.hc(2) = colorbar('peer',display.ha(6)); end
 
-    try getSubplots; end
+    try VBA_getSubplots (); end
 
     
 function myDiagnosticsi(hObject,evt,si)
@@ -571,7 +571,7 @@ function myDiagnosticsi(hObject,evt,si)
     end
     ud.handles = handles;
     set(hfig,'userdata',ud);
-    try, getSubplots; end
+    try, VBA_getSubplots (); end
 
 
 function myVB(hfig)
@@ -621,7 +621,7 @@ function myVB(hfig)
     if dim.n_phi >= 1
         VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
     end
-    try getSubplots; end
+    try VBA_getSubplots (); end
 
 
 %% helpers
