@@ -125,8 +125,8 @@ for i=1:1
     F(i,2) = o{i,2}.F;
 end
 
-pm(:,1) = softmax(F(:,1));
-pm(:,2) = softmax(F(:,2));
+pm(:,1) = VBA_softmax(F(:,1));
+pm(:,2) = VBA_softmax(F(:,2));
 pf1(:,1) = [pm(1,1)+pm(3,1);pm(2,1)+pm(4,1)];
 pf1(:,2) = [pm(1,2)+pm(3,2);pm(2,2)+pm(4,2)];
 pf2(:,1) = [pm(2,1)+pm(3,1);pm(1,1)+pm(4,1)];

@@ -157,7 +157,7 @@ summary = table ( ...
 fprintf('Posterior parameter estimates:\n')
 disp (summary);
 
-p = softmax ([(out.s1.F + out.s2.F + out.s3.F), out.all.F]);
+p = VBA_softmax ([(out.s1.F + out.s2.F + out.s3.F), out.all.F]);
 fprintf ('\nPosterior probability of parameters being shared: %4.3f\n', p(2));
 
 
