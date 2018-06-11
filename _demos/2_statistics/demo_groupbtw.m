@@ -81,20 +81,20 @@ in = find(dr<0);
 pr = 1;
 y0 = VBA_vec(ep(:,in));
 y1 = VBA_vec(ep(:,ip));
-[h0(:,1),g0(:,1)] = empiricalHist(y0,pr);
-[h1(:,1),g1(:,1)] = empiricalHist(y1,pr);
+[h0(:,1),g0(:,1)] = VBA_empiricalDensity(y0,pr);
+[h1(:,1),g1(:,1)] = VBA_empiricalDensity(y1,pr);
 [proc(1),out(1),hf] = doROC(y1,y0);
 set(hf,'name','ROC analysis: EP')
 y0 = VBA_vec(1-bor(:,in));
 y1 = VBA_vec(1-bor(:,ip));
-[h0(:,2),g0(:,2)] = empiricalHist(y0,pr);
-[h1(:,2),g1(:,2)] = empiricalHist(y1,pr);
+[h0(:,2),g0(:,2)] = VBA_empiricalDensity(y0,pr);
+[h1(:,2),g1(:,2)] = VBA_empiricalDensity(y1,pr);
 [proc(2),out(2),hf] = doROC(y1,y0);
 set(hf,'name','ROC analysis: BOR')
 y0 = VBA_vec(pep(:,in));
 y1 = VBA_vec(pep(:,ip));
-[h0(:,3),g0(:,3)] = empiricalHist(y0,pr);
-[h1(:,3),g1(:,3)] = empiricalHist(y1,pr);
+[h0(:,3),g0(:,3)] = VBA_empiricalDensity(y0,pr);
+[h1(:,3),g1(:,3)] = VBA_empiricalDensity(y1,pr);
 [proc(3),out(3),hf] = doROC(y1,y0);
 set(hf,'name','ROC analysis: protected EP')
 hf = figure('color',[1 1 1],'name','group-BMC summary statistics: ROC analysis');

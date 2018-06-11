@@ -40,8 +40,8 @@ end
 % area under the ROC curve
 p = -trapz(1-out.TN,out.TP);
 
-[hp,gp] = empiricalHist(xp(:),1);
-[hn,gn] = empiricalHist(xn(:),1);
+[hp,gp] = VBA_empiricalDensity(xp(:),1);
+[hn,gn] = VBA_empiricalDensity(xn(:),1);
 
 % find FPR=0.05 threshold and power
 d = (0.05-out.FP).^2;

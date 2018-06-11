@@ -95,8 +95,8 @@ end
 % display subfunctions
 % #########################################################################
 function plotBayesFactor (logEvidence_y1, logEvidence_y2)
-    [n1, x1] = empiricalHist ((logEvidence_y1(1,:) - logEvidence_y1(2, :))');
-    [n2, x2] = empiricalHist ((logEvidence_y2(1,:) - logEvidence_y2(2 ,:))');
+    [n1, x1] = VBA_empiricalDensity ((logEvidence_y1(1,:) - logEvidence_y1(2, :))');
+    [n2, x2] = VBA_empiricalDensity ((logEvidence_y2(1,:) - logEvidence_y2(2 ,:))');
     hf = figure ('color' ,'w', 'name', 'demo_modelComparison: distribution of log Bayes factors');
     ha = axes ('parent', hf,'nextplot','add');
     plot (ha, x1, n1, 'color', 'r');
