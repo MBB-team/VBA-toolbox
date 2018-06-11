@@ -51,7 +51,7 @@ catch
     opt.verbose = 0;
 end
 tic
-[mu,sigma,out] = GaussNewton(@objFun,init,opt);
+[mu,sigma,out] = VBA_GaussNewton(@objFun,init,opt);
 curv = -pinv(sigma);
 out.elapsedTime = toc;
     

@@ -1,4 +1,4 @@
-function [m,v] = EVprodX(mu,Sigma)
+function [m,v] = VBA_EVprodX(mu,Sigma)
 % calculates the first two moments of the product of two random variables
 
 % function [m,v] = EVprodX(mu,Sigma)

@@ -1,4 +1,4 @@
-function [opt,sigma,out] = GaussNewton(fname,init,options)
+function [opt,sigma,out] = VBA_GaussNewton(fname,init,options)
 % Gauss-Newton maximization scheme
 
 % Get default options

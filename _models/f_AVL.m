@@ -125,7 +125,7 @@ for i = 1:n
         case {1,2}
             % update x1
             opt.args = {prior(2),prior(3),pxi(i+1)};
-            [out1,out2] = GaussNewton('expBinom',Ex(i),opt);
+            [out1,out2] = VBA_GaussNewton('expBinom',Ex(i),opt);
             if ~isempty(out1)
                 Ex(i+1) = out1;
                 Vx(i+1) = out2;
@@ -142,7 +142,7 @@ for i = 1:n
             mft = 0;%max([0.5.*Vx(2,i).*ee2.*(ee2-prior(3))./tmp.^3,0]);
             P0 = 1./tmp + mft;
             opt.args = {prior(2),1./P0,pxi(i+1)};
-            [out1,out2] = GaussNewton('expBinom',Ex(1,i),opt);
+            [out1,out2] = VBA_GaussNewton('expBinom',Ex(1,i),opt);
             if ~isempty(out1)
                 Ex(1,i+1) = out1;
                 Vx(1,i+1) = out2;
@@ -161,7 +161,7 @@ for i = 1:n
             o.conv = 0;
             init = Ex(2,i);
             while ~o.conv
-                [out1,out2,o] = GaussNewton('VarVolatility',init,opt);
+                [out1,out2,o] = VBA_GaussNewton('VarVolatility',init,opt);
                 init = out1;
             end
             if ~isempty(out1)
