@@ -145,7 +145,7 @@ options.isYout(3,:)=~isResponse;
 disp('*** Inversion');
 
 options.priors = getPriors(nreg,n_t,options,1,0);
-[options.priors.a_sigma, options.priors.b_sigma] = getHyperpriors(y(1:2,:),0.05,0.25) ;
+[options.priors.a_sigma, options.priors.b_sigma] = VBA_guessHyperpriors(y(1:2,:),[0.05, 0.25]) ;
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 
 set(0,'CurrentFigure',f);
