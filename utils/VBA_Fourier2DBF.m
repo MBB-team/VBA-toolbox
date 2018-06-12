@@ -1,4 +1,4 @@
-function [X,X1,X2] = Fourier2DBF(L1,L2,N,dct)
+function [X,X1,X2] = VBA_Fourier2DBF(L1,L2,N,dct)
 % creates 2D Fourier basis functions
 % function X = create2dbf(g1,g2,N)
 % This function evaluates Fourier basis function sets, evaluated on a 2D
