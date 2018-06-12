@@ -84,7 +84,7 @@ VBA_ReDisplay(posterior,out,1)
 n1 = 1e2; % density of grid for R
 n2 = 5e1; % density of grid for t
 N = 4; % # 1D-DCT bsis functions
-X = Fourier2DBF(n1,n2,N,0);
+X = VBA_Fourier2DBF(n1,n2,N,0);
 inb.ind.x = in.ind.t;
 inb.ind.y = in.ind.R;
 inb.gx = linspace(min(VBA_vec(R)),max(VBA_vec(R)),n1);
