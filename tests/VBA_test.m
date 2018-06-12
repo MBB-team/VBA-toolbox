@@ -1,4 +1,8 @@
-function results = VBA_test ()
+function results = VBA_test (subfolder)
     vba_info = VBA_version();
-    results = runtests([vba_info.path filesep 'tests'], 'IncludeSubfolders', true,'UseParallel', true);
+    target = [vba_info.path filesep 'tests'];
+    if nargin > 0
+        target = [target filesep subfolder];
+    end
+    results = runtests(target, 'IncludeSubfolders', true,'UseParallel', true);
 end

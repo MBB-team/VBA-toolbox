@@ -18,8 +18,20 @@ function r2 = VBA_r2 (pred, data, isYout)
 % =========================================================================
 
 % default to no exclusions
-if nargin < 3
+if nargin == 3
+else
     isYout = zeros (size (pred));
+end
+
+% check inputs
+assert (nargin > 1 && nargin < 3, 'VBA_r2: wrong number of arguments');
+assert (all (size (pred) == size (data)), 'VBA_r2: predictions and data must have the same size');
+assert (all (size (isYout) == size (data)), 'VBA_r2: isYout and data must have the same size');
+
+% catch trivial case
+if isempty (data)
+    r2 = nan;
+    return;
 end
 
 % ensure exclusion
