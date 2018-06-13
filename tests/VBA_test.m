@@ -4,5 +4,5 @@ function results = VBA_test (subfolder)
     if nargin > 0
         target = [target filesep subfolder];
     end
-    results = runtests(target, 'IncludeSubfolders', true,'UseParallel', true);
+    results = runtests(target, 'IncludeSubfolders', true);
 end
