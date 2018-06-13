@@ -71,7 +71,7 @@ switch form
             K = numel(suffStat.p);
             y = zeros(K,N);
             for i=1:suffStat.n
-                y = y + num2multi(VBA_sampleFromArbitraryP(suffStat.p, 1:K, N), K);
+                y = y + VBA_indicator(VBA_sampleFromArbitraryP(suffStat.p, 1:K, N), K);
                 if verbose
                     fprintf(1,repmat('\b',1,8))
                     fprintf(1,'%6.2f %%',100*i/suffStat.n)

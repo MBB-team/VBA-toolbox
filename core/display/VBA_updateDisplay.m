@@ -309,7 +309,7 @@ drawnow
             imagesc(gx(s_out,:),'Parent',display.ha(1));
             set(display.ha(1),'Clim',[0 1]) ;
             colormap(flipud(colormap('bone')));
-            plot(display.ha(1),multi2num(y_s_on),'.r');
+            plot(display.ha(1),VBA_indicator(y_s_on, [], true),'.r');
         end
                 
         % update top-right subplot: predicted VS observed data
