@@ -28,7 +28,7 @@ assert (all (size (pred) == size (data)), 'VBA_r2: predictions and data must hav
 assert (all (size (isYout) == size (data)), 'VBA_r2: isYout and data must have the same size');
 
 % catch trivial case
-if isempty (data)
+if isempty (data) || numel(data) < 3
     r2 = nan;
     return;
 end
