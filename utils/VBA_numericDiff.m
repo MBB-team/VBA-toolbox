@@ -46,7 +46,7 @@ function [dfdx, fx] = VBA_numericDiff(fName, idxArg2Diff, varargin)
 epsilon = 1e-4;
 
 % check arguments
-if ischar (fName) || isstring (fName)
+try
     fName = str2func (fName);
 end
 

@@ -23,7 +23,7 @@ if nargin < 3
 end
 
 % check inputs
-assert (nargin > 1 && nargin < 4, 'VBA_r2: wrong number of arguments');
+narginchk(2,3);
 assert (all (size (pred) == size (data)), 'VBA_r2: predictions and data must have the same size');
 assert (all (size (isYout) == size (data)), 'VBA_r2: isYout and data must have the same size');
 
@@ -48,5 +48,5 @@ r2 = max (0, 1 - (SS2_err / SS2_tot));
 end
 
 function s = sumall(z)
-    s = sum (sum (z, 'omitnan'), 'omitnan');
+    s = nansum (nansum (z));
 end

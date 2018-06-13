@@ -6,7 +6,7 @@ tests = functiontests (localfunctions);
 % inputs
 function test_inputs (testCase)
     shouldFail = @() VBA_r2 (rand);
-    testCase.verifyError(shouldFail, '');
+    testCase.verifyError(shouldFail, 'MATLAB:narginchk:notEnoughInputs');
     shouldFail = @() VBA_r2 (rand, rand, rand, rand);
     testCase.verifyError(shouldFail, 'MATLAB:TooManyInputs');
    
@@ -15,8 +15,7 @@ function test_empty (testCase)
     import matlab.unittest.constraints.*
     for k = 0 : 2
         actual = VBA_r2 (ones (1, k), ones (1, k));
-        testCase.verifyThat (actual, IsScalar);
-        testCase.verifyThat (actual, HasNaN);
+        testCase.verifyEqual (actual, nan);
     end
     
 % output
@@ -26,7 +25,6 @@ function test_isInRange (testCase)
     testCase.verifyEqual (actual, 1);
     actual = VBA_r2 (- data, data);
     testCase.verifyEqual (actual, 0);
-    
 
 % correct values
 function test_canonical (testCase)
