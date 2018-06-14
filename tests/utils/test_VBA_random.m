@@ -179,8 +179,58 @@ function test_gamma (testCase)
  
   % -------------------------------------------------------------------------   
 function test_gaussian (testCase)
-    testCase.verifyFail('missing test')
     
+    % + univariate
+    mu_1 = randn ();
+    Sigma_1 = rand () ^ 2;
+    % + multivariate
+    k = 2;
+    mu_k = randn (k, 1);
+    Sigma_k = rand (k);
+    Sigma_k = Sigma_k * Sigma_k';
+    
+     % should fail on invalid parameters
+    shouldFail = @() VBA_random ('Gaussian', mu_1, Sigma_k);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    shouldFail = @() VBA_random ('Gaussian', mu_k, Sigma_k, 2, 2);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    
+    % should return one sample by default
+    % + univariate
+    actual = VBA_random ('Gaussian', mu_1, Sigma_1);
+    testCase.verifyNumElements (actual, 1);
+    % + multivariate
+    actual = VBA_random ('Gaussian', mu_k, Sigma_k);
+    testCase.verifySize (actual, [k, 1]);
+
+    % should return matrix on scalar N
+    N = 5;
+    % + univariate
+    actual = VBA_random ('Gaussian', mu_1, Sigma_1, N);
+    testCase.verifySize (actual, [N, N]);
+    % + multivariate
+    actual = VBA_random ('Gaussian', mu_k, Sigma_k, N);
+    testCase.verifySize (actual, [k, N]);
+     
+    % should return matrix of asked dimension
+    N = num2cell (1 + randi (5, 1, 4));
+    actual = VBA_random ('Gaussian', mu_1, Sigma_1,  N{:});
+    testCase.verifySize (actual, [N{:}]);
+    
+    % should return sample according to distribution
+    % + univariate
+    actual = VBA_random ('Gaussian', mu_1, Sigma_1, 1, 1e6);   
+    % - mean
+    testCase.verifyEqual (mean (actual), mu_1, 'RelTol', 1e-2);
+    % - variance
+    testCase.verifyEqual (var (actual), Sigma_1, 'RelTol', 1e-2);
+    % + multivariate
+    actual = VBA_random ('Gaussian', mu_k, Sigma_k, 1e6);   
+    % - mean
+    testCase.verifyEqual (mean (actual, 2), mu_k, 'RelTol', 1e-2);
+    % - variance
+    testCase.verifyEqual (cov (actual'), Sigma_k, 'RelTol', 1e-2);
+  
 % -------------------------------------------------------------------------   
 function test_multinomial (testCase)
     testCase.verifyFail('missing test')

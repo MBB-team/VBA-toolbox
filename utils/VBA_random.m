@@ -101,17 +101,27 @@ function X = VBA_random (name, varargin)
             
         case 'Gaussian'
             [mu, Sigma, N] = getParam (varargin);
-            if ~ isscalar(mu) || ~ isscalar(Sigma)
-                assert(isscalar (N), '*** VBA_random: N must be scalar for multivariate sampling.');
-                mu = VBA_vec(mu);
-                assert(all(size(Sigma) == numel(mu)),'*** VBA_random: inconsistent moments size');
-            else
+            assert (all (size (Sigma) == numel (mu)), ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: inconsistent moments size');
+
+            % + univariate
+            if isscalar (mu)
                 if isscalar (N)
                     N = {N{1}, N{1}};
                 end
+                X = mu + sqrt (Sigma) * randn (N{:}); 
+                
+            % + multivariate
+            else
+                assert (isscalar (N), ...
+                    'VBA:invalidInput', ...
+                    '*** VBA_random: N must be scalar for multivariate sampling.');
+                mu = VBA_vec (mu);
+                k = numel (mu);
+                X = bsxfun (@plus, sqrtm (Sigma) * randn (k, N{1}), mu) ;  
             end        
-            n = numel(mu);
-            X = bsxfun(@plus, randn (N{:}, n) * sqrtm(Sigma) , mu')' ;
+            
             
         case 'Multinomial'
             % get parameters
