@@ -16,7 +16,7 @@ function X = VBA_random (name, varargin)
             pcdfl = [0; pcdfu(1 : end - 1)];
             
             s = rand (1, prod ([N{:}]));
-            [idx, ~] = find (s <= pcdfu & s > pcdfl);
+            [idx, ~] = find (bsxfun (@le, s, pcdfu) & bsxfun (@gt, s, pcdfl));
             
             X = val(idx,:)';
             
