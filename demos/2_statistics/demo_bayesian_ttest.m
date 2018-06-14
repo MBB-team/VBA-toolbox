@@ -76,7 +76,7 @@ for iteration = 1:n_iteration
             report.alternative.nsample(index) = nsample(i_nsample);
             report.alternative.d(index) = d(i_effect_size);
             x = randn(report.alternative.nsample(index),2).*sigma ...
-                + [0 report.alternative.d(index)];
+                + repmat([0 report.alternative.d(index)],report.alternative.nsample(index),1);
 
             %%% frequentist student-test
             [h,p] = ttest2(x(:,1),x(:,2));
