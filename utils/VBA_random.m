@@ -30,6 +30,14 @@ function X = VBA_random (name, varargin)
         case 'Dirichlet'
             
         case 'Gamma'
+             % get parameters
+            [a, b, N] = getParam (varargin);       
+            % sample
+            try
+                X = gamrnd (a, b, N{:});
+            catch
+                X = VBA_spm_gamrnd (a, b, N{:});
+            end
             
         case 'Gaussian'
             
