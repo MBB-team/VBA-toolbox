@@ -1,6 +1,5 @@
 function X = VBA_random (name, varargin)
 
-
     switch name
         case 'Arbitrary'
             % get parameters
@@ -29,6 +28,9 @@ function X = VBA_random (name, varargin)
         case 'Bernoulli'
             % get parameters
             [p, N] = getParam (varargin);
+            assert (isscalar (p) && VBA_isInRange (p, [0, 1]), ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: p must be a scalar between 0 and 1.');
             % sample
             try
                 X = binornd (1, p, N{:});
@@ -38,7 +40,13 @@ function X = VBA_random (name, varargin)
             
         case 'Binomial'
             % get parameters
-            [n, p, N] = getParam (varargin);       
+            [n, p, N] = getParam (varargin);
+            assert (isscalar (n) && n > 0 && rem (n, 1) == 0, ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: n must be a positive integer.');
+            assert (isscalar (p) && VBA_isInRange (p, [0, 1]), ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: p must be a scalar between 0 and 1.');
             % sample
             try
                 X = binornd (n, p, N{:});
@@ -49,30 +57,41 @@ function X = VBA_random (name, varargin)
             
         case 'Categorical'
             [p, N] = getParam (varargin); 
+            assert (isvector (p) && numel (p) > 1 && sum (p) - 1 < 1e-15, ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: p must be a vector summing to one.');
             X = VBA_random ('Arbitrary', p, 1 : numel(p), N{:});
       
         case 'Dirichlet'
             % get parameters
-            [alphas, N] = getParam (varargin); 
-            assert (numel (N) == 1, '*** VBA_random: N must be scalar for multivariate sampling.');
+            [alpha, N] = getParam (varargin); 
+            assert (isvector (alpha) && numel (alpha) > 1 && all (alpha > 0), ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: alpha must be a vector of positive values.');
+            assert (numel (N) == 1, ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: N must be scalar for multivariate sampling.');
             N = N{1};
             % sample
-            K = numel (alphas);
+            K = numel (alpha);
             scale = 1;
             try
-                r = gamrnd (repmat(alphas(:), 1, N), scale, K, N);
+                r = gamrnd (repmat(alpha(:), 1, N), scale, K, N);
                 r(isinf (r)) = realmax;
             catch 
                 r = zeros (K, N);
                 for k = 1 : K
-                    r(k, :) = VBA_spm_gamrnd (alphas(k), scale, N);
+                    r(k, :) = VBA_spm_gamrnd (alpha(k), scale, N);
                 end
             end
             X = bsxfun (@rdivide, r, sum(r));
            
         case 'Gamma'
              % get parameters
-            [a, b, N] = getParam (varargin);       
+            [a, b, N] = getParam (varargin);  
+            assert (isscalar (a) && isscalar(b) && all ([a, b] > 0), ...
+                'VBA:invalidInput', ...
+                '*** VBA_random: a and b must be positive scalars.');
             % sample
             try
                 X = gamrnd (a, b, N{:});
