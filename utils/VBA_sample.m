@@ -1,4 +1,4 @@
-function y = VBA_sample(form,suffStat,N,verbose)
+function y = VBA_sample(form,suffStat,N)
 % samples from exponential family probability distribution functions
 % function y = VBA_sample(form,ss,N,verbose)
 % IN:
@@ -18,14 +18,11 @@ function y = VBA_sample(form,suffStat,N,verbose)
 % NOTE: by default, this function tries to use Matlab pseudo-random
 % samplers. It reverts to SPM in case these functions cannot be called.
 
-if verbose
-    fprintf(1,['Sampling from ',form,' distribution... ']);
-    fprintf(1,'%6.2f %%',0)
-end
 switch form
     
     case 'gaussian'
         S = VBA_getISqrtMat(suffStat.Sigma,0);
+        
         n = size(suffStat.mu,1);
         y = repmat(suffStat.mu,1,N) + S*randn(n,N);
         
@@ -36,10 +33,6 @@ switch form
             y = zeros(1,N);
             for i=1:N
                 y(i) = VBA_spm_gamrnd(suffStat.a,suffStat.b);
-                if mod(i,N./20) < 1 && verbose
-                    fprintf(1,repmat('\b',1,8))
-                    fprintf(1,'%6.2f %%',100*i/N)
-                end
             end
         end
         
@@ -57,10 +50,23 @@ switch form
                     r(k) = VBA_spm_gamrnd(suffStat.d(k),1);
                 end
                 y(:,i) = r./sum(r);
-                if mod(i,N./20) < 1 && verbose
-                    fprintf(1,repmat('\b',1,8))
-                    fprintf(1,'%6.2f %%',100*i/N)
-                end
+            end
+        end
+        
+    case 'bernoulli'
+        try
+            y = binornd (1, suffStat.p, 1, N);
+        catch 
+            y = + (rand (1, N) <= suffStat.p);
+        end
+        
+    case 'binomial'
+        try
+            y = binornd (suffStat.n, suffStat.p, 1, N);
+        catch 
+            y = zeros (1, N);
+            for i = 1 : suffStat.n
+                y = y + VBA_sample ('bernoulli', suffStat, N);
             end
         end
         
@@ -72,17 +78,7 @@ switch form
             y = zeros(K,N);
             for i=1:suffStat.n
                 y = y + VBA_indicator(VBA_sampleFromArbitraryP(suffStat.p, 1:K, N), K);
-                if verbose
-                    fprintf(1,repmat('\b',1,8))
-                    fprintf(1,'%6.2f %%',100*i/suffStat.n)
-                end
             end
         end
         
 end
-if verbose
-    fprintf(1,repmat('\b',1,8))
-    fprintf(' OK.')
-    fprintf('\n')
-end
-

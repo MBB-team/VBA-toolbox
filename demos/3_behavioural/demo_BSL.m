@@ -21,7 +21,7 @@ P = repmat([p,1-p,p,1-p],1,N); % probabilistic repetition of [1 0 0 1]
 % P = repmat(p,1,N); % probabilistic repetition of [1 0 0 1]
 y = zeros(1,N);
 for i=1:N
-    tmp = VBA_sample('multinomial',struct('p',[P(i);1-P(i)],'n',1),1,0);
+    tmp = VBA_sample('multinomial',struct('p',[P(i);1-P(i)],'n',1),1);
     y(i) = tmp(1);
 end
 a = zeros(1,N);
@@ -37,7 +37,7 @@ for i=K+2:N
         x(:,i) = f_BSL(x(:,i-1),theta,u(:,i),options.inF);
     end
     gx(i) = g_BSL(x(:,i),phi,u(:,i),options.inG);
-    tmp = VBA_sample('multinomial',struct('p',[gx(i);1-gx(i)],'n',1),1,0);
+    tmp = VBA_sample('multinomial',struct('p',[gx(i);1-gx(i)],'n',1),1);
     a(i) = tmp(1);%gx(i)>.5;
 end
 hf = figure('color',[1 1 1]);

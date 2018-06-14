@@ -19,7 +19,7 @@ ep = ones(K,1);
 c = [1;-1];
 switch form
     case 'gaussian'
-        r_samp = VBA_sample('gaussian',struct('mu',mu,'Sigma',Sigma),Nsamp,verbose)';
+        r_samp = VBA_sample('gaussian',struct('mu',mu,'Sigma',Sigma),Nsamp)';
         [y,j] = max(r_samp,[],2);
         tmp = histc(j,1:length(mu))';
         ep = tmp/Nsamp;
@@ -34,7 +34,7 @@ switch form
         end
         ep = ep./sum(ep);
     case 'dirichlet'
-        r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp,verbose);
+        r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp);
         [y,j]  = max(r_samp);
         if any (isnan (VBA_vec (y))) % remove failed samples in limit cases
             j(isnan(y)) = []; 
