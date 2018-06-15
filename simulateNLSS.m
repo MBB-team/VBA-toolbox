@@ -144,10 +144,7 @@ for t = 1:dim.n_t
     if dim.n > 0  
         Cx = inv (iQx{t}) / alpha ;
         eta(:,t) = VBA_random ('Gaussian', zeros (dim.n, 1), Cx) ;
-        x(:,t+1) = VBA_evalFun('f',x(:,t),theta,u(:,t),options,dim,t) + eta(:,t);    
-        if VBA_isWeird (x(:, t + 1))
-            error('simulateNLSS: evolution function produced weird values!');
-        end
+        x(:,t+1) = VBA_evalFun('f',x(:,t),theta,u(:,t),options,dim,t) + eta(:,t);
     end
 
     % Evaluate observation function at current hidden state
@@ -194,6 +191,11 @@ end
 %unstack X0
 x(:,1) = [];
 
+% checks
+if VBA_isWeird (x)
+    error('simulateNLSS: evolution function produced weird values!');
+end
+        
 % Display progress
 VBA_disp({ ...
     repmat('\b',1,9)                                        ,...
