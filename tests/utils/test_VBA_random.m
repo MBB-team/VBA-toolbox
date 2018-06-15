@@ -5,7 +5,57 @@ tests = functiontests (localfunctions);
 
 % -------------------------------------------------------------------------   
 function test_arbitrary (testCase)
-    testCase.verifyFail('missing test')
+    K = 3;
+    p = rand (K, 1);
+    p = p / sum (p);
+    vals_1 = 'abc';
+    vals_k = ['ab'; 'cd'; 'ef'];
+    M = size(vals_k, 2);
+    
+    % should fail on invalid parameters
+    shouldFail = @() VBA_random ('Arbitrary', [0.5; 0.5], vals_1);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    shouldFail = @() VBA_random ('Arbitrary', ones(3, 1), vals_1);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    shouldFail = @() VBA_random ('Arbitrary', p, vals_k, 8, 8);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    
+    % should return one sample by default
+    actual = VBA_random ('Arbitrary', p, vals_1);
+    testCase.verifyNumElements (actual, 1);
+    actual = VBA_random ('Arbitrary', p, vals_k);
+    testCase.verifySize (actual, [M, 1]);
+    
+    % should return matrix on scalar N
+    N = 8;
+    actual = VBA_random ('Arbitrary', p, vals_1, N);
+    testCase.verifySize (actual, [N, N]);
+    actual = VBA_random ('Arbitrary', p, vals_k, N);
+    testCase.verifySize (actual, [M, N]);
+    
+    % should return matrix of asked dimension
+    N = num2cell (1 + randi (5, 1, 4));
+    actual = VBA_random ('Arbitrary', p, vals_1, N{:});
+    testCase.verifySize (actual, [N{:}]);
+    
+    % should return sample according to distribution
+    % + univariate
+    actual = VBA_random ('Arbitrary', p, vals_1, 1, 1e6);   
+    % - support
+    testCase.verifyEqual (unique (actual), vals_1);
+    % + density
+    for i = 1 : numel (p)
+        testCase.verifyEqual (mean (actual == vals_1(i)), p(i), 'AbsTol', 1e-2);
+    end 
+    % + multivariate
+    actual = VBA_random ('Arbitrary', p, vals_k, 1e6);   
+    % - support
+    testCase.verifyEqual (unique (actual', 'rows'), vals_k);
+    % + density
+    for i = 1 : numel (p)
+        isEq = all(bsxfun(@eq, actual, vals_k(i,:)'));
+        testCase.verifyEqual (mean (isEq, 2), p(i), 'AbsTol', 1e-2);
+    end 
 
 % -------------------------------------------------------------------------   
 function test_bernoulli (testCase)
@@ -33,7 +83,7 @@ function test_bernoulli (testCase)
     % should return sample according to distribution
     actual = VBA_random ('Bernoulli', p, 1, 1e6);   
     % + support
-    testCase.verifyEqual (sort (unique (actual)), [0 1]);
+    testCase.verifyEqual (unique (actual), [0 1]);
     % + mean
     testCase.verifyEqual (mean (actual), p, 'AbsTol', 1e-2);
  
@@ -65,7 +115,8 @@ function test_binomial (testCase)
     % should return sample according to distribution
     actual = VBA_random ('Binomial', n, p, 1, 1e6);   
     % + support
-    testCase.verifyEqual (sort (unique (actual)), 0 : n);
+    testCase.verifyEqual (unique (actual), 0 : n);
+
     % + mean
     testCase.verifyEqual (mean (actual), n * p, 'AbsTol', 1e-2);
     % + variance
@@ -103,7 +154,7 @@ function test_categorical (testCase)
     % should return sample according to distribution
     actual = VBA_random ('Categorical', p, 1, 1e6);   
     % + support
-    testCase.verifyEqual (sort (unique (actual)), 1 : K);
+    testCase.verifyEqual (unique (actual), 1 : K);
     % + mean
     testCase.verifyEqual (mean (actual), (1 : K) * p, 'AbsTol', 1e-2);
    % + density
@@ -221,16 +272,53 @@ function test_gaussian (testCase)
     % + univariate
     actual = VBA_random ('Gaussian', mu_1, Sigma_1, 1, 1e6);   
     % - mean
-    testCase.verifyEqual (mean (actual), mu_1, 'RelTol', 1e-2);
+    testCase.verifyEqual (mean (actual), mu_1, 'AbsTol', 1e-2);
     % - variance
-    testCase.verifyEqual (var (actual), Sigma_1, 'RelTol', 1e-2);
+    testCase.verifyEqual (var (actual), Sigma_1, 'AbsTol', 1e-2);
     % + multivariate
     actual = VBA_random ('Gaussian', mu_k, Sigma_k, 1e6);   
     % - mean
-    testCase.verifyEqual (mean (actual, 2), mu_k, 'RelTol', 1e-2);
+    testCase.verifyEqual (mean (actual, 2), mu_k, 'AbsTol', 1e-2);
     % - variance
-    testCase.verifyEqual (cov (actual'), Sigma_k, 'RelTol', 1e-2);
+    testCase.verifyEqual (cov (actual'), Sigma_k, 'AbsTol', 1e-2);
   
 % -------------------------------------------------------------------------   
 function test_multinomial (testCase)
-    testCase.verifyFail('missing test')
+    n = 2;
+    K = 3;
+    p = rand (K, 1);
+    p = p / sum(p);
+    
+    % should fail on invalid parameters
+    shouldFail = @() VBA_random ('Multinomial',0, p);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    shouldFail = @() VBA_random ('Multinomial',n, .5);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    shouldFail = @() VBA_random ('Multinomial',n, [1; 1]);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    shouldFail = @() VBA_random ('Multinomial',n, p, 8, 8);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
+
+    % should return one sample by default
+    actual = VBA_random ('Multinomial', n, p);
+    testCase.verifySize (actual, [K, 1]);
+    
+    % should return matrix on scalar N
+    N = 8;
+    actual = VBA_random ('Multinomial', n, p, N);
+    testCase.verifySize (actual, [K, N]);
+    
+    % should return sample according to distribution
+    N = 1e6;
+    actual = VBA_random ('Multinomial', n, p, N);   
+    % + support
+    testCase.verifyEqual (unique (actual)', 0 : n);
+    testCase.verifyEqual (sum (actual), n * ones (1, N), 'AbsTol', 1e-13);
+    % + density
+    for i = 1 : K
+        expected = n * p(i);
+        testCase.verifyEqual (mean (actual(i, :)), expected, 'AbsTol', 1e-2);
+        expected = n * p(i) * (1 - p(i));
+        testCase.verifyEqual (var (actual(i, :)), expected, 'AbsTol', 1e-2);
+    end  
+    
