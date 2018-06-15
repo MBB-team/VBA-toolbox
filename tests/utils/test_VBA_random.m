@@ -15,7 +15,7 @@ function test_arbitrary (testCase)
     % should fail on invalid parameters
     shouldFail = @() VBA_random ('Arbitrary', [0.5; 0.5], vals_1);
     testCase.verifyError(shouldFail, 'VBA:invalidInput');
-    shouldFail = @() VBA_random ('Arbitrary', ones(3, 1), vals_1);
+    shouldFail = @() VBA_random ('Arbitrary', zeros (3, 1), vals_1);
     testCase.verifyError(shouldFail, 'VBA:invalidInput');
     shouldFail = @() VBA_random ('Arbitrary', p, vals_k, 8, 8);
     testCase.verifyError(shouldFail, 'VBA:invalidInput');
@@ -59,7 +59,6 @@ function test_arbitrary (testCase)
 
 % -------------------------------------------------------------------------   
 function test_bernoulli (testCase)
-
     p = rand ();
 
     % should fail on invalid probability
@@ -134,7 +133,7 @@ function test_categorical (testCase)
     p = p / sum(p);
 
     % should fail on invalid parameters
-    shouldFail = @() VBA_random ('Categorical', rand);
+    shouldFail = @() VBA_random ('Categorical', zeros (K, 1));
     testCase.verifyError(shouldFail, 'VBA:invalidInput');
     
     % should return one sample by default
