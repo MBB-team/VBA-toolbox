@@ -1,11 +1,17 @@
 function [X] = sampleFromArbitraryP (p, gridX ,N)
 % legacy code
 s = warning ('on');
-warning ('*** The function `sampleFromArbitraryP` is now deprecated and has beend renamed `VBA_sampleFromArbitraryP`.') 
+warning ('*** The function `sampleFromArbitraryP` is now deprecated. Please see `VBA_random` for an alternative.') 
 warning (s);
 
 % fallback
 if nargin < 3
     N = 1;
 end
-[X] = VBA_sampleFromArbitraryP (p, gridX ,N);
+
+if isvector (gridX)
+    N = {N, 1};
+else
+    N = {N};
+end
+X = VBA_random ('Arbitrary', p, gridX, N{:});
