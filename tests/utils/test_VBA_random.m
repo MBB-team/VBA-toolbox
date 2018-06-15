@@ -64,6 +64,9 @@ function test_bernoulli (testCase)
     % should fail on invalid probability
     shouldFail = @() VBA_random ('Bernoulli', -3);
     testCase.verifyError(shouldFail, 'VBA:invalidInput');
+    % should fail on invalid size
+    shouldFail = @() VBA_random ('Bernoulli', rand (3), 2);
+    testCase.verifyError(shouldFail, 'VBA:invalidInput');
 
     % should return one sample by default
     actual = VBA_random ('Bernoulli', p);
@@ -73,10 +76,14 @@ function test_bernoulli (testCase)
     N = 3;
     actual = VBA_random ('Bernoulli', p, N);
     testCase.verifySize (actual, [N, N]);
-     
+    
     % should return matrix of asked dimension
     N = num2cell (1 + randi (5, 1, 4));
     actual = VBA_random ('Bernoulli', p,  N{:});
+    testCase.verifySize (actual, [N{:}]);
+    
+    % should return matrix on matrix p
+    actual = VBA_random ('Bernoulli', rand (N{:}));
     testCase.verifySize (actual, [N{:}]);
     
     % should return sample according to distribution
@@ -85,7 +92,12 @@ function test_bernoulli (testCase)
     testCase.verifyEqual (unique (actual), [0 1]);
     % + mean
     testCase.verifyEqual (mean (actual), p, 'AbsTol', 1e-2);
- 
+    
+    % should deal with nan
+    actual = VBA_random ('Bernoulli', [p NaN]);   
+    testCase.verifyTrue (~ isnan (actual(1)));
+    testCase.verifyTrue (isnan (actual(2)));
+    
 % -------------------------------------------------------------------------   
 function test_binomial (testCase)
     n = 2;
@@ -320,4 +332,9 @@ function test_multinomial (testCase)
         expected = n * p(i) * (1 - p(i));
         testCase.verifyEqual (var (actual(i, :)), expected, 'AbsTol', 1e-2);
     end  
+    
+    % should deal with nan
+    actual = VBA_random ('Multinomial', n, nan(K, 1));
+    testCase.verifySize (actual, [K, 1]);
+    testCase.verifyTrue (all (isnan (actual)));
     

@@ -18,6 +18,6 @@ for i=2:n
        nk(k) = sum(x1(1:i-1)==k);
    end
    p = [nk;alpha]./(alpha+i-1);
-   gridX = [1:Ki+1]';
-   [x1(i)] = VBA_sampleFromArbitraryP(p,gridX,1);
+   x1(i) = VBA_random ('Categorical', p);
+   
 end

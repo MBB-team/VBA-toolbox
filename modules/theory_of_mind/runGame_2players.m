@@ -41,11 +41,10 @@ x2 = [];
 x1(:,1) = x01 + stdx.*randn(size(x01));
 x2(:,1) = x02;
 g1(1) = g_p1(x1(:,1),phi1,NaN(3,1),inG1);
-tmp = VBA_sample('multinomial',struct('p',[g1(1);1-g1(1)],'n',1));
-y1(1) = tmp(1);
+y1(1) = VBA_random ('Bernoulli', g1(1));
 g2(1) = g_p2(x2(:,1),phi2,NaN(3,1),inG2);
-tmp = VBA_sample('multinomial',struct('p',[g2(1);1-g2(1)],'n',1));
-y2(1) = tmp(1);
+y2(1) = VBA_random ('Bernoulli', g2(1));
+
 rew(1,1) = payoffTable2(2-y1(1),2-y2(1),1);
 rew(2,1) = payoffTable2(2-y1(1),2-y2(1),2);
 
@@ -66,11 +65,11 @@ for t=2:nt
     x1(:,t) = x1(:,t) + stdx.*randn(size(x1(:,t)));
     % act
     g1(t) = g_p1(x1(:,t),phi1,u1,inG1);
-    tmp = VBA_sample('multinomial',struct('p',[g1(t);1-g1(t)],'n',1),1);
-    y1(t) = tmp(1);
+    y1(t) = VBA_random ('Bernoulli', g1(t));
+
     g2(t) = g_p2(x2(:,t),phi2,u2,inG2);
-    tmp = VBA_sample('multinomial',struct('p',[g2(t);1-g2(t)],'n',1),1);
-    y2(t) = tmp(1);
+    y2(t) = VBA_random ('Bernoulli', g2(t));
+
     % perf
     rew(1,t) = payoffTable1(2-y1(t),2-y2(t),1);
     rew(2,t) = payoffTable2(2-y1(t),2-y2(t),2);

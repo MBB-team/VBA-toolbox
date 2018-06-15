@@ -4,7 +4,6 @@ function X = VBA_random (name, varargin)
         case 'Arbitrary'
             % get parameters
             [p, val, N] = getParam (varargin);
-            
             assert (isvector (p) && numel (p) > 1 && abs(sum (p) - 1) < 1e-15, ...
                 'VBA:invalidInput', ...
                 '*** VBA_random: p must be a vector summing to one.');
@@ -42,15 +41,30 @@ function X = VBA_random (name, varargin)
         case 'Bernoulli'
             % get parameters
             [p, N] = getParam (varargin);
-            assert (isscalar (p) && VBA_isInRange (p, [0, 1]), ...
+            assert (VBA_isInRange (p(~ isnan(p)), [0, 1]), ...
                 'VBA:invalidInput', ...
-                '*** VBA_random: p must be a scalar between 0 and 1.');
+                '*** VBA_random: p must be between 0 and 1.');
+            if ~ isscalar (p) 
+                if isscalar (N) && N{1} == 1
+                    N = num2cell (size (p));
+                else
+                    assert (all (size (p) == [N{:}]), ...
+                    'VBA:invalidInput', ...
+                    '*** VBA_random: size information is inconsistent.');
+                end
+            else
+                if isscalar (N)
+                    N = {N{1}, N{1}};
+
+                end
+            end
             % sample
             try
                 X = binornd (1, p, N{:});
             catch
                 X = + (rand (N{:}) <= p);
             end
+            X(isnan (p)) = nan;
             
         case 'Binomial'
             % get parameters
@@ -137,16 +151,20 @@ function X = VBA_random (name, varargin)
         case 'Multinomial'
             % get parameters
             [n, p, N] = getParam (varargin); 
+
+            assert (isscalar (N), ...
+                 'VBA:invalidInput', ...
+                 '*** VBA_random: N must be scalar for multivariate sampling.');
+            if any (isnan (p))
+                X = nan (numel(p), N{1});
+                return
+            end
             assert (isscalar (n) && n > 0 && rem (n, 1) == 0, ...
                 'VBA:invalidInput', ...
                 '*** VBA_random: n must be a positive integer.');
             assert (isvector (p) && numel (p) > 1 && abs(sum (p) - 1) < 1e-15, ...
                 'VBA:invalidInput', ...
                 '*** VBA_random: p must be a vector summing to one.');
-            assert (isscalar (N), ...
-                 'VBA:invalidInput', ...
-                 '*** VBA_random: N must be scalar for multivariate sampling.');
-                
             % sample
             X = zeros (numel (p), N{1});
             for i = 1 : n

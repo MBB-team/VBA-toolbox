@@ -58,9 +58,7 @@ end
 % Then sample outcome identity from binomial pdf:
 x1 = zeros(1,n_t);
 seed = 1e4*rand;
-for t=1:n_t
-    x1(t) = VBA_random ('Bernoulli', sx2(t));
-end
+x1 = VBA_random ('Bernoulli', sx2);
 
 % Finally, sample visual outcome from GMM ...
 u = zeros(2,n_t);
