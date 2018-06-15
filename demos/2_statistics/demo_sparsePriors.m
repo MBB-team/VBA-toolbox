@@ -26,7 +26,7 @@ plot(ha,gx,ps,'k')
 title(ha,'Laplacian pdf (sparse)')
 
 N = 1e6;
-X = mu + sqrt(v)*randn(N,1);
+X = VBA_random ('Gaussian', mu, v, N, 1);
 [n,x] = hist(X,1e2);
 n = n./sum(n);
 ha = subplot(3,2,3,'parent',hf);
