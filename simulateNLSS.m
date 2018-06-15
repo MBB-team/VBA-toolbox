@@ -77,7 +77,7 @@ dim = VBA_check_struct(dim, ...
     'n_t'      , n_t              ...
     );
 
-try, options.inG; catch, options.inG = []; end
+try, options.inG; catch, options.inG = struct (); end
 try, U = u(:,1);  catch, U = zeros(size(u,1),1); end
 dim.p = size(g_fname(zeros(dim.n,1),phi,U,options.inG),1);
 
@@ -115,7 +115,6 @@ y   = zeros(dim.p,dim.n_t);
 n_sources=numel(options.sources);
 sgi = find([options.sources(:).type]==0) ;
 
-
 % === Simulate timeseries
 
 % Initial hidden-states value
@@ -123,10 +122,7 @@ if dim.n > 0
     try
         x0;
     catch
-        x0 = options.priors.muX0;
-        sQ0 = VBA_getISqrtMat(options.priors.SigmaX0,0);
-        x0 = x0 + sQ0*randn(dim.n,1);
-        clear sQ0
+        x0 = VBA_random ('Gaussian', options.priors.muX0, options.priors.SigmaX0);
     end
 else
     x0 = zeros(dim.n,1);
@@ -145,12 +141,12 @@ VBA_disp({ ...
 for t = 1:dim.n_t
        
     % Evaluate evolution function at past hidden state   
-    if dim.n > 0
-        x(:,t+1) = VBA_evalFun('f',x(:,t),theta,u(:,t),options,dim,t) ;
-        if ~isinf(alpha)
-            Cx = VBA_getISqrtMat(iQx{t});
-            eta(:,t) = (1./sqrt(alpha))*Cx*randn(dim.n,1);
-            x(:,t+1) = x(:,t+1) + eta(:,t);
+    if dim.n > 0  
+        Cx = inv (iQx{t}) / alpha ;
+        eta(:,t) = VBA_random ('Gaussian', zeros (dim.n, 1), Cx) ;
+        x(:,t+1) = VBA_evalFun('f',x(:,t),theta,u(:,t),options,dim,t) + eta(:,t);    
+        if VBA_isWeird (x(:, t + 1))
+            error('simulateNLSS: evolution function produced weird values!');
         end
     end
 
@@ -162,32 +158,19 @@ for t = 1:dim.n_t
         switch options.sources(i).type
             % gaussian
             case 0 
-                sigma_i = sigma(find(sgi==i)) ;
-                if ~isinf(sigma_i)
-                	C = VBA_getISqrtMat(iQy{t,find(sgi==i)});
-                    e(s_idx,t) = (1./sqrt(sigma_i))*C*randn(length(s_idx),1);
-                end
-                y(s_idx,t) = gt(s_idx) + e(s_idx,t) ;
+                C = inv (iQy{t, sgi == i}) / sigma(sgi == i) ;
+                y(s_idx,t) =  VBA_random ('Gaussian', gt(s_idx), C) ;
             % binomial
             case 1
-                for k=1:length(s_idx)
-                    y(s_idx(k),t) = VBA_sampleFromArbitraryP([gt(s_idx(k)),1-gt(s_idx(k))],[1,0]',1);
-                end
+                y(s_idx, t) = VBA_random ('Bernoulli', gt(s_idx));
+                
         	% multinomial
             case 2
-                resp = zeros(length(s_idx),1) ;
-                respIdx = VBA_sampleFromArbitraryP(gt(s_idx),1:length(s_idx),1) ;
-                if ~isnan(respIdx)
-                    resp(respIdx) = 1;
-                    y(s_idx,t) = resp;
-                else
-                    y(s_idx,t) = NaN;
-                end
+                y(s_idx, t) = VBA_random ('Multinomial', 1, gt(s_idx));
         end
         
     end
     e(:,t) = y(:,t) - gt;
-    
     
     % fill in next input with last output and feedback
     if feedback && t < dim.n_t
@@ -204,10 +187,6 @@ for t = 1:dim.n_t
             repmat('\b',1,9) ,  ...
             sprintf('%6.2f %%%%',floor(100*t/dim.n_t)), ...
         }, options);
-    end
-    
-    if VBA_isWeird ({x(:,t)}) %,y(:,t)
-        break
     end
     
 end
