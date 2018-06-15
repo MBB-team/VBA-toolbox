@@ -95,34 +95,30 @@ for t = 1:n_t
     if extended
         dq(options.inF.r) = 100;
     end
-    priors.iQx{t} = diag(dq);
-%     dq = [ones(1,nreg)];
-%     priors.iQy{t,1} = diag(dq);         
+    priors.iQx{t} = diag(dq);         
 end
+
 % muxer
-if isfield(options,'sources')
-    g_source = [options.sources(:).type]==0;
-    n_sources = numel(options.sources(g_source));
-    dim_y = [options.sources(g_source).out];
-else
-    n_sources=1;
-    dim_y=nreg;
-end
-for n=1:n_sources % default variance for other sources
-    try 
-        prec=options.sources(n).prec;
-    catch
-        prec=1;
+try
+gsi = find ([options.sources.type] == 0);
+n_Gsources = numel(gsi);
+for n=1:n_Gsources
+    for t = 1 : n_t
+        dim_y = numel (options.sources(gsi(n)).out);
+        priors.iQy{t,n} = eye(dim_y);         
     end
-    for t = 1:n_t
-        dq = [ones(1,numel(dim_y(n)))];
-        priors.iQy{t,n} = diag(dq);         
+end
+
+catch
+    n_Gsources = 1;
+    for t = 1 : n_t
+        priors.iQy{t,n} = eye(nreg);         
     end
 end
 
 %= precision hyperparameters
-priors.a_sigma = 1e0*ones(n_sources,1);
-priors.b_sigma = 1e0*ones(n_sources,1);
+priors.a_sigma = 1e0*ones(n_Gsources,1);
+priors.b_sigma = 1e0*ones(n_Gsources,1);
 if ~stochastic
     priors.a_alpha = Inf;
     priors.b_alpha = 0;

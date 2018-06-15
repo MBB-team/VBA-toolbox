@@ -170,7 +170,9 @@ if ~isfield(options,'figName')
     end
 end
 
-% ensure excluded data consistency (gaussian sources)
+% % ensure excluded data consistency (gaussian sources)
+% TODO: remove once VBA_Iphi deal with isYout
+if numel(options.sources) == 1
 gsi = find([options.sources.type]==0);
 for i=1:numel(gsi)
     for t=1:dim.n_t
@@ -178,6 +180,7 @@ for i=1:numel(gsi)
         options.isYout(options.sources(gsi(i)).out,t) = ~diQ;
         priors.iQy{t,i} = diag(diQ)*priors.iQy{t,i}*diag(diQ);
     end
+end
 end
 
 % store evolution/observation function handles
