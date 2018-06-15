@@ -14,9 +14,7 @@ function [x] = VBA_finiteBinomial(x, lim)
 % /////////////////////////////////////////////////////////////////////////
 
 % set default
-try
-    lim;
-catch
+if nargin < 2
     lim = 1e-8;
 end
 

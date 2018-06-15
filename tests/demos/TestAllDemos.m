@@ -8,8 +8,8 @@ classdef TestAllDemos < matlab.unittest.TestCase
         function testDemo (testCase, demo)         
             setup = 'pause off; warning off; ' ;
             try
-                %evalin ('base', [setup demo ' ; close all'])
-                evalc ([setup demo ' ; close all']);
+                evalin ('base', [setup demo ' ; close all'])
+                %evalc ([setup demo ' ; close all']);
             catch err
                 testCase.verifyFail (err.message);
             end

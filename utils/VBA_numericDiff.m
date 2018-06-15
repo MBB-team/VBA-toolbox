@@ -45,11 +45,6 @@ function [dfdx, fx] = VBA_numericDiff(fName, idxArg2Diff, varargin)
 % perturbation scale
 epsilon = 1e-4;
 
-% check arguments
-try
-    fName = str2func (fName);
-end
-
 % shortcut
 fArgs = varargin;
 
