@@ -19,10 +19,11 @@ ep = ones(K,1);
 c = [1;-1];
 switch form
     case 'gaussian'
-        r_samp = VBA_sample('gaussian',struct('mu',mu,'Sigma',Sigma),Nsamp)';
-        [y,j] = max(r_samp,[],2);
-        tmp = histc(j,1:length(mu))';
-        ep = tmp/Nsamp;
+        r_samp = VBA_random ('Gaussian', mu, Sigma, Nsamp);
+        [~, j] = max (r_samp);
+        tmp = histc (j, 1 : length (mu));
+        ep = tmp / Nsamp;
+        
     case 'gaussian2'
         for k=1:K
             for l=setdiff(1:K,k)
@@ -33,16 +34,17 @@ switch form
             end
         end
         ep = ep./sum(ep);
+        
     case 'dirichlet'
-        r_samp = VBA_sample('dirichlet',struct('d',mu),Nsamp);
-        [y,j]  = max(r_samp);
+        r_samp = VBA_random ('Dirichlet', mu, Nsamp);
+        [y, j]  = max(r_samp);
         if any (isnan (VBA_vec (y))) % remove failed samples in limit cases
-            j(isnan(y)) = []; 
-            Nsamp = numel(j);
-            warning('VBA_ExceedanceProb: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
+            j(isnan (y)) = []; 
+            Nsamp = numel (j);
+            warning ('VBA_ExceedanceProb: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
         end
-        tmp    = histc(j,1:length(mu));
-        ep     = tmp/Nsamp;
+        tmp = histc (j, 1 : length (mu));
+        ep = tmp / Nsamp;
         
     otherwise
         error('*** VBA_ExceedanceProb: unrecognized option form = %s', form);

@@ -97,7 +97,7 @@ for f=1:nf
     strpar(end) = [];
     strpar(2*(f-1)+1) = 'k';
     for k=1:nlevels
-        eval(['indf{f}(:,k) = vec(factors(',strpar,'));'])
+        eval(['indf{f}(:,k) = VBA_vec(factors(',strpar,'));'])
     end
 end
 % form nc-tuples

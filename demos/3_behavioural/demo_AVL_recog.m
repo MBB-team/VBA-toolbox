@@ -59,7 +59,7 @@ end
 x1 = zeros(1,n_t);
 seed = 1e4*rand;
 for t=1:n_t
-    [x1(t)] = VBA_sampleFromArbitraryP([sx2(t),1-sx2(t)]',[1,0]',1);
+    x1(t) = VBA_random ('Bernoulli', sx2(t));
 end
 
 % Finally, sample visual outcome from GMM ...

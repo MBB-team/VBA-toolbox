@@ -11,7 +11,8 @@ f_fname = @f_rwl2; % modified Rescorla-Wagner learning rule
 g_fname = @g_goNogo; % -> 'go' choice probability
 
 % simu parameters
-feedbacks = {-1;0;1}; % feedbacks: negative, neutral, positive
+feedbacks = [-1; 0; 1]; % feedbacks: negative, neutral, positive
+contingencies = [2; 1; 2] / 5; %probability of feedbacks
 truemodel = 1; % index of true model (which generates the data)
 theta = [2;0;1;0];
 phi = [-1]; % value of the 'no-go' option
@@ -59,13 +60,7 @@ opt{4}.inF.indR = 1; % feedback weigths
 opt{4}.inF.indAlpha = 2; % learning rates
 
 % sample random feedback sequence
-u = zeros(1,n_t);
-for t=1:n_t
-    [X] = VBA_sampleFromArbitraryP([2;1;2]./5,[1:3]',1);
-    u(t) = feedbacks{X};
-end
-
-
+u = VBA_random ('Arbitrary', contingencies, feedbacks, 1, n_t);
 
 % simulate agent's response given predefined feedback sequence
 fb.h_fname = @h_goNogo;

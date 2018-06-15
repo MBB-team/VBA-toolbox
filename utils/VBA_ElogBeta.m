@@ -22,9 +22,9 @@ else
     b = VBA_vec(b);
 end
 
-if any(b<1)
-    warning('beta shape parameter smaller than 1!')
-end
+%if any(b<1)
+%    warning('beta shape parameter smaller than 1!')
+%end
 El = zeros(na,1);
 ind = find(a>1e-1);
 El(ind) = VBA_psi(a(ind)) - VBA_psi(a(ind)+b(ind));

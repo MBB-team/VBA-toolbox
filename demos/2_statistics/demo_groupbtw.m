@@ -25,14 +25,16 @@ for j=1:length(dr)
     j./length(dr)
     for ii=1:Nmcmc
         % sample 2-tuple families (homogeneous vs heterogeneous conditions)
-        [f] = VBA_sampleFromArbitraryP(r0+[dr(j);-dr(j)],[1;2],N);
+        f = VBA_random ('Categorical', r0 + [dr(j); -dr(j)], N, 1);
+        
         % sample model evidences for each model, subject and condition
         L = zeros(2,N,2); % 2xNx2 (2 models; N subjects; 2 conditions).
         for i=1:N
             i1 = floor(1+rand*(Ndummy-1));
             i2 = floor(1+rand*(Ndummy-1));
             % pick a model at random
-            [m] = VBA_sampleFromArbitraryP([0.5;0.5],[1;2],1);
+            m = VBA_random ('Categorical', [0.5; 0.5]);
+            
             % assign LEVs, given the subject's class
             if f(i)==1 % homogeneous condition
                 L(:,i,1) = L0(:,i1,m);
