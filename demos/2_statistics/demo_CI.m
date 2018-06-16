@@ -37,7 +37,7 @@ options.inG.X = [X0,ones(dim.p,1)];
 
 % Get classical CI from sampling the posterior density
 N = 1e4;
-sV = VBA_getISqrtMat(post.SigmaPhi,0);
+sV = VBA_sqrtm (post.SigmaPhi);
 phi = repmat(post.muPhi,1,N) + sV*randn(2,N);
 ev = post.b_sigma./post.a_sigma;
 E = 0;% sqrt(ev)*randn(length(X0),N); % add in predicted residuals? 

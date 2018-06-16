@@ -157,7 +157,7 @@ switch options.init
         posterior.muEta = priors.muEta + eps*randn(dim.p,dim.K);
     case 'rand'
         for k=1:K
-            S = VBA_getISqrtMat(priors.SigmaEta{k},0);
+            S = VBA_sqrtm (priors.SigmaEta{k});
             posterior.muEta(:,k) = priors.muEta(:,k) + S*randn(dim.p,1);
         end
 end

@@ -1,5 +1,5 @@
 function tests = test_VBA_random
-% Unit Tests for VBA_test_random
+% Unit Tests for VBA_random
 
 tests = functiontests (localfunctions);
 

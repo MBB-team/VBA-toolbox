@@ -290,7 +290,7 @@ function wdx = getWeightedResiduals(dx,iQx)
 % weigths residuals according to (state/data) precision matrix
 wdx = zeros(size(dx));
 for t = 1:size(dx,2)
-    sqrtiQ = VBA_getISqrtMat(iQx{t},0);
+    sqrtiQ = VBA_sqrtm (iQx{t});
     wdx(:,t) = sqrtiQ*dx(:,t);
 end
 

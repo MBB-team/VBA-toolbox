@@ -142,9 +142,12 @@ function X = VBA_random (name, varargin)
                 assert (isscalar (N), ...
                     'VBA:invalidInput', ...
                     '*** VBA_random: N must be scalar for multivariate sampling.');
+                assert (issymmetric (Sigma), ...
+                    'VBA:invalidInput', ...
+                    '*** VBA_random: Sigma must be symmetric positive definite.');
                 mu = VBA_vec (mu);
                 k = numel (mu);
-                X = bsxfun (@plus, sqrtm (Sigma) * randn (k, N{1}), mu) ;  
+                X = bsxfun (@plus, VBA_sqrtm (Sigma) * randn (k, N{1}), mu) ;  
             end        
             
             

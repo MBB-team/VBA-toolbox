@@ -133,7 +133,7 @@ priors = options.priors;
 
 if dim.n > 0
     if ~isequal(priors.SigmaX0,zeros(size(priors.SigmaX0)))
-        sV = VBA_getISqrtMat(priors.SigmaX0,0);
+        sV = VBA_sqrtm (priors.SigmaX0);
         x0 = priors.muX0 + sV*randn(dim.n,1);
     else
         x0 = priors.muX0;
@@ -144,7 +144,7 @@ end
 
 if dim.n_theta > 0
     if ~isequal(priors.SigmaTheta,zeros(size(priors.SigmaTheta)))
-        sV = VBA_getISqrtMat(priors.SigmaTheta,0);
+        sV = VBA_sqrtm(priors.SigmaTheta);
         theta = priors.muTheta + sV*randn(dim.n_theta,1);
     else
         theta = priors.muTheta;
@@ -155,7 +155,7 @@ end
 
 if dim.n_phi > 0
     if ~isequal(priors.SigmaPhi,zeros(size(priors.SigmaPhi)))
-        sV = VBA_getISqrtMat(priors.SigmaPhi,0);
+        sV = VBA_sqrtm (priors.SigmaPhi);
         phi = priors.muPhi + sV*randn(dim.n_phi,1);
     else
         phi = priors.muPhi;

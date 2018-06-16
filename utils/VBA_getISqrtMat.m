@@ -13,7 +13,7 @@ if nargin < 2
 else
     inv = ~~inv;
 end
-C(C==Inf) = 1e8;  % dirty fix for infinite precision matrices
+C(C==Inf) = realmax;  % dirty fix for infinite precision matrices
 if sum(C(:)) ~= 0
     if isequal(C,diag(diag(C)))
         if inv
