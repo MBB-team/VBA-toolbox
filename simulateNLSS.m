@@ -81,20 +81,20 @@ try, options.inG; catch, options.inG = struct (); end
 try, U = u(:,1);  catch, U = zeros(size(u,1),1); end
 dim.p = size(g_fname(zeros(dim.n,1),phi,U,options.inG),1);
 
-options.dim=dim;
+options.dim = dim;
 % --- check priors
-options.priors = VBA_check_struct(options.priors, ...
+options.priors = VBA_check_struct (options.priors, ...
     'a_alpha', 1, ...
     'b_alpha', 1  ...
     ) ;
 
-if isempty(options.priors.a_alpha) || isinf(options.priors.a_alpha) && isequal(options.priors.b_alpha,0)
+if isempty (options.priors.a_alpha) || (isinf (options.priors.a_alpha) && isequal (options.priors.b_alpha, 0))
     options.priors.a_alpha = 1;
     options.priors.b_alpha = 1;
 end
 
 % --- check options
-[options,u,dim] = VBA_check(zeros(dim.p,dim.n_t),u,f_fname,g_fname,dim,options);
+[options, u, dim] = VBA_check (zeros (dim.p, dim.n_t), u, f_fname, g_fname, dim, options);
 
 % === Prepare simulation
 
@@ -106,14 +106,14 @@ iQx = options.priors.iQx;
 et0 = clock;
 
 % pre-allocate variables
-x   = zeros(dim.n,dim.n_t);
-eta = zeros(dim.n,dim.n_t);
-e   = zeros(dim.p,dim.n_t);
-y   = zeros(dim.p,dim.n_t);
+x   = zeros (dim.n, dim.n_t);
+eta = zeros (dim.n, dim.n_t);
+e   = zeros (dim.p, dim.n_t);
+y   = zeros (dim.p, dim.n_t);
 
 % muxer
-n_sources=numel(options.sources);
-sgi = find([options.sources(:).type]==0) ;
+n_sources = numel (options.sources);
+sgi = find ([options.sources(:).type] == 0) ;
 
 % === Simulate timeseries
 
@@ -141,21 +141,25 @@ VBA_disp({ ...
 for t = 1:dim.n_t
        
     % Evaluate evolution function at past hidden state   
-    if dim.n > 0  
-        Cx = inv (iQx{t}) / alpha ;
-        eta(:,t) = VBA_random ('Gaussian', zeros (dim.n, 1), Cx) ;
-        x(:,t+1) = VBA_evalFun('f',x(:,t),theta,u(:,t),options,dim,t) + eta(:,t);
+    if dim.n > 0 
+        % stochastic innovation
+        Cx = VBA_inv (iQx{t}) / alpha ;
+        eta(:, t) = VBA_random ('Gaussian', zeros (dim.n, 1), Cx) ;
+        % evolution
+        x(:, t + 1) = ... 
+            VBA_evalFun ('f', x(:, t), theta, u(:, t), options, dim, t) ...
+            + eta(:, t);
     end
 
     % Evaluate observation function at current hidden state
-    gt = VBA_evalFun('g',x(:,t+1),phi,u(:,t),options,dim,t);
+    gt = VBA_evalFun ('g', x(:, t + 1), phi, u(:, t), options, dim, t);
       
-    for i=1:n_sources
+    for i = 1 : n_sources
         s_idx = options.sources(i).out;
         switch options.sources(i).type
             % gaussian
             case 0 
-                C = inv (iQy{t, sgi == i}) / sigma(sgi == i) ;
+                C = VBA_inv (iQy{t, sgi == i}) / sigma(sgi == i) ;
                 y(s_idx,t) =  VBA_random ('Gaussian', gt(s_idx), C) ;
             % binomial
             case 1
@@ -172,10 +176,10 @@ for t = 1:dim.n_t
     % fill in next input with last output and feedback
     if feedback && t < dim.n_t
         % get feedback on system's output
-        if ~isempty(fb.h_fname)
-            u(fb.indfb,t+1) = fb.h_fname(y(:,t),t,fb.inH);
+        if ~ isempty (fb.h_fname)
+            u(fb.indfb, t + 1) = fb.h_fname (y(:, t), t, fb.inH);
         end
-        u(fb.indy,t+1) = y(:,t);
+        u(fb.indy, t + 1) = y(:, t);
     end   
     
     % Display progress
@@ -189,7 +193,7 @@ for t = 1:dim.n_t
 end
 
 %unstack X0
-x(:,1) = [];
+x(:, 1) = [];
 
 % checks
 if VBA_isWeird (x)

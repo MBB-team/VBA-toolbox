@@ -100,19 +100,18 @@ end
 
 % muxer
 try
-gsi = find ([options.sources.type] == 0);
-n_Gsources = numel(gsi);
-for n=1:n_Gsources
-    for t = 1 : n_t
-        dim_y = numel (options.sources(gsi(n)).out);
-        priors.iQy{t,n} = eye(dim_y);         
+    gsi = find ([options.sources.type] == 0);
+    n_Gsources = numel(gsi);
+    for n=1:n_Gsources
+        for t = 1 : n_t
+            dim_y = numel (options.sources(gsi(n)).out);
+            priors.iQy{t,n} = eye(dim_y);         
+        end
     end
-end
-
-catch
+catch   
     n_Gsources = 1;
     for t = 1 : n_t
-        priors.iQy{t,n} = eye(nreg);         
+        priors.iQy{t,1} = eye(nreg);         
     end
 end
 
