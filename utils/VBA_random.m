@@ -1,4 +1,97 @@
 function X = VBA_random (name, varargin)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% X = VBA_random (name, p1, p2, ..., [N, M, ...])
+% generate random numbers following the requested distribution
+%
+% If you the MATLAB statistics toolbox, this merely serve as an overload of 
+% the random() function, although with a slightly different syntax and
+% behaviour. If the statistics toolbox is not installed, VBA_random will 
+% fall back to in-house generators (mainly using SPM routines).
+% 
+%
+% IN:
+%   - name: type of distribution (see below)
+%   - p1, p2, ...: parameters of the distribution
+%   - N, M, ...: dimensions of the output. Default = 1 sample.
+%       + for univariate densities, returns a N x N array if only one
+%         dimension is provided, or a N x M x ... array if more dimensions 
+%         are specified.
+%       + for multivariate densities, samples are returned as columns of X 
+%         and only N can be used to specify the number of samples requested
+%
+% OUT:
+%   - X: random samples
+%
+% Available distributions:
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% 'Arbirary'
+% ----------
+%     + parameters:
+%         - p: k x 1 vector  describing the density of possible values
+%         - vals: k x 1 vector or k x j matrix of values
+%     + output:
+%         - each element (if val is a vector) or column (if val is an array)
+%           of X will follow the distribution P(x = val(v)) = p(v), or 
+%           P(x = val(v, :)) = p(v) respectively.
+%
+% 'Bernoulli'
+% -----------
+%     + parameter:
+%        - p: parameter of the Bernoulli distribution
+%     + output: samples from the Bernoulli distribution, ie such that 
+%           P(x = 1) = p and P(x = 0) = 1 - p
+%
+% 'Binomial'
+% ----------
+%     + parameters:
+%           - n: number of trials
+%           - p: probability of success of each trial
+%     + output: samples from the distribution B(n, p), defined as the sum 
+%           of n independent samples from a Bernoulli distribution with
+%           a parameter p
+%
+% 'Categorical'
+% -------------
+%     + parameters:
+%           - p: vector defining the probability of the categories
+%     + output: integer k such that P(x = k) = p(k)
+%
+% 'Dirichlet'
+% -----------
+%     + parameters:
+%           - alphas: pseudo-counts
+%     + output: points of the simplex (ie vectors summing to 1) sampled
+%           from the Dirichlet distribution D(alphas)
+%
+% 'Gamma'
+% -------
+%     + parameters:
+%           - a: shape parameter
+%           - b: scale parameter
+%     + output: samples from the Gamma distribution Ga(a, b). Note that the
+%         corresponding expectation is therefore a * b (not a / b).
+%
+% 'Gaussian'
+% ----------
+%     + parameters:
+%           - mu: scalar or k x 1 vector, mean of the Normal distribution
+%           - Sigma2: scalar or k x k array, (co-)variance of
+%     + output: if parameters are scalars, samples from the univariate
+%           normal distribution N(mu, Sigma).
+%           If mu and Sigma are respectively a vector and an array of
+%           matching dimensions, columns of X are samples from the 
+%           corresponding multivariate Gaussian distribution.
+%
+% 'Multinomial'
+% -------------
+%     + parameters:
+%           - n: number of trials
+%           - p: 1 x k vector, probability of each category winning a trial
+%     + output: each column of X is a k-vector
+%
+% /////////////////////////////////////////////////////////////////////////
 
     switch name
         case 'Arbitrary'
@@ -181,9 +274,9 @@ end
 
 function varargout = getParam (args)
     varargout = args(1 : nargout - 1);
-    N = args(nargout:end);
-    if isempty (N)
-        N = {1};
+    dims = args(nargout : end);
+    if isempty (dims)
+        dims = {1};
     end
-    varargout{nargout} = N;
+    varargout{nargout} = dims;
 end

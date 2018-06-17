@@ -1,16 +1,22 @@
 function S = VBA_sqrtm (C, inv)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% S = VBA_sqrtm (C, inv)
 % quick derivation of the square root of a matrix
-% function S = VBA_sqrtm (C, inv)
+%
 % IN:
 %   - C: the entry matrix
-%   - inv: binary flag for inverse square root (inv = true). Default = false.
+%   - inv: binary flag for inverse square root (inv = true). 
+%       Default = false.
+%
 % OUT:
 %   - S: the (inverse) square root of C.
+%
+% /////////////////////////////////////////////////////////////////////////
 
 if nargin < 2
     inv = false;
 end
-
 
 % degenerate case
 if all (C(:) == 0)
