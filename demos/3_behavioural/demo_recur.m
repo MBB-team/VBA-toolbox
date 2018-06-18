@@ -31,7 +31,7 @@ if diluteP==1
     theta = [theta;-2];
 end
 N = 50; % number of trials
-o = VBA_bernoulli(.85,N)'; % opponent's choices (here dummy binomial sampling)
+o = VBA_random ('Bernoulli', 0.85, 1, N); % opponent's choices (here dummy binomial sampling)
 tic
 a = NaN(1,N); % agent's choices
 gx = NaN(1,N);

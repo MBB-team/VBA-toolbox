@@ -3,7 +3,7 @@
 %%%%% (should be analytically equivalent but not numerically). Small
 %%%%% deiations for 2-ToM (but accumulates) larger for 3-ToM
 x=zeros(2,101); xtest=x;
-y1=VBA_bernoulli(.7,100);
+y1=VBA_random ('Bernoulli', 0.7, 100, 1);
 inF.player=1;
 inF.lev=0;
 Par=0; %theta
@@ -14,7 +14,8 @@ end
 %%
 N=1000
 xtest=zeros(8,N+1); x=zeros(9,N+1);
-y1=VBA_bernoulli(.7,N);y2=VBA_bernoulli(.5,N);
+y1=VBA_random('Bernoulli', 0.7, N, 1);
+y2=VBA_random('Bernoulli', 0.5, N, 1);
 HS=cat(3,[1,0;0,1],[0,1;1,0]);
 inF.player=1;
 inF.lev=1;
@@ -37,7 +38,8 @@ find(abs(xcomp-xtest)>1e-15)
 %%
 N=50;
 
-y1=VBA_bernoulli(.7,100);y2=VBA_bernoulli(.5,100);
+y1=VBA_random('Bernoulli',0.7,100,1);
+y2=VBA_random('Bernoulli',0.5,100,1);
 %%
 xtest=zeros(23,N+1); x=zeros(26,N+1);
 HS=cat(3,[1,0;0,1],[0,1;1,0]);
@@ -62,7 +64,8 @@ find(abs(xcomp-xtest)>1e-5)
 %%
 N=50;
 xtest=zeros(53,N+1); x=zeros(60,N+1);
-y1=VBA_bernoulli(.7,100);y2=VBA_bernoulli(.5,100);
+y1=VBA_random('Bernoulli',0.7,100,1);
+y2=VBA_random('Bernoulli',0.5,100,1);
 HS=cat(3,[1,0;0,1],[0,1;1,0]);
 inF.player=1;
 inF.lev=3;
@@ -89,7 +92,9 @@ N=10;
 inF.lev=7;
 %xtest=zeros(53,N+1); 
 x=zeros(sizeXrec(inF.lev,2),N+1);
-y1=VBA_bernoulli(.7,100);y2=VBA_bernoulli(.5,100);
+y1=VBA_random('Bernoulli',0.7,100,1);
+y2=VBA_random('Bernoulli',0.5,100,1);
+
 HS=cat(3,[1,0;0,1],[0,1;1,0]);
 inF.player=1;
 
@@ -113,7 +118,8 @@ end
 %%
 N=100;
  x=zeros(264,N+1);
-y1=VBA_bernoulli(.7,100);y2=VBA_bernoulli(.5,100);
+y1=VBA_random('Bernoulli',0.7,100,1);
+y2=VBA_random('Bernoulli',0.5,100,1);
 HS=cat(3,[1,0;0,1],[0,1;1,0]);
 inF.player=1;
 inF.lev=5;
