@@ -56,7 +56,10 @@ function X = VBA_random (name, varargin)
 % -------------
 %     + parameters:
 %           - p: vector defining the probability of the categories
-%     + output: integer k such that P(x = k) = p(k)
+%     + output: integer k such that P(x = k) = p(k). Note that Categorical
+%           samples are sometimes expressed as vectors with all elements
+%           set to 0 except for the winning category element set to 1. 
+%           Use VBA_indicator (X, k) for the conversion.
 %
 % 'Dirichlet'
 % -----------
@@ -89,7 +92,9 @@ function X = VBA_random (name, varargin)
 %     + parameters:
 %           - n: number of trials
 %           - p: 1 x k vector, probability of each category winning a trial
-%     + output: each column of X is a k-vector
+%     + output: each column of X is a k-vector that sums to n. It is
+%           constructed as the sum of n Categorical samples expressed in 
+%           their indicator vector form.
 %
 % /////////////////////////////////////////////////////////////////////////
 
