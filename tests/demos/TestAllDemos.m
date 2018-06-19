@@ -20,7 +20,7 @@ end
 function demos = findDemos ()
     
     vba_info = VBA_version();
-    [~,list]=system(['find ' vba_info.path ' -name demo_*.m']) ;
+    [~,list]=system(['find ' vba_info.path filesep 'demos -name demo_*.m']) ;
 
     demos = {};
     for p = strsplit(list)  
