@@ -206,19 +206,19 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
 
     % experimental design 
     subplot(3,3,idx)
-    cla(gca,'reset') % remove double axis
+    
     if nargin == 6 % if efficiency given
-        % plot efficiency
-        yyaxis right
-        plot(uRange, uEfficiency)
-        hold on
-        [mE, iE] = max (uEfficiency);
-        plot(uRange(iE),mE,'o','MarkerFaceColor',[.3 .3 .3])
-        hold off
-        ylabel('efficiency')
-        % restore to left axis
-        yyaxis left
-     end
+        
+        [ax,h1,h2] = plotyy(u,10,uRange,uEfficiency,@myHistogram,@myPlot);
+         xlim([uRange(1)-0.05, uRange(end)+0.05]);
+         set(get(ax(1), 'YLabel'), 'String', 'freq. of presentation')
+         set(get(ax(2), 'YLabel'), 'String', 'efficiency')
+         set(ax(1),'YLim', [0 0.4],'YTick',0:.2:.4)       
+         xlabel('stimulus intensity')
+         box off
+
+    else
+        
      % show stimuli density
      histogram(u, 10, 'EdgeColor','none','FaceColor',[.3 .3 .4],'Normalization','probability');
      xlim([uRange(1)-0.05, uRange(end)+0.05])
@@ -226,7 +226,7 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
      xlabel('stimulus intensity')
      ylabel('freq. of presentation')
      box off
-
+    end
      % show type of optimisation
      VBA_title(gca,titleTxt);
 
@@ -270,7 +270,7 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
         plotUncertainTimeSeries(posterior.muPhi,sqrt(diag(posterior.SigmaPhi)),[],gca);
         % true values
         hold on
-        plot(phi,'o','MarkerFaceColor',[0 .8 0]);
+        plot(phi,'o','MarkerFaceColor',[0 .8 0], 'MarkerEdgeColor',[0 .8 0]);
         % options
         set(gca,'XTickLabel',{'center','slope'})
         ylim([-2 4])
@@ -283,4 +283,15 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
     drawnow
 end
 
+    function h = myHistogram (x,y)
+        h = histogram(x,y,'EdgeColor','none','FaceColor',[.3 .3 .4],'Normalization','probability');
+    end
+
+    function h = myPlot (x,y)
+        h = plot(x,y);
+        hold on
+        [mE, iE] = max (y);
+        plot(uRange(iE),mE,'o','MarkerFaceColor',[.3 .3 .3],'MarkerEdgeColor',[.3 .3 .3])
+        hold off
+    end
 end
