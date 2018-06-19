@@ -1,3 +1,4 @@
+
 function [posterior, out] = demo_dynamicalSystem ()
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
@@ -183,7 +184,7 @@ function plotGridSearch (y, g, g_theta1, g_theta2, LL, n_t, dt)
     % Likelihood
     eLL = exp(LL/100);
     hb(1) = subplot (1, 2, 2, 'parent', hf);
-    imagesc(hb(1), eLL);
+    imagesc(eLL, 'Parent', hb(1));
     colorLims = [-0.15 1.1*VBA_maxMat(eLL)];
     set(hb(1),'XTick',1 : numel(g_theta2), 'XTickLabel', g_theta2);
     set(hb(1),'YTick',1 : numel(g_theta1), 'YTickLabel', g_theta1);
