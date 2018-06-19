@@ -1,4 +1,4 @@
-function VBA_disp (str, options)
+function VBA_disp (str, options, carriageReturn)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
 % VBA_disp (str, options)
@@ -17,6 +17,10 @@ catch
     verbose = true;
 end
 
+if nargin < 3
+    carriageReturn = true;
+end
+
 % conditional display function
 if verbose
     if iscell (str)
@@ -26,5 +30,7 @@ if verbose
     else
        fprintf (1, str);
     end
-    fprintf ('\n');
+    if carriageReturn
+        fprintf ('\n');
+    end
 end
