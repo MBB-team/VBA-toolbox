@@ -40,10 +40,10 @@ dim.n       = 2;
 
 
 % Build time series of hidden states and observations
-[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
-if VBA_isWeird (y)
-    disp('Warning: problem with simulated data: re-run the demo!')
-    return
+ok = false;
+while ~ ok
+    [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+    ok = ~ VBA_isWeird ({x, y});
 end
 
 
