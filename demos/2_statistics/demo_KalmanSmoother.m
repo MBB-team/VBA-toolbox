@@ -20,7 +20,7 @@ phi = [];
 alpha = 1/var(eta);
 sigma = 1/var(e);
 
-displaySimulations(y,x,eta,e)
+displaySimulations(y,x,eta,e);
 
 
 f_fname = @f_AR;

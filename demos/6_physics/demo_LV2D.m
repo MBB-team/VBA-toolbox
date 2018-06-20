@@ -48,7 +48,7 @@ end
 
 
 % display time series of hidden states and observations
-displaySimulations(y,x,eta,e)
+displaySimulations(y,x,eta,e);
 
 
 % invert model

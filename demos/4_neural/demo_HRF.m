@@ -77,7 +77,7 @@ dim.n               = 4;
     sigma,...
     options,...
     priors.muX0);
-displaySimulations(y,x,eta,e)
+displaySimulations(y,x,eta,e);
 
 % Call inversion routine
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);

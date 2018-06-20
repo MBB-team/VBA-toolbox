@@ -191,7 +191,7 @@ phi = [ phi(:) ; p_w ];
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 
 % display time series of hidden states and observations
-displaySimulations(y,x,eta,e)
+displaySimulations(y,x,eta,e);
 % disp('--paused--')
 % pause
 

@@ -32,7 +32,7 @@ dim.p = 2;
 
 
 % display time series of hidden states and observations
-displaySimulations(y,x,eta,e)
+displaySimulations(y,x,eta,e);
 
 options.priors.a_alpha = 1;
 options.priors.b_alpha = 1;

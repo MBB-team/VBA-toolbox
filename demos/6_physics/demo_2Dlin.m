@@ -52,7 +52,7 @@ dim.n               = 2;
 [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,priors.muX0);
 
 % display time series of hidden states and observations
-displaySimulations(y,x,eta,e)
+displaySimulations(y,x,eta,e);
 
 % Call inversion routine
 % [posterior,out] = VBA_onlineWrapper(y,u,f_fname,g_fname,dim,options);

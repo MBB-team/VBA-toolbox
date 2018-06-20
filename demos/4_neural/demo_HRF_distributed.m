@@ -64,7 +64,7 @@ dim.n               = 4;
 [y,x,x0,eta,e]   = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 
 % Display simulated time series
-displaySimulations(y,x,eta,e)
+displaySimulations(y,x,eta,e);
 % disp('--paused--')
 % pause
 
