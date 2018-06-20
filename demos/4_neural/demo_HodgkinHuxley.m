@@ -27,7 +27,7 @@ delta_t = 1 / 10; % 10Hz
 n_t = 500; 
 
 % number of integration timesteps between two observation
-options.decim = 5; % smaller means faster but high risk of numerical errors
+options.decim = 3; % smaller means faster but high risk of numerical errors
 
 % specify model
 % =========================================================================
@@ -62,8 +62,30 @@ sigma = 1e2;
 % simulate
 [y, x, x0, eta, e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,steadyState);
 
-% display time series of hidden states and observations
-displaySimulations(y,x,eta,e);
+% display
+displayHH (u, x);
+
+% Inversion: parameter recovery
+% =========================================================================
+% dimensions of the problem
+dim.n = 4;
+dim.n_theta = 4;
+dim.n_phi = 0;
+
+% priors
+options.priors.muX0 = steadyState;
+
+% estimation routine
+[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+
+% display
+displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
+
+end
+
+%% subfunctions
+% #########################################################################
+function displayHH (u, x)
 
 hf = figure('color',[1 1 1]);
 ha = subplot(3,1,1,'parent',hf,'nextplot','add');
@@ -87,19 +109,6 @@ ha = subplot(3,1,3,'parent',hf,'nextplot','add');
 plot(ha,x(1,:))
 title(ha,'output membrane depolarization (mV)')
 xlabel('time')
+end
 
-% Inversion: parameter recovery
-% =========================================================================
-% dimensions of the problem
-dim.n = 4;
-dim.n_theta = 4;
-dim.n_phi = 0;
 
-% priors
-options.priors.muX0 = steadyState;
-
-% estimation routine
-[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-
-% display
-displayResults(posterior,out,y,x,x0,theta,phi,alpha,sigma);
