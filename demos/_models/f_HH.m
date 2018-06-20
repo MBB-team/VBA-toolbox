@@ -37,7 +37,7 @@ bh = 1./(exp(3-0.1*V)+1);
 
 r = 1e-2; % for numerical stability
 
-xdot = [ (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + 1e0*ut)/C
+xdot = [ (-gNa*m.^3*h*(V-ENa) - gK*n.^4*(V-EK) - gL*(V-EL) + ut)/C
         (am*(1-m) - bm*m)/(m-m.^2+r)
         (an*(1-n) - bn*n)/(n-n.^2+r)
         (ah*(1-h) - bh*h)/(h-h.^2+r)   ];

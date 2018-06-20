@@ -121,6 +121,7 @@ sgi = find ([options.sources(:).type] == 0) ;
 if dim.n > 0
     try
         x0;
+        assert(~ VBA_isWeird(x0));
     catch
         x0 = VBA_random ('Gaussian', options.priors.muX0, options.priors.SigmaX0);
     end
