@@ -74,7 +74,10 @@ if options.checkGrads && ~isequal(fname,@VBA_odeLim)
         mayPause = 1;
     end
     if mayPause
-        pause
+        pauseState = pause('query');
+        pause('on');
+        pause;
+        pause(pauseState);
         try
         close(setdiff(hf,0))
         end
