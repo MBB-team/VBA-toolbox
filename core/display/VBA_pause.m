@@ -2,6 +2,9 @@ function [] = VBA_pause(options)
 % used to pause the VB inversion from the GUI interactively
 % NB: when paused, the inversion allows interactive diagnosis...
 
+if ~ options.DisplayWin
+    return;
+end
 try
     dt = toc(options.tStart);
     timeString = sprintf('Elapsed time: %d min and %d sec', floor(dt/60), round(rem(dt,60)));

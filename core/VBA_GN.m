@@ -123,6 +123,9 @@ if options.GnFigs
     plot(ha,deltaMu')
     VBA_title(ha,[s2,' ; ',str])
     drawnow
+else
+    hf = nan;
+    ha = nan;
 end
 
 % Regularized Gauss-Newton VB-Laplace update
@@ -151,11 +154,13 @@ while ~stop
         plot(ha,deltaMu')
         str = [s1,num2str(I,'%4.3e'),' ,dI/I =',num2str(rdf,'%4.3e'),' ,it #',num2str(it)];
     end
-    VBA_pause(options)  % check 'pause' button
+    VBA_pause(options);  % check 'pause' button
     % accept move or halve step?
     if deltaI<0     % halve step size
         deltaMu = 0.5*deltaMu;
-        try, VBA_title(ha,[s2,': halve step ; ',str]);end
+        if ishandle(ha)
+            VBA_title(ha,[s2,': halve step ; ',str]);
+        end
     else            % accept move
         % 1- propose a new move according to new local quadratic approx
         deltaMu = NextdeltaMu;
@@ -178,16 +183,24 @@ while ~stop
             case 'Theta'
                 VBA_updateDisplay(posterior,suffStat,options,y,[],'theta')
         end
-        try,VBA_title(ha,[s2,': accept move ; ',str]);end
+        if ishandle(ha)
+            VBA_title(ha,[s2,': accept move ; ',str]);
+        end
         conv = 1;
     end
     % check convergence criterion
     if abs(rdf)<=options.GnTolFun || it==options.GnMaxIter
         stop = 1;
-        try close(hf); end
-        try close(suffStat.haf); end
+        if ishandle(hf)
+            close(hf); 
+        end
+        if isfield (suffStat, 'haf') && ishandle(suffStat.haf)
+            close(suffStat.haf); 
+        end
     end
-    drawnow
+    if options.DisplayWin || options.GnFigs
+        drawnow;
+    end
 end
 if ~conv
     suffStat.F = [suffStat.F,suffStat.F(end)];
