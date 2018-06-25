@@ -1,4 +1,4 @@
-function [gx,dgdx,dgdP] = g_GLMsparse2(x,P,u,in)
+function [gx,dgdx,dgdP] = g_GLMsparseAdapt(x,P,u,in)
 
 
 [sP, dsdx, dsdp] = VBA_sparsifyPrior (P(1:end-1), P(end));
