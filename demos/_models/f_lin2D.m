@@ -15,7 +15,7 @@ inF.a = inF.a * exp (Theta(1));
 A = [- inF.b, - inF.a;
      1, - inF.b];
     
-fx = Xt + deltat*(A*Xt + ut*[1;1]);
-dF_dX = eye(size(Xt,1)) + deltat*A';
+fx = Xt + deltat * (A * Xt + ut);
+dF_dX = eye (size (Xt, 1)) + deltat * A';
 
-dF_dTheta = deltat*[-a*Xt(2),0];
+dF_dTheta = deltat * [- inF.a * Xt(2), 0];
