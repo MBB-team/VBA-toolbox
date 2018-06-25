@@ -4,12 +4,8 @@ function [] = VBA_pause(options)
 
 try
     dt = toc(options.tStart);
-    if floor(dt./60) == 0
-        timeString = [num2str(floor(dt)),' sec'];
-    else
-        timeString = [num2str(floor(dt./60)),' min'];
-    end
-    set(options.display.htt,'string',['Elapsed time: ',timeString])
+    timeString = sprintf('Elapsed time: %d min and %d sec', floor(dt/60), round(rem(dt,60)));
+    set(options.display.htt, 'string', timeString);
 end
 
 try

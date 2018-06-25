@@ -364,7 +364,7 @@ display.ha(8) = h;
 display.ho     = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.20 0.010 0.60 0.02],'backgroundcolor',[1,1,1]);
 display.hm(1)  = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.28 0.035 0.40 0.02],'backgroundcolor',[1,1,1]);
 display.hm(2)  = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.68 0.035 0.10 0.02],'backgroundcolor',[1,1,1]);
-display.htt(1) = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.75 0.970 0.25 0.02],'backgroundcolor',[1,1,1]);
+display.htt(1) = uicontrol('parent',display.hfp,'style','text','tag','VBLaplace','units','normalized','position',[0.70 0.965 0.30 0.02],'backgroundcolor',[1,1,1]);
 
 % Create 'pause' uicontrol button
 if ~isfield(options,'noPause') || ~options.noPause
