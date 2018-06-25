@@ -30,24 +30,24 @@ ylabel('prior density')
 
 
 % 1- simulate "sparse" GLM and invert
-N1 = 16; % nb of 0 regressors
-N2 = 30; % nb of MC simuls
+N2 = 20; % nb of MC simuls
 p = 16; % nb of observations
 n = 32; % nb of regressors
+sparsity = 16:3:n ; % number of useless regressors (0 weight)
+
 sigma = .1;
 
-dims.n = 0;
-dims.n_theta = 0;
 options.DisplayWin = 0;
 options.verbose = 0;
 
-for i=1:N1
+for i = 1 : numel(sparsity)
     for j=1:N2
         
         % simulate data
         X = randn(p,n);
         phi1 = ones(n,1);
-        phi1(1:n-N1+i) = 0;
+        phi1(1:sparsity(i)) = 0;
+       % phi1(1:n-N1+i) = 0;
         phi1(isnan(phi1)) = 0;
         y1 = X*phi1 + sqrt(sigma)*randn(p,1);
         options.inG.X = X;
