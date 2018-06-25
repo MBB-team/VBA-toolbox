@@ -31,7 +31,10 @@ try
             end
             while ~stop
                 pause(2)
-                if ~get(hpause,'value')
+                if ~ ishandle(hfp)
+                    set(hpause, 'value', 0);
+                end
+                if ~ get(hpause,'value') 
                     stop = 1;
                     set(hpause,'string','pause and diagnose?',...
                         'backgroundColor',0.8*[1 1 1])
