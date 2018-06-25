@@ -3,23 +3,19 @@ function [fx,dF_dX,dF_dTheta] = f_lin2D(Xt,Theta,ut,inF)
 
 deltat = inF.deltat;
 
-try
-    a = inF.a;
-catch
-    a = 1;
+if ~ isfield (inF, 'a')
+    inF.a = 1;
 end
-try
-    b = inF.b;
-catch
-    b = 1e-1;
+if ~ isfield (inF, 'b')
+    inF.b = 1e-1;
 end
 
-a = a.*exp(Theta(1));
+inF.a = inF.a * exp (Theta(1));
 
-A = [   -b  -a
-        1   -b];
+A = [- inF.b, - inF.a;
+     1, - inF.b];
     
-fx = Xt + deltat.*(A*Xt + ut*[1;1]);
-dF_dX = eye(size(Xt,1)) + deltat.*A';
+fx = Xt + deltat*(A*Xt + ut*[1;1]);
+dF_dX = eye(size(Xt,1)) + deltat*A';
 
-dF_dTheta = deltat.*[-a.*Xt(2),0];
+dF_dTheta = deltat*[-a*Xt(2),0];

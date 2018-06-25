@@ -2,13 +2,12 @@ function [gx,dG_dX,dG_dPhi] = g_sigmoid(Xt,Phi,ut,inG)
 % partially observable sigmoid mapping
 
 n = size(Xt,1);
-try
-    ind1 = inG.ind;
-catch
-    ind1 = 1:n;
+if ~ isfield (inG, 'ind')
+    inG.ind = 1 : n;
 end
+
 G = eye(n);
-G = G(ind1,:);
+G = G(inG.ind,:);
 
 try
     G0 = G;
@@ -25,12 +24,12 @@ end
 gx              = G*Sx(:);
 dG_dX           = [G*diag(dsdx(:))]';
 
-dG_dPhi = zeros(size(Phi,1),length(ind1));
+dG_dPhi = zeros(size(Phi,1),length(inG.ind));
 if size(Phi,1) >=1
     dG_dPhi(1,:)   = [G0*Sx(:)]';
 end
 if size(Phi,1) >=2
-    dG_dPhi(2:end,:)     = dsdp(:,ind1);
+    dG_dPhi(2:end,:)     = dsdp(:,inG.ind);
 end
 
 

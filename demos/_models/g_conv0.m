@@ -17,11 +17,10 @@ function [g,dgdx,dgdp] = g_conv0(x,P,u,in)
 %   - dgdx: [useless]
 %   - dgdp: the gradient of the system's output w.r.t. kernel parameters
 % SEE ALSO: g_convSig
-try 
-    K = in.K;
-catch
-    K = 0;
+if ~ isfield (in, 'K')
+    in.K = 0;
 end
+
 try
     dgdp = in.dgdp;
 catch
@@ -36,8 +35,7 @@ catch
             end
         end
     end
-%     dgdp = VBA_orth(dgdp',1)';
     dgdp(end,:) = 1;
 end
-g = dgdp'*P + K;
+g = dgdp'*P + in.K;
 dgdx = [];
