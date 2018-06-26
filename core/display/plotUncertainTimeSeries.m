@@ -57,18 +57,38 @@ end
 sc = 1;
 % Display uncertain time series
 if indEnd > 1
-    % Plot first moment
-    hp = plot(haf,dTime,muX(ind,1:indEnd)');
-    % Add confidence intervals
-    %if sum(SX(:)) ~= 0
+    
+    hp = findobj(haf,'Tag','putLine');
+    if isempty (hp) 
+        % Plot first moment
+        hp = plot(haf,dTime,muX(ind,1:indEnd)','Tag','putLine');
         set(haf,'nextplot','add')
-        for i = 1:n
+    else
+        for i = 1 : n
+        set(hp(i), ...
+            'XData', dTime, ...
+            'YData', muX(ind(i),1:indEnd)'); 
+        end
+    end
+    % Add confidence intervals
+    hf = findobj(haf,'Tag','putFill');
+    if isempty(hf)
+        for i = 1 : n
             yp = [muX(ind(i),1:indEnd)+sc*sqrt(SX(ind(i),1:indEnd)),fliplr(muX(ind(i),1:indEnd)-sc*sqrt(SX(ind(i),1:indEnd)))];
             yp(isnan(yp)) = VBA_nanmean(yp);
             xp = [dTime,fliplr(dTime)];
-            col = get(hp(i),'color');
-            hf(i) = fill(xp,yp,'r','parent',haf,'facecolor',col,'edgealpha',0,'facealpha',0.25);
+            col = get(hp(i),'color');           
+            hf(i) = fill(xp,yp,'r','parent',haf,'facecolor',col,'edgealpha',0,'facealpha',0.25,'Tag','putFill');
         end
+    else
+        for i = 1 : n
+            yp = [muX(ind(i),1:indEnd)+sc*sqrt(SX(ind(i),1:indEnd)),fliplr(muX(ind(i),1:indEnd)-sc*sqrt(SX(ind(i),1:indEnd)))];
+            yp(isnan(yp)) = VBA_nanmean(yp);
+            xp = [dTime,fliplr(dTime)];
+            %hf(i) = fill(xp,yp,'r','parent',haf,'facecolor',col,'edgealpha',0,'facealpha',0.25);
+            set(hf(i), 'Vertices', [xp', yp']);
+        end
+    end
     %end
     set(haf,'ygrid','on')
     axis(haf,'tight')
@@ -77,10 +97,29 @@ if indEnd > 1
         set(hp,'color',color)
         set(hf,'FaceColor',color)
     end
+
 else
-    hp = bar(dTime:dTime+n-1,muX(ind),'facecolor',[.8 .8 .8],'parent',haf);
-    set(haf,'nextplot','add')
-    hf = errorbar(dTime:dTime+n-1,muX(ind),sc*sqrt(SX(ind)),'r.','parent',haf);
+    
+    hp = findobj(haf,'Tag','putBar');
+    if isempty (hp)
+        hp = bar(dTime:dTime+n-1,muX(ind),'facecolor',[.8 .8 .8],'parent',haf,'Tag','putBar');
+        set(haf,'nextplot','add')
+    else
+        set(hp, ...
+            'XData', dTime:dTime+n-1, ...
+            'YData', muX(ind)); 
+    end
+    
+    hf = findobj(haf,'Tag','putError');
+    if isempty (hf)
+        hf = errorbar(dTime:dTime+n-1,muX(ind),sc*sqrt(SX(ind)),'r.','parent',haf, 'Tag','putError');
+    else
+        set(hf, ...
+            'XData', dTime:dTime+n-1, ...
+            'YData', muX(ind), ...
+            'YNegativeDelta', sc*sqrt(SX(ind)), ...
+            'YPositiveDelta', sc*sqrt(SX(ind)));     
+    end
     if ~isempty(color)
         set(hp,'FaceColor',color)
         set(hf,'color',color)

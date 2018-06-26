@@ -191,7 +191,7 @@ switch flag % What piece of the model to display?
         end
         
         % update middle-left subplot: hidden states
-        cla(display.ha(3))
+        %cla(display.ha(3))
         try
             plotUncertainTimeSeries(mux,vx,dTime,display.ha(3),ind);
         catch
@@ -200,7 +200,7 @@ switch flag % What piece of the model to display?
         
         % update middle-right subplot: initial conditions
         if options.updateX0
-            cla(display.ha(4))
+            %cla(display.ha(4))
             plotUncertainTimeSeries(-dx0,vx0,1,display.ha(4));
         elseif isequal(it,0)
             plotUncertainTimeSeries(dx0,vx0,1,display.ha(4));
@@ -219,7 +219,7 @@ switch flag % What piece of the model to display?
         if size(dphi,2) == 1 % for on-line wrapper
             dTime = 1;
         end
-        cla(display.ha(5))
+        %cla(display.ha(5))
         plotUncertainTimeSeries(-dphi,vphi,dTime,display.ha(5));
         
         displayDF(F,display)
@@ -230,7 +230,7 @@ switch flag % What piece of the model to display?
         if size(dtheta,2) == 1 % for on-line wrapper
             dTime = 1;
         end
-        cla(display.ha(7))
+        %cla(display.ha(7))
         plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
         
         displayDF(F,display)   
@@ -244,7 +244,7 @@ switch flag % What piece of the model to display?
         
         if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
             dTime = 1;
-            cla(display.ha(6))
+            %cla(display.ha(6))
             logCI = (log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat))';
             plotUncertainTimeSeries(log(sigmaHat'),logCI.^2,dTime,display.ha(6));
         end
@@ -252,7 +252,7 @@ switch flag % What piece of the model to display?
         % update middle-right subplot: state noise
         if options.dim.n > 0 && ~any(isinf(alphaHat))
             dTime = 1;
-            cla(display.ha(8))
+            %cla(display.ha(8))
             logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
             plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
         end
@@ -279,23 +279,64 @@ drawnow
 %--- subfunction ---%
 
     function update_observation_plot()
-        
         s_out=options.sources(currentSource).out;
         
         % update top-left subplot: predictive density
-        cla(display.ha(1))
+        %cla(display.ha(1))
         y_s = y(s_out,:);
         y_s_on = y_s;
         y_s_on(options.isYout(s_out,:)==1)=nan;
         if options.sources(currentSource).type < 2
-            p_l  = plot(display.ha(1),dTime,y_s',':');
-            plot(display.ha(1),dTime,y_s','.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9);
-            p_mi = plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9);
             
+            % excluded points
+            [ix,iy] = find(options.isYout(s_out,:));
+            y_s_out = y_s(sub2ind(size(y_s),ix,iy));
+             p_out = findobj(display.ha(1),'Tag','yOut');
+             if ~ isempty(p_out)
+                 set(p_out,'XData',dTime(iy), 'YData', y_s_out );
+             else
+                 plot(display.ha(1),dTime(iy), y_s_out, '.', 'MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9,'Tag','yOut');
+            end
+            
+            % data lines
+            p_l = findobj(display.ha(1),'Tag','yLine');
+            if ~ isempty (p_l)
+                for i = 1 : numel (p_l)
+                    set(p_l(i), 'XData', dTime, 'YData', y_s(i,:));
+                end
+            else
+                p_l  = plot(display.ha(1),dTime,y_s',':','Tag','yLine','MarkerSize',9);
+            end
+            
+            % data points
+            p_mi = findobj(display.ha(1),'Tag','yPoint');
+
+            if ~ isempty (p_mi)
+                for i = 1 : numel (p_mi)
+                    set(p_mi(i), 'XData', dTime, 'YData', y_s_on(i,:));
+                end
+            else
+                try
+                    set(display.ha(1),'ColorOrderIndex',2);
+                end
+                plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9,'Tag','yPoint');
+            end
+            
+            %for i=1:numel(p_l)
+            %    set(p_mi(i),'MarkerEdgeColor',get(p_l(i),'Color'))
+            %end
+            
+            %delete(findobj(display.ha(1),'Tag',''));
+
+            
+            % predictive density
             vy_s= vy(s_out,:);
             [~,p_vr,p_vl] = plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
+            
+            
+
+            
             for i=1:numel(p_l)
-                set(p_mi(i),'MarkerEdgeColor',get(p_l(i),'Color'))
                 try
                     set(p_vl(i),'Color',get(p_l(i),'Color'))
                     set(p_vr(i),'FaceColor',get(p_l(i),'Color'))
@@ -313,15 +354,23 @@ drawnow
         end
                 
         % update top-right subplot: predicted VS observed data
-        cla(display.ha(2))
+        %cla(display.ha(2))
         % plot identity
         if options.sources(currentSource).type==0
             miy = min(min([gx(s_out,:);y(s_out,:)]));
             may = max(max([gx(s_out,:);y(s_out,:)]));
-            plot(display.ha(2),[miy,may],[miy,may],'k:')
         else
-            plot(display.ha(2),[0,1],[0,1],'k:')
+            miy = 0;
+            may = 1;
         end
+        
+        hr = findobj(display.ha(2),'Tag','refline');
+        if isempty (hr)
+            plot(display.ha(2),[miy,may],[miy,may],'k:','Tag','refline')
+        else
+            set(hr,'XData',[miy,may],'YData',[miy,may]);
+        end
+            
         
         if options.sources(currentSource).type==0
             gx_src = gx(s_out,:) ;
@@ -332,16 +381,45 @@ drawnow
             gxin(~~options.isYout(s_out,:)) = nan;
             yin = y_src;
             yin(~~options.isYout(s_out,:)) = nan;
-            plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9)
-            plot(display.ha(2),gxin',yin','.','MarkerSize',9)
+            pOut = findobj(display.ha(2),'Tag','yOut');
+            if ~ isempty(pOut)
+                set(pOut,'XData',gxout(:),'YData',yout(:));
+            else
+                plot(display.ha(2),gxout(:),yout(:),'.','MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9,'Tag','yOut');
+            end
+            pIn = findobj(display.ha(2),'Tag','yIn');
+            if ~ isempty(pIn)
+                for i=1:numel(s_out)
+                    set(pIn(i),'XData',gxin(i,:),'YData',yin(i,:));
+                end
+            else
+                plot(display.ha(2),gxin',yin','.','MarkerSize',9,'Tag','yIn');
+            end
         else
+            pIn = findobj(display.ha(2),'Tag','yIn');
+            pOut = findobj(display.ha(2),'Tag','yOut');
+            
+            if isempty(pIn)
+            
             gridp = 0:1e-2:1;
             plot(display.ha(2),gridp,gridp+sqrt(gridp.*(1-gridp)),'r--')
             plot(display.ha(2),gridp,gridp-sqrt(gridp.*(1-gridp)),'r--')
-            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.7 .7 .7],'MarkerSize',9,'parent',display.ha(2))
-            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'.','MarkerSize',9,'parent',display.ha(2))
-        end
-         
+            errorbar(gridgout{currentSource},stackyout{currentSource},stdyout{currentSource},'.','Color',[.7 .7 .7],'MarkerSize',9,'parent',display.ha(2),'Tag','yOut')
+            errorbar(gridgin{currentSource},stackyin{currentSource},stdyin{currentSource},'.','MarkerSize',9,'parent',display.ha(2),'Tag','yIn')
+            else
+                set(pIn, ...
+            'XData', gridgin{currentSource}, ...
+            'YData', stackyin{currentSource}, ...
+            'YNegativeDelta', stdyin{currentSource}, ...
+            'YPositiveDelta', stdyin{currentSource});
+        set(pOut, ...
+            'XData', gridgout{currentSource}, ...
+            'YData', stackyout{currentSource}, ...
+            'YNegativeDelta', stdyout{currentSource}, ...
+            'YPositiveDelta', stdyout{currentSource});
+            end
+            
+            end
     end
 
     function [] = displayDF(F,display)
