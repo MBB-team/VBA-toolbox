@@ -9,7 +9,7 @@ end
 G = eye(n);
 G = G(inG.ind,:);
 
-try
+if size(Phi,1) >=1
     G0 = G;
     G = Phi(1).*G;
 end

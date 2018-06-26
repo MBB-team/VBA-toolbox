@@ -6,7 +6,7 @@ clear variables
 close all
 
 % Choose basic settings for simulations
-n_t = 5e2;
+n_t = 3e2;
 deltat = 2e-2;
 alpha   = 1e0/deltat;
 sigma   = 1e-1;

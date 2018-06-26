@@ -17,7 +17,7 @@ b = [ones(n,1);zeros(n,1)];
 
 C = 0.5*ones(2*n,2*n) + 0.5*eye(2*n);
 
-N = 32; % # Monte-Carlo samples
+N = 20; % # Monte-Carlo samples
 for ii=1:N
     
     % simulate data
@@ -36,7 +36,7 @@ for ii=1:N
         options.verbose = 0;
         options.inG.X = X_train(:,1:i);
         options.priors = [];
-        options.priors.SigmaPhi = 1e4*eye(i);
+        options.priors.SigmaPhi = 1e2*eye(i);
         dim.n = 0;
         dim.n_theta = 0;
         dim.n_phi = i;
@@ -71,6 +71,6 @@ errorbar(mean(AIC'),std(AIC')./sqrt(N),'parent',ha,'marker','.','color','y');
 errorbar(mean(BIC'),std(BIC')./sqrt(N),'parent',ha,'marker','.','color','m');
 plot([n,n],get(ha,'ylim'),'k--')
 legend(ha,{'test Log-Likelihood','train Log-Likelihood','Free Energy','AIC','BIC'})
-
+ylim([-500, 0])
 
 
