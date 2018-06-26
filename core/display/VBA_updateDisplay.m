@@ -16,7 +16,14 @@ VBA_pause(options)
 
 % replace source selector callback if needed
 ud = get(getPanel(display.hfp),'userdata') ;
-ud.update_plot = @() VBA_updateDisplay(posterior,suffStat,options,y,0,'Y');
+
+    function update_plot ()
+        cla(display.ha(1));
+        cla(display.ha(2));
+        VBA_updateDisplay(posterior,suffStat,options,y,0,'Y');
+    end
+
+ud.update_plot = @update_plot; 
 set(getPanel(display.hfp),'userdata',ud) ;
 
 ud = VBA_check_struct(ud,'currentSource', 1 );
@@ -317,7 +324,7 @@ drawnow
                 end
             else
                 try
-                    set(display.ha(1),'ColorOrderIndex',2);
+                    set(display.ha(1),'ColorOrderIndex',1);
                 end
                 plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9,'Tag','yPoint');
             end
