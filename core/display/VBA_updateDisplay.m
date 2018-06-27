@@ -312,6 +312,7 @@ drawnow
                     set(p_l(i), 'XData', dTime, 'YData', y_s(i,:));
                 end
             else
+                resetColors(display.ha(1));
                 p_l  = plot(display.ha(1),dTime,y_s',':','Tag','yLine','MarkerSize',9);
             end
             
@@ -323,9 +324,7 @@ drawnow
                     set(p_mi(i), 'XData', dTime, 'YData', y_s_on(i,:));
                 end
             else
-                try
-                    set(display.ha(1),'ColorOrderIndex',1);
-                end
+                resetColors(display.ha(1));
                 plot(display.ha(1),dTime,y_s_on','.','MarkerSize',9,'Tag','yPoint');
             end
             
@@ -333,35 +332,38 @@ drawnow
             %    set(p_mi(i),'MarkerEdgeColor',get(p_l(i),'Color'))
             %end
             
-            %delete(findobj(display.ha(1),'Tag',''));
-
             
             % predictive density
             vy_s= vy(s_out,:);
+            resetColors(display.ha(1));
             [~,p_vr,p_vl] = plotUncertainTimeSeries(gx(s_out,dTime),vy_s(:,dTime),dTime,display.ha(1));
             
             
-
-            
-            for i=1:numel(p_l)
-                try
-                    set(p_vl(i),'Color',get(p_l(i),'Color'))
-                    set(p_vr(i),'FaceColor',get(p_l(i),'Color'))
-
-                catch
-                    set(p_vl(i),'FaceColor',get(p_l(i),'Color'))
-                    set(p_vr(i),'Color',get(p_l(i),'Color'))
-                end
-            end
+%             for i=1:numel(p_l)
+%                 try
+%                     set(p_vl(i),'Color',get(p_l(i),'Color'))
+%                     set(p_vr(i),'FaceColor',get(p_l(i),'Color'))
+% 
+%                 catch
+%                     set(p_vl(i),'FaceColor',get(p_l(i),'Color'))
+%                     set(p_vr(i),'Color',get(p_l(i),'Color'))
+%                 end
+%             end
         else
-            imagesc(gx(s_out,:),'Parent',display.ha(1));
-            set(display.ha(1),'Clim',[0 1]) ;
-            colormap(flipud(colormap('bone')));
-            plot(display.ha(1),VBA_indicator(y_s_on, [], true),'.r');
+            p_im = findobj(display.ha(1),'Tag','Ypred');
+            if isempty (p_im)
+                imagesc(gx(s_out,:),'Parent',display.ha(1),'Tag','yPred');
+                set(display.ha(1),'Clim',[0 1]) ;
+                colormap(flipud(colormap('bone')));
+                plot(display.ha(1),VBA_indicator(y_s_on, [], true),'.r','Tag','yPoint');
+            else
+                set(p_im, 'CData', gx(s_out,:));
+                p_p = findobj(display.ha(1),'Tag','yPoint');
+                set(p_p,'YData',VBA_indicator(y_s_on, [], true));
+            end
         end
                 
         % update top-right subplot: predicted VS observed data
-        %cla(display.ha(2))
         % plot identity
         if options.sources(currentSource).type==0
             miy = min(min([gx(s_out,:);y(s_out,:)]));
@@ -378,7 +380,6 @@ drawnow
             set(hr,'XData',[miy,may],'YData',[miy,may]);
         end
             
-        
         if options.sources(currentSource).type==0
             gx_src = gx(s_out,:) ;
             y_src = y(s_out,:) ;
@@ -400,6 +401,7 @@ drawnow
                     set(pIn(i),'XData',gxin(i,:),'YData',yin(i,:));
                 end
             else
+                resetColors(display.ha(2));
                 plot(display.ha(2),gxin',yin','.','MarkerSize',9,'Tag','yIn');
             end
         else
@@ -440,6 +442,10 @@ drawnow
                 end
             end
         end
+    end
+
+    function resetColors (h)
+        set(h,'ColorOrderIndex',1);
     end
 
 end
