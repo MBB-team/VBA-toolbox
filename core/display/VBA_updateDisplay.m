@@ -445,7 +445,9 @@ drawnow
     end
 
     function resetColors (h)
-        set(h,'ColorOrderIndex',1);
+        if ~ verLessThan('matlab','8.4')
+            set(h,'ColorOrderIndex',1);
+        end
     end
 
 end

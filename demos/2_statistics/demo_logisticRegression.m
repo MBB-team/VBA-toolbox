@@ -55,7 +55,7 @@ plot((y-e))  % model prediction = data - residual
 % Run the estimation  
 % =========================================================================
 
-% Call inversion routine
+% Call inversion routines
 [posterior,out] = VBA_NLStateSpaceModel(y,u,[],g_fname,dim,options);
 
 % Display results
