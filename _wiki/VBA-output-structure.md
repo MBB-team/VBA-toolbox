@@ -75,16 +75,20 @@ All these are given under the `summary` tab (see [this page]({{ site.baseurl }}/
 # Inversion diagnostics
 
 Typically, four types of inversion diagnostics can be eyeballed in a systematic manner (
-they are displayed under the 'diagnostics' tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)).):
+they are displayed under the 'diagnostics' tab; see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)):
 
 - **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express as non-zero posterior correlation between model parameters.
 Note: this posterior correlation matrix $$C$$ concatenates all 'static' parameters, i.e.:
 $$ C = \left[\begin{array}{ccc} C_{\phi} & \cdots & \cdots \\ \cdots & C_{\theta} & \cdots \\ \cdots & \cdots & C_{X_0}   \end{array}\right] $$
-where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior correlation matrices for observation parameters, evolution parameters and initial conditions, respectively. A strong posterior correlation between two model variables will sginal some form of non-identifibiality issue... 
+where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior correlation matrices for observation parameters, evolution parameters and initial conditions, respectively. A strong posterior correlation between two model variables will signal some form of non-identifibiality issue... 
 > For deterministic dynamical systems, the posterior correlation matrix $$C$$ may contain non-zero entries outside the three main diagnoal blocks, because there is no VB mean-field separation between the three sets of parameters. In all other cases, $$C$$ is a block diagonal correlation matrix, by construction!
 
-- **residuals empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
-- **residuals empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: residuals should be normally distributed. Note: although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
+- **residuals' empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
+> If there is a temporal dimension to the data (i.e. if there is more than one time sample), then the residuals' auto-correlation is derived along time (i.e. VBA derives the temporal auto-correlation of the residuals). Otherwise, the residuals' auto-correlation is derived along data channels!
+
+- **residuals' empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: residuals should be normally distributed. In particular, the empirical distribution should be unimodal. In other words, VBA's inference may be quite robust to, e.g., [fat tails](https://en.wikipedia.org/wiki/Fat-tailed_distribution) and/or [skewness](https://en.wikipedia.org/wiki/Skewness)...
+> Although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
+
 - **micro-time resolution hidden states and predicted data**: this can be used to eyeball the model predictions interpolated outside the sampling grid. Note: this only applies to models that rely on (almost) continuous dynamical systems, whereby the evolution function is applied more than one time in between two time samples.
 
 In addition, for dynamical systems, VBA provides:
