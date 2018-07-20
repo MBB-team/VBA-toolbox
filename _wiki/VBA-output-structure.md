@@ -77,10 +77,10 @@ All these are given under the `summary` tab (see [this page]({{ site.baseurl }}/
 Typically, four types of inversion diagnostics can be eyeballed in a systematic manner (
 they are displayed under the 'diagnostics' tab; see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)):
 
-- **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express as non-zero posterior correlation between model parameters.
+- **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express themselves as strong posterior correlations between pairs of model parameters.
 Note: this posterior correlation matrix $$C$$ concatenates all 'static' parameters, i.e.:
 $$ C = \left[\begin{array}{ccc} C_{\phi} & \cdots & \cdots \\ \cdots & C_{\theta} & \cdots \\ \cdots & \cdots & C_{X_0}   \end{array}\right] $$
-where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior correlation matrices for observation parameters, evolution parameters and initial conditions, respectively. A strong posterior correlation between two model variables will signal some form of non-identifibiality issue... 
+where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior correlation matrices for observation parameters, evolution parameters and initial conditions, respectively.
 > For deterministic dynamical systems, the posterior correlation matrix $$C$$ may contain non-zero entries outside the three main diagnoal blocks, because there is no VB mean-field separation between the three sets of parameters. In all other cases, $$C$$ is a block diagonal correlation matrix, by construction!
 
 - **residuals' empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
