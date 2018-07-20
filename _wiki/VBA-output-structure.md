@@ -86,10 +86,11 @@ where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior co
 - **residuals' empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
 > If there is a temporal dimension to the data (i.e. if there is more than one time sample), then the residuals' auto-correlation is derived along time (i.e. VBA derives the temporal auto-correlation of the residuals). Otherwise, the residuals' auto-correlation is derived along data channels!
 
-- **residuals' empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: residuals should be normally distributed. In particular, the empirical distribution should be unimodal. In other words, VBA's inference may be quite robust to, e.g., [fat tails](https://en.wikipedia.org/wiki/Fat-tailed_distribution) and/or [skewness](https://en.wikipedia.org/wiki/Skewness)...
-> Although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
+- **residuals' empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: residuals should be normally distributed. In particular, the empirical distribution should be [unimodal](https://en.wikipedia.org/wiki/Unimodality). In other words, VBA's inference may be quite robust to, e.g., [fat tails](https://en.wikipedia.org/wiki/Fat-tailed_distribution) and/or [skewness](https://en.wikipedia.org/wiki/Skewness)...
+> Although, formally speaking, this does not apply to binary data, a well-behaved model inversion under a binomial likelihood would exhibit a unimodal distribution of empirical residuals.
 
 - **micro-time resolution hidden states and predicted data**: this can be used to eyeball the model predictions interpolated outside the sampling grid. Note: this only applies to models that rely on (almost) continuous dynamical systems, whereby the evolution function is applied more than one time in between two time samples.
+> How to use this to diagnose the model inversion is not entirely trivial. But one may pay particular attention to stiff jumps in the micro-time resolution dynamics. This is because these may signal the need for increasing the micro-time resolution (because the discrete approximation to the underlying continuous system may be invalid)...
 
 In addition, for dynamical systems, VBA provides:
 
