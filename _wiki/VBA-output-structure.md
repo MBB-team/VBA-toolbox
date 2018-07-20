@@ -77,7 +77,7 @@ All these are given under the `summary` tab (see [this page]({{ site.baseurl }}/
 Typically, four types of inversion diagnostics can be eyeballed in a systematic manner (
 they are displayed under the 'diagnostics' tab; see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)):
 
-- **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express themselves as strong posterior correlations between pairs of model parameters.
+- **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express themselves as strong posterior correlations between model parameters.
 Note: this posterior correlation matrix $$C$$ concatenates all 'static' parameters, i.e.:
 $$ C = \left[\begin{array}{ccc} C_{\phi} & \cdots & \cdots \\ \cdots & C_{\theta} & \cdots \\ \cdots & \cdots & C_{X_0}   \end{array}\right] $$
 where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior correlation matrices for observation parameters, evolution parameters and initial conditions, respectively.
