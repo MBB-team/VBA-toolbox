@@ -42,7 +42,7 @@ VBA approximates the posterior density over model variables (i.e.: evolution/obs
 All these can be eyeballed under the 'VB inversion' tab (see [this page](VBA-graphical-output.html)).
 
 
-> Posterior estimates of precision hyperparameters can be obtained from their posterior mean, which reduces to the ratio of shape and rate parameters, e.g. (for the observation noise $$\sigma$$):
+> **Posterior estimates of precision hyperparameters** can be obtained from their posterior mean, which reduces to the ratio of shape and rate parameters, e.g. (for the observation noise $$\sigma$$):
 $$E[\sigma|y]= \frac{a_{\sigma}}{b_{\sigma}}$$
 where $$a_{\sigma}$$ and $$b_{\sigma}$$ are the posterior shape and rate parameters, respectively.
 
