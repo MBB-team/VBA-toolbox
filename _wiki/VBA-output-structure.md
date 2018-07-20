@@ -10,36 +10,42 @@ Below, we describe in more details VBA's main output arguments.
 
 # Posterior density on model (unknown) variables
 
-First of all, VBA derives an approximation to the posterior density over model variables (i.e.: evolution/observation parameters, hidden states, initial conditions and precision hyperparameters). When calling the main inversion function, e.g.:
+First of all, when calling the main inversion function, i.e..:
 
 ```matlab
 [posterior, out] = ...
    VBA_NLStateSpaceModel(y, u, f_fname, g_fname, dim, options) ;
 ```
 
-moments of the approximate posterior density are stored in `posterior`, in a similar fashion than the `options.priors` input structure (see [this description]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps)), i.e.:
+VBA approximates the posterior density over model variables (i.e.: evolution/observation parameters, hidden states, initial conditions and precision hyperparameters). The moments of the approximate marginal posterior densities are stored in the `posterior` structure, in a similar fashion to the `options.priors` input structure (see [this description]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps)), i.e.:
 
 - **Observation parameters**
-  - `posterior.muPhi`
-  - `posterior.SigmaPhi`
+  - `posterior.muPhi`: posterior mean (vector) of observation parameters
+  - `posterior.SigmaPhi`: posterior covariance (matrix) of observation parameters
 - **Evolution parameters** (only for dynamical systems)
-  - `posterior.muTheta`
-  - `posterior.SigmaTheta`
+  - `posterior.muTheta`: posterior mean (vector) of evolution parameters
+  - `posterior.SigmaTheta`: posterior covariance (matrix) of evolution parameters
 - **Hidden states** (only for dynamical systems)
-  - `posterior.muX`
-  - `posterior.SigmaX.current` (a cell array of instantaneous states' covariance matrices)
-  - `posterior.SigmaX.inter` (a cell array of lagged- covariance matrices)
+  - `posterior.muX`: posterior mean (matrix) of hidden states' time series
+  - `posterior.SigmaX.current`: posterior instantaneous covariances (cell array of matrices) of hidden states
+  - `posterior.SigmaX.inter`: posterior lagged covariances (cell array of matrices) of hidden states
 - **Initial conditions** (only for dynamical systems)
-  - `posterior.muX0`
-  - `posterior.SigmaX0`
+  - `posterior.muX0`: posterior mean (vector) of initial hidden states 
+  - `posterior.SigmaX0`: posterior covariance (matrix) of initial hidden states 
 - **Measurement noise precision** (only for continuous data)
-  - `posterior.a_sigma`
-  - `posterior.b_sigma`
+  - `posterior.a_sigma`: posterior shape parameter for the (Gamma-distributed) precision of observation noise
+  - `posterior.b_sigma`: posterior rate parameter for the (Gamma-distributed) precision of observation noise
 - **State noise precision**  (only for dynamical systems)
-  - `posterior.a_alpha`
-  - `posterior.b_alpha`
+  - `posterior.a_alpha`: posterior shape parameter for the (Gamma-distributed) precision of state noise
+  - `posterior.b_alpha`: posterior rate parameter for the (Gamma-distributed) precision of state noise
 
 All these can be eyeballed under the 'VB inversion' tab (see [this page](VBA-graphical-output.html)).
+
+
+> Posterior estimates of precision hyperparameters can be obtained from their posterior mean, which reduces to the ratio of shape and rate parameters, e.g. (for the observation noise $$\sigma$$):
+$$E[\sigma|y]= \frac{a_{\sigma}}{b_{\sigma}}$$
+where $$a_{\sigma}$$ and $$b_{\sigma}$$ are the posterior shape and rate parameters, respectively.
+
 
 # Model quality metrics
 
