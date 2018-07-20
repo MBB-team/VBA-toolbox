@@ -80,7 +80,7 @@ Typically, four types of diagnostics can be eyeballed in a systematic manner:
 
 Note: this posterior correlation matrix $$C$$ concatenates all 'static' parameters, i.e.:
 
-$$ C = \left[\begin{array}{ccc} C_{\phi} & \cdots & \cdots \\ C_{\theta} & \cdots & \cdots \\ \cdots & \cdots & C_{X_0}   \end{array}\right] $$
+$$ C = \left[\begin{array}{ccc} C_{\phi} & \cdots & \cdots \\ \cdots & C_{\theta} & \cdots \\ \cdots & \cdots & C_{X_0}   \end{array}\right] $$
 
 where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior correlation matrices for observation parameters, evolution parameters and initial conditions, respectively.
 > For deterministic dynamical systems, the posterior correlation matrix $$C$$ may contain non-zero entries outside the three main diagnoal blocks, because there is no VB mean-field separation between the three sets of parameters. In all other cases, $$C$$ is a block diagonal correlation matrix, by construction!
