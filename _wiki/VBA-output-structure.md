@@ -77,6 +77,14 @@ All these are given under the `summary` tab (see [this page]({{ site.baseurl }}/
 Typically, four types of diagnostics can be eyeballed in a systematic manner:
 
 - **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express as non-zero posterior correlation between model parameters.
+
+Note: this posterior correlation matrix $$C$$ concatenates all 'static' parameters, i.e.:
+
+$$ C = \left[\begin{array}{ccc} C_{\phi} & \cdots & \cdots \\ C_{\theta} & \cdots & \cdots \\ \cdots & \cdots & C_{X_0}   \end{array}\right] $$
+
+where $$C_{\phi}$$, $$C_{\theta}$$ and $$C_{X_0}$$ are the marginal posterior correlation matrices for observation parameters, evolution parameters and initial conditions, respectively.
+> For deterministic dynamical systems, the posterior correlation matrix $$C$$ may contain non-zero entries outside the three main diagnoal blocks, because there is no VB mean-field separation between the three sets of parameters. In all other cases, $$C$$ is a block diagonal correlation matrix, by construction!
+
 - **residuals empirical auto-correlation**: `out.diagnostics.dy.R`. This is useful for checking the absence of structure in model residuals, which would signal "underfitting".
 - **residuals empirical histogram**: this can be used as a post-hoc sanity check for a key prior assumption, under which the likelihood function is derived, namely: residuals should be normally distributed. Note: although, formally speaking, this does not apply to binary data, a well-behaved model fit under a binomial likelihood would exhibit a normal distribution of empirical residuals.
 - **micro-time resolution hidden states and predicted data**: this can be used to eyeball the model predictions interpolated outside the sampling grid. Note: this only applies to models that rely on (almost) continuous dynamical systems, whereby the evolution function is applied more than one time in between two time samples.
