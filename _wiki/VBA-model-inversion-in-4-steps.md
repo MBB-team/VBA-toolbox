@@ -75,7 +75,9 @@ In addition to the evolution and observation functions, specifying the generativ
 - **State noise precision** (only for dynamical systems)
   - `priors.a_alpha`: prior shape for the state noise precision $$\alpha$$
   - `priors.b_alpha`: prior rate for the state noise precision $$\alpha$$
-
+- **noise covariance matrices**
+  - `priors.iQy`: prior covariance for the measurement noise (only for gaussian data sources)
+  - `priors.iQx`: prior covariance for the state noise (only for stochastic systems)
 
 If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities, except for $$\sigma$$ and $$\alpha$$). For example, setting:
 
@@ -85,7 +87,7 @@ priors.SigmaPhi = eye(dim.n_phi)     ;
 ```
 effectively defines a $$N\left( 0,I \right)$$ i.i.d. (zero-mean, unit-variance) normal density on observation parameters.
 
-> **Tip:** By default, VBA assumes that dynamical systems are deterministic. This is done by forcing an infinite prior precision on state noise. However, identification of  **stochastic** systems can be performed by setting a finite state noise precision.
+> **Tip:** By default, VBA assumes that dynamical systems are deterministic. This is done by forcing an infinite prior precision on state noise. However, VBA identification of  **stochastic** systems can be performed by setting a finite state noise precision.
 >
 > For example, setting:
 >
