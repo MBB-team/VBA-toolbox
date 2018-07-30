@@ -30,7 +30,7 @@ where we have chosen a discrete-time formulation. Here, $$\tau$$ is some arbitra
 
 When performing dynamical systems' inversion, the VBA toolbox computes the first-order Volterra kernels of the sampled system's observable outputs and estimated hidden states and observables, w.r.t. to all inputs. The estimation is performed by the function `VBA_VolterraKernels.m`, which essentially uses the VBA inversion of the equation above. Importantly, goodness-of-fit metrics ([coefficient of determination](https://en.wikipedia.org/wiki/Coefficient_of_determination) in the continuous case, and [balanced classification accuracy](https://en.wikipedia.org/wiki/Evaluation_of_binary_classifiers) in the binomial case) allows one to evaluate whether the truncated Volterra series faithfully captures the input-output relationship.
 
-The Volterra decomposition is performed under the numerical constraint of a finite lag. Choosing the maximum lag is thus necessarily balancing fit against estimation efficiency. The default maximum lag in VBA is 16. Setting:
+The Volterra decomposition is performed under the numerical constraint of a finite lag. Choosing the maximum lag is thus necessarily balancing fit accuracy against estimation efficiency. The default maximum lag in VBA is 16. Setting:
 
 ```matlab
 options.kernelSize = 32;
