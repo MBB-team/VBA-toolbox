@@ -24,7 +24,7 @@ options.inF.dt = 1e-3;
 
 x0 = [0;0];
 
-[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0);
+[y,x,x0,eta,e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0);
 
 displaySimulations(y,x,eta,e);
 

@@ -44,7 +44,7 @@ options.sources.type = 1;
 phi = ones(nRegressor,1); % basic example
 
 % Simulated observations 
-[y,x,x0,eta,e] = simulateNLSS(n,[],g_fname,[],phi,u,[],[],options);
+[y,x,x0,eta,e] = VBA_simulate (n,[],g_fname,[],phi,u,[],[],options);
 
 % display time series of hidden states and observations
 figure,

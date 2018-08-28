@@ -49,7 +49,7 @@ for ii=1:Nmcmc
     u(in.ind.R,:) = R;
     for i=1:nm
         options.inG.model = models{i};
-        [y,x,x0,eta,e] = simulateNLSS(ntrials,[],g_fname,[],phi,u,[],[],options);
+        [y,x,x0,eta,e] = VBA_simulate (ntrials,[],g_fname,[],phi,u,[],[],options);
         % Call inversion routine
         for j=1:nm
             options.inG.model = models{j};

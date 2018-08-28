@@ -35,7 +35,7 @@ dim.n_t = ntrials;
 options.inG = in;
 options.sources = struct('type',1 ,'out', 1); % one binomial observation
 options.dim = dim;
-[y,x,x0,eta,e] = simulateNLSS(ntrials,[],g_fname,[],phi,u,[],[],options);
+[y,x,x0,eta,e] = VBA_simulate (ntrials,[],g_fname,[],phi,u,[],[],options);
 
 
 % graphical summary of choice data

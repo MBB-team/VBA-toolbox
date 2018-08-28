@@ -37,7 +37,7 @@ for ii=1:Nmcmc
     % pick a model at random (as well as its parameters)
     options.inG.X = randn(dim.n_phi-1,dim.p);
     phi = randn(dim.n_phi,1);
-    [y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,[],[],[],options,[]);
+    [y,x,x0,eta,e] = VBA_simulate (dim.n_t,[],g_fname,[],phi,[],[],[],options,[]);
     g = y-e;
     g = g>0.5; % denoised data
     % 4-fold train/test

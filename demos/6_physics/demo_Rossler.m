@@ -44,7 +44,7 @@ stop = 0;
 it = 1;
 itmax = 10;
 while ~stop
-    [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+    [y,x,x0,eta,e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
     if ~ VBA_isWeird ({x, y}) || it >= itmax
         stop = 1;
     else

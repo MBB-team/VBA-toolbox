@@ -37,13 +37,13 @@ options.verbose = false;
 theta = [5; 1];
 phi = 5;
 X0 = 0;
-y1 = simulateNLSS(round(n_t/2),@f_demo_multisession,@g_demo_multisession,theta,phi,u(1:(n_t/2)),Inf,.01,options,X0);
+y1 = VBA_simulate (round(n_t/2),@f_demo_multisession,@g_demo_multisession,theta,phi,u(1:(n_t/2)),Inf,.01,options,X0);
 
 % second session
 theta = - theta; % reverse evolution
 phi = phi - 3; % shift in observations
 X0 = 0;
-y2 = simulateNLSS(round(n_t/2),@f_demo_multisession,@g_demo_multisession,theta,phi,u((1+n_t/2):end),Inf,.01,options,X0);
+y2 = VBA_simulate (round(n_t/2),@f_demo_multisession,@g_demo_multisession,theta,phi,u((1+n_t/2):end),Inf,.01,options,X0);
 
 % concatenate both sessions
 y = [y1 y2];

@@ -60,7 +60,7 @@ alpha = Inf;
 sigma = 1e2;
 
 % simulate
-[y, x, x0, eta, e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,steadyState);
+[y, x, x0, eta, e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,steadyState);
 
 % display
 displayHH (u, x);

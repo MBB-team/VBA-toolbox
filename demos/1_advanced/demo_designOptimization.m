@@ -73,7 +73,7 @@ u = uRange';
 
 % simulate responses
 % -------------------------------------------------------------------------
-y = simulateNLSS (1,[],@g_psychometric,[],phi,u,[],[],options); 
+y = VBA_simulate (1,[],@g_psychometric,[],phi,u,[],[],options); 
 
 % estimate parameters
 % -------------------------------------------------------------------------
@@ -119,7 +119,7 @@ end
 
 % simulate responses
 % -------------------------------------------------------------------------
-y = simulateNLSS (1,[],@g_psychometric,[],phi,u,[],[],options); 
+y = VBA_simulate (1,[],@g_psychometric,[],phi,u,[],[],options); 
 
 % estimate parameters
 % -------------------------------------------------------------------------
@@ -162,7 +162,7 @@ for t = 1 : N
 
     % simulate 1 responses
     % ---------------------------------------------------------------------
-    y(t) = simulateNLSS(1,[],@g_psychometric,[],phi,u(t),Inf,[],options);
+    y(t) = VBA_simulate (1,[],@g_psychometric,[],phi,u(t),Inf,[],options);
     
     % estimate parameters given data acquired so far
     % ---------------------------------------------------------------------

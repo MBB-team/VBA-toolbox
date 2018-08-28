@@ -47,7 +47,7 @@ phi = 0.5;
 x0 = 0;
 
 % simulate
-[y,x,x0,eta,e] = simulateNLSS(N,@f_evolution,@g_observation,theta,phi,[],alpha,[],options,x0);
+[y,x,x0,eta,e] = VBA_simulate (N,@f_evolution,@g_observation,theta,phi,[],alpha,[],options,x0);
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e);

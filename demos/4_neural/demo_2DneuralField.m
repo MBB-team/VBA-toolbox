@@ -64,7 +64,7 @@ dim.n               = (ns^2)*2;
 
 
 % Build time series of hidden states and observations
-[y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,priors.muX0);
+[y,x,x0,eta,e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,priors.muX0);
 
 % display time series of hidden states and observations
 displaySimulations(y,x,eta,e);

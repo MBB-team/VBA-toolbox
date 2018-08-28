@@ -52,7 +52,7 @@ dim.n               = 2;
 ok = false;
 while ~ ok
     try
-        [y,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+        [y,x,x0,eta,e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
         ok = true;
     catch
         fprintf('Simulation produced weird values, let''s try again.\n');

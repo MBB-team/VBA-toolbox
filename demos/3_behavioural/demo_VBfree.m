@@ -58,7 +58,7 @@ options.sources = struct('type',1 ,'out', 1); % one binomial observation;
 options.skipf = zeros(1,n_t);
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
 
-[y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0,fb);
+[y,x,x0,eta,e,u] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,Inf,Inf,options,x0,fb);
 
 figure
 plot(y-e,'r')

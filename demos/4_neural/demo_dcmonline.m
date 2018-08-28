@@ -136,7 +136,7 @@ for tt=1:nblocks
     
     % 2- simulate BOLD response to chosen design under true model
     fprintf(1,['-- Simulating data (block ',num2str(tt),')...  '])
-    [y,x,x0,eta,ee] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u{ind},alpha,sigma,o4design{truemodel},x0);
+    [y,x,x0,eta,ee] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u{ind},alpha,sigma,o4design{truemodel},x0);
     Y(:,(tt-1)*n_t+1:tt*n_t) = y;
     x0 = x(:,end);
            

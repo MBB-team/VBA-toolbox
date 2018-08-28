@@ -33,7 +33,7 @@ for ii=1:Nmcmc
     for i=1:2
         % simulate data with and without real mapping
         phi = (2-i)*randn(dim.n_phi,1);
-        [y,x,x0,eta,e] = simulateNLSS(dim.n_t,[],g_fname,[],phi,[],[],[],options);
+        [y,x,x0,eta,e] = VBA_simulate (dim.n_t,[],g_fname,[],phi,[],[],[],options);
         g = y-e;
         g = g>0.5; % denoised data
         mner(i,ii) = sum(g.*y + (1-g).*(1-y))./dim.p; % max performance rate

@@ -75,13 +75,13 @@ dim.n_phi = 2; % nb of observation parameters
 
 options.sources.type = 0; % flag for gaussian observations (default, can be omited)
 sigma = 0.1; % precision of the gaussian noise
-y1 = simulateNLSS(T,[],@g_source1,[],phi,u,Inf,sigma,options);
+y1 = VBA_simulate (T,[],@g_source1,[],phi,u,Inf,sigma,options);
 
 options.sources.type = 1; % flag for Bernoulli observations
-y2 = simulateNLSS(T,[],@g_source2,[],phi,u,Inf,[],options);
+y2 = VBA_simulate (T,[],@g_source2,[],phi,u,Inf,[],options);
 
 options.sources.type = 2; % flag for multinomial observations
-y3 = simulateNLSS(T,[],@g_source3,[],phi,u,Inf,[],options);
+y3 = VBA_simulate (T,[],@g_source3,[],phi,u,Inf,[],options);
 
 % Inversion
 % -------------------------------------------------------------------------
@@ -134,7 +134,7 @@ options.sources(3).out = 3 : 7; % selecting y3 lines in y
 options.sources(3).type = 2; % flag for multinomial observations
 
 % note that we could generate new multisource data as following:
-% y = simulateNLSS(T,[],@g_sourceAll,[],phi,u,Inf,[],options);
+% y = VBA_simulate (T,[],@g_sourceAll,[],phi,u,Inf,[],options);
 
 % call inversion routine
 [posterior.all, out.all] = VBA_NLStateSpaceModel(y,u,[],@g_sourceAll,dim,options);

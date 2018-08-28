@@ -61,7 +61,7 @@ for ii=1:Nmcmc
     options.inG.X = X1;
     for i=1:2
         x0(1) = 2-i;
-        [y,x,x0,eta,e] = simulateNLSS(1,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
+        [y,x,x0,eta,e] = VBA_simulate (1,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
         % Invert model with and without 2nd-level effect
         for j=1:2
             options.priors.SigmaX0(1,1) = 2-j; % group mean effect

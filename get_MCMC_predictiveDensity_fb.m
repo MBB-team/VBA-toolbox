@@ -73,7 +73,7 @@ U = zeros(dim.u,n_t,N);
 out = [];
 for i=1:N
     [x0,theta,phi] = sampleFromPriors(options,dim);
-    [y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb);
+    [y,x,x0,eta,e,u] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb);
     if ~ VBA_isWeird ({x, y})  && VBA_isInRange (x, lx) && VBA_isInRange (y, ly)
         Y(:,:,i) = y;
         X(:,:,i) = x;

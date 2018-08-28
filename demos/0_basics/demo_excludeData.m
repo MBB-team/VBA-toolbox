@@ -47,7 +47,7 @@ alpha = Inf; % deterministic
 sigma = 1; % observation noise
 
 % Build full time series of hidden states and observations
-[y,x,x0,eta,e] = simulateNLSS(N,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
+[y,x,x0,eta,e] = VBA_simulate (N,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
 
 % display full time series of hidden states and observations
 displaySimulations(y,x,eta,e);

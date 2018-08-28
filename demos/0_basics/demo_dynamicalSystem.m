@@ -67,7 +67,7 @@ sigma = 1e2; % no noise
 
 % Simulate
 % -------------------------------------------------------------------------
-[y, x] = simulateNLSS (n_t, f_fname, g_fname, theta, phi, u, alpha, sigma, options, x0);
+[y, x] = VBA_simulate (n_t, f_fname, g_fname, theta, phi, u, alpha, sigma, options, x0);
 
 % Display
 % -------------------------------------------------------------------------
@@ -112,7 +112,7 @@ for i1 = 1 : numel (g_theta1)
     for i2 = 1 : numel (g_theta2)
         theta_grid = [g_theta1(i1); g_theta2(i2)];
         sigma_test = Inf;
-        g{i1, i2} = simulateNLSS (n_t, f_fname, g_fname, theta_grid, phi, u, alpha,sigma_test, options, x0);
+        g{i1, i2} = VBA_simulate (n_t, f_fname, g_fname, theta_grid, phi, u, alpha,sigma_test, options, x0);
         LL(i1, i2) = - sum ( (y - g{i1, i2}) .^ 2);
     end
 end

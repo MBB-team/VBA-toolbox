@@ -1,7 +1,7 @@
-function [y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb)
+function [y,x,x0,eta,e,u] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb)
 % samples times series from sDCM generative model
 % [y,x,x0,dTime,eta,eta0] =
-% simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0)
+% VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0)
 %
 % This function creates the time series of hidden-states and measurements
 % under the following nonlinear state-space model:
@@ -198,7 +198,7 @@ x(:, 1) = [];
 
 % checks
 if VBA_isWeird (x)
-    error('simulateNLSS: evolution function produced weird values!');
+    error('VBA_simulate: evolution function produced weird values!');
 end
         
 % Display progress

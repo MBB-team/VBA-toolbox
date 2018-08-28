@@ -145,7 +145,7 @@ theta(options.inF.indhself) = log(1/options.inF.deltat); %/options.inF.deltat
 % === Simulate time series of hidden states and observations 
 
 disp('*** Simulation');
-[y,x,x0,eta,e,u] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+[y,x,x0,eta,e,u] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
 
 [hf] = displaySimulations(y,x,eta,e)
 

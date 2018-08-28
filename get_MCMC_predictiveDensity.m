@@ -60,7 +60,7 @@ out = [];
 for i=1:N
     [x0,theta,phi] = sampleFromPriors(options,dim);
     try
-        [y,x] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
+        [y,x] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
         ok = ~ VBA_isWeird ({x, y}) && VBA_isInRange (x, lx) && VBA_isInRange (y, ly);
     catch
         ok = false;

@@ -195,7 +195,7 @@ u = [nan(2, n_t + 1);
     nan(2, 1), cues ;
     cues, nan(2, 1)];
 
-[y,x,x0,eta,e,u] = simulateNLSS( ...
+[y,x,x0,eta,e,u] = VBA_simulate ( ...
     n_t, ... number of trials
     @f_QlearningAsym, ... evolution function
     @g_QLearning, ... observation function

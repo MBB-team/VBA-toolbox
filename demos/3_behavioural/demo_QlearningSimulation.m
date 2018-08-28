@@ -69,7 +69,7 @@ options.skipf = [1 zeros(1,n_t)];
 
 % simulate choices
 % -------------------------------------------------------------------------
-[y,x,x0,eta,e,u] = simulateNLSS( ...
+[y,x,x0,eta,e,u] = VBA_simulate ( ...
     n_t+1, ... number of trials
     f_fname, ... evolution function
     g_fname, ... observation function

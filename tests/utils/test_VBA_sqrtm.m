@@ -41,15 +41,15 @@ function test_infinite (testCase)
     testCase.verifyEqual (actual, sqrt (C));
     actual = VBA_sqrtm (C, true);
     expected = diag (1 ./ sqrt ( diag (C)));
-    testCase.verifyEqual (actual, expected, 'AbsTol', 1e-12);
+    testCase.verifyEqual (actual, expected, 'AbsTol', 1e-11);
     
  function test_general (testCase)
      C = randn (3);
      C = C * C';
      actual = VBA_sqrtm (C);
-     testCase.verifyEqual (actual * actual, C, 'AbsTol', 1e-12);
+     testCase.verifyEqual (actual * actual, C, 'AbsTol', 1e-11);
      actual = VBA_sqrtm (C, true);
-     testCase.verifyEqual (inv (actual * actual), C, 'AbsTol', 1e-12);
+     testCase.verifyEqual (inv (actual * actual), C, 'AbsTol', 1e-11);
 
 
  

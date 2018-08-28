@@ -32,7 +32,7 @@ options.inF = inF;
 options.inG = inG;
 options.skipf = zeros(1,nt);
 options.skipf(1) = 1;
-[y,x,x0,eta,e,u] = simulateNLSS(nt,@f_OpLearn,@g_VBvolatile0,theta,phi,zeros(2,nt),Inf,Inf,options,x0,fb);
+[y,x,x0,eta,e,u] = VBA_simulate (nt,@f_OpLearn,@g_VBvolatile0,theta,phi,zeros(2,nt),Inf,Inf,options,x0,fb);
 % plot simulated behaviour
 hf = figure('color',[1 1 1 ],'name','simulated choices');
 ha = axes('parent',hf);

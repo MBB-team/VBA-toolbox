@@ -26,7 +26,7 @@ for i=1:ns
     options{i}.verbose = 0;
     options{i}.dim = dim;
     options{i}.sources.type = 0;
-    [y{i}] = simulateNLSS(dim.n_t,f_fname,g_fname,theta(:,i),phi(:,i),u{i},Inf,Inf,options{i},x0(:,i));
+    [y{i}] = VBA_simulate (dim.n_t,f_fname,g_fname,theta(:,i),phi(:,i),u{i},Inf,Inf,options{i},x0(:,i));
 end
 
 % TO REMOVE: obsolete syntax ??

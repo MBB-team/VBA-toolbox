@@ -46,7 +46,7 @@ fb.indfb = 1; % where to store feedbacks in u
 u = nan(1, N);
 
 % simulation routine
-[y,x,x0,eta,e,u] = simulateNLSS(N,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb);
+[y,x,x0,eta,e,u] = VBA_simulate (N,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb);
 
 %% Estimation
 % =========================================================================

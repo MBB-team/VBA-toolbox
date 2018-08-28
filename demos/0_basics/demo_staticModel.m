@@ -46,7 +46,7 @@ sigma2 = 5;
 % simulate data
 % this applies g_linearRegression to all columns of the inputs (regressors) 
 % with the given parameters beta and sigma
-[y] = simulateNLSS(N,[],@g_linearRegression,[],betas,regressors,Inf,sigma2,struct,[]);
+[y] = VBA_simulate (N,[],@g_linearRegression,[],betas,regressors,Inf,sigma2,struct,[]);
 
 
 %% Inversion

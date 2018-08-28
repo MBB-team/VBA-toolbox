@@ -33,14 +33,14 @@ switch flag
         % sample the cue-outcome association according to AR(1) model
         f_fname = @f_AR;
         g_fname = @g_sigm;
-        [sx2,x2,x20,eta,e] = simulateNLSS(n_t,f_fname,g_fname,[],[],[],exp(-theta(2)),Inf,[],0);
+        [sx2,x2,x20,eta,e] = VBA_simulate (n_t,f_fname,g_fname,[],[],[],exp(-theta(2)),Inf,[],0);
         
     case 3
         
         % First sample the association volatility according to AR(1) model
         f_fname = @f_AR;
         g_fname = @g_Id;
-        [x3,x3,x30,eta,e] = simulateNLSS(n_t,f_fname,g_fname,[],[],[],exp(-theta(2)),Inf,[],0);
+        [x3,x3,x30,eta,e] = VBA_simulate (n_t,f_fname,g_fname,[],[],[],exp(-theta(2)),Inf,[],0);
         % create prior variance structure for cue-outcome association
         ex3 = exp(-x3);
         for t=1:n_t
@@ -50,7 +50,7 @@ switch flag
         % varying prior variance
         f_fname = @f_AR;
         g_fname = @g_sigm;
-        [sx2,x2,x20,eta,e] = simulateNLSS(n_t,f_fname,g_fname,[],[],[],1,Inf,opt,0);
+        [sx2,x2,x20,eta,e] = VBA_simulate (n_t,f_fname,g_fname,[],[],[],1,Inf,opt,0);
         
         
 end
@@ -90,7 +90,7 @@ if ismember(options.inF.flag,[1,2])
 elseif options.inF.flag == 3
     X0 = [0.5;0;1e1;0;1e1;0];
 end
-[RT,x,x0,eta,e] = simulateNLSS(n_t,f_fname,g_fname,theta,phi,u,Inf,Inf,options,X0);
+[RT,x,x0,eta,e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,Inf,Inf,options,X0);
 
 hf = figure('color',[1 1 1]);
 ha = subplot(2,2,1,'parent',hf,'nextplot','add');
