@@ -28,7 +28,7 @@ N = 2^11;
 np = 64;
 lx = [];
 ly = [0,1e1];
-[pX,gX,pY,gY,X,Y] = get_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,options,dim,N,np,lx,ly);
+[pX,gX,pY,gY,X,Y] = VBA_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,options,dim,N,np,lx,ly);
 
 
 figure('color',[1 1 1])

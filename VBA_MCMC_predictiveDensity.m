@@ -1,8 +1,8 @@
-function [pX,gX,pY,gY,X,Y,U] = get_MCMC_predictiveDensity_fb(f_fname,g_fname,u,n_t,options,dim,fb,N,np,lx,ly)
+function [pX,gX,pY,gY,X,Y] = VBA_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,options,dim,N,np,lx,ly)
 
 % prior predictive density under sDCM generative model (MCMC)
 % function [pX,gX,pY,gY,X,Y] =
-% get_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,options,dim,N,np)
+% VBA_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,options,dim,N,np)
 % IN:
 %   - f_fname: name/handle of the evolution function
 %   - g_fname: name/handle of the observation function
@@ -27,39 +27,27 @@ function [pX,gX,pY,gY,X,Y,U] = get_MCMC_predictiveDensity_fb(f_fname,g_fname,u,n
 %   - Y: [id, but for observed data]
 
 
-% Extension to take into account the possibility of the influence of
-% feedback.
-dim.u = max([fb.indy;fb.indfb]);
-
 % Get time
 et0 = clock;
 
 % default sample size and histogram resolution
-try, N ; catch, N  = 1e3; end
-try, np; catch, np = 50; end
-try, lx; catch, lx = []; end
-try, ly; catch, ly = []; end
+try, N ; catch, N  = 1e3 ; end
+try, np; catch, np = 50  ; end
+try, lx; catch, lx = []  ; end
+try, ly; catch, ly = []  ; end
 
-% fix precision parameters & fill in missing optional fields
-if dim.n>0
-    alpha = options.priors.a_alpha./options.priors.b_alpha;
-    try
+
+% fix precision parameters
+alpha = options.priors.a_alpha./options.priors.b_alpha;
+sigma = options.priors.a_sigma./options.priors.b_sigma;
+
+% fill in missing optional fields
+try
     if isinf(options.priors.a_alpha)
         options.priors.a_alpha = 1;
         options.priors.b_alpha = 1;
     end
-    catch end
-else
-    alpha = [];
 end
-
-try % if there are gaussian sources
-    sigma = options.priors.a_sigma./options.priors.b_sigma;
-catch
-    sigma = [];
-end
-
-options.priors.AR = 0;
 options.verbose = 0;
 dim.n_t = n_t;
 [options] = VBA_check([],u,f_fname,g_fname,dim,options);
@@ -68,16 +56,18 @@ fprintf(1,'MCMC sampling...')
 fprintf(1,'%6.2f %%',0)
 Y = zeros(dim.p,n_t,N);
 X = zeros(dim.n,n_t,N);
-U = zeros(dim.u,n_t,N);
-
 out = [];
 for i=1:N
     [x0,theta,phi] = sampleFromPriors(options,dim);
-    [y,x,x0,eta,e,u] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0,fb);
-    if ~ VBA_isWeird ({x, y})  && VBA_isInRange (x, lx) && VBA_isInRange (y, ly)
+    try
+        [y,x] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options,x0);
+        ok = ~ VBA_isWeird ({x, y}) && VBA_isInRange (x, lx) && VBA_isInRange (y, ly);
+    catch
+        ok = false;
+    end
+    if ok
         Y(:,:,i) = y;
         X(:,:,i) = x;
-        U(:,:,i) = u;
         fprintf(1,repmat('\b',1,8))
         fprintf(1,'%6.2f %%',i*100/N)
     else
@@ -86,11 +76,9 @@ for i=1:N
 end
 Y(:,:,out) = [];
 X(:,:,out) = [];
-U(:,:,out) = [];
 fprintf(1,repmat('\b',1,8))
 fprintf(1,[' OK (took ',num2str(etime(clock,et0)),' seconds).'])
 fprintf(1,'\n')
-
 
 et0 = clock;
 fprintf(1,'Forming histograms along X dimensions...')
@@ -138,7 +126,6 @@ for i=1:dim.p
     fprintf(1,repmat('\b',1,8))
     fprintf(1,'%6.2f %%',i*100/dim.p)
 end
-
 fprintf(1,repmat('\b',1,8))
 fprintf(1,[' OK (took ',num2str(etime(clock,et0)),' seconds).'])
 fprintf(1,'\n')
@@ -162,7 +149,7 @@ end
 
 if dim.n_theta > 0
     if ~isequal(priors.SigmaTheta,zeros(size(priors.SigmaTheta)))
-        sV = VBA_sqrtm (priors.SigmaTheta);
+        sV = VBA_sqrtm(priors.SigmaTheta);
         theta = priors.muTheta + sV*randn(dim.n_theta,1);
     else
         theta = priors.muTheta;
@@ -181,4 +168,5 @@ if dim.n_phi > 0
 else
     phi = [];
 end
+
 

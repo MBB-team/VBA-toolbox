@@ -17,7 +17,7 @@ function [h] = plotDensity(f_fname,g_fname,u,n_t,options,dim,pX,gX,pY,gY)
 %   - gX: the npXdim.n 2D array giving the grid used for forming the MCMC
 %   empirical histograms on each dimension of the hidden states
 %   - pX/gY: [id, but for observed data]
-% See also: get_MCMC_predictiveDensity.m
+% See also: VBA_MCMC_predictiveDensity.m
 
 % fill in option structure
 try

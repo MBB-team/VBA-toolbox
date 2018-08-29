@@ -41,7 +41,7 @@ dim.n_phi  = 0;
 dim.n = 3;
 dim.p = dim.n;
 
-[pX,gX,pY,gY,X,Y] = get_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,options,dim,1e2);
+[pX,gX,pY,gY,X,Y] = VBA_MCMC_predictiveDensity(f_fname,g_fname,u,n_t,options,dim,1e2);
 
 [h] = plotDensity(f_fname,g_fname,u,n_t,options,dim,pX,gX,pY,gY);
 
