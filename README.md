@@ -13,25 +13,33 @@ This toolbox runs in Matlab. Although it should run in all versions of Matlab, t
 
 ## How do I install the toolbox?
 
-1. Get the toolbox
-    - Ideally, use [Git](https://git-scm.com/) to  [clone](https://github.com/MBB-team/VBA-toolbox/clone) the [repo of the toolbox](https://github.com/MBB-team/VBA-toolbox) on your computer:
-      ```bash
-   cd ~/ParentDirectory
-   git clone https://github.com/MBB-team/VBA-toolbox.git
-   ```
-You will then be able to stay up to date with the latest versions using the command:
-   ```bash
-   cd ~/ParentDirectory/VBA-toolbox
-   git pull
-   ```
-   - If you don't want to install Git, you can alternatively download a zip of the [latest stable release](https://github.com/MBB-team/VBA-toolbox/archive/master.zip)
-2. Add the toolbox folder to your Matlab path:
+#### Get the toolbox
 
-    ```matlab
+- Ideally, use [Git](https://git-scm.com/) to  [clone](https://github.com/MBB-team/VBA-toolbox/clone) the [repo of the toolbox](https://github.com/MBB-team/VBA-toolbox) on your computer:
+    
+    ```bash
+    cd ~/ParentDirectory
+    git clone https://github.com/MBB-team/VBA-toolbox.git
+    ```
+    You will then be able to stay up to date with the latest versions using the command:
+   
+    ```bash
+    cd ~/ParentDirectory/VBA-toolbox
+    git pull
+    ```
+    
+- If you don't want to install Git, you can alternatively download a zip of the [latest stable release](https://github.com/MBB-team/VBA-toolbox/archive/master.zip)
+
+#### Add the toolbox folder to your Matlab path:
+
+```matlab
 cd ~/ParentDirectory/VBA-toolbox
 VBA_setup()
 ```
-  3. Enjoy! You can now try one of the demos or tutorials you can find in the `VBA-toolbox/demos` folder. If you have a recent version of Matlab (>= 2017), you can also run `VBA_test()` to check that everything works as intended on your system.
+
+#### Enjoy!
+
+You can now try one of the demos or tutorials you can find in the `VBA-toolbox/demos` folder. If you have a recent version of Matlab (>= 2017), you can also run `VBA_test()` to check that everything works as intended on your system.
 
 ## Structure of the toolbox
 
