@@ -107,7 +107,7 @@ catch
     DCM = myspm_dcm_test(DCM);
 end
 ud.Pp = DCM.sdr; % posterior proba for P=0 (using SD-ratios)
-ud.Pcorr = cov2corr(DCM.Cp); % posterior correlation matrix
+ud.Pcorr = VBA_cov2corr(DCM.Cp); % posterior correlation matrix
 for i=1:ud.dim.l
     PSS(i)  = sum(DCM.y(:,i).^2);
     RSS(i)  = sum(DCM.R(:,i).^2);
@@ -289,7 +289,8 @@ title(ha,['hemodynamic impulse responses to input ''' DCM.U.name{ind} ''''],'fon
 grid(ha,'on')
 xlabel(ha,'time (seconds)')
 legend(ha,DCM.Y.name)
-try;getSubplots; end
+try;VBA_getSubplots; end
+
 
 
 function mySpec(hfp)
@@ -444,7 +445,7 @@ if isfield(DCM,'xY')
     end
     line([0 4],[y y],'parent',ha(2))
     axis(ha(2),'off')
-    try;getSubplots; end
+try;VBA_getSubplots; end
 else
     ht = uicontrol(...
         'style','text',...
@@ -487,7 +488,7 @@ for i = 1:size(DCM.U.u,2)
     grid(ha,'on')
     box(ha,'on')
 end
-try;getSubplots; end
+try;VBA_getSubplots; end
 
 
 
@@ -572,8 +573,7 @@ if ud.estimated
     ht = text(mi+0.05*d,ma-0.05*d,str,'parent',ha,'color','r','FontSize',12);
 end
 
-try;getSubplots; end
-
+try;VBA_getSubplots; end
 
 
 
@@ -805,7 +805,7 @@ col = colormap('jet');
 col(1,:) = 0.5*ones(1,3);
 colormap(ha,col);
 cb = colorbar('peer',ha);
-try;getSubplots;end
+try;VBA_getSubplots; end
 
 
 
@@ -841,7 +841,7 @@ xlabel(ha,'lag tau (secs)','fontsize',8)
 ylabel(ha,'Corr[ e(t), e(t+tau) ]','fontsize',8)
 legend(ha,str)
 set(ha,'ygrid','on','xgrid','off','box','on');
-try;getSubplots;end
+try;VBA_getSubplots; end
 
 
 function ha = displayMat(a,hParent,DCM,matType,dim)
@@ -918,7 +918,7 @@ for i = 1:size(a,1)
             'HorizontalAlignment','Center')
     end
 end
-try;getSubplots; end
+try;VBA_getSubplots; end
 
 
 function R = VBA_spm_autocorr(y)

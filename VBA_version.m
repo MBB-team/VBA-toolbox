@@ -1,4 +1,4 @@
-function infos = VBA_version()
+function [infos, status] = VBA_version()
 % infos = VBA_version()
 % return infos about the current version of the toolbox. It requires the
 % toolbox to be installed using git (not by downlading the zip) to work properly:
@@ -18,19 +18,22 @@ try % if the toolbox was installed through git
     infos.version = [gitInf.branch '/' gitInf.hash];
     infos.git = true;
     
+    if nargout == 2
+        
     try % try to see if new commits are online
         request = sprintf('https://api.github.com/repos/MBB-team/VBA-toolbox/compare/%s...%s',gitInf.branch,gitInf.hash);
         tracker=webread(request);
         
         switch tracker.status
             case 'identical'
-                infos.status = 'The toolbox is up to date.';
+                status = 'The toolbox is up to date.';
             case 'behind'
-                infos.status = sprintf('The toolbox is %d revision(s) behind the online version.',tracker.behind_by);
+                status = sprintf('The toolbox is %d revision(s) behind the online version.',tracker.behind_by);
             case 'ahead'
-                infos.status = sprintf('The toolbox is %d revision(s) ahead the online version.',tracker.ahead_by);
+                status = sprintf('The toolbox is %d revision(s) ahead the online version.',tracker.ahead_by);
         end
 
+    end
     end
         
 catch

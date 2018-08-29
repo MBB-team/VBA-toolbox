@@ -125,7 +125,6 @@ end
 
 fprintf('\n')
 try
-    cd ..
     ver = VBA_version();
     fprintf(' The VBA-toolbox has been successfully installed in %s\n\n',ver.path);
     fprintf(' Type demo_Qlearning to give it a try\n\n');

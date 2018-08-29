@@ -174,7 +174,7 @@ if options.DisplayWin
         ylabel(ha(4),'<log precision>')
     end
     drawnow
-    getSubplots
+    VBA_getSubplots ();
 end
 
 %--- VB: iterate until convergence... ---%
@@ -317,7 +317,7 @@ if options.DisplayWin
     out.options.kernelSize = kernelSize0;
     [tmp,out] = VBA_getDiagnostics(posterior,out);
     VBA_ReDisplay(posterior,out)
-    getSubplots
+    VBA_getSubplots ();
 end
 
 % subfunctions

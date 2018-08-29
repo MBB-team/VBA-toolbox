@@ -178,12 +178,12 @@ for m_gen = 1 : length(M)
     opt.priors = density{m_gen}; % priors set to the chosen density for simulation
     
     try
-    [pX,gX,pY,gY,X,Y,U] = get_MCMC_predictiveDensity_f(M{m_gen}.f_fname,M{m_gen}.g_fname,u,n_t,opt,M{m_gen}.options.dim,Nsim,M{m_gen}.fb);
+    [pX,gX,pY,gY,X,Y,U] = VBA_MCMC_predictiveDensity_fb(M{m_gen}.f_fname,M{m_gen}.g_fname,u,n_t,opt,M{m_gen}.options.dim,Nsim,M{m_gen}.fb);
     simulations{m_gen}.X = X;
     simulations{m_gen}.Y = Y;    
     simulations{m_gen}.U = U;
     catch
-    [pX,gX,pY,gY,X,Y] = get_MCMC_predictiveDensity(M{m_gen}.f_fname,M{m_gen}.g_fname,u,n_t,opt,M{m_gen}.options.dim,Nsim);
+    [pX,gX,pY,gY,X,Y] = VBA_MCMC_predictiveDensity(M{m_gen}.f_fname,M{m_gen}.g_fname,u,n_t,opt,M{m_gen}.options.dim,Nsim);
     simulations{m_gen}.X = X;
     simulations{m_gen}.Y = Y;
     end

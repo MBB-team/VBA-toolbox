@@ -168,9 +168,9 @@ if checkVar
     X0 = options.priors.muX0;
     
     % get prior covariance structure
-    dgdtheta = numericDiff(@getObs,1,theta,phi,X0,u,in);
-    dgdphi   = numericDiff(@getObs,2,theta,phi,X0,u,in);
-    dgdX0    = numericDiff(@getObs,3,theta,phi,X0,u,in);
+    dgdtheta = VBA_numericDiff(@getObs,1,theta,phi,X0,u,in);
+    dgdphi   = VBA_numericDiff(@getObs,2,theta,phi,X0,u,in);
+    dgdX0    = VBA_numericDiff(@getObs,3,theta,phi,X0,u,in);
     
     Vy2 = dgdtheta'*options.priors.SigmaTheta*dgdtheta  ...
         + dgdphi'  *options.priors.SigmaPhi  *dgdphi    ...
