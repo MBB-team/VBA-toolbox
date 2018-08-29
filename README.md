@@ -18,13 +18,13 @@ This toolbox runs in Matlab. Although it should run in all versions of Matlab, t
 - Ideally, use [Git](https://git-scm.com/) to  [clone](https://github.com/MBB-team/VBA-toolbox/clone) the [repo of the toolbox](https://github.com/MBB-team/VBA-toolbox) on your computer:
     
     ```bash
-    cd ~/ParentDirectory
+    cd ~/path/to/parentDirectory
     git clone https://github.com/MBB-team/VBA-toolbox.git
     ```
     You will then be able to stay up to date with the latest versions using the command:
    
     ```bash
-    cd ~/ParentDirectory/VBA-toolbox
+    cd ~/path/to/parentDirectory/VBA-toolbox
     git pull
     ```
     
@@ -33,7 +33,7 @@ This toolbox runs in Matlab. Although it should run in all versions of Matlab, t
 #### Add the toolbox folder to your Matlab path:
 
 ```matlab
-cd ~/ParentDirectory/VBA-toolbox
+cd ~/path/to/parentDirectory/VBA-toolbox
 VBA_setup()
 ```
 
