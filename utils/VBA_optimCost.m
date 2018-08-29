@@ -1,6 +1,6 @@
-function [mu,curv,out] = optimCost(costFcn,init,options)
+function [mu,curv,out] = VBA_optimCost(costFcn,init,options)
 % generic call function for function f(x,args) maximization
-% function [opt,curv,out] = optimCost(costFcn,init,options)
+% function [opt,curv,out] = VBA_optimCost(costFcn,init,options)
 % IN:
 %   - costFtn: the name/handle of the function that computes the cost,
 %   taking x and some arguments 'args'. Its I/O format should be:

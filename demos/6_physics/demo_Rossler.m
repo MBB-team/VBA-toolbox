@@ -70,7 +70,7 @@ if ~ VBA_isWeird ({x, y})
     % Make predictions
     try
         options = out.options;
-        [xs,ys,xhat,vx,yhat,vy] = comparePredictions(...
+        [xs,ys,xhat,vx,yhat,vy] = VBA_comparePredictions(...
             n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
     catch
         disp('------!!Unable to form predictions!!------')

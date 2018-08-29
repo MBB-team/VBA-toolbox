@@ -1,4 +1,4 @@
-function [x,y,xhat,vx,yhat,vy] = comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim)
+function [x,y,xhat,vx,yhat,vy] = VBA_comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim)
 % compares inferred predictive density and real samples
 
 if isempty(u)

@@ -150,7 +150,7 @@ displayResults(posterior,out,y-e,x,x0,theta,phi,alpha,sigma);
 %--- Make predictions
 try
     options = out.options;
-    [xs,ys,xhat,vx,yhat,vy] = comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
+    [xs,ys,xhat,vx,yhat,vy] = VBA_comparePredictions(n_t,theta,phi,u,alpha,sigma,options,posterior,dim);
 catch
     disp('------!!Unable to form predictions!!------')
 end
