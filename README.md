@@ -1,3 +1,7 @@
+# VBA toolbox
+
+Official website: [https://mbb-team.github.io/VBA-toolbox/](https://mbb-team.github.io/VBA-toolbox)
+
 ## What is the VBA toolbox?
 
 Most models of neurobiological and behavioral data can be broken down into processes that evolve over time and static observation mappings. Given these evolution and observation mappings, the toolbox can be used to simulate data, perform statistical data analysis, optimize the experimental design, etc... In brief, the toolbox provides:
@@ -28,7 +32,7 @@ This toolbox runs in Matlab. Although it should run in all versions of Matlab, t
     git pull
     ```
 
-- If you don't want to install Git, you can alternatively download a zip of the [latest stable release](https://github.com/MBB-team/VBA-toolbox/archive/master.zip)
+- If you don't want to install Git, you can alternatively download a zip of the latest stable release of the toolbox directly form the download page of the official website: [http://mbb-team.github.io/VBA-toolbox/download](http://mbb-team.github.io/VBA-toolbox/download/). 
 
 #### Add the toolbox folder to your Matlab path:
 
@@ -65,5 +69,6 @@ You can also seek help on our [dedicated forum](http://mbb-team.github.io/VBA-to
 
 The VBA-toolbox is an open-source, collaborative project.
 We gladly welcome contributions at all levels:
+
 - flag a bug or request a feature by creating a [new issue](https://github.com/MBB-team/VBA-toolbox/issues) on Github
 - provide your model to other users by integrating it directly in the toolbox. Send us an email, or directly create a pull request.
