@@ -1,8 +1,7 @@
-
 function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
-
-% VB inversion of nonlinear stochastic DCMs
-% function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
+% Generic model inversion routine
+% [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
+%
 % This function inverts any nonlinear state-space model of the form:
 %   y_t = g( x_t,u_t,phi ) + e_t
 %   x_t = f( x_t-1,u_t,theta ) + f_t
