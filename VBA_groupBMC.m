@@ -103,10 +103,10 @@ if ~isempty(options.families)
             out = [];
             return
         end
-        tmp = [tmp;vec(indf)];
+        tmp = [tmp; VBA_vec(indf)];
         options.C(indf,i) = 1;
     end
-    if ~isequal(vec(unique(tmp)),vec(1:K))
+    if ~isequal(VBA_vec(unique(tmp)),VBA_vec(1:K))
         if numel(unique(tmp)) < K
             disp('Error: families do not cover the entire set of models!')
         else
@@ -216,7 +216,7 @@ out.options = options;
 out.L = L;
 out.F = F;
 % derive first and second order moments on model frequencies:
-[out.Ef,out.Vf] = Dirichlet_moments(posterior.a);
+[out.Ef,out.Vf] = VBA_dirichlet_moments(posterior.a);
 % derive exceedance probabilities
 % out.ep = VBA_ExceedanceProb(out.Ef,out.Vf,'gaussian');
 out.ep = VBA_ExceedanceProb(posterior.a,[],'dirichlet',0);
@@ -231,12 +231,13 @@ else
     [out.F0] = FE_null(L,options);
     out.bor = 1/(1+exp(F-out.F0));
     [out.Fffx] = FE_ffx(L,options);
+    out.pxp = out.ep * (1 - out.bor) + out.bor / numel(out.ep);
 end
 % pool evidence over families
 if ~isempty(options.families)
     out.families.r = options.C'*posterior.r;
     out.families.a = options.C'*posterior.a;
-    [out.families.Ef,out.families.Vf] = Dirichlet_moments(out.families.a);
+    [out.families.Ef,out.families.Vf] = VBA_dirichlet_moments(out.families.a);
 %     out.families.ep = VBA_ExceedanceProb(out.families.Ef,out.families.Vf,'gaussian');
     out.families.ep = VBA_ExceedanceProb(out.families.a,[],'dirichlet',0);
 end
@@ -313,15 +314,5 @@ else
     zf = exp(logz)./sum(exp(logz));
     Fffx_fam = zf'*ss - sum(zf.*log(zf+eps));
 end
-
-function [E,V] = Dirichlet_moments(a)
-% derives the first- and second-order moments of a Dirichlet density
-a0 = sum(a);
-E = a./a0;
-V = -a*a';
-V = V - diag(diag(V)) + diag(a.*(a0-a));
-V = V./((a0+1)*a0^2);
-
-
 
 

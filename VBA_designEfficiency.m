@@ -31,9 +31,7 @@ try,flag;catch,flag='parameters';end
 switch flag
     
     case 'models'
-        
-        try,binomial=options{1}.binomial;catch,binomial=0;end
-        
+                
         nm = length(dim);
         if ~iscell(f_fname)
             f_fname0 = f_fname;
@@ -65,11 +63,9 @@ switch flag
         end
         
         % computes Jensen-Shannon divergence of models
-        ps = ones(nm,1);
-        ps = ps./sum(ps);
         fprintf(1,'\n')
         fprintf(1,['Deriving design efficiency... '])
-        [DJS,b] = VBA_JensenShannon(muy,Vy,ps,binomial);
+        [DJS,b] = VBA_JensenShannon(muy,Vy,options{1}.sources);
         fprintf(1,[' OK.'])        
         fprintf(1,'\n')
         e = DJS;
@@ -78,9 +74,7 @@ switch flag
         out.Vy = Vy;
         
     case 'parameters'
-        
-        try,binomial=options.binomial;catch,binomial=0;end
-        
+                
         % get prediced model parameter precision matrix
         [~,~,iVp] = VBA_getLaplace(u,f_fname,g_fname,dim,options,0,'skip');
         % compute the trace of predicted posterior variance

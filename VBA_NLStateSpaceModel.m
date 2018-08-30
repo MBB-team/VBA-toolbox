@@ -1,8 +1,7 @@
-
 function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
-
-% VB inversion of nonlinear stochastic DCMs
-% function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
+% Generic model inversion routine
+% [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
+%
 % This function inverts any nonlinear state-space model of the form:
 %   y_t = g( x_t,u_t,phi ) + e_t
 %   x_t = f( x_t-1,u_t,theta ) + f_t
@@ -107,11 +106,24 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %       NB: nonzero delays induces an embedding of the system, thereby
 %       increasing the computational demand of the inversion. The state
 %       space dimension if multiplied by max(options.delays)+1!
-%       .binomial: {0}. If 1, it is assumed that the likelihood function is
-%       a binomial pdf, whose probability is given by the observation
-%       function, i.e. g(phi) = p(y=1|phi). The Laplace approximation on
-%       observation parameters still holds and the i/o of the inversion
-%       routine is conserved.
+%       .sources: a structure or array of structures defining the probability 
+%        distribution of the observation. If the observations are
+%        homogenous, this structure can contain a unique field 'type' whose
+%        value can be: 
+%          - {0} for normally distributed observation, ie. y = g(x,phi) + eps
+%             where eps ~ N(0,sigma^2 Id) with sigma^2 is itsel defined by
+%             hyperparameters a_sigma and b_sigma.
+%          - 1 for binary observations. It is then  assumed that the 
+%             likelihood function is a binomial pdf, whose probability is 
+%             given by the observation function, i.e. g(phi) = p(y=1|phi). 
+%             The Laplace approximation on observation parameters still holds 
+%             and the i/o of the inversion routine is conserved.
+%          - 2 for categorical data. 
+%        If the observations are composed of a concatenation of differently
+%        distributed variables, sources should be an array of structures,
+%        each defining the distribution type as above, and also containing 
+%        a field 'out' that give the index of the observations covered by the
+%        distribution.
 %       .figName: the name of the display window
 %   - in: structure variable containing the output of a previously ran
 %   VBA_NLStateSpaceModel.m routine. Providing this input to the function
@@ -225,7 +237,7 @@ else
     % Check input arguments consistency (and fill in priors if necessary)
     [options,u,dim] = VBA_check(y,u,f_fname,g_fname,dim,options);
     
-    if isweird(y(~options.isYout))
+    if VBA_isWeird (y(~ options.isYout))
         disp('Error: VBA detected a numerical issue with provided data!')
         return
     end
@@ -331,7 +343,7 @@ while ~stop
     %--------------- Termination condition ---------------%
     dF = diff(suffStat.F);
     dF = dF(end);
-    if (  ( (abs(dF)<=options.TolFun)||it==options.MaxIter ) &&  it >=options.MinIter  ) || isweird(dF)
+    if (  ( (abs(dF)<=options.TolFun)||it==options.MaxIter ) &&  it >=options.MinIter  ) || VBA_isWeird (dF)
         stop  = 1;
         if abs(dF) <= options.TolFun
             out.CV = 1;

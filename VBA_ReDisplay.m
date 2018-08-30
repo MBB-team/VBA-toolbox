@@ -196,7 +196,7 @@ function myDeterministic(hfig)
     
     % Display precision hyperparameters
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-    if ~options.OnLine && ~options.binomial
+    if ~options.OnLine && any([options.sources.type]==0) 
         xlabel(options.display.ha(6),' ')
         if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
             xlabel(options.display.ha(8),' ')
@@ -214,7 +214,7 @@ function myDeterministic(hfig)
         VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
     end
     
-    try getSubplots ; end
+    try, VBA_getSubplots (); end
 
     uicontrol( ...
         'parent'          , hfig                        , ...
@@ -272,7 +272,7 @@ function myPriors(hfig)
 
     % Display precision hyperparameters
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-    if ~options.OnLine && ~options.binomial
+    if ~options.OnLine && any([options.sources.type]==0) 
         xlabel(options.display.ha(6),' ') ;
         if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
             xlabel(options.display.ha(8),' ') ;
@@ -290,7 +290,7 @@ function myPriors(hfig)
         VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
     end
 
-    try getSubplots ; end
+    try, VBA_getSubplots (); end
 
 function myConv(hfig)
 
@@ -338,7 +338,7 @@ function myConv(hfig)
         ylabel(ha,'Free energy differences')
         box(ha,'off')
         try
-            getSubplots ;
+            VBA_getSubplots ();
         end
     end
 
@@ -422,7 +422,7 @@ function myKerneli(hObject,evt)
 
     ud.handles = handles;
     set(hfig,'userdata',ud);
-    try, getSubplots; end
+    try, VBA_getSubplots (); end
 
 function myDiagnostics(hfig)
 
@@ -508,7 +508,7 @@ function myDiagnostics(hfig)
     colormap(display.ha(6),col);
     try display.hc(2) = colorbar('peer',display.ha(6)); end
 
-    try getSubplots; end
+    try VBA_getSubplots (); end
 
     
 function myDiagnosticsi(hObject,evt,si)
@@ -560,7 +560,7 @@ function myDiagnosticsi(hObject,evt,si)
     xlabel(handles.hdiagnostics(2),ti,'fontsize',8)
     ylabel(handles.hdiagnostics(2),'e(t) = y(t)-g(x(t))','fontsize',8)
     % display autocorrelation of residuals
-    if ~isweird(dy.R) && out.dim.n_t > 1
+    if ~ VBA_isWeird (dy.R) && out.dim.n_t > 1
         handles.hdiagnostics(3) = subplot(4,2,7,'parent',hPanel);
         plot(handles.hdiagnostics(3),[-out.options.dim.n_t:out.options.dim.n_t-1],fftshift(dy.R)')
         axis(handles.hdiagnostics(3),'tight')
@@ -571,7 +571,7 @@ function myDiagnosticsi(hObject,evt,si)
     end
     ud.handles = handles;
     set(hfig,'userdata',ud);
-    try, getSubplots; end
+    try, VBA_getSubplots (); end
 
 
 function myVB(hfig)
@@ -621,7 +621,7 @@ function myVB(hfig)
     if dim.n_phi >= 1
         VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
     end
-    try getSubplots; end
+    try VBA_getSubplots (); end
 
 
 %% helpers

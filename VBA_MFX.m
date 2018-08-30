@@ -375,10 +375,10 @@ end
 fprintf([' done.','\n'])
 o_group.date = clock;
 o_group.dt = toc(o_group.tStart);
-o_group.options.binomial = o_sub{1}.options.binomial;
+o_group.options.sources = o_sub{1}.options.sources;
 for i=1:ns
     o_group.within_fit.F(i) = o_sub{i}.F(end);
-    o_group.within_fit.R2(i) = o_sub{i}.fit.R2;
+    o_group.within_fit.R2(i,:) = o_sub{i}.fit.R2;
     o_group.within_fit.LLH0(i) = VBA_LMEH0(o_sub{i}.y,o_sub{i}.options);
     o_sub{i}.options.kernelSize = kernelSize0;
     [tmp,o_sub{i}] = VBA_getDiagnostics(p_sub{i},o_sub{i});
@@ -427,7 +427,11 @@ m = m0;
 V(indrfx,indrfx) = VBA_inv(iV0(indrfx,indrfx)+ns*iQ);
 m(indrfx) = V(indrfx,indrfx)*(iV0(indrfx,indrfx)*m0(indrfx)+iQ*sm);
 a(indrfx) = a0(indrfx) + 0.5*ns;
-b(indrfx) = b0(indrfx) + 0.5*(sv(indrfx)+ns*diag(V(indrfx,indrfx)));
+% b(indrfx) = b0(indrfx) + 0.5*(sv(indrfx)+ns*diag(V(indrfx,indrfx)));
+% fix: do not index because 'sv' is by definition updated only for the rfx
+%      parameters
+b(indrfx) = b0(indrfx) + 0.5*(sv+ns*diag(V(indrfx,indrfx))); % do not index sv b
+
 % FFX
 if ~isempty(indffx)
     tmp = VBA_inv(sP);
