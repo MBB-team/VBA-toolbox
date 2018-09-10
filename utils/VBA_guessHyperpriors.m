@@ -1,7 +1,7 @@
 function [a, b] = VBA_guessHyperpriors (y, rangeEV)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% [a, b] = VBA_guessHyperpriors (y, p_min, p_max)
+% [a, b] = VBA_guessHyperpriors (y, rangeEV)
 % propose shape and scale parameters to use as hyperpriors for the
 % measurement noise precision, based on the part of the variance one can
 % expect the model to explain.

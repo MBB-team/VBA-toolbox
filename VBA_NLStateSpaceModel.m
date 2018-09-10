@@ -1,5 +1,4 @@
 function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
-% Generic model inversion routine
 % [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
 %
 % This function inverts any nonlinear state-space model of the form:
