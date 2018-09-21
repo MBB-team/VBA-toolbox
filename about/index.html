@@ -18,6 +18,14 @@ collaborators:
 
 {{ page.text }}
 
+<p>
+You can also follow us on <a target="_blank" href="https://twitter.com/VbaToolbox">
+  <i class="fa fa-twitter"></i> Twitter</a> and on <a target="_blank" href="https://github.com/MBB-team/VBA-toolbox">
+    <i class="fa fa-github"></i> Github
+  </a> for tips and latest updates.
+</a>
+
+<p>
 
 <h2>Community</h2>
 The VBA project has an ever growing community of users all over the world:
@@ -32,23 +40,23 @@ The VBA project has an ever growing community of users all over the world:
 
 	    query.send(drawRegionsMap);
 	  }
-	  
+
       function drawRegionsMap(response) {
 
 		  if (response.isError()) {
 		      alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
 		      return;
 		    }
-		
+
 		var data = response.getDataTable();
-		
-     
+
+
 
         var options = {
         	colorAxis: {colors: ['#70acfa', '#000C5a']}
         };
 
-        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));	
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
         chart.draw(data, options);
       }
     </script>
@@ -77,5 +85,3 @@ Here is a list of VBA contributors: Marie Devaine (PhD), Jules Brochard (MSc), V
 
 <h2>Licence</h2>
 The VBA toolbox is distributed under a GNU open-source licence. You are free to download and modify it, but we would be most grateful, should you acknowledge the main VBA contributors by citing the reference below.
-
-
