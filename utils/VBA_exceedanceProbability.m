@@ -1,7 +1,7 @@
-function ep = VBA_ExceedanceProb (mu, Sigma, options)
+function ep = VBA_exceedanceProbability (mu, Sigma, options)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% ep = VBA_ExceedanceProb (mu, Sigma, options)
+% ep = VBA_exceedanceProbability (mu, Sigma, options)
 %
 % Calculates the exceedance probabilities for mutivariate Gaussian or 
 % Dirichlet distributions, i.e. the probability, for each variable, to be
@@ -95,7 +95,7 @@ switch form
                 if any (isnan (VBA_vec (y))) 
                     j(isnan (y)) = []; 
                     options.nSamples = numel (j);
-                    warning ('VBA_ExceedanceProb: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
+                    warning ('VBA_exceedanceProbability: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
                 end
                 tmp = histc (j, 1 : length (mu));
                 ep = tmp / options.nSamples;
