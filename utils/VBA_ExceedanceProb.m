@@ -1,52 +1,126 @@
-function ep = VBA_ExceedanceProb(mu,Sigma,form,verbose,Nsamp)
-% calculates the exceedance probability for mutivariate Gaussian variables
-% function ep = VBA_ExceedanceProb(mu,Sigma)
+function ep = VBA_ExceedanceProb (mu, Sigma, options)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% ep = VBA_ExceedanceProb (mu, Sigma, options)
+%
+% Calculates the exceedance probabilities for mutivariate Gaussian or 
+% Dirichlet distributions, i.e. the probability, for each variable, to be
+% greater than all the other ones.
+%
 % IN:
 %   - mu/Sigma: sufficient statistics of the pdf
-%       -> if form='gaussian': mu=E[x] and Sigma=V[x]
-%       -> if form='dirichlet': mu=Dirichlet counts and Sigma is unused
-%   - form: 'gaussian' or 'dirichlet'
+%       -> for a Gaussian distribution, set
+%                mu = E[x]
+%                Sigma = V[x]
+%       -> for a Dirichlet distribution, set 
+%               mu = alpha, ie, the Dirichlet pseudo-counts
+%               Sigma = [], or NaN, or left undefined
+%   - options: structure with the optional fields:
+%       + verbose: display textual info {false}
+%       + method: 'sampling' or {'analytical'} derivation of the ep
+%       + nSamples: number of samples for the sampling method {1e6}
 % OUT:
-%   - ep: vector of exceedance probabilities, i.e. the probability, for
-%   each variable, to be greater than all the other ones.
+%   - ep: vector of exceedance probabilities
+%
+% Notes:
+% ~~~~~~
+%
+% The analytical solution for the Dirichlet distribution is based on 
+% numerical integration over Gamma distributions [1] derived by 
+% Joram Soch [2].
+% [1] https://arxiv.org/abs/1611.01439
+% [2] mailto:joram.soch@bccn-berlin.de
+%
+% /////////////////////////////////////////////////////////////////////////
 
-try, form; catch, form = 'gaussian'; end 
-try, verbose; catch, verbose=0; end
-try, Nsamp; catch, Nsamp=1e5; end
+% check parameters
+% =========================================================================
 
-K = size(mu,1);
-ep = ones(K,1);
-c = [1;-1];
+% guess distribution
+if ~ exist ('Sigma', 'var') || isempty (Sigma) || isnan (Sigma)
+    form = 'dirichlet';
+else
+    form = 'gaussian';
+end
+
+% fill in defaults
+if ~ exist ('options', 'var')
+    options = struct;
+end
+options = VBA_check_struct (options, ...
+    'verbose', false, ...
+    'method', 'analytical', ...
+    'nSamples', 1e6 ...
+    );
+
+% initialisation
+% =========================================================================
+K = numel (mu);
+ep = ones (K, 1);
+
+% ep computation
+% =========================================================================
+
 switch form
+    % ---------------------------------------------------------------------
     case 'gaussian'
-        r_samp = VBA_random ('Gaussian', mu, Sigma, Nsamp);
-        [~, j] = max (r_samp);
-        tmp = histc (j, 1 : length (mu));
-        ep = tmp / Nsamp;
         
-    case 'gaussian2'
-        for k=1:K
-            for l=setdiff(1:K,k)
-                ind = [k,l];
-                m = mu(ind);
-                V = Sigma(ind,ind);
-                ep(k) = ep(k)*VBA_PPM(c'*m,c'*V*c,0,0);
-            end
+        switch options.method
+            case 'sampling'
+                r_samp = VBA_random ('Gaussian', mu, Sigma, options.nSamples);
+                [~, j] = max (r_samp);
+                tmp = histc (j, 1 : length (mu));
+                ep = tmp / options.nSamples;
+        
+            case 'analytical'
+                c = [1; -1];
+                for k = 1 : K
+                    for l = setdiff (1 : K, k)
+                        ind = [k, l];
+                        m = mu(ind);
+                        V = Sigma(ind, ind);
+                        ep(k) = ep(k) * VBA_PPM (c' * m, c' * V *c, 0, 0);
+                    end
+                end
+                ep = ep ./ sum (ep);
         end
-        ep = ep./sum(ep);
         
     case 'dirichlet'
-        r_samp = VBA_random ('Dirichlet', mu, Nsamp);
-        [y, j]  = max(r_samp);
-        if any (isnan (VBA_vec (y))) % remove failed samples in limit cases
-            j(isnan (y)) = []; 
-            Nsamp = numel (j);
-            warning ('VBA_ExceedanceProb: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
+    % ---------------------------------------------------------------------
+        switch options.method
+            case 'sampling'
+                r_samp = VBA_random ('Dirichlet', mu, options.nSamples);
+                [y, j]  = max(r_samp);
+                % remove failed samples in limit cases
+                if any (isnan (VBA_vec (y))) 
+                    j(isnan (y)) = []; 
+                    options.nSamples = numel (j);
+                    warning ('VBA_ExceedanceProb: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
+                end
+                tmp = histc (j, 1 : length (mu));
+                ep = tmp / options.nSamples;
+                
+            case 'analytical'
+                for k = 1 : K
+                    f = @(x) integrand (x, mu(k), mu(1 : K ~= k));
+                    ep(k) = integral (f, eps, Inf);
+                end
+                ep = ep' ./ sum (ep);
         end
-        tmp = histc (j, 1 : length (mu));
-        ep = tmp / Nsamp;
-        
-    otherwise
-        error('*** VBA_ExceedanceProb: unrecognized option form = %s', form);
+     
 end
+
+end
+
+% #########################################################################
+% Integrand function for numerical integration of the Dirichlet ep
+function p = integrand (x, aj, ak)
+    p = ones(size (x));
+    % Gamma CDF
+    for k = 1 : numel (ak)
+        p = p .* gammainc (x, ak(k));                         
+    end
+    % Gamma PDF
+    p = p .* exp ((aj - 1) .* log (x) - x - gammaln (aj));         
+end               
 
