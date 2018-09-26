@@ -55,6 +55,18 @@ options = VBA_check_struct (options, ...
     'nSamples', 1e6 ...
     );
 
+% catch trivial case to avoid problems with sampling
+% =========================================================================
+if isempty (mu)
+    ep = [];
+    return;
+end
+
+if isscalar (mu)
+    ep = 1;
+    return
+end
+
 % initialisation
 % =========================================================================
 K = numel (mu);
@@ -71,17 +83,17 @@ switch form
             case 'sampling'
                 r_samp = VBA_random ('Gaussian', mu, Sigma, options.nSamples);
                 [~, j] = max (r_samp);
-                tmp = histc (j, 1 : length (mu));
-                ep = tmp / options.nSamples;
+                tmp = histcounts (j, 0.5 : K + 0.5);
+                ep = tmp' / options.nSamples;
         
             case 'analytical'
                 c = [1; -1];
                 for k = 1 : K
                     for l = setdiff (1 : K, k)
                         ind = [k, l];
-                        m = mu(ind);
+                        m = VBA_vec(mu(ind));
                         V = Sigma(ind, ind);
-                        ep(k) = ep(k) * VBA_PPM (c' * m, c' * V *c, 0, 0);
+                        ep(k) = ep(k) * VBA_PPM (c' * m, c' * V *c, 0);
                     end
                 end
                 ep = ep ./ sum (ep);
