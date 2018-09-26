@@ -22,7 +22,7 @@ end
 
 switch form
     case 'gaussian'
-        assert(numel(mu) == numel(Sigma),'Sigma must be the same size as mu for Gaussian densities');
+        assert(~isempty(Sigma),'Sigma cannot be empty for Gaussian densities');
     case 'dirichlet'
         assert(isempty(Sigma),'Sigma must be empty for Dirichlet densities');
 end

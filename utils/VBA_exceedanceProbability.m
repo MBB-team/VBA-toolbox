@@ -37,10 +37,12 @@ function ep = VBA_exceedanceProbability (mu, Sigma, options)
 % =========================================================================
 
 % guess distribution
-if ~ exist ('Sigma', 'var') || isempty (Sigma) || isnan (Sigma)
+if ~ exist ('Sigma', 'var') || isempty (Sigma) || VBA_isWeird(Sigma)
     form = 'dirichlet';
 else
     form = 'gaussian';
+    assert (all (size (Sigma) == numel (mu) * [1 1]), ...
+            '*** VBA_exceedanceProbability: For Gaussian densities, Sigma must be a n x n matrix if mu has n elements');
 end
 
 % fill in defaults
