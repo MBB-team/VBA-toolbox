@@ -5,7 +5,7 @@ function Els = VBA_Elogsig (m, V)
 % semi-analytical approx to E[log(sig(x))] when x~N(m,V)
 
 % This function computes a semi-analytical approximation to the expected
-% lo-sigmoid mapping of x, when x is a gaussian variable with mean m and
+% log-sigmoid mapping of x, when x is a gaussian variable with mean m and
 % variance V.
 
 % IN:
