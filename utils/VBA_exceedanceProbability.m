@@ -82,10 +82,8 @@ switch form
         switch options.method
             case 'sampling'
                 r_samp = VBA_random ('Gaussian', mu, Sigma, options.nSamples);
-                [~, j] = max (r_samp);
-                tmp = histcounts (j, 0.5 : K + 0.5);
-                ep = tmp' / options.nSamples;
-        
+                ep = sum(bsxfun (@eq, r_samp, max (r_samp)), 2);
+                ep = ep / sum (ep);
             case 'analytical'
                 c = [1; -1];
                 for k = 1 : K
@@ -104,16 +102,14 @@ switch form
         switch options.method
             case 'sampling'
                 r_samp = VBA_random ('Dirichlet', mu, options.nSamples);
-                [y, j]  = max(r_samp);
-                % remove failed samples in limit cases
-                if any (isnan (VBA_vec (y))) 
-                    j(isnan (y)) = []; 
-                    options.nSamples = numel (j);
-                    warning ('VBA_exceedanceProbability: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
-                end
-                tmp = histc (j, 1 : length (mu));
-                ep = tmp' / options.nSamples;
                 
+                ep = nansum (bsxfun (@eq, r_samp, max (r_samp)), 2);
+                ep = ep / nansum (ep);
+                
+                if VBA_isWeird (r_samp) 
+                    warning ('VBA_exceedanceProbability: unstable parametrization (alpha < 1), think about trying the analytical form.');
+                end
+                 
             case 'analytical'
                 for k = 1 : K
                     f = @(x) integrand (x, mu(k), mu(1 : K ~= k));

@@ -31,7 +31,7 @@ function test_gaussian_canonical (testCase)
     Sigma = randn(1,k).^2;
     actual = VBA_exceedanceProbability (mu, diag(Sigma));
     expected = .5 * erfc (((mu(2) - mu(1)) / sqrt (2 * sum (Sigma)))); % cdf diff
-    testCase.verifyEqual (actual(1), expected, 'AbsTol', 1e-4);
+    testCase.verifyEqual (actual(1), expected, 'AbsTol', 1e-12);
     % centered case, equal eps
     k = 5;
     mu = zeros(1, k);
@@ -68,7 +68,7 @@ function test_gaussian_canonical (testCase)
      Sigma = diag(randn(1,k).^2);
      actual = VBA_exceedanceProbability (mu, Sigma, options);
      expected = VBA_exceedanceProbability (mu, Sigma);
-     testCase.verifyLessThan (norm (actual - expected), 1e-3);
+     testCase.verifyEqual (actual, expected, 'AbsTol', 5e-4);
     
 % dirichlet case
 % -------------------------------------------------------------------------   
@@ -126,4 +126,10 @@ function test_dirichlet_canonical (testCase)
      alpha = randi(5,1,k);
      actual = VBA_exceedanceProbability (alpha, NaN, options);
      expected = VBA_exceedanceProbability (alpha);
-     testCase.verifyLessThan (norm (actual - expected), 1e-3);
+     testCase.verifyEqual (actual, expected, 'AbsTol', 5e-4);
+     % general case
+     k = 5;
+     alpha = randi(5,1,k);
+     actual = VBA_exceedanceProbability (alpha, NaN, options);
+     expected = VBA_exceedanceProbability (alpha);
+     testCase.verifyEqual (actual, expected, 'AbsTol', 5e-4);
