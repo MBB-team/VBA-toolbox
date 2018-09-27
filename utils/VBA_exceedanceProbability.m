@@ -93,7 +93,7 @@ switch form
                         ind = [k, l];
                         m = VBA_vec(mu(ind));
                         V = Sigma(ind, ind);
-                        ep(k) = ep(k) * VBA_PPM (c' * m, c' * V *c, 0);
+                        ep(k) = ep(k) * (1 - VBA_spm_Ncdf (0, c' * m, max(c' * V * c, eps)));
                     end
                 end
                 ep = ep ./ sum (ep);

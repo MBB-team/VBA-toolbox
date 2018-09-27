@@ -39,6 +39,20 @@ function test_gaussian_canonical (testCase)
     actual = VBA_exceedanceProbability (mu, Sigma);
     expected = ones (k, 1) / k;
     testCase.verifyEqual (actual, expected, 'AbsTol', 1e-12);
+    % centered case and infinite precision, equal eps
+    k = 5;
+    mu = zeros(1, k);
+    Sigma = zeros(k);
+    actual = VBA_exceedanceProbability (mu, Sigma);
+    expected = ones (k, 1) / k;
+    testCase.verifyEqual (actual, expected, 'AbsTol', 1e-12);
+    % limit case, indicator ep
+    k = 5;
+    mu = [1, zeros(1, k - 1)];
+    Sigma = zeros(k);
+    actual = VBA_exceedanceProbability (mu, Sigma);
+    expected = [1 ; zeros(k - 1, 1)];
+    testCase.verifyEqual (actual, expected, 'AbsTol', 1e-12);
     
  function test_gaussian_sampling (testCase)
      options.method = 'sampling';
@@ -64,6 +78,7 @@ function test_dirichlet_empty (testCase)
     
     
 function test_dirichlet_unity (testCase)
+    % ep for univariate should be one
     alpha = rand();
     actual = VBA_exceedanceProbability (alpha);
     testCase.verifyEqual (actual, 1);
@@ -96,6 +111,8 @@ function test_dirichlet_canonical (testCase)
     expected = ones (k, 1) / k;
     testCase.verifyEqual (actual, expected, 'AbsTol', 1e-12);
     
+    
+    
   function test_dirichlet_sampling (testCase)
      options.method = 'sampling';
      % empty
@@ -105,7 +122,7 @@ function test_dirichlet_canonical (testCase)
      actual = VBA_exceedanceProbability (1, NaN, options);
      testCase.verifyEqual (actual, 1);
      % general case
-     k = 3;
+     k = 5;
      alpha = randi(5,1,k);
      actual = VBA_exceedanceProbability (alpha, NaN, options);
      expected = VBA_exceedanceProbability (alpha);
