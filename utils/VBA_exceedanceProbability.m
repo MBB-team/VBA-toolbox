@@ -18,7 +18,7 @@ function ep = VBA_exceedanceProbability (mu, Sigma, options)
 %   - options: structure with the optional fields:
 %       + verbose: display textual info {false}
 %       + method: 'sampling' or {'analytical'} derivation of the ep
-%       + nSamples: number of samples for the sampling method {1e6}
+%       + nSamples: number of samples for the sampling method {5e6}
 % OUT:
 %   - ep: vector of exceedance probabilities
 %
@@ -52,7 +52,7 @@ end
 options = VBA_check_struct (options, ...
     'verbose', false, ...
     'method', 'analytical', ...
-    'nSamples', 1e6 ...
+    'nSamples', 5e6 ...
     );
 
 % catch trivial case to avoid problems with sampling
@@ -112,14 +112,14 @@ switch form
                     warning ('VBA_exceedanceProbability: unstable parametrization, only %d%% of samples were correctly generated.', round(100*Nsamp/numel(y)));
                 end
                 tmp = histc (j, 1 : length (mu));
-                ep = tmp / options.nSamples;
+                ep = tmp' / options.nSamples;
                 
             case 'analytical'
                 for k = 1 : K
                     f = @(x) integrand (x, mu(k), mu(1 : K ~= k));
                     ep(k) = integral (f, eps, Inf);
                 end
-                ep = ep' ./ sum (ep);
+                ep = ep ./ sum (ep);
         end
      
 end

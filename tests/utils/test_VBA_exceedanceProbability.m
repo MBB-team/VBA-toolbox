@@ -64,7 +64,49 @@ function test_dirichlet_empty (testCase)
     
     
 function test_dirichlet_unity (testCase)
-    mu = rand();
-    Sigma = rand();
-    actual = VBA_exceedanceProbability (mu, Sigma);
+    alpha = rand();
+    actual = VBA_exceedanceProbability (alpha);
     testCase.verifyEqual (actual, 1);
+    
+    % ep should be the same size as alpha and sum to unity
+    k = 5;
+    alpha = randi(5,1,k);
+    actual = VBA_exceedanceProbability (alpha);
+    testCase.verifyNumElements (actual, k);
+    testCase.verifyEqual (sum (actual), 1, 'AbsTol', eps);
+    
+function test_dirichlet_canonical (testCase)
+    % bivariate case, analytical solution
+    k = 2;
+    alpha = randi(5, 1, k);
+    actual = VBA_exceedanceProbability (alpha);
+    expected = betainc (0.5, alpha(1) , alpha(2), 'upper');
+    testCase.verifyEqual (actual(1), expected, 'AbsTol', 1e-12);
+    
+    % equifrequent case, equal eps
+    k = 5;
+    alpha = k * ones(1, k);
+    actual = VBA_exceedanceProbability (alpha);
+    expected = ones (k, 1) / k;
+    testCase.verifyEqual (actual, expected, 'AbsTol', 1e-12);
+    
+    % same, with alpha < 1
+    alpha = ones(1, k)/k;
+    actual = VBA_exceedanceProbability (alpha);
+    expected = ones (k, 1) / k;
+    testCase.verifyEqual (actual, expected, 'AbsTol', 1e-12);
+    
+  function test_dirichlet_sampling (testCase)
+     options.method = 'sampling';
+     % empty
+     actual = VBA_exceedanceProbability ([], NaN, options);
+     testCase.verifyEmpty (actual);
+     % unity
+     actual = VBA_exceedanceProbability (1, NaN, options);
+     testCase.verifyEqual (actual, 1);
+     % general case
+     k = 3;
+     alpha = randi(5,1,k);
+     actual = VBA_exceedanceProbability (alpha, NaN, options);
+     expected = VBA_exceedanceProbability (alpha);
+     testCase.verifyLessThan (norm (actual - expected), 1e-3);
