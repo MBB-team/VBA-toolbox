@@ -1,7 +1,8 @@
 function ep = VBA_exceedanceProbability (distribName, varargin)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% ep = VBA_exceedanceProbability (distribName, moment_1 [, moment_2] [, options])
+% ep = VBA_exceedanceProbability ('Gaussian', mu, Sigma, [options])
+% ep = VBA_exceedanceProbability ('Dirichlet', alpha, [options])
 %
 % Calculates the exceedance probabilities for mutivariate Gaussian or 
 % Dirichlet distributions, i.e. the probability, for each variable, to be
@@ -9,18 +10,15 @@ function ep = VBA_exceedanceProbability (distribName, varargin)
 %
 % IN:
 %   - distribName: type of distribution. Could be 'Gaussian' or 'Dirichlet'
-%   - moment_x: sufficient statistics of the pdf
 %
-%       -> for a Gaussian distribution, set
-%                moment_1 = E[x]
-%                moment_2 = V[x]
-%          ie, call VBA_exceedanceProbability ('Gaussian', E[x], Var[x])
+%   - mu, Sigma, or alpha: sufficient statistics of the pdf
+%       -> for a Gaussian distribution
+%                mu = E[x]
+%                Sigma = V[x]
+%       -> for a Dirichlet distribution 
+%               alpha = the Dirichlet pseudo-counts
 %
-%       -> for a Dirichlet distribution, set 
-%               moment_1 = the Dirichlet pseudo-counts, alpha
-%          ie, call VBA_exceedanceProbability ('Dirichlet', alpha)
-%
-%   - options: structure with the optional fields:
+%   - options: optional structure with the optional fields:
 %       + verbose: display textual info {false}
 %       + method: 'sampling' or {'analytical'} derivation of the ep
 %       + nSamples: number of samples for the sampling method {5e6}
@@ -80,10 +78,6 @@ if K < 2
     return;
 end
 
-% initialisation
-% =========================================================================
-ep = ones (K, 1);
-
 % ep computation
 % =========================================================================
 
@@ -139,6 +133,10 @@ switch distribName
         end
      
 end
+
+% formating
+% =========================================================================
+ep = VBA_vec (ep);
 
 end
 
