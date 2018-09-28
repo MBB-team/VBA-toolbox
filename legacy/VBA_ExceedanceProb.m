@@ -20,13 +20,6 @@ else
     options.method = 'sampling';
 end
 
-switch form
-    case 'gaussian'
-        assert(~isempty(Sigma),'Sigma cannot be empty for Gaussian densities');
-    case 'dirichlet'
-        assert(isempty(Sigma),'Sigma must be empty for Dirichlet densities');
-end
-
 try
     options.verbose = verbose;
 end
@@ -35,4 +28,14 @@ try
     options.nSamples = Nsamp;
 end
 
-ep = VBA_exceedanceProbability (mu, Sigma, options);
+switch form
+    case 'gaussian'
+        assert(~isempty(Sigma),'Sigma cannot be empty for Gaussian densities');
+        ep = VBA_exceedanceProbability ('Gaussian', mu, Sigma, options);
+    case 'dirichlet'
+        assert(isempty(Sigma),'Sigma must be empty for Dirichlet densities');
+        ep = VBA_exceedanceProbability ('Dirichlet', mu, options);
+end
+
+
+

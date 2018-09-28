@@ -169,9 +169,9 @@ end
 %-- wrap up VBA output
 out = wrapUp(L,posterior,priors,F,options);
 try
-    out.ep = VBA_exceedanceProbability (posterior.a);
+    out.ep = VBA_exceedanceProbability ('Dirichlet', posterior.a);
     if ~isempty(out.options.families)
-        out.families.ep = VBA_exceedanceProbability (out.families.a);
+        out.families.ep = VBA_exceedanceProbability ('Dirichlet', out.families.a);
     end
 catch
     if options.verbose
@@ -218,7 +218,7 @@ out.F = F;
 % derive first and second order moments on model frequencies:
 [out.Ef,out.Vf] = VBA_dirichlet_moments(posterior.a);
 % derive exceedance probabilities
-out.ep = VBA_exceedanceProbability (posterior.a);
+out.ep = VBA_exceedanceProbability ('Dirichlet', posterior.a);
 % store accuracy and entropy terms of the Free Energy
 [F,out.ELJ,out.Sqf,out.Sqm] = FE(L,posterior,priors);
 % derive Free Energy under the null:
@@ -236,8 +236,8 @@ end
 if ~isempty(options.families)
     out.families.r = options.C'*posterior.r;
     out.families.a = options.C'*posterior.a;
-    [out.families.Ef,out.families.Vf] = VBA_dirichlet_moments(out.families.a);
-    out.families.ep = VBA_exceedanceProbability (out.families.a);
+    [out.families.Ef,out.families.Vf] = VBA_dirichlet_moments('Dirichlet', out.families.a);
+    out.families.ep = VBA_exceedanceProbability ('Dirichlet', out.families.a);
 end
 
 
