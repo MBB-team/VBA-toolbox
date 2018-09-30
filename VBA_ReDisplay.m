@@ -601,9 +601,8 @@ function myVB(hfig)
     hfig = options.display.hfp;
     drawnow
     % Display data and hidden states (if any)
-    if options.dim.n > 0
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
-    end
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
+
     % Display precision hyperparameters
     VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
     if ~options.OnLine && sum([options.sources(:).type]==0) > 0
@@ -615,12 +614,9 @@ function myVB(hfig)
     % Display model evidence
     VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
     % Display parameters
-    if dim.n_theta >= 1
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
-    end
-    if dim.n_phi >= 1
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
-    end
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
+    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
+    
     try VBA_getSubplots (); end
 
 

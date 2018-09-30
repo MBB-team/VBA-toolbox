@@ -184,7 +184,8 @@ switch flag % What piece of the model to display?
         update_observation_plot()
         
     case 'X' % Hidden-states related quantities
-        
+        if options.dim.n == 0, return; end
+
         % update top subplots
         update_observation_plot()
         
@@ -216,7 +217,8 @@ switch flag % What piece of the model to display?
         displayDF(F,display)
         
     case 'phi' % Observation parameters
-        
+        if options.dim.n_phi == 0, return; end
+
         % update top subplots
         update_observation_plot()
         
@@ -232,7 +234,8 @@ switch flag % What piece of the model to display?
         displayDF(F,display)
         
     case 'theta' % Evolution parameters
-        
+        if options.dim.n_theta == 0, return; end
+       
         % update bottom-right subplot: observation parameters
         if size(dtheta,2) == 1 % for on-line wrapper
             dTime = 1;
