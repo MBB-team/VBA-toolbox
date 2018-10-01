@@ -278,15 +278,10 @@ try
     delete(intersect(findobj('tag','diagnostics_tabs'),get(options.display.hfp,'children')));
 end
 VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-if dim.n_phi > 0
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
-end
-if dim.n > 0
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
-end
-if dim.n_theta > 0
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
-end
+VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
+VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
+
 
 %------------------------------------------------------------%
 %----------------- Main VB learning scheme ------------------%
@@ -294,7 +289,7 @@ end
 
 stop = it>=options.MaxIter; % flag for exiting VB scheme
 while ~stop
-    
+    try
     it = it +1; % iteration index
     F0 = suffStat.F(end);
     
@@ -351,6 +346,15 @@ while ~stop
         end
     end
     
+    catch err
+        switch err.identifier
+            case 'MATLAB:class:InvalidHandle'
+                [options] = VBA_initDisplay(options);
+                continue;
+            otherwise
+                throw err;
+        end
+    end
 end
 
 
