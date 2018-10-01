@@ -93,7 +93,7 @@ switch distribName
                 ep = ep / sum (ep);
                 
             case 'analytical'
-                if ~ isdiag(Sigma)
+                if ~ VBA_isdiag (Sigma)
                     error('*** VBA_exceedanceProbability: cannot compute analytical ep for non diagonal covariance. Please use the sampling method');
                 end
                 dSigma = max (diag (Sigma), 1e-6);
