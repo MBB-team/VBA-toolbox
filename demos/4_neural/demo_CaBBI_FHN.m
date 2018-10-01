@@ -117,7 +117,6 @@ options.MaxIterInit = 0;
 options.MaxIter     = 2;  % or e.g. 3                                      % maximum number of optimization iterations; increasing it will lead to a  
                                                                            % complete optimization process, although it may take long time to be converged)
                                                                            
-% options.GnFigs      = 0;                                                 % set to zero to speed up the inversion                                                  
 options.DisplayWin  = 0;                                                   % set to zero to speed up the inversion
 options.verbose     = 1;                                                   % set to zero to speed up the inversion
 options.decim       = 1;                                                   % this determine the micro-time resolution; increasing it e.g. to 2 (or higher) "may" provide more accurate inversions

@@ -65,7 +65,6 @@ for i=1:nreg
     options.inG.ind3{i} = options.inG.ind_hrf(end)+1+(i-1)*4:...
         options.inG.ind_hrf(end)+i*4;
 end
-options.GnFigs = 1;
 options.MaxIter = 8; % to quicken inversion
 dim.n_theta         = options.inF.ind5(end);
 dim.n_phi           = (2+options.inG.n_phi).*nreg;
@@ -121,10 +120,8 @@ end
 options.priors = priors;
 options.backwardLag = 10;
 options.gradF = 0;
-options.GnFigs = 1;
 options.updateHP = 1;
 options.init0 = 0;
-% options.checkGrads = 1;
 
 
 %-----------------------------------------------------------
