@@ -1,8 +1,8 @@
-function [posterior, out] = demo_QlearningAsymetric (data)
+function [posterior, out] = demo_QlearningAsymmetric (data)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% [posterior, out] = demo_QlearningAsymetric ([data])
-% Demo of Q-learning with asymetric learning rates for positive and
+% [posterior, out] = demo_QlearningAsymmetric ([data])
+% Demo of Q-learning with asymmetric learning rates for positive and
 % negative predictions errors.
 %
 % This demo implements the experiment described in Frank et al. 2004, Science
