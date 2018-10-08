@@ -1,8 +1,8 @@
-function [posterior, out] = demo_QlearningAsymetric (data)
+function [posterior, out] = demo_QlearningAsymmetric (data)
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
-% [posterior, out] = demo_QlearningAsymetric ([data])
-% Demo of Q-learning with asymetric learning rates for positive and
+% [posterior, out] = demo_QlearningAsymmetric ([data])
+% Demo of Q-learning with asymmetric learning rates for positive and
 % negative predictions errors.
 %
 % This demo implements the experiment described in Frank et al. 2004, Science
@@ -33,7 +33,7 @@ Nbandits = 3;
 switch nargin
     case 0
         fprintf ('No inputs provided, generating simulated behavior...\n\n');
-        data = simulateQlearningAsym ();
+        [data, simulation] = simulateQlearningAsym ();
     case 2
         fprintf ('Performing inversion of provided behaviour...\n\n');
     otherwise
@@ -88,12 +88,11 @@ options.verbose = false;
 
 % display estimated parameters:
 % -------------------------------------------------------------------------
-fprintf('=============================================================\n');
-fprintf('\nEstimated parameters: \n');
+fprintf('= Inversion =================================================\n');
+fprintf('Posterior parameter estimates: \n');
 fprintf('  - positive learning rate: %3.2f\n', VBA_sigmoid(posterior.muTheta(1)+posterior.muTheta(2)));
 fprintf('  - negative learning rate: %3.2f\n', VBA_sigmoid(posterior.muTheta(1)-posterior.muTheta(2)));
 fprintf('  - inverse temp.: %3.2f\n\n', exp(posterior.muPhi));
-fprintf('=============================================================\n');
 
 % invert model
 % =========================================================================
@@ -101,7 +100,7 @@ if exist('simulation','var') % used simulated data from demo_QlearningSimulation
     displayResults( ...
         posterior, ...
         out, ...
-        choices, ...
+        data.choices, ...
         simulation.state, ...
         simulation.initial, ...
         simulation.evolution, ...
@@ -123,7 +122,7 @@ end
 
 end
 
-function data = simulateQlearningAsym ()
+function [data, simulation] = simulateQlearningAsym ()
 
 % training bloc
 % -------------------------------------------------------------------------
@@ -151,7 +150,7 @@ contingencies = contingencies(p);
 test = [1 1 1 1 2 2 2 2; % choose A and avoid B 
         3 4 5 6 3 4 5 6];
 
-test = repmat(test,1,0);
+test = repmat(test,1,5);
     
 cues = [cues test];
 contingencies = [contingencies nan(1, size(test,2))];
@@ -216,20 +215,29 @@ data.choices = y;
 data.feedbacks = u(2, 2 : end);
 data.cues = cues;
 
+simulation = struct( ...
+    'state', x, ... %AP: I think I need to make this change ie 1:end to get display to work
+    'initial', x0, ...
+    'evolution', theta, ...
+    'observation', phi ...
+    );
+
 % Display stat of simulated behaviour
 % =========================================================================
-testT = numel(y) - size(test, 2) : numel(y);
+testT = (1 + numel(y) - size(test, 2)) : numel(y);
 testY = y(testT);
 testU = u(:,testT);
-chooseA = mean(testY(testU(3,:) == 1) == 0);
-avoidB = mean(testY(testU(3,:) == 2) == 1);
+chooseA = mean(testY(testU(5,:) == 1) == 0);
+avoidB = mean(testY(testU(5,:) == 2) == 1);
 
-fprintf('=============================================================\n');
-fprintf('Simulated choice with asymetric learning: %03.2f\n',theta(2));
-
-fprintf('  - Choose A: %03.2g%%\n',chooseA);
-fprintf('  - Avoid  B: %03.2g%%\n',avoidB);
-fprintf('=============================================================\n');
+fprintf('= Simulation ================================================\n');
+fprintf('Choice with asymmetric learning:\n')
+fprintf('  - positive learning rate: %03.2f\n',VBA_sigmoid(theta(1)+theta(2)));
+fprintf('  - negative learning rate: %03.2f\n',VBA_sigmoid(theta(1)-theta(2)));
+fprintf('  - softmax beta: %03.2f\n',exp(phi));
+fprintf('Choice in test phase:\n')
+fprintf('  - Choose A: %3.2f%%\n',100 * chooseA);
+fprintf('  - Avoid  B: %3.2f%%\n',100 * avoidB);
 
 end
   
