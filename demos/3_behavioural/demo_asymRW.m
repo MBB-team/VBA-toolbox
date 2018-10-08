@@ -104,20 +104,21 @@ xlabel(ha,'time (trials)')
 
 
 % invert all models
-F = zeros(4,1);
 str = cell(4,1);
-for i=1:1
-    % invert models on choice data
-    opt{i}.figName = opt{i}.inF.model;
+for i=1:4
     opt{i}.DisplayWin = 1;
-    str{i} = opt{i}.figName;
+    % invert models on choice data
+    opt{i}.figName = [opt{i}.inF.model, ' (choice data)'];
     opt{i}.sources.type = 1;
     [p{i,1},o{i,1}] = VBA_NLStateSpaceModel(y_choice,uu,f_fname,g_fname,d{i},opt{i});
     F(i,1) = o{i,1}.F;
     % invert models on value data
+    opt{i}.figName = [opt{i}.inF.model, ' (value data)'];
     opt{i}.sources.type = 0;
     [p{i,2},o{i,2}] = VBA_NLStateSpaceModel(y_value,uu,f_fname,@g_Id,d{i},opt{i});
     F(i,2) = o{i,2}.F;
+    % store for future display
+    str{i} = opt{i}.inF.model;
 end
 
 pm(:,1) = VBA_softmax(F(:,1));
