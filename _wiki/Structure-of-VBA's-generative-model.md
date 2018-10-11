@@ -72,7 +72,7 @@ Nonlinear state-space models (with unknown evolution, observation and precision 
 
 ### Deterministic dynamical models
 
-One may have to deal with deterministic systems. These simply correspond to the case where the state noise (i.e. the stochastic perturbations of the states' dynamics) is null ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$. Given the above definition of nonlinear state-space models, determinisic systems arise if you set the priors on the states' noise precision appropriately ($$\alpha \rightarrow \infty$$, see below).
+One may have to deal with [deterministic systems]((https://en.wikipedia.org/wiki/Deterministic_system)). These simply correspond to the case where the state noise (i.e. the stochastic perturbations of the states' dynamics) is null ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$. Given the above definition of nonlinear state-space models, determinisic systems arise if you set the priors on the states' noise precision appropriately ($$\alpha \rightarrow \infty$$, see below).
 
 > Unless you tell it otherwise, VBA assumes, by default, that your model is deterministic. In fact, even if you change the default prior on the states' noise precision, VBA initializes the inversion of the (stochastic) model with an inversion of its deterministic variant...
 
@@ -80,12 +80,18 @@ One may have to deal with deterministic systems. These simply correspond to the 
 
 ### Static models
 
-Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters):
+Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters). In other words, static models simply reduce to a (possibly nonlinear) observation function, i.e.:
+
+\\[y=g(\phi)+\epsilon\\]
+
+where the observation mapping $$g$$ has no notion of "hidden states".
+
+The ensuing graphical model is depicted below:
 
 
 ![]({{ site.baseurl }}/images/wiki/graph_static_models.png)
 
-> This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning. In other terms, there is no need for a temporal structure in decision making models, because there is (typically) no trial-by-trial spillover effect to model...
+> In VBA, static models arise if you don't specify any evolution function. This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning. In other terms, there is no need for a temporal structure in decision making models, because there is (typically) no trial-by-trial spillover effect to model...
 
 
 
