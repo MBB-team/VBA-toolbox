@@ -68,7 +68,7 @@ The following figure summarizes the model structure:
 
 ## A few specific subcases
 
-Nonlinear state-space models (with unknown evolution, observation and precision parameters) grand-fathers most [causal models](https://en.wikipedia.org/wiki/Causal_model) of the statistical literature. A notable exception are models that include unknown "switch" or [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable). We refer the interested reader to [this page]({{ site.baseurl }}/wiki/generativeModels) for an (almost) exhaustive list of generative models that can be emulated using VBA (e.g., auto-regressive models, GARCH models, etc...).
+Nonlinear state-space models (with unknown evolution, observation and precision parameters) grand-fathers most [causal models](https://en.wikipedia.org/wiki/Causal_model) of the statistical literature. A notable exception are models that include unknown "switch" or [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable). We refer the interested reader to [this page]({{ site.baseurl }}/wiki/generativeModels) for an (almost) exhaustive list of generative models that can be emulated using VBA (e.g., auto-regressive models, GARCH models, etc...). Below, we provide two simple specific subcases...
 
 ### Deterministic dynamical models
 
