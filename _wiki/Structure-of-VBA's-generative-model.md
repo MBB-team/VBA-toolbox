@@ -66,16 +66,28 @@ The following figure summarizes the model structure:
 
 > The plate denotes repetitions over time or trials. Nodes represent model variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.
 
-One may have to deal with deterministic systems ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$.
+## A few specific subcases
+
+Nonlinear state-space models (with unknown evolution, observation and precision parameters) grand-fathers most [causal models](https://en.wikipedia.org/wiki/Causal_model) of the statistical literature. A notable exception are models that include unknown "switch" or [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable). We refer the interested reader to [this page]({{ site.baseurl }}/wiki/generativeModels) for an (almost) exhaustive list of generative models that can be emulated using VBA (e.g., auto-regressive models, GARCH models, etc...).
+
+### Deterministic dynamical models
+
+One may have to deal with deterministic systems. These simply correspond to the case where the state noise (i.e. the stochastic perturbations of the states' dynamics) is null ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$. Given the above definition of nonlinear state-space models, determinisic systems arise if you set the priors on the states' noise precision appropriately ($$\alpha \rightarrow \infty$$, see below).
+
+> Unless you tell it otherwise, VBA assumes, by default, that your model is deterministic. In fact, even if you change the default prior on the states' noise precision, VBA initializes the inversion of the (stochastic) model with an inversion of its deterministic variant...
+
+
+
+### Static models
 
 Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters):
 
 
 ![]({{ site.baseurl }}/images/wiki/graph_static_models.png)
 
-> This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning.
+> This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning. In other terms, there is no need for a temporal structure in decision making models, because there is (typically) no trial-by-trial spillover effect to model...
 
-Note: state-space models (with unknown evolution, observation and precision parameters) grand-fathers most [causal models](https://en.wikipedia.org/wiki/Causal_model) of the statistical literature. A notable exception are models that include unknown "switch" or [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable). We refer the interested reader to [this page]({{ site.baseurl }}/wiki/generativeModels) for an (almost) exhaustive list of generative models that can be emulated using VBA (e.g., auto-regressive models, GARCH models, etc...).
+
 
 
 ## Prior knowledge
