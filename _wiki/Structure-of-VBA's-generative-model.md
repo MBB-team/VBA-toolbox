@@ -91,7 +91,7 @@ The ensuing graphical model is depicted below:
 
 ![]({{ site.baseurl }}/images/wiki/graph_static_models.png)
 
-The simplest variant of all static models is the [*General Linear Model*](https://en.wikipedia.org/wiki/General_linear_model) (GLM), where $$g$$ is a linear mapping, i.e.:
+The simplest variant of all static models is the [*General Linear Model*](https://en.wikipedia.org/wiki/General_linear_model) (GLM), where $$g$$ reduces to a linear mapping, i.e.:
 
 \\[y=X\phi+\epsilon\\]
 
