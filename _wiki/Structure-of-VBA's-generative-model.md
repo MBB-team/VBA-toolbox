@@ -82,7 +82,7 @@ One may have to deal with [deterministic systems]((https://en.wikipedia.org/wiki
 
 Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters). In other words, static models simply reduce to a (possibly nonlinear) observation function, i.e.:
 
-\\[y=g(\phi)+\epsilon\\]
+\\[y_t=g(\phi,u_t)+\epsilon_t\\]
 
 where the observation mapping $$g$$ has no notion of "hidden states".
 
