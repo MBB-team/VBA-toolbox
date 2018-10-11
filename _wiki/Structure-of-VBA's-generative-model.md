@@ -91,6 +91,13 @@ The ensuing graphical model is depicted below:
 
 ![]({{ site.baseurl }}/images/wiki/graph_static_models.png)
 
+The simplest variant of all static models is the [*General Linear Model*](https://en.wikipedia.org/wiki/General_linear_model) (GLM), where $$g$$ is a linear mapping, i.e.:
+
+\\[y=X\phi+\epsilon\\]
+
+where $$X$$ is the so-called [design matrix](https://en.wikipedia.org/wiki/Design_matrix).
+
+
 > In VBA, static models arise if you don't specify any evolution function. This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning. In other terms, there is no need for a temporal structure in decision making models, because there is (typically) no trial-by-trial spillover effect to model...
 
 
