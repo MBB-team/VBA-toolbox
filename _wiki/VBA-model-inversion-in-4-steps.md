@@ -95,13 +95,15 @@ effectively defines a $$N\left( 0,I \right)$$ i.i.d. (zero-mean, unit-variance) 
 priors.a_alpha = 1;
 priors.b_alpha = 1;
 ```
-effectively assumes that state noise precision $$\alpha$$ is a unit-mean and unit-variance [Gamma variable](https://en.wikipedia.org/wiki/Gamma_distribution).
+effectively assumes that state noise precision $$\alpha$$ is a unit-mean and unit-variance [Gamma variable](https://en.wikipedia.org/wiki/Gamma_distribution). This allows non-zero state noise to enter and perturb the hidden states' dynamics...
 
 One then fills in the `priors` field of the `options` structure, as follows:
 
 ```matlab
 options.priors = priors ;
 ```
+
+> In any bayesian data analysis, setting the priors is a subtle issue. The issue is twofold. From a classical perspective, priors induce a systematic bias in parameter estimation. More importantly, priors partly determine the model evidence, which is used in bayesian model comparison. At this point, suffices to say that VBA enables so-called ["empirical Bayes"](https://en.wikipedia.org/wiki/Empirical_Bayes_method) approaches, in which the priors are estimated from the data. This is explained on [this page]({{ site.baseurl }}/wiki/VBA-MFX)...
 
 
 # Step 4 : Inverting the model
