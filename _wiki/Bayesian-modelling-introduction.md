@@ -113,7 +113,7 @@ Note that Bayesian model comparison is not necessarily more liberal than classic
 
 ![]({{ site.baseurl }}/images/wiki/bmc2.jpg)
 
-In this example, the alternative hypothesis $$H_1$$ is further away from $$H_0$$, and Bayesian model comparison would yield less false positives than classical hypothesis testing. Although in this case, Bayesian model comparison would be *less* sensitive than classical hypothesis testing, its total error rate would still be smaller! This example is in fact typical of situations where, although a given data sample may be unlikely under the null (according to classical hypothesis testing), it may still be even more unlikely under the alternative.
+In this example, the alternative hypothesis $$H_1$$ is further away from $$H_0$$, and Bayesian model comparison would yield less false positives than classical hypothesis testing. Although in this case, Bayesian model comparison would be *less* sensitive than classical hypothesis testing, its total error rate would still be smaller! This example is in fact typical of situations where, although a given data sample may be unlikely under the null (according to classical hypothesis testing), it may still be even more unlikely under the alternative (cf. data that falls between the classical and the bayesian threshold).
 
 > This summarizes why Bayesian and classical hypothesis testing may not yield the same result: the former cares about minimizing total error rates, whereas the latter is obsessed with controlling false positive rates only. In fact, this is the deep reason behind many notorious debates among bayesian and frequentist statisticians, such as, e.g., "[Lindley's paradox](https://en.wikipedia.org/wiki/Lindley%27s_paradox)"...
 
