@@ -103,7 +103,7 @@ One then fills in the `priors` field of the `options` structure, as follows:
 options.priors = priors ;
 ```
 
-> In any bayesian data analysis, setting the priors is a subtle issue. The issue is twofold. From a classical perspective, priors induce a systematic bias in parameter estimation. More importantly, priors partly determine the model evidence, which is used in bayesian model comparison. At this point, suffices to say that VBA enables so-called ["empirical Bayes"](https://en.wikipedia.org/wiki/Empirical_Bayes_method) approaches, in which the priors are estimated from the data. This is explained on [this page]({{ site.baseurl }}/wiki/VBA-MFX)...
+In any bayesian data analysis, setting the priors is a subtle issue. From a classical perspective, priors induce a systematic bias in parameter estimation (but remember the "[bias-variance trade-off](https://en.wikipedia.org/wiki/Bias%E2%80%93variance_tradeoff)" of machine learning). More importantly, when data is of insufficient quantity and/or quality, priors partly influence bayesian model comparison, which is based upon the [marginal likelihood](https://en.wikipedia.org/wiki/Marginal_likelihood). At this point, suffices to say that VBA enables so-called ["empirical Bayes"](https://en.wikipedia.org/wiki/Empirical_Bayes_method) approaches, in which the priors are estimated from the data. This is explained on [this page]({{ site.baseurl }}/wiki/VBA-MFX)...
 
 
 # Step 4 : Inverting the model
