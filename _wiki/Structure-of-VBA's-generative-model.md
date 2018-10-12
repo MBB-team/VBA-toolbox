@@ -84,9 +84,7 @@ Note that the above class of generative models encompasses static models, i.e. m
 
 \\[y_t=g(\phi,u_t)+\epsilon_t\\]
 
-where the observation mapping $$g$$ has no notion of "hidden states".
-
-The ensuing graphical model is depicted below:
+where the observation mapping $$g$$ has no notion of "hidden states". The ensuing graphical model is depicted below:
 
 
 ![]({{ site.baseurl }}/images/wiki/graph_static_models.png)
@@ -116,3 +114,8 @@ Priors can vary in how "informative" they are. This is important because highly 
 - $$p(\alpha\mid m)$$ and $$p(\sigma\mid m)$$: priors on state and observation noise precisions are [Gamma distributions](https://en.wikipedia.org/wiki/Gamma_distribution) that are fully parameterized by their scale ($$a$$) and shape ($$b$$) hyperparameters. For example, a deterministic system has no state noise $$\eta$$, which follows from assuming a priori that $$\alpha$$ is 0 with infinite precision $$(a_{\alpha}=0$$ and $$b_{\alpha}\rightarrow  \infty)$$.
 
 In brief, the generative model $$m$$ includes the evolution and observation functions as well as the above priors on evolution, observation and precision parameters. All these are required to perform a bayesian analysis of experimental data.
+
+> In any bayesian data analysis, setting the priors is a subtle issue. Of course, VBA is endowed with "default" priors, which you can change (cf. [model inversion in 4 steps]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps). Alternatively, VBA allows you to exploit group data to voercome this problem by performing [mixed-effect (MFX) modelling]({{ site.baseurl }}/wiki/VBA-MFX)...
+
+
+
