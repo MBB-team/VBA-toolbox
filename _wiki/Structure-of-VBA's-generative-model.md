@@ -115,7 +115,7 @@ Priors can vary in how "informative" they are. This is important because highly 
 
 In brief, the generative model $$m$$ includes the evolution and observation functions as well as the above priors on evolution, observation and precision parameters. All these are required to perform a bayesian analysis of experimental data.
 
-> In any bayesian data analysis, setting the priors is a subtle issue. Of course, VBA is endowed with "default" priors, which you can change (cf. [model inversion in 4 steps]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps). Alternatively, VBA allows you to exploit group data to voercome this problem by performing [mixed-effect (MFX) modelling]({{ site.baseurl }}/wiki/VBA-MFX)...
+> In any bayesian data analysis, setting the priors is a subtle issue. Of course, VBA is endowed with "default" priors, which you can change and adapt to your needs (cf. [model inversion in 4 steps]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps). Alternatively, VBA enables so-called "empirical Bayes" approaches, e.g. by performing [mixed-effect (MFX) modelling]({{ site.baseurl }}/wiki/VBA-MFX)...
 
 
 
