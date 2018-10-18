@@ -75,7 +75,7 @@ $$ E[z] \approx f(E[x]) $$
 
 and
 
-$$ V[z] \approx Vx]\times f'(E[x)^2 $$
+$$ V[z] \approx V[x]\times f'(E[x])^2 $$
  
 The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
 
