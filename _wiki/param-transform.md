@@ -42,7 +42,7 @@ Note that the transformation $$h(x)$$ is the composition of two mappings:
 - and the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces any distribution (here: $$p_z(z)$$) from the uniform distribution over [0,1].
 
 
-> It turns ou that VBa's posterior inference does not depend *at all* on the way the native Gayssian prior is specified, as long as the tansformation $$h$$ uses the same normal cumulative distribution function...
+> It turns ou that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h$$ uses the ensuing normal cumulative distribution function... NB: this section was inspired from a comment made by _Emma_ on VBA's forum: thank you!
 
 
 ## Emulating sparsity priors
