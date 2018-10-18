@@ -19,7 +19,7 @@ One may use the (re-scaled) [sigmoidal](https://en.wikipedia.org/wiki/Sigmoid_fu
 
 ## Positivity constraint
 
-One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function) transform, i.e. $$e^x$$ will be positive, irrespective of the actual value of $$x$$. Another, less "stiff", positivity-enforcing mapping is $$e^{1+log(x)}$$, which behaves linearly away from the origin.
+One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function) transform, i.e. $$e^x$$ will be positive, irrespective of the actual value of $$x$$. Another, less "stiff", positivity-enforcing mapping is $$e^{1+log(x)}$$, which behaves like the identity mapping when $$x$$ is sufficiently far from the origin.
 
 
 > Note that Bayesian inference is **not invariant through changes in model parameterization**. For example, let us consider the mapping $$x \rightarrow x^3$$. This mapping does not insert any hard constraint, in the sense that the mapped parameter $$x^3$$ is allowed to vary without finite bounds. Nevertheless, Bayesian inference on a model that uses parameter $$x$$ does not yield the same result as inference on the same model, but this time using the mapped parameter $$x^3$$. This is because passing through the $$x \rightarrow x^3$$ mapping can be seen as setting a non-Gaussian prior on $$x^3$$...
