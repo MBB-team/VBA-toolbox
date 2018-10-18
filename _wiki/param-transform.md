@@ -89,7 +89,7 @@ and
 
 $$V[s(x)] \approx s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\left(1-s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\right)\left(1-\frac{1}{\sqrt{1+a\sigma}}\right)$$,
 
-where $$a=\frac{\pi^2}{3} \approx 0.3$$.
+where $$a=\frac{3}{\pi^2} \approx 0.3$$.
 
 > These approximations, and other related ones (e.g., softmax with more than 2 variables, log-sigmoid transforms, etc...) are described in [this technical note](https://arxiv.org/abs/1703.00091).
 
