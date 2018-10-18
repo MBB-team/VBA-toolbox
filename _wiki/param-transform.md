@@ -77,11 +77,17 @@ and
 
 $$ V[f(\vartheta)] \approx V[\vartheta]\timesf'(E[\vartheta])^2 $$
  
+The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
 
+```matlab
+g_map = @myMapping;
+dim = struct('n',0,'n_theta',0),'n_phi',1);
+opt.priors = posterior;
+[muP,VP] = VBA_getLaplace([],[],g_map,dim,opt,0)
+```
 
+where `@myMapping` implements the parameter tansformation and `posterior` has been obtained using VBA...
 
-
-(see `VBA_Laplace.m`).
 
 ## Monte-Carlo method
 
