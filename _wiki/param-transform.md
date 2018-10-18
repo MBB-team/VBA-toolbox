@@ -75,7 +75,7 @@ $$ E[f(\vartheta)] \approx f(E[\vartheta]) $$
 
 and
 
-$$ V[f(\vartheta)] \approx V[\vartheta]\timesf'(E[\vartheta])^2 $$
+$$ V[f(\vartheta)] \approx V[\vartheta]\times f'(E[\vartheta])^2 $$
  
 The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
 
