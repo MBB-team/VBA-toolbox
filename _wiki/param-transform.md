@@ -101,7 +101,7 @@ If no analytical approximation exists for the moments of a Gaussian variable $$x
 
 Let $$g(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=g(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
 
-$$ g(x) = g(E[x]) + g'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
+$$ g(x) = g(E[x]) + g'(E[x])\times\left(x-E[x]\right) + ... $$
 
 where the first-order truncation renders the approxiation valid only in the near vicinity of $$E[x]$$.  
 
