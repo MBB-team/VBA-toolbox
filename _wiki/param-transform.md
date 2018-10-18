@@ -97,21 +97,21 @@ where $$a=\frac{3}{\pi^2} \approx 0.3$$.
 
 ## Laplace's method
 
-If no analytical approximatiopn exist for the transform $$g$$, and one is simply interested in the first- and second-order moments of re-mapped parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
+If no analytical approximation exists for the moments of a Gaussian variable $$x$$ passed through the mapping $$g(x)$$, one can use the so-called [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
 
-Let $$f(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=f(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
+Let $$g(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=g(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
 
-$$ f(x) = f(E[x]) + f'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
+$$ g(x) = g(E[x]) + g'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
 
 where the first-order truncation renders the approxiation valid only in the near vicinity of $$E[x]$$.  
 
 This first-order Taylor expansion can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
 
-$$ E[z] \approx f(E[x]) $$
+$$ E[z] \approx g(E[x]) $$
 
 and
 
-$$ V[z] \approx V[x]\times f'(E[x])^2 $$
+$$ V[z] \approx V[x]\times g'(E[x])^2 $$
  
 The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
 
@@ -122,7 +122,7 @@ opt.priors.SigmaPhi = posterior.SigmaTheta(ind,ind);
 [Ez,Vz] = VBA_getLaplace([],[],@myMapping,dim,opt,0);
 ```
 
-where `ind` is the index of the evolution parameter that went through the transform, `@myMapping` implements the parameter tansformation (but with the usual i/o format of VBA observation functions), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
+where `ind` is the index of the evolution parameter that went through the transform, `@myMapping` implements the parameter tansformation $$g$$ (but with the usual i/o format of VBA observation functions), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
 
 
 ## Monte-Carlo's method
