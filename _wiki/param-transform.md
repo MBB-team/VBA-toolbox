@@ -55,7 +55,7 @@ $$g_s(x)= \left(2 s(x) -1\right)x^2$$
 
 where $$s$$ is the standard [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function).
 
-This "sparsify mapping" trick is demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of such sparse estimators.
+> This "sparsify mapping" trick is demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of such sparse estimators.
 
 
 # Recovering the re-mapped posterior density
@@ -110,5 +110,32 @@ Vz = var(gX);
 
 ## A few specific cases
 
+Below we list a few examples of moments of gaussian variables passed through a few overloaded mappings $$g$$.
+In particular, there are analytical 
 
+### The exponential mapping
+
+This is useful for imposing "positivity" constraints on model parameters (see above). Let $$g(x)=e^x$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
+
+$$E[g(x)] = e^{\mu + frac{\sigma}{2}}$$,
+
+and
+
+$$V[g(x)] = e^{2\mu + \sigma} \left(e^{\sigma}-1\right)$$,
+
+NB: the exponential mapping requires no approximation!
+
+### The sigmoid mapping
+
+This is useful for imposing "range" constraints on model parameters (see above). Let $$s(x)=\frac{1}{1+e^{-x}}$$and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
+
+$$E[s(x)] = e^{\mu + frac{\sigma}{2}}$$,
+
+and
+
+$$V[g(x)] = e^{2\mu + \sigma} \left(e^{\sigma}-1\right)$$,
+
+
+
+This note is concerned with accurate and computationally efficient approximations of moments of Gaussian random variables passed through sigmoid or softmax mappings.
 
