@@ -63,9 +63,9 @@ Finally, having performed a VBA analysis with some specified parameter transform
 
 ## Laplace's method
 
-If one is interested in the posterior density over transformed parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method). This is base on a first-order Taylor expansion, which we summarize below.
+If one is interested in the posterior density over transformed parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
 
-Let $$f(\vartheta)$$ be the mapping used for setting a given hard constraint on some model parameter $$P=f(\vartheta)$$. Then:
+Let $$f(\vartheta)$$ be the mapping used for setting a given hard constraint on some model parameter $$P=f(\vartheta)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
 
 $$ f(\vartheta) = f(E[\vartheta]) + f'(E[\vartheta])\times\left(\vartheta-E[\vartheta]\right) + ... $$
 
@@ -86,7 +86,7 @@ opt.priors = posterior;
 [muP,VP] = VBA_getLaplace([],[],g_map,dim,opt,0)
 ```
 
-where `@myMapping` implements the parameter tansformation and `posterior` has been obtained using VBA...
+where `@myMapping` implements the parameter tansformation (but with the usual VBA i/o) and `posterior` has been obtained using VBA...
 
 
 ## Monte-Carlo method
