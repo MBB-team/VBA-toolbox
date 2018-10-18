@@ -50,7 +50,7 @@ So-called [sparse estimators](https://en.wikipedia.org/wiki/Sparse_approximation
 
 Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. It turns out that one can use the following simple parameter transform $$g_s$$ to emulate such sparsity priors without sacrificing the simplicity and robustness of VBA under Gaussian priors:
 
-$$g_s(\vartheta)= (2 s(\vartheta) -1)\vartheta^2$$
+$$g_s(x)= \left(2 s(x) -1\right)x^2$$
 
 where $$s$$ is the standard [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function).
 
@@ -65,17 +65,17 @@ Finally, having performed a VBA analysis with some specified parameter transform
 
 If one is interested in the posterior density over transformed parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
 
-Let $$f(\vartheta)$$ be the mapping used for setting a given hard constraint on some model parameter $$P=f(\vartheta)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
+Let $$f(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=f(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
 
-$$ f(\vartheta) = f(E[\vartheta]) + f'(E[\vartheta])\times\left(\vartheta-E[\vartheta]\right) + ... $$
+$$ f(x) = f(E[x]) + f'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
 
-This first-order Taylor expansion is useful, because it can be used to derive the first- and secon-order moments of $$f(\vartheta)$$, given first- and second-order moments of $$\vartheta$$:
+This first-order Taylor expansion is useful, because it can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
 
-$$ E[f(\vartheta)] \approx f(E[\vartheta]) $$
+$$ E[z] \approx f(E[x]) $$
 
 and
 
-$$ V[f(\vartheta)] \approx V[\vartheta]\times f'(E[\vartheta])^2 $$
+$$ V[z] \approx Vx]\times f'(E[x)^2 $$
  
 The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
 
