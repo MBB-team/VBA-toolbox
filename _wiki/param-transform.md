@@ -52,7 +52,7 @@ So-called [sparse estimators](https://en.wikipedia.org/wiki/Sparse_approximation
 
 Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. Emulating such sparsity priors without sacrificing the simplicity and robustness of Gaussian priors can be done by mapping VBA's native parameters $$x$$ through the following simple transform: 
 
-$$g_s(x)= \left(2 s(x) -1\right)x^{2p}$$
+$$ g_s(x)= \left(2 s(x) -1\right)x^{2p} $$
 
 where $$p$$ is set to emulate an $$Lp$$-norm, and $$s(x)$$ is the standard sigmoid function.
 
@@ -71,11 +71,11 @@ We begin by highlighting simple analytic expressions for the first- and second-o
 
 This is useful for imposing positivity constraints on model parameters (see above). Let $$g(x)=e^x$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
 
-$$E[g(x)] = e^{\mu + \frac{\sigma}{2}}$$,
+$$ E[g(x)] = e^{\mu + \frac{\sigma}{2}} $$,
 
 and
 
-$$V[g(x)] = e^{2\mu + \sigma} \left(e^{\sigma}-1\right)$$,
+$$ V[g(x)] = e^{2\mu + \sigma} \left(e^{\sigma}-1\right) $$,
 
 Recovering the two first two moments of exponentially-mapped parameters $$z=e^x$$ can thus be done analytically, given the first two moments of the Gaussian posterior distribution on $$x$$.
 
@@ -83,11 +83,11 @@ Recovering the two first two moments of exponentially-mapped parameters $$z=e^x$
 
 This is useful for imposing "range" constraints on model parameters (see above). Let $$s(x)=\frac{1}{1+e^{-x}}$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
 
-$$E[s(x)] \approx s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)$$,
+$$ E[s(x)] \approx s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right) $$,
 
 and
 
-$$V[s(x)] \approx s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\left(1-s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\right)\left(1-\frac{1}{\sqrt{1+a\sigma}}\right)$$,
+$$ V[s(x)] \approx s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\left(1-s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\right)\left(1-\frac{1}{\sqrt{1+a\sigma}}\right) $$,
 
 where $$a=\frac{3}{\pi^2} \approx 0.3$$.
 
@@ -103,6 +103,8 @@ Let $$f(x)$$ be the mapping used for setting a given hard constraint on some mod
 
 $$ f(x) = f(E[x]) + f'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
 
+where the first-order truncation renders the approxiation valid only in the near vicinity of $$E[x]$$.  
+
 This first-order Taylor expansion is useful, because it can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
 
 $$ E[z] \approx f(E[x]) $$
@@ -114,29 +116,27 @@ $$ V[z] \approx V[x]\times f'(E[x])^2 $$
 The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
 
 ```matlab
-g_map = @myMapping;
-dim = struct('n',0,'n_theta',0),'n_phi',1);
+dim = struct('n',0,'n_theta',0,'n_phi',1);
 opt.priors.muPhi = posterior.muTheta(ind);
 opt.priors.SigmaPhi = posterior.SigmaTheta(ind,ind);
-[Ez,Vz] = VBA_getLaplace([],[],g_map,dim,opt,0)
+[Ez,Vz] = VBA_getLaplace([],[],@myMapping,dim,opt,0);
 ```
 
-where `ind` is the index of the evolution parameter $$\theta$$ that went through the transform, `@myMapping` implements the parameter tansformation (but with the usual VBA i/o), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
+where `ind` is the index of the evolution parameter that went through the transform, `@myMapping` implements the parameter tansformation (but with the usual i/o format of VBA observation functions), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
 
 
 ## Monte-Carlo method
 
-Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
+Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
 
 The following lines of code reproduce Monte-Carlo's method for the same example as the section above:
 
 ```matlab
-g_map = @myMapping;
 suffStat.mu = posterior.muTheta(ind);
 suffStat.Sigma = posterior.SigmaTheta(ind,ind);
 N = 1e5; % #Monte-Carlo samples
-X = VBA_sample('gaussian',suffStat,N,0);
-gX = feval(g_map,[],X,[],[]); % cf. VBA i/o structure
+X = VBA_sample('gaussian',suffStat,N,0); % sample from gaussian posterior 
+gX = feval(@myMapping,[],X,[],[]); % cf. VBA i/o structure
 Ez = mean(gX);
 Vz = var(gX);
 ```
