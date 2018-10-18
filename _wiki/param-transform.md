@@ -117,7 +117,7 @@ In particular, there are analytical
 
 This is useful for imposing "positivity" constraints on model parameters (see above). Let $$g(x)=e^x$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
 
-$$E[g(x)] = e^{\mu + frac{\sigma}{2}}$$,
+$$E[g(x)] = e^{\mu + \frac{\sigma}{2}}$$,
 
 and
 
@@ -129,7 +129,7 @@ NB: the exponential mapping requires no approximation!
 
 This is useful for imposing "range" constraints on model parameters (see above). Let $$s(x)=\frac{1}{1+e^{-x}}$$and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
 
-$$E[s(x)] = e^{\mu + frac{\sigma}{2}}$$,
+$$E[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}$$,
 
 and
 
