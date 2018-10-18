@@ -127,9 +127,9 @@ NB: the exponential mapping requires no approximation!
 
 ### The sigmoid mapping
 
-This is useful for imposing "range" constraints on model parameters (see above). Let $$s(x)=\frac{1}{1+e^{-x}}$$and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
+This is useful for imposing "range" constraints on model parameters (see above). Let $$s(x)=\frac{1}{1+e^{-x}}$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
 
-$$E[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}$$,
+$$E[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)$$,
 
 and
 
