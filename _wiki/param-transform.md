@@ -134,7 +134,7 @@ The following lines of code reproduce Monte-Carlo's method for the same example 
 ```matlab
 suffStat.mu = posterior.muTheta(ind);
 suffStat.Sigma = posterior.SigmaTheta(ind,ind);
-N = 1e6; % #Monte-Carlo samples
+N = 1e6; % number of Monte-Carlo samples
 X = VBA_sample('gaussian',suffStat,N,0); % sample from gaussian posterior 
 gX = feval(@myMapping,[],X,[],[]); % cf. VBA i/o structure
 Ez = mean(gX);
