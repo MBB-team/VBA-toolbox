@@ -41,7 +41,7 @@ Note that the transformation $$h(x)$$ is the composition of two mappings:
 - the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling) which produces a uniform distribution over [0,1] from any (here: gaussian) density,
 - and the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces any distribution (here: $$p_z(z)$$) from the uniform distribution over [0,1].
 
-It turns ou that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h(x)$$ uses the ensuing normal cumulative distribution function...
+Note that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h(x)$$ uses the ensuing normal cumulative distribution function...
 
 > NB: this section was inspired from a comment made by **Emma** on VBA's forum: thank you!
 
