@@ -15,23 +15,23 @@ However, one may want to insert "[hard constraints](https://en.wikipedia.org/wik
 
 ## Range constraint
 
-One may use the (re-scaled) [sigmoidal](https://en.wikipedia.org/wiki/Sigmoid_function) transform. For example, within a RL evolution function, the learning rate $$z$$ may be defined as $$z=s(x)$$, where $$x$$ is VBA's evolution parameter (which has a Gaussian prior). Thus, irrespective of the actual value of $$x$$, the learning rate $$z$$ will be constrained to lie on the $$\left[0,1\right]$$ interval.
+One may use the (re-scaled) [sigmoidal](https://en.wikipedia.org/wiki/Sigmoid_function) transform $$s(x) = \frac{1}{1+e^{-x}}$$. For example, within a RL evolution function, the learning rate $$z$$ may be defined as $$z=s(x)$$, where $$x$$ is VBA's evolution parameter (which has a Gaussian prior). Thus, irrespective of the actual value of $$x$$, the learning rate $$z$$ will be constrained to lie on the $$\left[0,1\right]$$ interval.
 
 ## Positivity constraint
 
-One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function) transform, i.e. $$exp(x)$$ will be positive, irrespective of the actual value of $$x$$. Another, less "stiff", positivity-enforcing mapping is $$exp(1+log(x))$$, which behaves linearly away from the origin.
+One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function) transform, i.e. $$e^x$$ will be positive, irrespective of the actual value of $$x$$. Another, less "stiff", positivity-enforcing mapping is $$e^{1+log(x)}$$, which behaves linearly away from the origin.
 
 
-> Note that Bayesian inference is **not invariant through changes in model parameterization**. For example, let us consider the mapping $$x \rightarrow x^3$$. This mapping does not insert any hard constraint, in the sense that the mapped parameter $$x^3$$ is allowed to vary without finite bounds. Nevertheless, Bayesian inference on a model that uses parameter $$x$$ does not yield the same result as inference on the same model, but this time using the mapped parameter $$x^3$$. This is because passing through the $$x \rightarrow x^3$$ can be seen as setting a non-Gaussian prior on $$x^3$$...
+> Note that Bayesian inference is **not invariant through changes in model parameterization**. For example, let us consider the mapping $$x \rightarrow x^3$$. This mapping does not insert any hard constraint, in the sense that the mapped parameter $$x^3$$ is allowed to vary without finite bounds. Nevertheless, Bayesian inference on a model that uses parameter $$x$$ does not yield the same result as inference on the same model, but this time using the mapped parameter $$x^3$$. This is because passing through the $$x \rightarrow x^3$$ mapping can be seen as setting a non-Gaussian prior on $$x^3$$...
 
 
 # Setting non-Gaussian priors
 
-One may also want to impose a specific non-Gaussian prior to some parameters. For example, one may want to set [Beta](https://en.wikipedia.org/wiki/Beta_distribution) or [Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) priors on model parameters. Although, superficially, VBA only deals with Gaussian priors, one can use parameter transformations to emulate non-Gaussian priors. This is also exemplified below.
+One may also want to impose a specific non-Gaussian prior to some parameters. For example, one may want to set [Beta](https://en.wikipedia.org/wiki/Beta_distribution) or [Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) priors on model parameters. Although, superficially, VBA only deals with Gaussian priors, one can use parameter transformations to emulate non-Gaussian priors. This is exemplified below.
 
 ## Setting a pre-specified prior density
 
-Let $$z$$ be some model parameter, which one may want to set some prior density $$p_z(z)$$ on (e.g. Beta, Gamma, etc...). This can be done by mapping VBA's native parameter $$x$$ through the following transformation $$h(x)$$:
+Let $$z$$ be some model parameter, which one may want to set some specific prior density $$p_z(z)$$ on (e.g. Beta, Gamma, etc...). This can be done by mapping VBA's native parameter $$x$$ through the following transformation $$h(x)$$:
 
 $$ h(x)=P_z\left(\Phi^{-1}\left(x\right)\right) $$
 
@@ -51,9 +51,9 @@ So-called [sparse estimators](https://en.wikipedia.org/wiki/Sparse_approximation
 
 Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. It turns out that one can use the following simple parameter transform $$g_s$$ to emulate such sparsity priors without sacrificing the simplicity and robustness of VBA under Gaussian priors:
 
-$$g_s(x)= \left(2 s(x) -1\right)x^2$$
+$$g_s(x)= \left(2 s(x) -1\right)x^{2p}$$
 
-where $$s$$ is the standard [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function).
+where $$p$$ is set to emulate $$Lp$$-norm, and  $$s$$ is the standard [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function).
 
 > This "sparsify mapping" trick is demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of such sparse estimators.
 
