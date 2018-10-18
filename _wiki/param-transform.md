@@ -54,7 +54,7 @@ Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian p
 
 $$ g_s(x)= \left(2 s(x) -1\right)x^2 $$
 
-where $$p$$ is set to emulate an $$Lp$$-norm, and $$s(x)$$ is the standard sigmoid function.
+where $$s(x)$$ is the standard sigmoid function.
 
 > This trick is justified and demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of the ensuing (sparse) VBA estimators.
 
