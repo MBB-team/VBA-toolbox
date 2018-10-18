@@ -41,7 +41,7 @@ Note that the transformation $$h(x)$$ is the composition of two mappings:
 - the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling) which produces a uniform distribution over [0,1] from any (here: gaussian) density,
 - and the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces any distribution (here: $$p_z(z)$$) from the uniform distribution over [0,1].
 
-It turns ou that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h$$ uses the ensuing normal cumulative distribution function...
+It turns ou that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h(x)$$ uses the ensuing normal cumulative distribution function...
 
 > NB: this section was inspired from a comment made by **Emma** on VBA's forum: thank you!
 
@@ -54,22 +54,22 @@ Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian p
 
 $$g_s(x)= \left(2 s(x) -1\right)x^{2p}$$
 
-where $$p$$ is set to emulate $$Lp$$-norm, and $$s(x)$$ is the standard sigmoid function.
+where $$p$$ is set to emulate an $$Lp$$-norm, and $$s(x)$$ is the standard sigmoid function.
 
-> This "sparsify mapping" trick is demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of the ensuing (sparse) VBA estimators.
+> This trick is justified and demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of the ensuing (sparse) VBA estimators.
 
 
 # Recovering the re-mapped posterior density
 
-Finally, having performed a VBA analysis where native parameters $$x$$ have been mapped through some specific transform $$g(x)$$, one may need to derive summary statistics for the transformed parameters $$z=g(x)$$ (as opposed to directly using VBA's posterior pdf on native Gaussian parameters). This is the topic of the last section of this page...
+Finally, having performed a VBA analysis where native parameters $$x$$ have been mapped through some specific transform $$g(x)$$, one may need to derive summary statistics for the transformed parameters $$z=g(x)$$ (as opposed to directly using VBA's posterior pdf on native Gaussian parameters). This is the topic of the last section of this page.
 
 ## A few specific cases
 
-Below we list a few examples of moments of gaussian variables passed through a few overloaded transformations.
+We begin by highlighting simple analytic expressions for the first- and second-order moments of gaussian variables passed though the exponential (cf. positivity constraint) and sigmoidal (cf. range constraint) mappings.
 
 ### The exponential mapping
 
-This is useful for imposing "positivity" constraints on model parameters (see above). Let $$g(x)=e^x$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
+This is useful for imposing positivity constraints on model parameters (see above). Let $$g(x)=e^x$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
 
 $$E[g(x)] = e^{\mu + \frac{\sigma}{2}}$$,
 
@@ -77,7 +77,7 @@ and
 
 $$V[g(x)] = e^{2\mu + \sigma} \left(e^{\sigma}-1\right)$$,
 
-NB: the exponential mapping requires no approximation!
+Recovering the two first two moments of exponentially-mapped parameters $$z=e^x$$ can thus be done analytically, given the first two moments of the Gaussian posterior distribution on $$x$$.
 
 ### The sigmoid mapping
 
@@ -91,7 +91,7 @@ $$V[s(x)] \approx s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\left(1-s\left(\frac
 
 where $$a=\frac{3}{\pi^2} \approx 0.3$$.
 
-> These approximations, and other related ones (e.g., softmax with more than 2 variables, log-sigmoid transforms, etc...) are described in [this technical note](https://arxiv.org/abs/1703.00091).
+> These approximations, and other related ones (e.g., softmax with more than 2 variables, log-sigmoid transforms, etc...) are described in [this technical note](https://arxiv.org/abs/1703.00091). Suffices to say that they yield less than 2% elative error.
 
 
 
