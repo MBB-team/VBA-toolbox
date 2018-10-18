@@ -37,9 +37,10 @@ $$ h(x)=P_z\left(\Phi^{-1}\left(x\right)\right) $$
 
 where $$\Phi(x)$$ is the cumulative distribution function of VBA's Gaussian priors on $$x$$ and $$P_z\left(z\right)$$ is the target cumulative distribution function of $$z$$ (ie. the integral of $$p_z(z)$$).
 
-Note that the transformation $$h(x)$$ is the composition of two mappings: 
-- the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces a uniform distribution over [0,1] from any (here: gaussian) density,
-- and the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling) which produces any distribution (here: beta) from the uniform distribution over [0,1].
+Note that the transformation $$h(x)$$ is the composition of two mappings:
+- and the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling) which produces a uniform distribution over [0,1] from any (here: gaussian) density,
+- the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces any distribution (here: $$p_z(z)$$) from the uniform distribution over [0,1].
+
 
 > It turns ou that VBa's posterior inference does not depend *at all* on the way the native Gayssian prior is specified, as long as the tansformation $$h$$ uses the same normal cumulative distribution function...
 
