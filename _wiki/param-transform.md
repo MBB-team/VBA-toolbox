@@ -91,7 +91,7 @@ $$ V[s(x)] \approx s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)\left(1-s\left(\fra
 
 where $$a=\frac{3}{\pi^2} \approx 0.3$$.
 
-> These approximations, and other related ones (e.g., softmax with more than 2 variables, log-sigmoid transforms, etc...) are described in [this technical note](https://arxiv.org/abs/1703.00091). Suffices to say that they yield less than 2% elative error.
+> These approximations, and other related ones (e.g., softmax with more than 2 variables, log-sigmoid transforms, etc...) are described in [this technical note](https://arxiv.org/abs/1703.00091). Suffices to say here that they yield less than 2% elative error.
 
 
 
@@ -105,7 +105,7 @@ $$ f(x) = f(E[x]) + f'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
 
 where the first-order truncation renders the approxiation valid only in the near vicinity of $$E[x]$$.  
 
-This first-order Taylor expansion is useful, because it can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
+This first-order Taylor expansion can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
 
 $$ E[z] \approx f(E[x]) $$
 
