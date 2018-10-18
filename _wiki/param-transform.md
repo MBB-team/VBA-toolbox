@@ -108,4 +108,7 @@ Ez = mean(gX);
 Vz = var(gX);
 ```
 
+## A few specific cases
+
+
 
