@@ -129,12 +129,13 @@ NB: the exponential mapping requires no approximation!
 
 This is useful for imposing "range" constraints on model parameters (see above). Let $$s(x)=\frac{1}{1+e^{-x}}$$ and $$x$$ be normally distributed, i.e.: $$p(x) = N\left(\mu,\sigma\right)$$. Then:
 
-$$E[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)$$,
+$$E[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)$$,
 
 and
 
-$$V[g(x)] = e^{2\mu + \sigma} \left(e^{\sigma}-1\right)$$,
+$$V[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)\left(1-s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)\right)$$,
 
+where $$a=\frac{\pi^2}{3} \approx 0.3$$.
 
 
 This note is concerned with accurate and computationally efficient approximations of moments of Gaussian random variables passed through sigmoid or softmax mappings.
