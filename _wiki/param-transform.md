@@ -99,11 +99,9 @@ where $$a=\frac{3}{\pi^2} \approx 0.3$$.
 
 If no analytical approximation exists for the moments of a Gaussian variable $$x$$ passed through the mapping $$g(x)$$, one can use the so-called [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
 
-Let $$g(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=g(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
+Let $$g(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=g(x)$$. Then a (truncated) first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) in the near vicinity of $$E[x]$$ yields:
 
-$$ g(x) = g(E[x]) + g'(E[x])\times\left(x-E[x]\right) + ... $$
-
-where the first-order truncation renders the approxiation valid only in the near vicinity of $$E[x]$$.  
+$$ g(x) = g(E[x]) + g'(E[x])\times\left(x-E[x]\right) + ... $$ 
 
 This first-order Taylor expansion can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
 
