@@ -64,7 +64,7 @@ Finally, having performed a VBA analysis with some specified parameter transform
 
 ## Laplace's method
 
-If one is interested in the posterior density over transformed parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
+If one is interested in the first- and second-order moments of re-mapped parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
 
 Let $$f(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=f(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
 
@@ -95,7 +95,7 @@ where `ind` is the index of the evolution parameter $$\theta$$ that went through
 
  Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
 
-The following lines of code reproduce MOnte-Carlo's method for the same exmaple as the section above:
+The following lines of code reproduce Monte-Carlo's method for the same example as the section above:
 
 ```matlab
 g_map = @myMapping;
