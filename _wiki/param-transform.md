@@ -52,7 +52,7 @@ So-called [sparse estimators](https://en.wikipedia.org/wiki/Sparse_approximation
 
 Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. Emulating such sparsity priors without sacrificing the simplicity and robustness of Gaussian priors can be done by mapping VBA's native parameters $$x$$ through the following simple transform: 
 
-$$ g_s(x)= \left(2 s(x) -1\right)x^{2p} $$
+$$ g_s(x)= \left(2 s(x) -1\right)x^{\frac{2}{p}} $$
 
 where $$p$$ is set to emulate an $$Lp$$-norm, and $$s(x)$$ is the standard sigmoid function.
 
