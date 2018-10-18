@@ -15,11 +15,11 @@ However, one may want to insert "[hard constraints](https://en.wikipedia.org/wik
 
 ## range constraint
 
-One may use the (re-scaled) [sigmoidal](https://en.wikipedia.org/wiki/Sigmoid_function) transform. For example, within a RL evolution function, the learning rate may be defined as `sigm(P)`, where `P` is VBA's evolution parameter (which has a Gaussian prior). Thus, irrespective of the actual value of `P`, the learning rate `sigm(P)` will be constrained to lie on the $$\left[0,1\right]$$ interval.
+One may use the (re-scaled) [sigmoidal](https://en.wikipedia.org/wiki/Sigmoid_function) transform. For example, within a RL evolution function, the learning rate may be defined as `sigm(x)`, where `x` is VBA's evolution parameter (which has a Gaussian prior). Thus, irrespective of the actual value of `P`, the learning rate `sigm(x)` will be constrained to lie on the $$\left[0,1\right]$$ interval.
 
 ## Positivity constraint
 
-One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function) transform, i.e. `exp(P)` will be positive, irrespective of the actual value of `P`. Another, less "stiff", positivity-enforcing mapping is `exp(1+log(x))`, which behaves linearly away from the origin.
+One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function) transform, i.e. `exp(x)` will be positive, irrespective of the actual value of `x`. Another, less "stiff", positivity-enforcing mapping is `exp(1+log(x))`, which behaves linearly away from the origin.
 
 
 > Note that Bayesian inference is **not invariant through changes in model parameterization**. For example, let us consider the mapping $$P \rightarrow P^3$$. This mapping does not insert any hard constraint, in the sense that the mapped parameter $$P^3$$ is allowed to vary without finite bounds. Nevertheless, Bayesian inference on a model that uses parameter `P` does not yield the same result as inference on the same model, but this time using the mapped parameter `P^3`... 
@@ -29,7 +29,20 @@ One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function
 
 One may also want to impose a specific non-Gaussian prior to some parameters. For example, one may want to set [Beta](https://en.wikipedia.org/wiki/Beta_distribution) or [Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) priors on model parameters. Although, superficially, VBA only deals with Gaussian priors, one can use parameter transformations to emulate non-Gaussian priors. This is also exemplified below.
 
-## 
+## Setting a pre-specified prior density
+
+Let $$z$$ be some model parameter, which one may want to set some prior density $$p_z(z)$$ on (e.g. Beta, Gamma, etc...). This can be done by mapping VBA's native parameter $$x$$ through the following transformation $$h(x)$$:
+
+$$ h(x)=P_z\left(\Phi^{-1}\left(x\right)\right) $$
+
+where $$\Phi(x)$$ is the cumulative distribution function of VBA's Gaussian priors on $$x$$ and $$P_z\left(z\right)$$ is the target cumulative distribution function of $$z$$ (ie. the integral of $$p_z(z)$$).
+
+Note that the transformation $$h(x)$$ is the composition of two mappings: 
+- the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces a uniform distribution over [0,1] from any (here: gaussian) density,
+- and the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling) which produces any distribution (here: beta) from the uniform distribution over [0,1].
+
+> It turns ou that VBa's posterior inference does not depend *at all* on the way the native Gayssian prior is specified, as long as the tansformation $$h$$ uses the same normal cumulative distribution function...
+
 
 ## Emulating sparsity priors
 
@@ -48,20 +61,29 @@ This "sparsify mapping" trick is demonstrated in this [technical note](https://a
 
 Finally, having performed a VBA analysis with some specified parameter transform in place, one may need to derive summary statistics for the transformed parameters (as opposed to directly using VBA's posterior pdf on native Gaussian parameters). This is the topic of the last section of this page...
 
-## Laplace method
+## Laplace's method
 
 If one is interested in the posterior density over transformed parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method). This is base on a first-order Taylor expansion, which we summarize below.
 
 Let $$f(\vartheta)$$ be the mapping used for setting a given hard constraint on some model parameter $$P=f(\vartheta)$$. Then:
+
 $$ f(\vartheta) = f(E[\vartheta]) + f'(E[\vartheta])\times\left(\vartheta-E[\vartheta]\right) + ... $$
-This 
+
+This first-order Taylor expansion is useful, because it can be used to derive the first- and secon-order moments of $$f(\vartheta)$$, given first- and second-order moments of $$\vartheta$$:
+
+$$ E[f(\vartheta)] \approx f(E[\vartheta]) $$
+
+and
+
+$$ V[f(\vartheta)] \approx V[\vartheta]\timesf'(E[\vartheta])^2 $$
+ 
 
 
 
 
 (see `VBA_Laplace.m`).
 
-## Monte-Carlo methods
+## Monte-Carlo method
 
  Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
 
