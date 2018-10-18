@@ -41,21 +41,22 @@ Note that the transformation $$h(x)$$ is the composition of two mappings:
 - the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling) which produces a uniform distribution over [0,1] from any (here: gaussian) density,
 - and the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces any distribution (here: $$p_z(z)$$) from the uniform distribution over [0,1].
 
+It turns ou that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h$$ uses the ensuing normal cumulative distribution function...
 
-> It turns ou that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h$$ uses the ensuing normal cumulative distribution function... NB: this section was inspired from a comment made by **Emma** on VBA's forum: thank you!
+> NB: this section was inspired from a comment made by **Emma** on VBA's forum: thank you!
 
 
 ## Emulating sparsity priors
 
 So-called [sparse estimators](https://en.wikipedia.org/wiki/Sparse_approximation) arise in the context of model fitting, when one a priori assumes that only a few (unknown) model parameters deviate from zero. Sparsity constraints can be useful when the estimation problem is under-determined, i.e. when number of model parameters is much higher than the number of data points. In the context of [regularization](https://en.wikipedia.org/wiki/Regularization_(mathematics)) approaches, such constraints are enforced by minimizing [L1](http://mathworld.wolfram.com/L1-Norm.html) or [L0](https://en.wikipedia.org/wiki/Lp_space#When_p_=_0) norms, which yield the so-called [LASSO estimator](https://en.wikipedia.org/wiki/Lasso_(statistics)). 
 
-Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. It turns out that one can use the following simple parameter transform $$g_s$$ to emulate such sparsity priors without sacrificing the simplicity and robustness of VBA under Gaussian priors:
+Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. Emulating such sparsity priors without sacrificing the simplicity and robustness of Gaussian priors can be done by mapping VBA's native parameters $$x$$ through the following simple transform: 
 
 $$g_s(x)= \left(2 s(x) -1\right)x^{2p}$$
 
-where $$p$$ is set to emulate $$Lp$$-norm, and  $$s$$ is the standard [sigmoid function](https://en.wikipedia.org/wiki/Sigmoid_function).
+where $$p$$ is set to emulate $$Lp$$-norm, and $$s(x)$$ is the standard sigmoid function.
 
-> This "sparsify mapping" trick is demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of such sparse estimators.
+> This "sparsify mapping" trick is demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of the ensuing (sparse) VBA estimators.
 
 
 # Recovering the re-mapped posterior density
@@ -64,8 +65,7 @@ Finally, having performed a VBA analysis where native parameters $$x$$ have been
 
 ## A few specific cases
 
-Below we list a few examples of moments of gaussian variables passed through a few overloaded mappings $$g$$.
-In particular, there are analytical 
+Below we list a few examples of moments of gaussian variables passed through a few overloaded transformations.
 
 ### The exponential mapping
 
