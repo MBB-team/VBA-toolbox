@@ -83,17 +83,29 @@ The function `VBA_getLaplace` can be used to derive the above Laplace approximat
 ```matlab
 g_map = @myMapping;
 dim = struct('n',0,'n_theta',0),'n_phi',1);
-opt.priors = posterior;
-[muP,VP] = VBA_getLaplace([],[],g_map,dim,opt,0)
+opt.priors.muPhi = posterior.muTheta(ind);
+opt.priors.SigmaPhi = posterior.SigmaTheta(ind,ind);
+[Ez,Vz] = VBA_getLaplace([],[],g_map,dim,opt,0)
 ```
 
-where `@myMapping` implements the parameter tansformation (but with the usual VBA i/o) and `posterior` has been obtained using VBA...
+where `ind` is the index of the evolution parameter $$\theta$$ that went through the transform, `@myMapping` implements the parameter tansformation (but with the usual VBA i/o), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
 
 
 ## Monte-Carlo method
 
  Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
 
+The following lines of code reproduce MOnte-Carlo's method for the same exmaple as the section above:
 
+```matlab
+g_map = @myMapping;
+suffStat.mu = posterior.muTheta(ind);
+suffStat.Sigma = posterior.SigmaTheta(ind,ind);
+N = 1e5; % #Monte-Carlo samples
+X = VBA_sample('gaussian',suffStat,N,0);
+gX = feval(g_map,[],X,[],[]); % cf. VBA i/o structure
+Ez = mean(gX);
+Vz = var(gX);
+```
 
 
