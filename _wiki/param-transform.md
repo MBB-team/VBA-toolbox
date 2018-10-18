@@ -133,7 +133,7 @@ $$E[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\sigma}}\right)$$,
 
 and
 
-$$V[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)\left(1-s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)\right)$$,
+$$V[s(x)] = s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)\left(1-s\left(\frac{\mu}{\sqrt{1+a\time\sigma}}\right)\right)\left(1-\frac{1}{\sqrt{1+a\sigma}}\right)$$,
 
 where $$a=\frac{\pi^2}{3} \approx 0.3$$.
 
