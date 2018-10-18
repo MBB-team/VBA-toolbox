@@ -60,53 +60,7 @@ where $$s$$ is the standard [sigmoid function](https://en.wikipedia.org/wiki/Sig
 
 # Recovering the re-mapped posterior density
 
-Finally, having performed a VBA analysis with some specified parameter transform in place, one may need to derive summary statistics for the transformed parameters (as opposed to directly using VBA's posterior pdf on native Gaussian parameters). This is the topic of the last section of this page...
-
-## Laplace's method
-
-If one is interested in the first- and second-order moments of re-mapped parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
-
-Let $$f(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=f(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
-
-$$ f(x) = f(E[x]) + f'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
-
-This first-order Taylor expansion is useful, because it can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
-
-$$ E[z] \approx f(E[x]) $$
-
-and
-
-$$ V[z] \approx V[x]\times f'(E[x])^2 $$
- 
-The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
-
-```matlab
-g_map = @myMapping;
-dim = struct('n',0,'n_theta',0),'n_phi',1);
-opt.priors.muPhi = posterior.muTheta(ind);
-opt.priors.SigmaPhi = posterior.SigmaTheta(ind,ind);
-[Ez,Vz] = VBA_getLaplace([],[],g_map,dim,opt,0)
-```
-
-where `ind` is the index of the evolution parameter $$\theta$$ that went through the transform, `@myMapping` implements the parameter tansformation (but with the usual VBA i/o), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
-
-
-## Monte-Carlo method
-
- Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
-
-The following lines of code reproduce Monte-Carlo's method for the same example as the section above:
-
-```matlab
-g_map = @myMapping;
-suffStat.mu = posterior.muTheta(ind);
-suffStat.Sigma = posterior.SigmaTheta(ind,ind);
-N = 1e5; % #Monte-Carlo samples
-X = VBA_sample('gaussian',suffStat,N,0);
-gX = feval(g_map,[],X,[],[]); % cf. VBA i/o structure
-Ez = mean(gX);
-Vz = var(gX);
-```
+Finally, having performed a VBA analysis where native parameters $$x$$ have been mapped through some specific transform $$g(x)$$, one may need to derive summary statistics for the transformed parameters $$z=g(x)$$ (as opposed to directly using VBA's posterior pdf on native Gaussian parameters). This is the topic of the last section of this page...
 
 ## A few specific cases
 
@@ -140,4 +94,50 @@ where $$a=\frac{\pi^2}{3} \approx 0.3$$.
 > These approximations, and other related ones (e.g., softmax with more than 2 variables, log-sigmoid transforms, etc...) are described in [this technical note](https://arxiv.org/abs/1703.00091).
 
 
+
+## Laplace's method
+
+If no analytical approximatiopn exist for the transform $$g$$, and one is simply interested in the first- and second-order moments of re-mapped parameters, one can simply use the [Laplace approximation](https://en.wikipedia.org/wiki/Laplace's_method), which we summarize below.
+
+Let $$f(x)$$ be the mapping used for setting a given hard constraint on some model parameter $$z=f(x)$$. Then a first-order [Taylor expansion](https://en.wikipedia.org/wiki/Taylor_series) yields:
+
+$$ f(x) = f(E[x]) + f'(E[x])\times\left(\vartheta-E[x]\right) + ... $$
+
+This first-order Taylor expansion is useful, because it can be used to derive the first- and second-order moments of $$z$$, given first- and second-order moments of $$x$$:
+
+$$ E[z] \approx f(E[x]) $$
+
+and
+
+$$ V[z] \approx V[x]\times f'(E[x])^2 $$
+ 
+The function `VBA_getLaplace` can be used to derive the above Laplace approximation, as follows:
+
+```matlab
+g_map = @myMapping;
+dim = struct('n',0,'n_theta',0),'n_phi',1);
+opt.priors.muPhi = posterior.muTheta(ind);
+opt.priors.SigmaPhi = posterior.SigmaTheta(ind,ind);
+[Ez,Vz] = VBA_getLaplace([],[],g_map,dim,opt,0)
+```
+
+where `ind` is the index of the evolution parameter $$\theta$$ that went through the transform, `@myMapping` implements the parameter tansformation (but with the usual VBA i/o), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
+
+
+## Monte-Carlo method
+
+Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) (see `VBA_sample.m`) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
+
+The following lines of code reproduce Monte-Carlo's method for the same example as the section above:
+
+```matlab
+g_map = @myMapping;
+suffStat.mu = posterior.muTheta(ind);
+suffStat.Sigma = posterior.SigmaTheta(ind,ind);
+N = 1e5; % #Monte-Carlo samples
+X = VBA_sample('gaussian',suffStat,N,0);
+gX = feval(g_map,[],X,[],[]); % cf. VBA i/o structure
+Ez = mean(gX);
+Vz = var(gX);
+```
 
