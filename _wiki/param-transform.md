@@ -125,19 +125,23 @@ opt.priors.SigmaPhi = posterior.SigmaTheta(ind,ind);
 where `ind` is the index of the evolution parameter that went through the transform, `@myMapping` implements the parameter tansformation (but with the usual i/o format of VBA observation functions), `posterior` has been obtained using VBA, and `Ez` and `Vz` are the Laplace approximations to the first- and second-order moments of $$z$$, respectively...
 
 
-## Monte-Carlo method
+## Monte-Carlo's method
 
-Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance) and/or full sampling histograms. Such sampling approach can be used, for example, in the aim of recovering [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters.
+Alternatively, one can [sample](https://en.wikipedia.org/wiki/Monte_Carlo_method) from the Gaussian posterior density over un-transformed parameters, pass the samples through the transform, and then report [summary statistics](https://en.wikipedia.org/wiki/Summary_statistics) over the set of transformed samples (such as mean and variance). This is the essence of the [Monte-Carlo method](https://en.wikipedia.org/wiki/Monte_Carlo_method), which are widely used in statistics and numerical analysis. 
 
 The following lines of code reproduce Monte-Carlo's method for the same example as the section above:
 
 ```matlab
 suffStat.mu = posterior.muTheta(ind);
 suffStat.Sigma = posterior.SigmaTheta(ind,ind);
-N = 1e5; % #Monte-Carlo samples
+N = 1e6; % #Monte-Carlo samples
 X = VBA_sample('gaussian',suffStat,N,0); % sample from gaussian posterior 
 gX = feval(@myMapping,[],X,[],[]); % cf. VBA i/o structure
 Ez = mean(gX);
 Vz = var(gX);
 ```
+
+One possible advantage of Monte-Carlo's method is that one can report more than just the mean and variance of the mapped parameters. In particular, one can derive [credible intervals](https://en.wikipedia.org/wiki/Credible_interval) over constrained (mapped) parameters, and/or full sampling histograms.
+
+> The accuracy of Monte-Carlo's method depends upon the numer of samples that are used to derive the moments of the distribution (the rule of thumb is typically $$10^5$$ samples at least for each degree of freedom). This eventually induces a very high computational cost when the dimensionality of the parameter space increases...
 
