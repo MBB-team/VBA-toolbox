@@ -54,5 +54,9 @@ Taken together, these approximations are known as the **variational-Laplace appr
 ![]({{ site.baseurl }}/images/wiki/VBA/vb1.jpg)
 
 
-The statistical properties of the variational-Laplace approach (e.g., in terms of the quality of the ensuing approximation), for the class of models considered in VBA, are described in [Daunizeau et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0167278909002425).
+The statistical properties of the variational-Laplace approach (e.g., in terms of the quality of the ensuing approximation), for the class of models considered in VBA, were first described in [Daunizeau et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0167278909002425).
+
+> Additional mathematical details regarding the variational-Laplace approach can be found in [this technical note](https://arxiv.org/abs/1703.02089)
+
+
 
