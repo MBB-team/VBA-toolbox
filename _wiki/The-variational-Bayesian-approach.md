@@ -38,7 +38,7 @@ In addition to the mean-field trick, VBA relies upon a further parametric approx
 
 $$ q(\vartheta_1) \approx N\left(\mu,\Sigma\right)$$
 
-such that:
+where the mean $$\mu$$ and the variance-covariance matrix $$\Sigma$$ are given by:
 
 $$
 \begin{array}
