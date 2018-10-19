@@ -27,11 +27,11 @@ z = function_name(x_t, P, u_t, in) ;
 - `in` : may contain any extra relevant information (arbitrary)
 - `z`: the predicted state (evolution function) or data (observation function).
 
-The definition of hidden states ($$x$$), parameters ($$\theta$$ and $$\phi$$), hyperparameters ($$\sigma$$ and $$\alpha$$) and inputs ($$u$$), as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
+> The definition of hidden states ($$x$$), parameters ($$\theta$$ and $$\phi$$), hyperparameters ($$\sigma$$ and $$\alpha$$) and inputs ($$u$$), as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
 
 Note that, except the `in` input to evolution/observation functions (which can be anything), all other i/o variables should be **column vectors**. And the dimension of these vectors should correspond to those given in the `dim` structure (see below)!
 
-> In fact, you can also specify the gradients of evolution/observation functions w.r.t states and paraemters as two additional (optional) output variables. This is is useful for accelerating VBA's inversions (you can earn up to 2 or 3 orders of magnitude in terms of computational time). For example:
+> TIP: In fact, you can also specify the gradients of evolution/observation functions w.r.t states and paraemters as two additional (optional) output variables. This is is useful for **accelerating VBA's inversions** (you can earn up to 2 or 3 orders of magnitude in terms of computational time). For example:
 ```matlab
 function [g,dgdx,dgdP] = g_dummy(x,P,u,in)
 g = x.*phi.*u; % "minimal" output
