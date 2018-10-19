@@ -29,7 +29,7 @@ z = function_name(x_t, P, u_t, in) ;
 
 > The definition of hidden states ($$x$$), parameters ($$\theta$$ and $$\phi$$), hyperparameters ($$\sigma$$ and $$\alpha$$) and inputs ($$u$$), as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
 
-Note that, except the `in` entry of evolution/observation functions, all other i/o variables should be **column vectors**. And the dimension of these vectors should correspond to those given in the `dim` structure (see below)!
+Note that, except the `in` entry of evolution/observation functions (which can be anything), all other i/o variables should be **column vectors**. And the dimension of these vectors should correspond to those given in the `dim` structure (see below)!
 
 # Step 2 : Setting model inversion options
 
