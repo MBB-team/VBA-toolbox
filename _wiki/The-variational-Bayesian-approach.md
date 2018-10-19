@@ -43,7 +43,7 @@ where the mean $$\mu$$ and the variance-covariance matrix $$\Sigma$$ are given b
 $$
 \begin{array}
 q\mu = \textrm{arg }\underset{\vartheta_1}{\textrm{max}} I\left(\vartheta_1\right) \\
-\Sigma = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1}
+\Sigma = -\left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1}
 \end{array}
 $$
 
