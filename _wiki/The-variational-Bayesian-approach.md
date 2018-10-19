@@ -42,7 +42,7 @@ such that:
 
 $$ \left{
 \begin{array}
-\mu & = argmax I\left(\vartheta_1\right) \\
+\mu & = \textrm{arg}\underset{\textrm{max}}{\vartheta_1} I\left(\vartheta_1\right) \\
 \Sigma & = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1} \\
 \end{array}$$
 
