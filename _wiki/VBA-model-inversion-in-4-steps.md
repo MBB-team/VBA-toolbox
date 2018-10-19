@@ -31,7 +31,7 @@ The definition of hidden states ($$x$$), parameters ($$\theta$$ and $$\phi$$), h
 
 Note that, except the `in` input to evolution/observation functions (which can be anything), all other i/o variables should be **column vectors**. And the dimension of these vectors should correspond to those given in the `dim` structure (see below)!
 
-> In fact, you can also specify the gradients of evolution/observation functions w.r.t states and paraemters as two additional (optional) output variables. For example:
+> In fact, you can also specify the gradients of evolution/observation functions w.r.t states and paraemters as two additional (optional) output variables. This is is useful for accelerating VBA's inversions (you can earn up to 2 or 3 orders of magnitude in terms of computational time). For example:
 ```matlab
 function [g,dgdx,dgdP] = g_dummy(x,P,u,in)
 g = x.*phi.*u; % "minimal" output
@@ -39,6 +39,7 @@ dgdx = phi.*u; % gradient wrt states (x)
 dgdP = x.*u; % gradient wrt parameters (P)
 end
 ```
+In other brief, the second and third output of evolution and observation functions are optional but, if specified, they should only be used for gradients!
 
 
 # Step 2 : Setting model inversion options
