@@ -40,11 +40,12 @@ $$ q(\vartheta_1) \approx N\left(\mu,\Sigma\right)$$
 
 such that:
 
-$$ \left{
+$$
 \begin{array}
-\mu & = \textrm{arg}\underset{\textrm{max}}{\vartheta_1} I\left(\vartheta_1\right) \\
-\Sigma & = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1} \\
-\end{array}$$
+q\mu = \textrm{arg }\underset{\vartheta_1}{\textrm{max}} I\left(\vartheta_1\right) \\
+\Sigma = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1}
+\end{array}
+$$
 
 where $$I\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}$$ is termed the "variational energy" of $$\vartheta_1$$, and derives from the above mean-field approximation.
 
