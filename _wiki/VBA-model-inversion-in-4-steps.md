@@ -39,7 +39,7 @@ dgdx = phi.*u; % gradient wrt states (x)
 dgdP = x.*u; % gradient wrt parameters (P)
 end
 ```
-In other brief, the second and third output of evolution and observation functions are optional but, if specified, they should only be used for gradients!
+Thus, the second and third outputs of evolution/observation functions are optional but, **if specified, they should only be used for gradients**!
 
 
 # Step 2 : Setting model inversion options
