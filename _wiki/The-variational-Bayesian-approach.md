@@ -41,12 +41,12 @@ $$ q(\vartheta_1) \approx N\left(\mu,\Sigma\right)$$
 such that:
 
 $$ \begin{array}
-\mu argmax I\left(\vartheta_1\right) \\
-\Sigma = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1} \\
-I\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}
+\left{
+\mu & = argmax I\left(\vartheta_1\right) \\
+\Sigma & = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1} \\
 \end{array}$$
 
-where $$I\left(\vartheta_1\right)$$ is termed the "variational energy" of $$\vartheta_1$$, and derives from the above mean-field approximation.
+where $$I\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}$$ is termed the "variational energy" of $$\vartheta_1$$, and derives from the above mean-field approximation.
 
 Taken together, these approximations are known as the **variational-Laplace approach** to approximate Bayesian inference ([Friston et al. 2007](https://www.ncbi.nlm.nih.gov/pubmed/17055746)).
 
