@@ -40,8 +40,8 @@ $$ q(\vartheta_1) \approx N\left(\mu,\Sigma\right)$$
 
 such that:
 
-$$ \begin{array}
-\left{
+$$ \left{
+\begin{array}
 \mu & = argmax I\left(\vartheta_1\right) \\
 \Sigma & = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1} \\
 \end{array}$$
