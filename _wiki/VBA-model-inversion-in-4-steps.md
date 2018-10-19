@@ -15,7 +15,7 @@ In brief, in the aim of performing a model-based data analysis using VBA:
 
 # Step 1: Defining observation/evolution functions
 
-Generative models are defined in terms of **evolution and observation functions**. The VBA toolbox already contains a library of such functions (for models of behavioural and/or physiological responses). In case one may want to use VBA on one's in-house model, one has to write these evolution/observation functions, in compliance with the following I/O:
+Generative models are defined in terms of **evolution and observation functions**. The VBA toolbox already contains a library of such functions (for models of behavioural and/or physiological responses). In case one may want to use VBA on one's in-house model, one has to write these evolution/observation functions, in compliance with the following i/o:
 
 ```matlab
 z = function_name(x_t, P, u_t, in) ;
@@ -27,9 +27,19 @@ z = function_name(x_t, P, u_t, in) ;
 - `in` : may contain any extra relevant information (arbitrary)
 - `z`: the predicted state (evolution function) or data (observation function).
 
-> The definition of hidden states ($$x$$), parameters ($$\theta$$ and $$\phi$$), hyperparameters ($$\sigma$$ and $$\alpha$$) and inputs ($$u$$), as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
+The definition of hidden states ($$x$$), parameters ($$\theta$$ and $$\phi$$), hyperparameters ($$\sigma$$ and $$\alpha$$) and inputs ($$u$$), as well as their role in the model, are given [here]({{ site.baseurl }}/wiki/Structure-of-VBA's-generative-model).
 
-Note that, except the `in` entry of evolution/observation functions (which can be anything), all other i/o variables should be **column vectors**. And the dimension of these vectors should correspond to those given in the `dim` structure (see below)!
+Note that, except the `in` input to evolution/observation functions (which can be anything), all other i/o variables should be **column vectors**. And the dimension of these vectors should correspond to those given in the `dim` structure (see below)!
+
+> In fact, you can also specify the gradients of evolution/observation functions w.r.t states and paraemters as two additional (optional) output variables. For example:
+```matlab
+function [g,dgdx,dgdP] = g_dummy(x,P,u,in)
+g = x.*phi.*u; % "minimal" output
+dgdx = phi.*u; % gradient wrt states (x)
+dgdP = x.*u; % gradient wrt parameters (P)
+end
+```
+
 
 # Step 2 : Setting model inversion options
 
