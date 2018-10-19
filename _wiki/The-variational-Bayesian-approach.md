@@ -36,14 +36,11 @@ where $$K$$ is a normalization constant and we have used a bi-partition of the p
 
 In addition to the mean-field trick, VBA relies upon a further parametric approximation, which essentially consists in summarizing the marginal posterior by their two first-order moments (mean and variance). This effectively operates a local Gaussian approximation to the marginal posterior densities:
 
-$$\left{ $$
+$$ q(\vartheta_1) \approx N\left(\mu,\Sigma\right)$$
 
+such that:
 
-blabla
-
-$$ q(\vartheta_1) \approx N\left(\mu,\Sigma\right) : 
-\left{
-\begin{array}
+$$ \begin{array}
 \mu argmax I\left(\vartheta_1\right) \\
 \Sigma = \left[\frac{dI^2}{d\vartheta_1^2}\right]^{-1} \\
 I\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}
