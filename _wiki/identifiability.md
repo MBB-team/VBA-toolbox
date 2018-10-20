@@ -5,12 +5,14 @@ title: "Model identifiability and confusion analyses"
 {:toc}
 
 
+From a statistical perspective, model-based data analysis reduces to either estimating unknown model parameters or comparing candidate models (given experimental data). However, such analyses may not always be accurate. Below we highlight numerical analyses that can be performed to address the question of whether parameter estimation and/or model selection are indeed reliable, under a given set of experimental constraints (cf. design, data quality, etc...). 
+
  
 ## Simulation-recovery analysis
 
 Model *identifiability* analysis aims at answering a central question: can parameters be identified from observed data? The answer to this question is not trivial. First of all, it typically depends upon the experimental design. This implies that, ideally, one should make sure the design is compatible with the ensuing model-based data analysis. Second, it depends upon the signal-to-noise ratio. This is because noise may either mask informative variations in the data, or be confused with data features that would otherwise be caused by the model. Third, it depends upon the generative model. For example, two parameters may have a similar impact on the data. This would cause some identifiability issue...
 
-This is why performing an identifiability analysis is alsways a healthy counterpart to any model-based data analysis. In what follows, we describe what we call a **simulation-recovery** analysis, which is one out of many ways for assessing model identifiability:
+This is why performing an identifiability analysis is always a healthy counterpart to any model-based data analysis. In what follows, we sketch what we call a **simulation-recovery** analysis, which is one out of many ways for assessing model identifiability:
 
 ```
 1) for i=1:N (Monte-Carlo simulations)
