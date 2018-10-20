@@ -65,11 +65,13 @@ end
 zY = zscore(Y);
 zX = zscore(X);
 [pv,stat,df,all] = GLM_contrast(zX,zY,eye(6),'F',1);
-b = all.b; % 6x6 matrix of impact of simulated parameters on estimated parameters
+b = all.b; % regression coefficients
+R = all.R2; % amount of explained variance
 figure,imagesc(b)
 ```
 
-This code can easily be adapted to any model.
+Any non-diagonal element in the matrix of regression coefficients signals a potential non-identifiability issue between the corresponding parameters. Note that the total amount of variance explained by the simulated parameters is also of interest. This is because a low amount of explained variance means that the identifiability of the corresponding parameter depends upon specific combinations of other parameters (high-order interactions). This may arise in the context of strong nonlinearities in the generative model...  
+
 
 > TIP: Here, the simulated parameters were sampled under the prior distributions that were used for model inversion. Alternatively, one can sample them under their empirical distribution (this can be done after the data analysis has been performed).   
 
@@ -91,6 +93,6 @@ Recall that a given generative model is specified in terms of observation/evolut
 2) confusion matrix = frequency with which each candidate model is selected (for each simulated model)
 ```
 
-Any non-diagonal element in the **confusion matrix** signals a potential confusion between the selected model and the true (hidden) model...
+Here again, any non-diagonal element in the **confusion matrix** signals a potential confusion between the selected model and the true (hidden) model...
 
  
