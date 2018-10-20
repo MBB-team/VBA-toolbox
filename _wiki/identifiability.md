@@ -87,7 +87,7 @@ Recall that a given generative model is specified in terms of observation/evolut
           for im=1:M [loop over estimated models]
               invert model 'im' on simulated data
           end
-          perform bayesian model selection (given data simulated under model 'sm')
+          perform bayesian model selection
        end
    end
 2) confusion matrix = frequency with which each candidate model is selected (for each simulated model)
