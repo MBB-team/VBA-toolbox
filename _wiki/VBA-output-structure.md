@@ -70,12 +70,12 @@ where `out.diagnostics.LLH0` is the evidence for the "null" (i.e. a model that a
   - when dealing with categorical (binary) data, VBA also outputs the classification accuracy, i.e. the percentage of correct classifications (see `out.fit.acc`), as well as the so-called ["balanced classification accuracy"](http://www.sciencedirect.com/science/article/pii/S1053811913002371) (see `out.fit.bacc`). 
 
 > **TIP**: here AIC and BIC scores are defined as the log-likelihood, minus a model complexity penalty term (typically related to the number of unknown model variables). This means that for all model quality metrics, the higher the score, the better the model.
-All these are given under the `summary` tab (see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)). Note that all goodness-of-fit metrics can be re-derived using the function `VBA_fit.m` (which simply requires both `posterior` and `out` structures).
+All these are given under the `summary` tab of [VBA's graphical output]({{ site.baseurl }}/wiki/VBA-graphical-output). Note that all goodness-of-fit metrics can be re-derived using the function `VBA_fit.m` (which simply requires both `posterior` and `out` structures).
 
 # Inversion diagnostics
 
 Typically, four types of inversion diagnostics can be eyeballed in a systematic manner (
-they are displayed under the 'diagnostics' tab; see [this page]({{ site.baseurl }}/wiki/VBA-graphical-output)):
+they are displayed under the 'diagnostics' tabof [VBA's graphical output]({{ site.baseurl }}/wiki/VBA-graphical-output)):
 
 - **model parameters' posterior correlation matrix**: `out.diagnostics.C`. This matrix is useful for checking potential [non-identifiability](https://en.wikipedia.org/wiki/Identifiability) issues, which would express themselves as strong posterior correlations between model parameters.
 Note: this posterior correlation matrix $$C$$ concatenates all 'static' parameters, i.e.:
