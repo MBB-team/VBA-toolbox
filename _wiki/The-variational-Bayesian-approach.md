@@ -34,7 +34,7 @@ where $$K$$ is a normalization constant and we have used a bi-partition of the p
 
 ## Laplace's approximation
 
-In addition to the mean-field trick, VBA relies upon a further parametric approximation, which essentially consists in summarizing the marginal posteriors in terms of their two first-order moments (mean and variance). This effectively operates a local Gaussian approximation to the marginal posterior densities:
+In addition to the mean-field trick, VBA relies upon a further parametric approximation, which essentially consists in summarizing the marginal posterior distributions in terms of their two first-order moments (mean and variance). This effectively operates a local Gaussian approximation to the marginal posterior densities:
 
 $$ q(\vartheta_1) \approx N\left(\mu_1,\Sigma_1\right)$$
 
