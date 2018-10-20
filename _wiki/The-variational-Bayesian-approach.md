@@ -47,9 +47,7 @@ q\mu_1 = \textrm{arg }\underset{\vartheta_1}{\textrm{max}} I_1\left(\vartheta_1\
 \end{array}
 $$
 
-Here, $$I_1\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}$$ is termed the "variational energy" of $$\vartheta_1$$ (it derives from the above mean-field approximation). Typically, any [optimization](https://en.wikipedia.org/wiki/Mathematical_optimization) scheme can be used to find the first-order moments of the marginal densities (VBA uses a modified [Gauss-Newton](https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm) scheme). 
-
-Taken together, these approximations are known as the **variational-Laplace approach** to approximate Bayesian inference ([Friston et al. 2007](https://www.ncbi.nlm.nih.gov/pubmed/17055746)).
+Here, $$I_1\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}$$ is termed the "variational energy" of $$\vartheta_1$$ (it derives from the above mean-field approximation). Typically, any [optimization](https://en.wikipedia.org/wiki/Mathematical_optimization) scheme can be used to find the first-order moments of the marginal densities (VBA uses a modified [Gauss-Newton](https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm) scheme). The second-order moments are then obtained by evaluating the local curvature of variational energies. Taken together, mean-field and Laplace approximations are known as the **variational-Laplace approach** to approximate Bayesian inference ([Friston et al. 2007](https://www.ncbi.nlm.nih.gov/pubmed/17055746)).
 
 ![]({{ site.baseurl }}/images/wiki/VBA/vb1.jpg)
 
