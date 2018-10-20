@@ -24,24 +24,11 @@ This is why performing an identifiability analysis is alsways a healthy counterp
 
 Of particular interest here is the relative amount of variance in each estimated parameter that can be explained by variations in simulated parameters.
 
-Below, we provide concret example on a modified Q-learning model:
+Below, we provide concrete example on a modified Q-learning model, which has 4 parameters:
+- 2 observation parameters (inverse temperature and bias)
+- 2 evolution parameters (learning rate and sensitivity to reward).
 
 ```
-% demo for a (typical) simulation-recovery analysis.
-% This demo can be adapted when one wants to assess the identifiability of
-% one's generative model. Here, we use an augmented Q-learning model, which
-% has 4 parameters:
-% - 2 observation parameters (inverse temperature and bias)
-% - 2 evolution parameters (learning rate and sensitivity to reward).
-% This demo first performs Monte-Carlo simulations (simulate data and
-% invert model), and then regress the estimated parameters on simulated
-% parameters.
-
-
-clear all
-close all
-clc
-
 % set generative model
 nt = 50; % number of trials in the learning task
 f_fname = @f_Qlearn3; % evolution function (Q-learning)
@@ -50,8 +37,7 @@ options.binomial = 1;
 options.skipf = zeros(1,nt);
 options.skipf(1) = 1; % apply identity mapping from x0 to x1.
 
-
-% set feedback structure
+% set feedback structure (cf. Q-learning model)
 fb.inH.frame = 'gain'; % could be 'loss'
 fb.inH.Rsize = 1; % feedback magnitude
 fb.inH.f = [0.8;0.2]; % action-specific gain frequency
@@ -59,32 +45,31 @@ fb.h_fname = @h_gainsAndLosses;
 fb.indy = 1;
 fb.indfb = 2;
 
-
 % Monte-Carlo simulations
 Nmc = 5e2; % number of Monte-Carlo simulations
-Y = NaN(Nmc,6);
-X = randn(Nmc,6);
-X = VBA_orth(X,0);
+Y = NaN(Nmc,6); % this will be used to store estimated params
+X = X(Nmc,6);  % this will be used to store simulated params
 for imc = 1:Nmc
     % simulate data
-    theta = X(imc,1:2)';
-    phi = X(imc,3:4)';
-    x0 = X(imc,5:6)';
+    theta = randn(2,1);
+    phi = randn(2,1);
+    x0 = rand(2,1);
     [y,x,x0,eta,e,u] = simulateNLSS_fb(nt,f_fname,g_fname,theta,phi,zeros(2,nt),Inf,Inf,options,x0,fb);
     % invert model
     options.DisplayWin = 0;
     dim = struct('n',2,'n_theta',2,'n_phi',2);
     [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-    % 3- store simulated parameters
-    Y(imc,:) = [posterior.muTheta',posterior.muPhi',posterior.muX0'];
+    % 3- store simulated and estimated parameters
+    Y(imc,:) = [posterior.muPhi',posterior.muTheta',posterior.muX0'];
+    X(imc,:) = [phi',theta',x0'];
 end
 
 % regress estimated params on simulated params
 zY = zscore(Y);
 zX = zscore(X);
 [pv,stat,df,all] = GLM_contrast(zX,zY,eye(6),'F',1);
-b = all.b;
-s = all.pv<(0.05./size(Y,2).^2); % corrected for multiple comp
+b = all.b; % 6x6 matrix of impact of simulated parameters on estimated parameters
+figure,imagesc(b)
 ```
 
 
