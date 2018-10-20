@@ -106,8 +106,8 @@ effectively defines a $$N\left( 0,I \right)$$ i.i.d. (zero-mean, unit-variance) 
 > For example, setting:
 >
 >```matlab
-priors.a_alpha = 1; % prior shape param (precision) 
-priors.b_alpha = 1; % prior rate param (precision)
+priors.a_alpha = 1; % prior shape param (state noise precision) 
+priors.b_alpha = 1; % prior rate param (state noise precision)
 ```
 effectively assumes that state noise precision $$\alpha$$ is a unit-mean and unit-variance [Gamma variable](https://en.wikipedia.org/wiki/Gamma_distribution). This allows non-zero state noise to enter and perturb the hidden states' dynamics...
 
