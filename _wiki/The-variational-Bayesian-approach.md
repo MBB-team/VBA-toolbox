@@ -34,7 +34,7 @@ where $$K$$ is a normalization constant and we have used a bi-partition of the p
 
 ## Laplace's approximation
 
-In addition to the mean-field trick, VBA relies upon a further parametric approximation, which essentially consists in summarizing the marginal posterior by their two first-order moments (mean and variance). This effectively operates a local Gaussian approximation to the marginal posterior densities:
+In addition to the mean-field trick, VBA relies upon a further parametric approximation, which essentially consists in summarizing the marginal posteriors in terms of their two first-order moments (mean and variance). This effectively operates a local Gaussian approximation to the marginal posterior densities:
 
 $$ q(\vartheta_1) \approx N\left(\mu_1,\Sigma_1\right)$$
 
@@ -50,7 +50,7 @@ $$
 Here, $$I_1\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mid \vartheta,m)\rangle_{q(\vartheta_2)}$$ is termed the "variational energy" of $$\vartheta_1$$ (it derives from the above mean-field approximation). Typically, any [optimization](https://en.wikipedia.org/wiki/Mathematical_optimization) scheme can be used to find the first-order moments of the marginal densities (VBA uses a modified [Gauss-Newton](https://en.wikipedia.org/wiki/Gauss%E2%80%93Newton_algorithm) scheme). The second-order moments are then obtained by evaluating the local curvature of variational energies. Taken together, mean-field and Laplace approximations are known as the **variational-Laplace approach** to approximate Bayesian inference ([Friston et al. 2007](https://www.ncbi.nlm.nih.gov/pubmed/17055746)).
 
 ![]({{ site.baseurl }}/images/wiki/VBA/vb1.jpg)
->Here, the bidimensional landscape is the (unknown) true joint posterior distribution over both model parameters. The mean-field approximation essentially summarizes this landscape in terms of the product of the their respective marginal distributions (cf. black plain lines). Under the laplace approximation, these marginal distributions further simplify into Gaussian densities (cf. red dotted lines).
+>In this mock example, the bidimensional landscape is the (unknown) true joint posterior distribution over both model parameters. The mean-field approximation essentially summarizes this landscape in terms of the product of the respective marginal distributions (cf. black plain lines). Under the Laplace approximation, these marginal distributions further simplify into Gaussian densities (cf. red dotted lines).
 
 The statistical properties of the variational-Laplace approach (e.g., in terms of the quality of the ensuing approximation), for the class of models considered in VBA, were first described in [Daunizeau et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0167278909002425). Additional mathematical details regarding the variational-Laplace approach can be found in [this technical note](https://arxiv.org/abs/1703.02089)
 
