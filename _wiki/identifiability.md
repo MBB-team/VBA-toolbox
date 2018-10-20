@@ -5,7 +5,7 @@ title: "Model identifiability and confusion analyses"
 {:toc}
 
 
-
+ 
 ## Simulation-recovery analysis
 
 Model *identifiability* analysis aims at answering a central question: can parameters be identified from observed data? The answer to this question is not trivial. First of all, it typically depends upon the experimental design. This implies that, ideally, one should make sure the design is compatible with the ensuing model-based data analysis. Second, it depends upon the signal-to-noise ratio. This is because noise may either mask informative variations in the data, or be confused with data features that would otherwise be caused by the model. Third, it depends upon the generative model. For example, two parameters may have a similar impact on the data. This would cause some identifiability issue...
