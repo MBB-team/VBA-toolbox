@@ -63,7 +63,7 @@ dim.n_phi   = 3 ; % number of observation parameters
 ```
 tells VBA that there are 1 hidden state, 2 evolution parameters and 3 observation parameters.
 
-> **TIP:** The `dim` structure has to match the dimensions of the inputs (more precisely: hidden states and parameters) to the evolution and observation functions. In case you don't use VBA's default priors, they also have to match with the dimensions of your priors...
+> **TIP:** The `dim` structure has to match the dimensions of the inputs (more precisely: hidden states and parameters) to the evolution and observation functions. In case you don't use VBA's default priors, they also have to match the dimensions of your priors...
 
 - Other **options**
 
