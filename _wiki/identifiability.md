@@ -24,7 +24,7 @@ This is why performing an identifiability analysis is alsways a healthy counterp
 Of particular interest here is the relative amount of variance in each estimated parameter that can be explained by variations in simulated parameters. In fact, any non-diagonal element in the matrix of regression coefficients signals a potential non-identifiability issue between the corresponding parameters. Note that the total amount of variance explained by the simulated parameters is also of interest. This is because a low amount of explained variance means that the identifiability of the corresponding parameter depends upon specific combinations of other parameters (high-order interactions). This may arise in the context of strong nonlinearities in the generative model...  
 
 
-> TIP: Here, the simulated parameters were sampled under the prior distributions that were used for model inversion. Alternatively, one can sample them under their empirical distribution (this can be done after the data analysis has been performed).   
+> TIP: The simulated parameters can be sampled under the prior distributions that are used for model inversion. Alternatively, one can sample them under their empirical distribution (this can be done after the data analysis has been performed).   
 
 
 ## Model confusion analysis
