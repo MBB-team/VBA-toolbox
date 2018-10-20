@@ -148,5 +148,5 @@ Its output arguments are:
 
 - `out`: a matlab structure that summarizes some diagnostics of the model VBA inversion. NB: the (lower bound to) the model evidence is stored in `out.F`.
 
-A simple and fast demonstration of a VBA model inversion (for a Q-learning model) is described [here]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model). A description of VBA's graphical output is described [here]({{ site.baseurl }}/wiki/VBA-graphical-output).
+> A simple and fast demonstration of a VBA model inversion (for a Q-learning model) is described [here]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model). A description of VBA's graphical output is described [here]({{ site.baseurl }}/wiki/VBA-graphical-output).
 
