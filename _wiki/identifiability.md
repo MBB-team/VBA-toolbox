@@ -21,56 +21,7 @@ This is why performing an identifiability analysis is alsways a healthy counterp
 2) regress the estimated parameters on simulated parameters
 ```
 
-Of particular interest here is the relative amount of variance in each estimated parameter that can be explained by variations in simulated parameters.
-
-Below, we provide concrete example on a modified Q-learning model, which has 2 observation parameters (inverse temperature and bias), 2 evolution parameters (learning rate and sensitivity to reward) and 2 hidden states (the values of each option).
-
-```
-% set generative model
-nt = 50; % number of trials in the learning task
-f_fname = @f_Qlearn3; % evolution function (Q-learning)
-g_fname = @g_softmax; % observation function (softmax mapping)
-options.binomial = 1;
-options.skipf = zeros(1,nt);
-options.skipf(1) = 1; % apply identity mapping from x0 to x1.
-
-% set feedback structure (cf. Q-learning model)
-fb.inH.frame = 'gain'; % could be 'loss'
-fb.inH.Rsize = 1; % feedback magnitude
-fb.inH.f = [0.8;0.2]; % action-specific gain frequency
-fb.h_fname = @h_gainsAndLosses;
-fb.indy = 1;
-fb.indfb = 2;
-
-% Monte-Carlo simulations
-Nmc = 5e2; % number of Monte-Carlo simulations
-Y = NaN(Nmc,6); % this will be used to store estimated params
-X = X(Nmc,6);  % this will be used to store simulated params
-for imc = 1:Nmc
-    % simulate data
-    theta = randn(2,1);
-    phi = randn(2,1);
-    x0 = rand(2,1);
-    [y,x,x0,eta,e,u] = simulateNLSS_fb(nt,f_fname,g_fname,theta,phi,zeros(2,nt),Inf,Inf,options,x0,fb);
-    % invert model on simulated data
-    options.DisplayWin = 0;
-    dim = struct('n',2,'n_theta',2,'n_phi',2);
-    [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-    % store simulated and estimated parameters
-    Y(imc,:) = [posterior.muPhi',posterior.muTheta',posterior.muX0'];
-    X(imc,:) = [phi',theta',x0'];
-end
-
-% regress estimated params on simulated params
-zY = zscore(Y);
-zX = zscore(X);
-[pv,stat,df,all] = GLM_contrast(zX,zY,eye(6),'F',1);
-b = all.b; % regression coefficients
-R = all.R2; % amount of explained variance
-figure,imagesc(b)
-```
-
-Any non-diagonal element in the matrix of regression coefficients signals a potential non-identifiability issue between the corresponding parameters. Note that the total amount of variance explained by the simulated parameters is also of interest. This is because a low amount of explained variance means that the identifiability of the corresponding parameter depends upon specific combinations of other parameters (high-order interactions). This may arise in the context of strong nonlinearities in the generative model...  
+Of particular interest here is the relative amount of variance in each estimated parameter that can be explained by variations in simulated parameters. In fact, any non-diagonal element in the matrix of regression coefficients signals a potential non-identifiability issue between the corresponding parameters. Note that the total amount of variance explained by the simulated parameters is also of interest. This is because a low amount of explained variance means that the identifiability of the corresponding parameter depends upon specific combinations of other parameters (high-order interactions). This may arise in the context of strong nonlinearities in the generative model...  
 
 
 > TIP: Here, the simulated parameters were sampled under the prior distributions that were used for model inversion. Alternatively, one can sample them under their empirical distribution (this can be done after the data analysis has been performed).   
