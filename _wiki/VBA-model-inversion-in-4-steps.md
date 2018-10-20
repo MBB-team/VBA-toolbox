@@ -96,8 +96,8 @@ In addition to the evolution and observation functions, specifying the generativ
 If left unspecified, the `priors` structure is filled in with defaults (typically, i.i.d. zero-mean and unit-variance Gaussian densities, except for $$\sigma$$ and $$\alpha$$). For example, setting:
 
 ```matlab
-priors.muPhi    = zeros(dim.n_phi,1) ; % prior mean (vector) on observation parameters
-priors.SigmaPhi = eye(dim.n_phi)     ; % prior covariance (matrix) on observation parameters
+priors.muPhi = zeros(dim.n_phi,1); % prior mean (obs params)
+priors.SigmaPhi = eye(dim.n_phi); % prior covariance (obs params)
 ```
 effectively defines a $$N\left( 0,I \right)$$ i.i.d. (zero-mean, unit-variance) normal density on observation parameters.
 
@@ -106,8 +106,8 @@ effectively defines a $$N\left( 0,I \right)$$ i.i.d. (zero-mean, unit-variance) 
 > For example, setting:
 >
 >```matlab
-priors.a_alpha = 1; % shape parameter of the prior Gamma distribution over state noise's precision 
-priors.b_alpha = 1; % rate parameter of the prior Gamma distribution over state noise's precision
+priors.a_alpha = 1; % prior shape param (precision) 
+priors.b_alpha = 1; % prior rate param (precision)
 ```
 effectively assumes that state noise precision $$\alpha$$ is a unit-mean and unit-variance [Gamma variable](https://en.wikipedia.org/wiki/Gamma_distribution). This allows non-zero state noise to enter and perturb the hidden states' dynamics...
 
