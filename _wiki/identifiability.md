@@ -13,20 +13,17 @@ Model *identifiability* analysis aims at answering a central question: can param
 This is why performing an identifiability analysis is alsways a healthy counterpart to any model-based data analysis. In what follows, we describe what we call a **simulation-recovery** analysis, which is one out of many ways for assessing model identifiability:
 
 ```
-[MONTE-CARLO SIMULATIONS]
-1) for i=1:N (MOnte-Carlo simulations)
+1) for i=1:N (Monte-Carlo simulations)
       sample model parameters under the prior distribution
       simulate data given simulated parameters
-      invert model and store estimated parameters
+      invert model on simulated data and store estimated parameters
    end
 2) regress the estimated parameters on simulated parameters
 ```
 
 Of particular interest here is the relative amount of variance in each estimated parameter that can be explained by variations in simulated parameters.
 
-Below, we provide concrete example on a modified Q-learning model, which has 4 parameters:
-- 2 observation parameters (inverse temperature and bias)
-- 2 evolution parameters (learning rate and sensitivity to reward).
+Below, we provide concrete example on a modified Q-learning model, which has 2 observation parameters (inverse temperature and bias), 2 evolution parameters (learning rate and sensitivity to reward) and 2 hidden states (the values of each option).
 
 ```
 % set generative model
@@ -55,11 +52,11 @@ for imc = 1:Nmc
     phi = randn(2,1);
     x0 = rand(2,1);
     [y,x,x0,eta,e,u] = simulateNLSS_fb(nt,f_fname,g_fname,theta,phi,zeros(2,nt),Inf,Inf,options,x0,fb);
-    % invert model
+    % invert model on simulated data
     options.DisplayWin = 0;
     dim = struct('n',2,'n_theta',2,'n_phi',2);
     [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
-    % 3- store simulated and estimated parameters
+    % store simulated and estimated parameters
     Y(imc,:) = [posterior.muPhi',posterior.muTheta',posterior.muX0'];
     X(imc,:) = [phi',theta',x0'];
 end
@@ -72,8 +69,28 @@ b = all.b; % 6x6 matrix of impact of simulated parameters on estimated parameter
 figure,imagesc(b)
 ```
 
+This code can easily be adapted to any model.
+
+> TIP: Here, the simulated parameters were sampled under the prior distributions that were used for model inversion. Alternatively, one can sample them under their empirical distribution (this can be done after the data analysis has been performed).   
 
 
+## Model confusion analysis
 
+Recall that a given generative model is specified in terms of observation/evolution functions, as well as priors on model parameters. Obviously, potential causes of model non-identifiabilty (non-informative design, low signal-to-noise ratio, parameter redundancy, etc...) are also issues for model selection. In what follows, we describe a simple variant of **confusion** analysis, which aims at assessing whether distinct models may be confused with each other (given the available experimental data):
 
-Recall that a given generative model is specified in terms of observation/evolution functions, as well as priors on model parameters. 
+```
+1) for i=1:N (Monte-Carlo simulations)
+      for sm=1:M [loop over simulated models]
+          simulate data under simulated model 'sm'
+          for im=1:M [loop over estimated models]
+              invert model 'im' on simulated data
+          end
+          perform bayesian model selection (given data simulated under model 'sm')
+       end
+   end
+2) confusion matrix = frequency with which each candidate model is selected (for each simulated model)
+```
+
+Any non-diagonal element in the **confusion matrix** signals a potential confusion between the seelected model and the true (hidden) model...
+
+ 
