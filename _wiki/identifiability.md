@@ -91,6 +91,6 @@ Recall that a given generative model is specified in terms of observation/evolut
 2) confusion matrix = frequency with which each candidate model is selected (for each simulated model)
 ```
 
-Any non-diagonal element in the **confusion matrix** signals a potential confusion between the seelected model and the true (hidden) model...
+Any non-diagonal element in the **confusion matrix** signals a potential confusion between the selected model and the true (hidden) model...
 
  
