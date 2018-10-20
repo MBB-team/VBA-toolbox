@@ -21,6 +21,7 @@ title: "home"
 - [VBA: results and diagnostics](VBA-output-structure)
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
 - [10 simple rules for VBA](10-simple-rules)
+- [Model identifiability analysis](identifiability)
 
 
 ## Advanced VBA tricks
