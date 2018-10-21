@@ -48,4 +48,4 @@ Recall that a given generative model is specified in terms of observation/evolut
 
 Here again, any non-diagonal element in the **confusion matrix** signals a potential confusion between the selected model and the true (hidden) model...
 
- > TIP: The accuracy of such Monte-Carlo simulations depend upon the number `N` of simulations performed. If time permits, we suggest to set `N` at least at two orders of magnitude greater than the number of parameters (identifiability analyses) or models (confusion analyses).
+ > TIP: The accuracy of such Monte-Carlo simulations depends upon the number `N` of simulations performed. If time permits, we suggest to set `N` at least at two orders of magnitude greater than the number of parameters (identifiability analyses) or models (confusion analyses).
