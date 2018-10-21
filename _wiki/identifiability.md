@@ -37,8 +37,8 @@ Recall that a given generative model is specified in terms of observation/evolut
 1) for i=1:N (Monte-Carlo simulations)
       for sm=1:M [loop over simulated models]
           simulate data under model "sm"
-          for im=1:M [loop over candidate models]
-              invert model "im" on simulated data
+          for cm=1:M [loop over candidate models]
+              invert model "cm" on simulated data
           end
           perform bayesian model selection
        end
@@ -48,4 +48,4 @@ Recall that a given generative model is specified in terms of observation/evolut
 
 Here again, any non-diagonal element in the **confusion matrix** signals a potential confusion between the selected model and the true (hidden) model...
 
- 
+ > TIP: The accuracy of such Monte-Carlo simulations depend upon the number `N` of simulations performed. If time permits, we suggest to set `N` at least at two orders of magnitude greater than the number of parameters (identifiability analyses) or models (confusion analyses).
