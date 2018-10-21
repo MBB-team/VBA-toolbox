@@ -37,7 +37,7 @@ Recall that a given generative model is specified in terms of observation/evolut
 1) for i=1:N (Monte-Carlo simulations)
       for sm=1:M [loop over simulated models]
           simulate data under model "sm"
-          for im=1:M [loop over estimated models]
+          for im=1:M [loop over candidate models]
               invert model "im" on simulated data
           end
           perform bayesian model selection
