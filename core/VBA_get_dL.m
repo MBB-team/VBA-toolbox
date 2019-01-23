@@ -47,7 +47,7 @@ switch type
         vy = gx.*(1-gx) ;
         ddydphi = dG_dPhi*(dy./vy);
         temp = y./(gx).^2 - (y-1)./(1-gx).^2;
-        d2gdx2 = dG_dPhi*diag(temp)*dG_dPhi';    
+        d2gdx2 = VBA_weighted_inner_product(dG_dPhi, [], temp);
         logL = y'*log(gx) + (1-y)'*log(1-gx);
         dy2 = sum(temp);
         
@@ -55,7 +55,7 @@ switch type
         gx = VBA_finiteBinomial (gx);
         vy = gx.*(1-gx) ;
         ddydphi = dG_dPhi*(y./gx);
-        d2gdx2 = dG_dPhi*diag(y./gx.^2)*dG_dPhi';
+        d2gdx2 = VBA_weighted_inner_product(dG_dPhi, [], y./gx.^2);
         dy2 = sum(y./(gx).^2);
         logL = log(gx)'*y;
    
