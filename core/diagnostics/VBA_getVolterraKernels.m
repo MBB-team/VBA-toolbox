@@ -81,7 +81,7 @@ if out.options.verbose
 end
 for k = 1:p
     y = out.y(k,:)';
-    if nanvar2(y)>eps % only if var(y)>0
+    if VBA_nanvar(y)>eps % only if var(y)>0
         
         % find source tpye
         sInd = cellfun(@(x) ismember(k,x), {out.options.sources.out});
