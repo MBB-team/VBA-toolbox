@@ -81,7 +81,7 @@ if out.options.verbose
 end
 for k = 1:p
     y = out.y(k,:)';
-    if var(y)>eps % only if var(y)>0
+    if nanvar2(y)>eps % only if var(y)>0
         
         % find source tpye
         sInd = cellfun(@(x) ismember(k,x), {out.options.sources.out});
@@ -96,7 +96,7 @@ for k = 1:p
                 opt.sources.type = 1;
         end
         
-        
+        opt.isYout = isnan(y);
         [pk,ok] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,opt);
         kernels.y.R2(k) = ok.fit.R2;
         if out.options.verbose
