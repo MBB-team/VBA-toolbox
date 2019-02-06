@@ -19,5 +19,5 @@ if nargin < 2
 end
 
 % bound probabilities
-x(x <= lim) = lim;
-x(x >= 1 - lim) = 1 - lim;
+x = max (x, lim);
+x = min (x, 1 - lim);
