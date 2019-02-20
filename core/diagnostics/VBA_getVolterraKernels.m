@@ -81,7 +81,9 @@ if out.options.verbose
 end
 for k = 1:p
     y = out.y(k,:)';
-    if var(y)>eps % only if var(y)>0
+    isYout = out.options.isYout(k,:)';
+    vy = var(y(isYout==0));
+    if vy > eps % only if var(y)>0
         
         % find source tpye
         sInd = cellfun(@(x) ismember(k,x), {out.options.sources.out});
@@ -90,12 +92,13 @@ for k = 1:p
                 g_fname = @g_conv0;
                 opt.sources.type = 0;
                 opt.priors.a_sigma = 1;
-                opt.priors.b_sigma = var(y);
+                opt.priors.b_sigma = vy;
             case {1,2}
                 g_fname = @g_convSig;
                 opt.sources.type = 1;
         end
         
+        opt.isYout = isYout;
         
         [pk,ok] = VBA_NLStateSpaceModel(y,[],[],g_fname,dim,opt);
         kernels.y.R2(k) = ok.fit.R2;
@@ -109,7 +112,7 @@ for k = 1:p
                 drawnow
             end
         end
-        for i=1:nu;
+        for i=1:nu
             ind = (i-1)*nt+1:i*nt;
             kernels.y.m(k,:,i) = pk.muPhi(ind)';
             kernels.y.v(k,:,i) = diag(pk.SigmaPhi(ind,ind))';
@@ -139,7 +142,7 @@ for k = 1:p
                 drawnow
             end
         end
-        for i=1:nu;
+        for i=1:nu
             ind = (i-1)*nt+1:i*nt;
             kernels.g.m(k,:,i) = pk.muPhi(ind)';
             kernels.g.v(k,:,i) = diag(pk.SigmaPhi(ind,ind))';
@@ -178,7 +181,7 @@ for k = 1:n
                 drawnow
             end
         end
-        for i=1:nu;
+        for i=1:nu
             ind = (i-1)*nt+1:i*nt;
             kernels.x.m(k,:,i) = pk.muPhi(ind)';
             kernels.x.v(k,:,i) = diag(pk.SigmaPhi(ind,ind))';
