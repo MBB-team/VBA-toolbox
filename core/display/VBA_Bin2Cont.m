@@ -14,6 +14,9 @@ function [stacky,stdy,gridg,stdg] = VBA_Bin2Cont(gx,y,maxn)
 %   - gridg/stdy: the average (standard deviation, resp.) of conditional
 %   likelihoods within each partition cell
 
+y = VBA_vec(y(~isnan(y)));
+gx = VBA_vec(gx(~isnan(gx)));
+
 if isempty(gx)
     stacky = [];
     stdy = [];
@@ -22,8 +25,6 @@ if isempty(gx)
     return
 end
 
-y = y(:);
-gx = gx(:);
 ny = numel(y);
 try;maxn;catch;maxn=min([floor(ny/2),8]);end
 ne = min([maxn,ny]);
