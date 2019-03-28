@@ -43,11 +43,13 @@ S = VBA_vec (S);
 if ~ inverse
     assert( all (VBA_vec (ismember (x, S))), '*** VBA_indicator: values cannot be outside S') 
 else
-    assert(VBA_isBinary (x), '*** VBA_indicator: indicator vector should be binary');  
+    assert(VBA_isBinary (x(~isnan(x))), '*** VBA_indicator: indicator vector should be binary');  
 end
 
 % apply mapping
 % =========================================================================
+
+
 
 if ~ inverse
 % value -> indicator
@@ -65,11 +67,19 @@ else
 % indicator -> value
 % -------------------------------------------------------------------------
     x = mat2cell(x, size(x,1), ones(1, size(x,2)));
-    v = cellfun(@(xt) S(xt == 1), x, 'UniformOutput', false);
+    v = cellfun(@(xt) findInS (xt, S), x, 'UniformOutput', false);
 
     % if number of values are consistent, transform to matrix
     try
         v = cat(2, v{:});
     end 
 end  
+end
+
+function idx = findInS (x, S)
+    if any (isnan (x))
+    	idx = nan;
+    else
+        idx = S(logical (x));
+    end
 end
