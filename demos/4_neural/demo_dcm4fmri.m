@@ -63,7 +63,6 @@ options = prepare_fullDCM(A,B,C,D,TR,microDT,homogeneous);
 options.priors = getPriors(nreg,n_t,options,reduced_f,stochastic);
 options.microU = 0;
 options.backwardLag = ceil(16/TR);  % 16 secs effective backward lag
-options.GnFigs = 0;
 options.inF.linearized = lin;
 dim.n_theta = options.inF.ind5(end);
 if options.inG.homogeneous

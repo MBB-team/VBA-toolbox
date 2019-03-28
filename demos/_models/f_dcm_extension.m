@@ -63,7 +63,7 @@ hC = inF.hC;
 indhC = inF.indhC;
 if ~isempty(indhC)
     hC(hC~=0) = Theta(indhC);
-    dfdp(indhC,:) = inF.dhC'*easykron(ut,n);
+    dfdp(indhC,:) = inF.dhC'*easykron(ut,nu,nr);
 end
 
 %== D

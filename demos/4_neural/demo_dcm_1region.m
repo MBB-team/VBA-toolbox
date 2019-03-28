@@ -54,7 +54,6 @@ dim.n               = 5*nreg;
 options.priors = getPriors(nreg,n_t,options,0,stochastic);
 options.microU = 0;
 options.backwardLag = ceil(16/TR);  % 16 secs effective backward lag
-options.GnFigs = 0;
 options.inF.linearized = lin;
 
 %-----------------------------------------------------------
