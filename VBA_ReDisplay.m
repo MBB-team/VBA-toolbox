@@ -189,26 +189,9 @@ function myDeterministic(hfig)
     hfig = options.display.hfp;
     drawnow
 
-    % Display data and hidden states (if any)
+    % Display 
     if options.dim.n > 0
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
-    end
-    
-    % Display precision hyperparameters
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-    if ~options.OnLine && any([options.sources.type]==0) 
-        xlabel(options.display.ha(6),' ')
-        if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
-            xlabel(options.display.ha(8),' ')
-        end
-    end
-    
-    % Display parameters
-    if dim.n_theta >= 1
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
-    end
-    if dim.n_phi >= 1
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
+        VBA_updateDisplay(posterior,suffStat,options,y,0)
     end
     
     try, VBA_getSubplots (); end
@@ -261,28 +244,9 @@ function myPriors(hfig)
     delete(options.display.hm)
     delete(options.display.ho)
  
-    % Display data and hidden states (if any)
-    if options.dim.n > 0
-        options.OnLine = 0;
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
-    end
-
-    % Display precision hyperparameters
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-    if ~options.OnLine && any([options.sources.type]==0) 
-        xlabel(options.display.ha(6),' ') ;
-        if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
-            xlabel(options.display.ha(8),' ') ;
-        end
-    end
-
-    % Display parameters
-    if dim.n_theta >= 1
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
-    end
-    if dim.n_phi >= 1
-        VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
-    end
+    % Display 
+    options.OnLine = 0;
+    VBA_updateDisplay(posterior,suffStat,options,y,0)
 
     try, VBA_getSubplots (); end
 
@@ -594,21 +558,10 @@ function myVB(hfig)
   
     hfig = options.display.hfp;
     drawnow
-    % Display data and hidden states (if any)
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
-
-    % Display precision hyperparameters
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-    if ~options.OnLine && sum([options.sources(:).type]==0) > 0
-        xlabel(options.display.ha(6),' ')
-        if numel(options.display.ha)>7 && ishghandle(options.display.ha(8))
-            xlabel(options.display.ha(8),' ')
-        end
-    end
-    % Display parameters
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
     
+    % Display 
+    VBA_updateDisplay(posterior,suffStat,options,y,0)
+
     try VBA_getSubplots (); end
 
 
