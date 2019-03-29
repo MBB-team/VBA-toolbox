@@ -349,7 +349,7 @@ while ~stop
                 [options] = VBA_initDisplay(options);
                 continue;
             otherwise
-                throw err;
+                rethrow(err);
         end
     end
 end

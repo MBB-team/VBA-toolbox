@@ -101,7 +101,7 @@ if ismember ('X', flag) && options.dim.n > 0
     vx0 = VBA_getVar (posterior.SigmaX0);
     if options.updateX0
         dx0 = suffStat.dx0;
-    elseif isequal(it,0)
+    else
         dx0 = - posterior.muX0;
     end
     plotUncertainTimeSeries(- dx0,vx0,1,options.display.ha(4));
