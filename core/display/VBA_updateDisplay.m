@@ -1,6 +1,6 @@
 function VBA_updateDisplay(posterior,suffStat,options,y,it,flag)
 % updates display of sufficient statistics
-% function VBA_updateDisplay(F,posterior,suffStat,options,y,it,display,flag)
+% function VBA_updateDisplay(F,posterior,suffStat,options,y,it,options,flag)
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
 
@@ -42,31 +42,26 @@ if isequal (options.g_fname, @VBA_odeLim)
     return
 end
 
-
-% shortcuts
-display = options.display;
-F = real(suffStat.F);
-
-% Check window elements
+% get user actions
 % =========================================================================
 
 % check whether 'pause' button is toggled on
 VBA_pause(options);
 
-% replace source selector callback if needed
-ud = get(getPanel(display.hfp),'userdata') ;
+% replace source selector callback
+ud = get(getPanel(options.display.hfp),'userdata') ;
 
     function update_plot ()
-        cla(display.ha(1));
-        cla(display.ha(2));
+        cla(options.display.ha(1));
+        cla(options.display.ha(2));
         VBA_updateDisplay(posterior,suffStat,options,y,0,{});
     end
 
 ud.update_plot = @update_plot;
-set(getPanel(display.hfp),'userdata',ud) ;
+set(getPanel(options.display.hfp),'userdata',ud) ;
 
+% get selected source
 ud = VBA_check_struct(ud,'currentSource', 1 );
-
 currentSource = ud.currentSource;
 
 % =========================================================================
@@ -98,9 +93,9 @@ if ismember ('X', flag) && options.dim.n > 0
         ind = 1 : size (mux, 1);
     end
     % update middle-left subplot: hidden states
-    plotUncertainTimeSeries(mux,vx,1:T,display.ha(3),ind);
+    plotUncertainTimeSeries(mux,vx,1:T,options.display.ha(3),ind);
     % ensure proper scaling of the axis
-    set(display.ha(3),'XLim',[0.5, T+0.5]);
+    set(options.display.ha(3),'XLim',[0.5, T+0.5]);
     
     % update middle-right subplot: initial conditions
     vx0 = VBA_getVar (posterior.SigmaX0);
@@ -109,7 +104,7 @@ if ismember ('X', flag) && options.dim.n > 0
     elseif isequal(it,0)
         dx0 = - posterior.muX0;
     end
-    plotUncertainTimeSeries(- dx0,vx0,1,display.ha(4));
+    plotUncertainTimeSeries(- dx0,vx0,1,options.display.ha(4));
 end
 
 % Observation parameters
@@ -125,7 +120,7 @@ if ismember ('phi', flag) && options.dim.n_phi > 0
     vphi = VBA_getVar (posterior.SigmaPhi, indEnd);
     
     % update middle-left subplot: observation parameters
-    plotUncertainTimeSeries(- dphi, vphi, 1, display.ha(5));
+    plotUncertainTimeSeries(- dphi, vphi, 1, options.display.ha(5));
 
 end
 
@@ -142,7 +137,7 @@ if ismember ('theta', flag) && options.dim.n_theta > 0
     vtheta = VBA_getVar (posterior.SigmaTheta, indEnd);
     
     % update bottom-left subplot: evolution parameters
-    plotUncertainTimeSeries(- dtheta,vtheta,1,display.ha(7));
+    plotUncertainTimeSeries(- dtheta,vtheta,1,options.display.ha(7));
 end
 
 % Precision hyperparameters
@@ -161,7 +156,7 @@ if ismember ('precisions', flag)
         end
         % display
         logCI = (log (sigmaHat + sqrt (var_sigma)) - log (sigmaHat))';
-        plotUncertainTimeSeries (log (sigmaHat'), logCI.^2, 1, display.ha(6));
+        plotUncertainTimeSeries (log (sigmaHat'), logCI.^2, 1, options.display.ha(6));
     end
     
     % update middle-right subplot: state noise
@@ -174,13 +169,13 @@ if ismember ('precisions', flag)
             var_alpha = alphaHat ./ posterior.b_alpha;
         end
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
-        plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(8));
+        plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,options.display.ha(8));
     end
      
 end
 
 % update free energy display
-displayDF(F,display)
+displayDF(real(suffStat.F),options.display)
 
 drawnow
 
@@ -232,39 +227,39 @@ drawnow
         if options.sources(currentSource).type < 2
             
             % predictive density
-            resetColors (display.ha(1));
-            plotUncertainTimeSeries (g_src, vy_src, 1:T, display.ha(1));
+            resetColors (options.display.ha(1));
+            plotUncertainTimeSeries (g_src, vy_src, 1:T, options.display.ha(1));
             
             % data points
-            p_in = findobj(display.ha(1),'Tag','yPoint');
+            p_in = findobj(options.display.ha(1),'Tag','yPoint');
             if ~ isempty(p_in)
                 for i = 1 : numel (p_in)
                     set(p_in(i), 'XData', 1:T, 'YData', y_src_in(i,:));
                 end
             else
-                resetColors(display.ha(1));
-                plot(display.ha(1),1:T,y_src_in','.','MarkerSize',9,'Tag','yPoint');
+                resetColors(options.display.ha(1));
+                plot(options.display.ha(1),1:T,y_src_in','.','MarkerSize',9,'Tag','yPoint');
             end
             
             % excluded data points
-            p_out = findobj(display.ha(1),'Tag','yOut');
+            p_out = findobj(options.display.ha(1),'Tag','yOut');
             if ~ isempty(p_out)
                 for i = 1 : numel (p_out)
                     set(p_out(i),'XData',1:T, 'YData', y_src_out(i,:) );
                 end
             else
-                plot(display.ha(1),1:T, y_src_out, '.', 'MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9,'Tag','yOut');
+                plot(options.display.ha(1),1:T, y_src_out, '.', 'MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9,'Tag','yOut');
             end
             
             % data lines
-            p_l = findobj(display.ha(1),'Tag','yLine');
+            p_l = findobj(options.display.ha(1),'Tag','yLine');
             if ~ isempty(p_l)
                 for i = 1 : numel (p_l)
                     set(p_l(i), 'XData', 1:T, 'YData', y_src(i,:));
                 end
             else
-                resetColors(display.ha(1));
-                plot(display.ha(1),1:T,y_src',':','Tag','yLine','MarkerSize',9);
+                resetColors(options.display.ha(1));
+                plot(options.display.ha(1),1:T,y_src',':','Tag','yLine','MarkerSize',9);
             end
             
         % categorical source case: heatmap + points
@@ -272,35 +267,35 @@ drawnow
         else
             
             % predictive density
-            p_pred = findobj (display.ha(1), 'Tag', 'Ypred');
+            p_pred = findobj (options.display.ha(1), 'Tag', 'Ypred');
             if ~ isempty (p_pred)
                 set (p_pred, 'CData', g_src);
             else
-                imagesc (g_src, 'Parent', display.ha(1), 'Tag', 'yPred');
-                set (display.ha(1), 'Clim', [0 1]) ;
+                imagesc (g_src, 'Parent', options.display.ha(1), 'Tag', 'yPred');
+                set (options.display.ha(1), 'Clim', [0 1]) ;
                 colormap (flipud (colormap ('bone')));
             end
             
             % data points
-            p_in = findobj (display.ha(1), 'Tag', 'yPoint');
+            p_in = findobj (options.display.ha(1), 'Tag', 'yPoint');
             if ~ isempty (p_in)
                 set (p_in, 'YData', VBA_indicator (y_src_in, [], true));
             else
-                plot (display.ha(1), VBA_indicator (y_src_in, [], true), '.','ZData',2*ones(size(1:T)),'MarkerEdgeColor',[.9 0 0], 'MarkerSize', 9, 'Tag', 'yPoint');
+                plot (options.display.ha(1), VBA_indicator (y_src_in, [], true), '.','ZData',2*ones(size(1:T)),'MarkerEdgeColor',[.9 0 0], 'MarkerSize', 9, 'Tag', 'yPoint');
             end
             
             % excluded points
-            p_out = findobj (display.ha(1), 'Tag', 'yOut');
+            p_out = findobj (options.display.ha(1), 'Tag', 'yOut');
             if ~ isempty (p_out)
                 set (p_out, 'YData', VBA_indicator (y_src_out, [], true));
             else
-                plot (display.ha(1), VBA_indicator (y_src_out, [], true), '.','ZData',ones(size(1:T)),'MarkerEdgeColor',[.7 .7 .7], 'Tag', 'yOut');
+                plot (options.display.ha(1), VBA_indicator (y_src_out, [], true), '.','ZData',ones(size(1:T)),'MarkerEdgeColor',[.7 .7 .7], 'Tag', 'yOut');
             end
             
         end
         
         % ensure proper scaling of the axis
-        set(display.ha(1),'XLim',[0.5, T+0.5]);
+        set(options.display.ha(1),'XLim',[0.5, T+0.5]);
         
         % top right plot: predicted vs observed
         % =====================================================================
@@ -317,11 +312,11 @@ drawnow
         end
         
         % draw line
-        hr = findobj (display.ha(2), 'Tag', 'refline');
+        hr = findobj (options.display.ha(2), 'Tag', 'refline');
         if ~ isempty (hr)
             set (hr, 'XData',[miy, may], 'YData', [miy, may]);
         else
-            plot (display.ha(2), [miy, may], [miy, may], 'k:', 'Tag', 'refline');
+            plot (options.display.ha(2), [miy, may], [miy, may], 'k:', 'Tag', 'refline');
         end
         
         % gaussian source case
@@ -329,22 +324,22 @@ drawnow
         if options.sources(currentSource).type == 0
             
             % included points
-            p_in = findobj(display.ha(2), 'Tag', 'yIn');
+            p_in = findobj(options.display.ha(2), 'Tag', 'yIn');
             if ~ isempty(p_in)
                 for i = 1 : numel (p_in)
                     set (p_in(i), 'XData', g_src_in(i,:), 'YData', y_src_in(i,:));
                 end
             else
-                resetColors (display.ha(2));
-                plot (display.ha(2), g_src_in', y_src_in', '.', 'MarkerSize', 9,'Tag', 'yIn');
+                resetColors (options.display.ha(2));
+                plot (options.display.ha(2), g_src_in', y_src_in', '.', 'MarkerSize', 9,'Tag', 'yIn');
             end
             
             % excluded points
-            p_out = findobj (display.ha(2), 'Tag', 'yOut');
+            p_out = findobj (options.display.ha(2), 'Tag', 'yOut');
             if ~ isempty(p_out)
                 set (p_out, 'XData', g_src_out(:), 'YData', y_src_out(:));
             else
-                plot (display.ha(2), g_src_out(:), y_src_out(:), '.', 'MarkerEdgeColor', [.7 .7 .7], 'MarkerSize', 9, 'Tag', 'yOut');
+                plot (options.display.ha(2), g_src_out(:), y_src_out(:), '.', 'MarkerEdgeColor', [.7 .7 .7], 'MarkerSize', 9, 'Tag', 'yOut');
             end
             
             % binary or categorical source case
@@ -352,19 +347,19 @@ drawnow
         else
             
             % ellipse
-            p_e = findobj(display.ha(2), 'Tag', 'ellipse');
+            p_e = findobj(options.display.ha(2), 'Tag', 'ellipse');
             if isempty (p_e)
                 grid_p = linspace (0, 1, 100);
                 grid_std = sqrt (grid_p .* (1 - grid_p));
                 
-                plot (display.ha(2), grid_p, grid_p + grid_std, 'r--', 'Tag', 'ellpise');
-                plot (display.ha(2), grid_p, grid_p - grid_std, 'r--', 'Tag', 'ellpise');
+                plot (options.display.ha(2), grid_p, grid_p + grid_std, 'r--', 'Tag', 'ellpise');
+                plot (options.display.ha(2), grid_p, grid_p - grid_std, 'r--', 'Tag', 'ellpise');
             end
             
             % included points
             [stackyin, stdyin, gridgin] = VBA_Bin2Cont (g_src_in, y_src_in);
             
-            p_in = findobj (display.ha(2), 'Tag', 'yIn');
+            p_in = findobj (options.display.ha(2), 'Tag', 'yIn');
             if ~ isempty (p_in)
                 set (p_in, ...
                     'XData', gridgin, ...
@@ -372,13 +367,13 @@ drawnow
                     'LData', stdyin, ...
                     'UData', stdyin);
             else
-                errorbar (gridgin, stackyin, stdyin, '.', 'MarkerSize', 9, 'parent', display.ha(2), 'Tag', 'yIn');
+                errorbar (gridgin, stackyin, stdyin, '.', 'MarkerSize', 9, 'parent', options.display.ha(2), 'Tag', 'yIn');
             end
             
             % excluded points
             [stackyout, stdyout, gridgout] = VBA_Bin2Cont (g_src_out, y_src_out);
             
-            p_out = findobj (display.ha(2), 'Tag', 'yOut');
+            p_out = findobj (options.display.ha(2), 'Tag', 'yOut');
             if ~ isempty (p_out)
                 set(p_out, ...
                     'XData', gridgout, ...
@@ -386,13 +381,13 @@ drawnow
                     'LData', stdyout, ...
                     'UData', stdyout);
             else
-                errorbar (gridgout, stackyout, stdyout, '.', 'Color', [.7 .7 .7], 'MarkerSize', 9, 'parent', display.ha(2), 'Tag', 'yOut');
+                errorbar (gridgout, stackyout, stdyout, '.', 'Color', [.7 .7 .7], 'MarkerSize', 9, 'parent', options.display.ha(2), 'Tag', 'yOut');
             end
         end
     end
 
 % #########################################################################
-% displayDF(F, display)
+% displayDF(F, options.display)
 %
 % update bottom text showing free energy updates
 % #########################################################################
