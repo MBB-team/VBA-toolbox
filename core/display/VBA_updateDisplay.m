@@ -10,6 +10,12 @@ if ~ options.DisplayWin
     return
 end
 
+% dirty fix for preventing bar display on first online iterations
+% =========================================================================
+if options.OnLine && it <= 1
+    return
+end
+
 % check flag
 % =========================================================================
 if ~ exist ('flag', 'var')
@@ -74,7 +80,6 @@ try
 catch
     gx = nan(options.dim.p, numel (dTime));
     vy = nan(options.dim.p, numel (dTime));
-    error('bad predictions');
 end
 
 % state variance
@@ -89,7 +94,7 @@ end
 
 
 %% Vertical time encoding
-if size (y, 2) == 1 && size (y, 1) > 1
+if ~ options.OnLine && size (y, 2) == 1 && size (y, 1) > 1
     
     n_s = numel (options.sources);
     n_t = max (cellfun (@numel, {options.sources.out}));
@@ -162,11 +167,10 @@ if ismember ('X', flag) && options.dim.n > 0
     vx0 = VBA_getVar (posterior.SigmaX0);
     if options.updateX0
         dx0 = suffStat.dx0;
-        plotUncertainTimeSeries(-dx0,vx0,1,display.ha(4));
     elseif isequal(it,0)
-        dx0 = posterior.muX0;
-        plotUncertainTimeSeries(dx0,vx0,1,display.ha(4));
+        dx0 = - posterior.muX0;
     end
+    plotUncertainTimeSeries(- dx0,vx0,1,display.ha(4));
 end
 
 % Observation parameters
@@ -175,17 +179,15 @@ if ismember ('phi', flag) && options.dim.n_phi > 0
     
     % compute sufficient statistics to display
     if options.OnLine
-        dphi = suffStat.dphi(:, dTime);
+        dphi = suffStat.dphi(:, indEnd);
     else
         dphi = suffStat.dphi;
     end
     vphi = VBA_getVar (posterior.SigmaPhi, indEnd);
     
-    % update bottom-left subplot: observation parameters
-    if size (dphi, 2) == 1 % for on-line wrapper
-        dTime = 1;
-    end
-    plotUncertainTimeSeries(- dphi, vphi, dTime, display.ha(5));
+    % update middle-left subplot: observation parameters
+    plotUncertainTimeSeries(- dphi, vphi, 1, display.ha(5));
+
 end
 
 % Evolution parameters
@@ -194,17 +196,14 @@ if ismember ('theta', flag) && options.dim.n_theta > 0
     
     % compute sufficient statistics to display
     if options.OnLine
-        dtheta = suffStat.dtheta(:,dTime);
+        dtheta = suffStat.dtheta(:, indEnd);
     else
         dtheta = suffStat.dtheta;
     end
     vtheta = VBA_getVar (posterior.SigmaTheta, indEnd);
     
-    % update bottom-left subplot: observation parameters
-    if size(dtheta,2) == 1 % for on-line wrapper
-        dTime = 1;
-    end
-    plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
+    % update bottom-left subplot: evolution parameters
+    plotUncertainTimeSeries(- dtheta,vtheta,1,display.ha(7));
 end
 
 % Precision hyperparameters
@@ -215,23 +214,22 @@ if ismember ('precisions', flag)
     if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
         % compute sufficient statistics
         if options.OnLine
-            sigmaHat = posterior.a_sigma(:, dTime) ./ posterior.b_sigma(:, dTime);
-            var_sigma = sigmaHat ./ posterior.b_sigma(dTime);
+            sigmaHat = posterior.a_sigma(:, indEnd) ./ posterior.b_sigma(:, indEnd);
+            var_sigma = sigmaHat ./ posterior.b_sigma(indEnd);
         else
             sigmaHat = posterior.a_sigma ./ posterior.b_sigma;
             var_sigma = sigmaHat ./ posterior.b_sigma;
         end
         % display
-        dTime = 1;
         logCI = (log (sigmaHat + sqrt (var_sigma)) - log (sigmaHat))';
-        plotUncertainTimeSeries (log (sigmaHat'), logCI.^2, dTime, display.ha(6));
+        plotUncertainTimeSeries (log (sigmaHat'), logCI.^2, 1, display.ha(6));
     end
     
     % update middle-right subplot: state noise
     if options.dim.n > 0 && ~ any (isinf (posterior.a_alpha))
         if options.OnLine
-            alphaHat = posterior.a_alpha(dTime) ./ posterior.b_alpha(dTime);
-            var_alpha = alphaHat ./ posterior.b_alpha(dTime);
+            alphaHat = posterior.a_alpha(indEnd) ./ posterior.b_alpha(indEnd);
+            var_alpha = alphaHat ./ posterior.b_alpha(indEnd);
         else
             alphaHat = posterior.a_alpha ./ posterior.b_alpha;
             var_alpha = alphaHat ./ posterior.b_alpha;
@@ -239,9 +237,7 @@ if ismember ('precisions', flag)
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,display.ha(8));
     end
-    
-    
-    
+     
 end
 
 % update free energy display
@@ -345,7 +341,7 @@ drawnow
             
             % excluded points
             p_out = findobj (display.ha(1), 'Tag', 'yOut');
-            if ~ isempty (p_in)
+            if ~ isempty (p_out)
                 set (p_out, 'YData', VBA_indicator (y_src_out, [], true));
             else
                 plot (display.ha(1), VBA_indicator (y_src_out, [], true), '.','ZData',ones(size(dTime)),'MarkerEdgeColor',[.7 .7 .7], 'Tag', 'yOut');
@@ -385,7 +381,7 @@ drawnow
             % included points
             p_in = findobj(display.ha(2), 'Tag', 'yIn');
             if ~ isempty(p_in)
-                for i = 1 : numel (s_out)
+                for i = 1 : numel (p_in)
                     set (p_in(i), 'XData', g_src_in(i,:), 'YData', y_src_in(i,:));
                 end
             else
