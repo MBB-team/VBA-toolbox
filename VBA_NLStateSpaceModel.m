@@ -277,10 +277,7 @@ end
 try
     delete(intersect(findobj('tag','diagnostics_tabs'),get(options.display.hfp,'children')));
 end
-VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
-VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
-VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
+VBA_updateDisplay(posterior,suffStat,options,y,0)
 
 
 %------------------------------------------------------------%
