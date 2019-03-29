@@ -203,9 +203,6 @@ function myDeterministic(hfig)
         end
     end
     
-    % Display model evidence
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
-    
     % Display parameters
     if dim.n_theta >= 1
         VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
@@ -278,9 +275,6 @@ function myPriors(hfig)
             xlabel(options.display.ha(8),' ') ;
         end
     end
-
-    % Display model evidence
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
 
     % Display parameters
     if dim.n_theta >= 1
@@ -611,8 +605,6 @@ function myVB(hfig)
             xlabel(options.display.ha(8),' ')
         end
     end
-    % Display model evidence
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'F')
     % Display parameters
     VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
     VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
