@@ -4,15 +4,40 @@ function VBA_updateDisplay(posterior,suffStat,options,y,it,flag)
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
 
-if ~options.DisplayWin
+% skip if no display requested
+% =========================================================================
+if ~ options.DisplayWin
     return
 end
-display = options.display;
 
+% if this is a deterministic dynamical system inversion, expand the
+% dynamics and display the result
+% =========================================================================
+if isequal (options.g_fname, @VBA_odeLim)
+    
+    % rebuild posterior from dummy 'ODE' posterior
+    [posterior, options, ~, suffStat] = VBA_odeLim2NLSS (posterior, options, options.dim, suffStat, [], 0);
+    
+    % call VBA_updateDisplay again
+    VBA_updateDisplay (posterior, suffStat, options, y, it, 'precisions')
+    VBA_updateDisplay(posterior,suffStat,options,y,it,'phi')
+    VBA_updateDisplay(posterior,suffStat,options,y,it,'X')
+    VBA_updateDisplay(posterior,suffStat,options,y,it,'theta')
+    
+    % do not plot the compact system
+    return
+end
+
+
+% shortcuts
+display = options.display;
 F = real(suffStat.F);
 
+% Check window elements
+% =========================================================================
+
 % check whether 'pause' button is toggled on
-VBA_pause(options)
+VBA_pause(options);
 
 % replace source selector callback if needed
 ud = get(getPanel(display.hfp),'userdata') ;
@@ -30,108 +55,65 @@ ud = VBA_check_struct(ud,'currentSource', 1 );
 
 currentSource = ud.currentSource;
 
-% 0- Check whether this is a deterministic dynamical system inversion
-if isequal(options.g_fname,@VBA_odeLim)
-    
-    % Rebuild posterior from dummy 'ODE' posterior
-    options0 = options;
-    [posterior,options,dim,suffStat] = VBA_odeLim2NLSS(posterior,options,options.dim,suffStat,[],0);
-    options.display = options0.display;
-    
-    % Then call VBA_updateDisplay again
-    if ~isempty(it)
-        VBA_updateDisplay(posterior,suffStat,options,y,it,'precisions')
-    end
-    VBA_updateDisplay(posterior,suffStat,options,y,it,'phi')
-    VBA_updateDisplay(posterior,suffStat,options,y,it,'X')
-    VBA_updateDisplay(posterior,suffStat,options,y,it,'theta')
-    
-    return
-    
-end
-
-
 % Get sufficient statistics to be displayed
-dTime = 1:size(y,2);
+% =========================================================================
+
+% timeline
+dTime = 1 : size (y, 2);
+indEnd = length (dTime);
+
+% predictions
 try
-    gx = suffStat.gx(:,dTime);
-    vy = suffStat.vy(:,dTime);
+    gx = suffStat.gx(:, dTime);
+    vy = suffStat.vy(:, dTime);
 catch
-    gx = nan(options.dim.p,numel(dTime));
-    vy = nan(options.dim.p,numel(dTime));
+    gx = nan(options.dim.p, numel (dTime));
+    vy = nan(options.dim.p, numel (dTime));
 end
-indEnd = length(dTime);
-if   sum([options.sources(:).type]==0) > 0
-    if options.OnLine
-        sigmaHat = posterior.a_sigma(:,dTime)./posterior.b_sigma(:,dTime);
-        var_sigma = sigmaHat./posterior.b_sigma(dTime);
-    else
-        sigmaHat = posterior.a_sigma./posterior.b_sigma;
-        var_sigma = sigmaHat./posterior.b_sigma;
-    end
-end
+
+% state variance
 if options.dim.n > 0
-    mux = posterior.muX(:,dTime);
+    mux = posterior.muX(:, dTime);
     try
-        vx = VBA_getVar(posterior.SigmaX.current,indEnd);
+        vx = VBA_getVar (posterior.SigmaX.current, indEnd);
     catch
-        vx = zeros(size(mux));
+        vx = zeros (size (mux));
     end
-    if ~any(isinf(posterior.a_alpha))
+    if ~ any (isinf (posterior.a_alpha))
         if options.OnLine
-            alphaHat = posterior.a_alpha(dTime)./posterior.b_alpha(dTime);
-            var_alpha = alphaHat./posterior.b_alpha(dTime);
+            alphaHat = posterior.a_alpha(dTime) ./ posterior.b_alpha(dTime);
+            var_alpha = alphaHat ./ posterior.b_alpha(dTime);
         else
-            alphaHat = posterior.a_alpha./posterior.b_alpha;
-            var_alpha = alphaHat./posterior.b_alpha;
+            alphaHat = posterior.a_alpha ./ posterior.b_alpha;
+            var_alpha = alphaHat ./ posterior.b_alpha;
         end
     else
         alphaHat = Inf;
         var_alpha = 0;
     end
-    vx0 = VBA_getVar(posterior.SigmaX0);
-    if options.updateX0
-        dx0 = suffStat.dx0;
-    else
-        dx0 = posterior.muX0;
-    end
-end
-if options.dim.n_theta > 0
-    if options.OnLine
-        dtheta = suffStat.dtheta(:,dTime);
-    else
-        dtheta = suffStat.dtheta;
-    end
-    vtheta = VBA_getVar(posterior.SigmaTheta,indEnd);
-end
-if options.dim.n_phi > 0
-    if options.OnLine
-        dphi = suffStat.dphi(:,dTime);
-    else
-        dphi = suffStat.dphi;
-    end
-    vphi = VBA_getVar(posterior.SigmaPhi,indEnd);
+    
 end
 
+
 %% Vertical time encoding
-if isequal(dTime,1) && size(y,1) > 1
+if size (y, 2) == 1 && size (y, 1) > 1
     
-    n_s = numel(options.sources);
-    n_t = max(cellfun(@numel,{options.sources.out}));
+    n_s = numel (options.sources);
+    n_t = max (cellfun (@numel, {options.sources.out}));
     
-    new_y = nan(n_s,n_t);
-    new_gx = nan(n_s,n_t);
-    new_vy = nan(n_s,n_t);
-    new_isYout = ones(n_s,n_t);
+    new_y = nan (n_s, n_t);
+    new_gx = nan (n_s, n_t);
+    new_vy = nan (n_s,n_t);
+    new_isYout = ones (n_s, n_t);
     
-    for si=1:n_s
+    for si = 1 : n_s
         s_idx = options.sources(si).out;
         
         n_t_s = numel(options.sources(si).out);
         
         new_y(si, 1:n_t_s) = y(s_idx)';
-        new_gx(si, 1:n_t_s) = gx(s_idx)';
-        new_vy(si, 1:n_t_s) = vy(s_idx)';
+        new_gx(si, 1:n_t_s) = suffStat.gx(s_idx)';
+        new_vy(si, 1:n_t_s) = suffStat.vy(s_idx)';
         
         try 
             new_isYout(si, 1:n_t_s) = options.isYout(s_idx)';
@@ -163,11 +145,12 @@ end
 switch flag % What piece of the model to display?
     
     case 'Y' % observation only
-        
+    % =====================================================================
         % update top subplots
-        update_observation_plot()
+        update_observation_plot();
         
     case 'X' % Hidden-states related quantities
+    % =====================================================================
         if options.dim.n == 0, return; end
 
         % update top subplots
@@ -183,78 +166,107 @@ switch flag % What piece of the model to display?
         end
         
         % update middle-left subplot: hidden states
-        %cla(display.ha(3))
         try
             plotUncertainTimeSeries(mux,vx,dTime,display.ha(3),ind);
         catch
             plotUncertainTimeSeries(mux,vx,[],display.ha(3),ind);
         end
+        % ensure proper scaling of the axis
+        set(display.ha(3),'XLim',[dTime(1)-0.5, dTime(end)+0.5]);
         
         % update middle-right subplot: initial conditions
+        vx0 = VBA_getVar (posterior.SigmaX0);
         if options.updateX0
-            %cla(display.ha(4))
+            dx0 = suffStat.dx0;
             plotUncertainTimeSeries(-dx0,vx0,1,display.ha(4));
         elseif isequal(it,0)
+            dx0 = posterior.muX0;
             plotUncertainTimeSeries(dx0,vx0,1,display.ha(4));
         end
         
         displayDF(F,display)
         
     case 'phi' % Observation parameters
+    % =====================================================================
         if options.dim.n_phi == 0, return; end
 
         % update top subplots
-        update_observation_plot()
+        update_observation_plot();
         
-        % --
+        % compute sufficient statistics to display
+        if options.OnLine
+            dphi = suffStat.dphi(:, dTime);
+        else
+            dphi = suffStat.dphi;
+        end
+        vphi = VBA_getVar (posterior.SigmaPhi, indEnd);
         
         % update bottom-left subplot: observation parameters
-        if size(dphi,2) == 1 % for on-line wrapper
+        if size (dphi, 2) == 1 % for on-line wrapper
             dTime = 1;
         end
-        %cla(display.ha(5))
-        plotUncertainTimeSeries(-dphi,vphi,dTime,display.ha(5));
+        plotUncertainTimeSeries(- dphi, vphi, dTime, display.ha(5));
         
+        % update free energy display
         displayDF(F,display)
         
     case 'theta' % Evolution parameters
+    % =====================================================================
         if options.dim.n_theta == 0, return; end
-       
-        % update bottom-right subplot: observation parameters
-        if size(dtheta,2) == 1 % for on-line wrapper
-            dTime = 1;
-        end
-        %cla(display.ha(7))
-        plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
-        
-        displayDF(F,display)   
-        
-    case 'precisions' % Precision hyperparameters
         
         % update top subplots
         update_observation_plot()
         
-        % --
-        
-        if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
+        % compute sufficient statistics to display
+        if options.OnLine
+            dtheta = suffStat.dtheta(:,dTime);
+        else
+            dtheta = suffStat.dtheta;
+        end
+        vtheta = VBA_getVar (posterior.SigmaTheta, indEnd);
+       
+        % update bottom-left subplot: observation parameters
+        if size(dtheta,2) == 1 % for on-line wrapper
             dTime = 1;
-            %cla(display.ha(6))
-            logCI = (log(sigmaHat+sqrt(var_sigma)) - log(sigmaHat))';
-            plotUncertainTimeSeries(log(sigmaHat'),logCI.^2,dTime,display.ha(6));
+        end
+        plotUncertainTimeSeries(-dtheta,vtheta,dTime,display.ha(7));
+        
+        % update free energy display
+        displayDF(F,display)   
+        
+    case 'precisions' % Precision hyperparameters
+    % =====================================================================
+        % update top subplots
+        update_observation_plot()
+
+        % update middle-right subplot: observation noise
+        if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
+            % compute sufficient statistics
+            if options.OnLine
+                sigmaHat = posterior.a_sigma(:, dTime) ./ posterior.b_sigma(:, dTime);
+                var_sigma = sigmaHat ./ posterior.b_sigma(dTime);
+            else
+                sigmaHat = posterior.a_sigma ./ posterior.b_sigma;
+                var_sigma = sigmaHat ./ posterior.b_sigma;
+            end
+            % display
+            dTime = 1;
+            logCI = (log (sigmaHat + sqrt (var_sigma)) - log (sigmaHat))';
+            plotUncertainTimeSeries (log (sigmaHat'), logCI.^2, dTime, display.ha(6));
         end
         
         % update middle-right subplot: state noise
         if options.dim.n > 0 && ~any(isinf(alphaHat))
             dTime = 1;
-            %cla(display.ha(8))
             logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
             plotUncertainTimeSeries(log(alphaHat),logCI.^2,dTime,display.ha(8));
         end
         
+        % update free energy display
         displayDF(F,display)
         
     case 'F' % Free energy
-        
+    % =====================================================================     
         % Output in main matlab window
         dF = diff(F);
         if it > 0 && options.verbose
@@ -269,7 +281,7 @@ end
 
 drawnow
 
-% #########################################################################
+%% ########################################################################
 % update_observation_plot ()
 %
 % update the top plots which shows the observations and model predictions 
