@@ -10,11 +10,14 @@ if ~ options.DisplayWin
     return
 end
 
-% dirty fix for preventing bar display on first online iterations
+% dirty fix for online inversion
 % =========================================================================
+% preventing bar display on first iteration
 if options.OnLine && it <= 1
     return
 end
+% index of last computed element
+indEnd = size (y, 2);
 
 % check flag
 % =========================================================================
@@ -66,79 +69,6 @@ ud = VBA_check_struct(ud,'currentSource', 1 );
 
 currentSource = ud.currentSource;
 
-% Get sufficient statistics to be displayed
-% =========================================================================
-
-% timeline
-dTime = 1 : size (y, 2);
-indEnd = length (dTime);
-
-% predictions
-try
-    gx = suffStat.gx(:, dTime);
-    vy = suffStat.vy(:, dTime);
-catch
-    gx = nan(options.dim.p, numel (dTime));
-    vy = nan(options.dim.p, numel (dTime));
-end
-
-% state variance
-if options.dim.n > 0
-    mux = posterior.muX(:, dTime);
-    try
-        vx = VBA_getVar (posterior.SigmaX.current, indEnd);
-    catch
-        vx = zeros (size (mux));
-    end
-end
-
-
-%% Vertical time encoding
-if ~ options.OnLine && size (y, 2) == 1 && size (y, 1) > 1
-    
-    n_s = numel (options.sources);
-    n_t = max (cellfun (@numel, {options.sources.out}));
-    
-    new_y = nan (n_s, n_t);
-    new_gx = nan (n_s, n_t);
-    new_vy = nan (n_s,n_t);
-    new_isYout = ones (n_s, n_t);
-    
-    for si = 1 : n_s
-        s_idx = options.sources(si).out;
-        
-        n_t_s = numel(options.sources(si).out);
-        
-        new_y(si, 1:n_t_s) = y(s_idx)';
-        new_gx(si, 1:n_t_s) = suffStat.gx(s_idx)';
-        new_vy(si, 1:n_t_s) = suffStat.vy(s_idx)';
-        
-        try
-            new_isYout(si, 1:n_t_s) = options.isYout(s_idx)';
-        catch
-            new_isYout(si, 1:n_t_s) = 0;
-        end
-        
-    end
-    
-    y = new_y;
-    vy = new_vy;
-    gx = new_gx;
-    options.isYout = new_isYout;
-    
-    if options.dim.n > 0
-        mux = mux';
-        vx = vx';
-    end
-    
-    dTime = 1:n_t;
-    
-    
-    for si=1:n_s
-        options.sources(si).out = si;
-    end
-end
-
 % =========================================================================
 % update top subplots
 update_observation_plot();
@@ -147,21 +77,30 @@ update_observation_plot();
 % =====================================================================
 if ismember ('X', flag) && options.dim.n > 0
     
+    % compute sufficient statistics to display
+    mux = posterior.muX;
+    try
+        vx = VBA_getVar (posterior.SigmaX.current, indEnd);
+    catch
+        vx = zeros (size (mux));
+    end
+    % deal with vertical case
+    if size (mux, 2) == 1 && size (mux, 1) > 1
+            mux = mux';
+            vx = vx';
+    end
+    % timeline
+    T = size (mux, 2);
     % get display indices if delay embedding
     if sum(options.delays) > 0
-        ind = 1:options.inF.dim.n;
+        ind = 1 : options.inF.dim.n;
     else
-        ind = 1:size(mux,1);
+        ind = 1 : size (mux, 1);
     end
-    
     % update middle-left subplot: hidden states
-    try
-        plotUncertainTimeSeries(mux,vx,dTime,display.ha(3),ind);
-    catch
-        plotUncertainTimeSeries(mux,vx,[],display.ha(3),ind);
-    end
+    plotUncertainTimeSeries(mux,vx,1:T,display.ha(3),ind);
     % ensure proper scaling of the axis
-    set(display.ha(3),'XLim',[dTime(1)-0.5, dTime(end)+0.5]);
+    set(display.ha(3),'XLim',[0.5, T+0.5]);
     
     % update middle-right subplot: initial conditions
     vx0 = VBA_getVar (posterior.SigmaX0);
@@ -259,66 +198,77 @@ drawnow
         % get index of observations from current source
         s_out = options.sources(currentSource).out;
         
-        % get observation for selected source
         y_src = y(s_out,:);
+        vy_src = suffStat.vy(s_out, :);
+        g_src = suffStat.gx(s_out,:);
+
+        % deal with vertical case
+        if size (y, 2) == 1 && size (y, 1) > 1
+            y_src = y_src';
+            g_src = g_src';
+            vy_src = vy_src';
+        end
+        
+        % get observation for selected source
         y_src_in = y_src;
         y_src_in(options.isYout(s_out, :) == 1) = nan;
         y_src_out = y_src;
         y_src_out(options.isYout(s_out, :) == 0) = nan;
         
         % get predictions for selected source
-        g_src = gx(s_out,:);
         g_src_in = g_src;
         g_src_in(options.isYout(s_out, :) == 1) = nan;
         g_src_out = g_src;
-        g_src_out(options.isYout(s_out, :) == 0) = nan;
+        g_src_out(options.isYout(s_out, :) == 0) = nan;    
         
         % top left plot: timseries
         % =====================================================================
         
+        % timeline
+        T = size (g_src, 2);
+
         % gaussian or binary source case: line + points
         % ---------------------------------------------------------------------
         if options.sources(currentSource).type < 2
             
             % predictive density
-            vy_s = vy(s_out, :);
             resetColors (display.ha(1));
-            plotUncertainTimeSeries (g_src(:, dTime), vy_s(:, dTime), dTime, display.ha(1));
+            plotUncertainTimeSeries (g_src, vy_src, 1:T, display.ha(1));
             
             % data points
             p_in = findobj(display.ha(1),'Tag','yPoint');
             if ~ isempty(p_in)
                 for i = 1 : numel (p_in)
-                    set(p_in(i), 'XData', dTime, 'YData', y_src_in(i,:));
+                    set(p_in(i), 'XData', 1:T, 'YData', y_src_in(i,:));
                 end
             else
                 resetColors(display.ha(1));
-                plot(display.ha(1),dTime,y_src_in','.','MarkerSize',9,'Tag','yPoint');
+                plot(display.ha(1),1:T,y_src_in','.','MarkerSize',9,'Tag','yPoint');
             end
             
             % excluded data points
             p_out = findobj(display.ha(1),'Tag','yOut');
             if ~ isempty(p_out)
                 for i = 1 : numel (p_out)
-                    set(p_out(i),'XData',dTime, 'YData', y_src_out(i,:) );
+                    set(p_out(i),'XData',1:T, 'YData', y_src_out(i,:) );
                 end
             else
-                plot(display.ha(1),dTime, y_src_out, '.', 'MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9,'Tag','yOut');
+                plot(display.ha(1),1:T, y_src_out, '.', 'MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9,'Tag','yOut');
             end
             
             % data lines
             p_l = findobj(display.ha(1),'Tag','yLine');
             if ~ isempty(p_l)
                 for i = 1 : numel (p_l)
-                    set(p_l(i), 'XData', dTime, 'YData', y_src(i,:));
+                    set(p_l(i), 'XData', 1:T, 'YData', y_src(i,:));
                 end
             else
                 resetColors(display.ha(1));
-                plot(display.ha(1),dTime,y_src',':','Tag','yLine','MarkerSize',9);
+                plot(display.ha(1),1:T,y_src',':','Tag','yLine','MarkerSize',9);
             end
             
-            % categorical source case: heatmap + points
-            % ---------------------------------------------------------------------
+        % categorical source case: heatmap + points
+        % ---------------------------------------------------------------------
         else
             
             % predictive density
@@ -336,7 +286,7 @@ drawnow
             if ~ isempty (p_in)
                 set (p_in, 'YData', VBA_indicator (y_src_in, [], true));
             else
-                plot (display.ha(1), VBA_indicator (y_src_in, [], true), '.','ZData',2*ones(size(dTime)),'MarkerEdgeColor',[.9 0 0], 'MarkerSize', 9, 'Tag', 'yPoint');
+                plot (display.ha(1), VBA_indicator (y_src_in, [], true), '.','ZData',2*ones(size(1:T)),'MarkerEdgeColor',[.9 0 0], 'MarkerSize', 9, 'Tag', 'yPoint');
             end
             
             % excluded points
@@ -344,13 +294,13 @@ drawnow
             if ~ isempty (p_out)
                 set (p_out, 'YData', VBA_indicator (y_src_out, [], true));
             else
-                plot (display.ha(1), VBA_indicator (y_src_out, [], true), '.','ZData',ones(size(dTime)),'MarkerEdgeColor',[.7 .7 .7], 'Tag', 'yOut');
+                plot (display.ha(1), VBA_indicator (y_src_out, [], true), '.','ZData',ones(size(1:T)),'MarkerEdgeColor',[.7 .7 .7], 'Tag', 'yOut');
             end
             
         end
         
         % ensure proper scaling of the axis
-        set(display.ha(1),'XLim',[dTime(1)-0.5, dTime(end)+0.5]);
+        set(display.ha(1),'XLim',[0.5, T+0.5]);
         
         % top right plot: predicted vs observed
         % =====================================================================
