@@ -2,7 +2,7 @@ function [results]=VBA_Shapley(posterior,out,varargin)
 % [results]=VBA_Shapley(posterior,out,[options])
 %
 % Compute the Shapley values of the model's factors (inputs or paramters). 
-% These scores measure the relative influence of these factor on the varaince 
+% These scores measure the relative influence of these factor on the variaince 
 % explained by the model.
 % -------------------------------------------------------------------------
 % IN:
