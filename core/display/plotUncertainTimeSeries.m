@@ -34,9 +34,7 @@ try
     if ~isax
         hf = figure('color',ones(1,3));
         haf = axes('parent',hf);
-        box(haf,'off');
-    else
-        
+        box(haf,'off');        
     end
 catch
     hf = figure('color',ones(1,3));
