@@ -1,8 +1,23 @@
 function VBA_updateDisplay(posterior,suffStat,options,y,it,flag)
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% VBA_updateDisplay(posterior,suffStat,options,y,it,flag)
 % updates display of sufficient statistics
-% function VBA_updateDisplay(F,posterior,suffStat,options,y,it,options,flag)
+%
 % This function deals with the screen display of iterative sufficient
 % statistics updates of the VBA inversion algorithm
+
+% IN:
+%   - posterior: structure defining parmeter distribution
+%   - suffStat: structure defining sufficient statistics
+%   - options: usual options structure
+%   - y: observations
+%   - it: current iteration of the inversion
+%   - flag: cell array of strings defining which plots to update.
+%           by default, flag = {'X', 'phi', 'theta', 'precisions'} (update
+%           all plots)
+%
+% /////////////////////////////////////////////////////////////////////////
 
 % skip if no display requested
 % =========================================================================
