@@ -6,11 +6,6 @@ function [posterior, out] = VBA_invertOnline(y, u, f_fname, g_fname, dim, option
 % variables. See VBA_NLStateSpaceModel.m for I/O arguments.
 % NB: this online wrapper does not deal with ODE state-space models.
 
-
-for i = 1:size(y,2)
-    options.priors.iQy{i,1} = 2; 
-end
-
 options.OnLine = 1;
 
 if ~ isfield(options, 'isYout')
@@ -34,8 +29,12 @@ for t = 1 : size(y,2)
     options_online.isYout = ones(size(y));
     options_online.isYout(:,t) = isYout(:,t);
     
-    
-    [posterior(t),out(t)] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options_online, in);
+    y_online = y;
+    y_online(:,t+1:end) = nan;
+    u_online = u;
+    u_online(:,t+1:end) = nan;
+
+    [posterior(t),out(t)] = VBA_NLStateSpaceModel(y_online,u_online,f_fname,g_fname,dim,options_online, in);
 
     %[posterior,suffStat,options] = updatePSS(...
     %       OL_posterior,OL_out,posterior,suffStat,1,options);

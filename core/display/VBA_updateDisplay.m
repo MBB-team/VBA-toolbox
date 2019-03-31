@@ -25,12 +25,6 @@ if ~ options.DisplayWin
     return
 end
 
-% dirty fix for online inversion
-% =========================================================================
-% preventing bar display on first iteration
-% if options.OnLine && isequal(it,1)
-%    return
-% end
 
 % index of last computed element
 indEnd = size (y, 2);
@@ -128,11 +122,7 @@ end
 if ismember ('phi', flag) && options.dim.n_phi > 0
     
     % compute sufficient statistics to display
-  %  if options.OnLine
-  %      dphi = suffStat.dphi(:, indEnd);
-  %  else
-        dphi = suffStat.dphi;
-  %  end
+    dphi = suffStat.dphi;
     vphi = VBA_getVar (posterior.SigmaPhi, indEnd);
     
     % update middle-left subplot: observation parameters
@@ -145,11 +135,7 @@ end
 if ismember ('theta', flag) && options.dim.n_theta > 0
     
     % compute sufficient statistics to display
- %   if options.OnLine
- %       dtheta = suffStat.dtheta(:, indEnd);
- %   else
-        dtheta = suffStat.dtheta;
- %   end
+    dtheta = suffStat.dtheta;
     vtheta = VBA_getVar (posterior.SigmaTheta, indEnd);
     
     % update bottom-left subplot: evolution parameters
@@ -163,13 +149,8 @@ if ismember ('precisions', flag)
     % update middle-right subplot: observation noise
     if (options.updateHP || isequal(it,0)) && sum([options.sources(:).type]==0)>0
         % compute sufficient statistics
-  %      if options.OnLine
-  %          sigmaHat = posterior.a_sigma(:, indEnd) ./ posterior.b_sigma(:, indEnd);
-  %          var_sigma = sigmaHat ./ posterior.b_sigma(indEnd);
-  %      else
-            sigmaHat = posterior.a_sigma ./ posterior.b_sigma;
-            var_sigma = sigmaHat ./ posterior.b_sigma;
-  %      end
+        sigmaHat = posterior.a_sigma ./ posterior.b_sigma;
+        var_sigma = sigmaHat ./ posterior.b_sigma;
         % display
         logCI = (log (sigmaHat + sqrt (var_sigma)) - log (sigmaHat))';
         plotUncertainTimeSeries (log (sigmaHat'), logCI.^2, 1, options.display.ha(6));
@@ -177,13 +158,10 @@ if ismember ('precisions', flag)
     
     % update middle-right subplot: state noise
     if options.dim.n > 0 && ~ any (isinf (posterior.a_alpha))
-  %      if options.OnLine
-  %          alphaHat = posterior.a_alpha(indEnd) ./ posterior.b_alpha(indEnd);
-  %          var_alpha = alphaHat ./ posterior.b_alpha(indEnd);
-  %      else
-            alphaHat = posterior.a_alpha ./ posterior.b_alpha;
-            var_alpha = alphaHat ./ posterior.b_alpha;
-  %      end
+        % compute sufficient statistics
+        alphaHat = posterior.a_alpha ./ posterior.b_alpha;
+        var_alpha = alphaHat ./ posterior.b_alpha;
+        % display
         logCI = log(alphaHat+sqrt(var_alpha)) - log(alphaHat);
         plotUncertainTimeSeries(log(alphaHat),logCI.^2,1,options.display.ha(8));
     end
@@ -408,7 +386,6 @@ drawnow
 % update bottom text showing free energy updates
 % #########################################################################
     function displayDF(F,display)
-        if ~ display.OnLine
             try
                 dF = diff (F);
                 set (display.ho, 'string', ['Model evidence: log p(y|m) >= ', num2str(F(end), '%1.3e'), ' , dF= ', num2str(dF(end), '%4.3e')])
@@ -417,7 +394,6 @@ drawnow
                     set (display.ho, 'string', ['Model evidence: log p(y|m) >= ', num2str(F(end), '%4.3e')])
                 end
             end
-        end
     end
 
 % #########################################################################

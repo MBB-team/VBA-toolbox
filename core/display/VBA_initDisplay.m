@@ -251,11 +251,7 @@ else
     VBA_title(h, ...
         sprintf('observation parameters: p(\\phi|%s)',data_conditioner));
 
-    if ~options.OnLine
-        x_label_str = '\phi dimensions' ;
-    else
-        x_label_str = 'time' ;
-    end
+    x_label_str = '\phi dimensions' ;
     if ~priors
         y_label_str = '<\phi | y,m> - <\phi | m>' ;
     else
@@ -287,12 +283,10 @@ else
     VBA_title(h, ...
         sprintf('observation precision: p(\\sigma | %s)',data_conditioner));
 
-        if ~options.OnLine && options.updateHP
+        if options.updateHP
             x_label_str = 'gaussian source' ;
-        elseif ~options.OnLine && ~options.updateHP
-            x_label_str = '[fixed pdf]' ;
         else
-            x_label_str = 'time' ;
+            x_label_str = '[fixed pdf]' ;
         end
         y_label_str = '<log(\sigma)>' ;
         styleLabel(xlabel(h,x_label_str));
@@ -316,11 +310,7 @@ else
     VBA_title(h, ...
         sprintf('evolution parameters: p(\\theta | %s)',data_conditioner));
 
-    if ~options.OnLine
-        x_label_str = '\theta dimensions' ;
-    else
-        x_label_str = 'time' ;
-    end
+    x_label_str = '\theta dimensions' ;
     if ~priors
         y_label_str = '<\theta | y,m> - <\theta | m>' ;
     else
@@ -348,12 +338,10 @@ else
     VBA_title(h, ...
         sprintf('evolution precision: p(\\alpha|%s)',data_conditioner));
 
-    if ~options.OnLine && options.updateHP
+    if options.updateHP
         x_label_str = '' ;
-    elseif ~options.OnLine && ~options.updateHP
-        x_label_str = '[fixed pdf]' ;
     else
-        x_label_str = 'time' ;
+        x_label_str = '[fixed pdf]' ;
     end
     y_label_str = '<log(\alpha)>' ;
     styleLabel(xlabel(h,x_label_str));
