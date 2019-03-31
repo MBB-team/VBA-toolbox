@@ -1,7 +1,7 @@
 function [suffStat,posterior] = VBA_check_errors(y,u,options)
 % dummy diagnostic of model specification
 
-[suffStat] = VBA_getSuffStat(options,[],0);
+[suffStat] = VBA_getSuffStat(options,[]);
 dim = options.dim;
 posterior = options.priors;
 posterior.muX = sparse(0,dim.n_t);

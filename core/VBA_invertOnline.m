@@ -34,21 +34,17 @@ for t = 1 : size(y,2)
     u_online = u;
     u_online(:,t+1:end) = nan;
 
-    [posterior(t),out(t)] = VBA_NLStateSpaceModel(y_online,u_online,f_fname,g_fname,dim,options_online, in);
+    [posterior_online(t),out_online(t)] = VBA_NLStateSpaceModel(y_online,u_online,f_fname,g_fname,dim,options_online, in);
 
-    %[posterior,suffStat,options] = updatePSS(...
-    %       OL_posterior,OL_out,posterior,suffStat,1,options);
+    plot(h1,1:t,[posterior_online.muPhi]);
+    plot(h2,1:t,[posterior_online.SigmaPhi]);
     
-    
-    plot(h1,1:t,[posterior.muPhi]);
-    plot(h2,1:t,[posterior.SigmaPhi]);
-    
-    options_online.display = out(t).options.display;
+    options_online.display = out_online(t).options.display;
 
     % Define priors for parameters with past posterior
-    options_online.priors = posterior(t);
+    options_online.priors = posterior_online(t);
     
-    % TODO: remove once VBA_Iphi deal with isYout
+    % TODO: remove once VBA_Iphi deal with isYout directly
     try
     options_online.priors.iQy = options.priors.iQy;
     catch
@@ -56,3 +52,13 @@ for t = 1 : size(y,2)
     end
     
 end
+
+posterior = posterior_online(end);
+posterior.online = posterior_online;
+
+out = out_online(end);
+out.online = out_online;
+
+
+VBA_ReDisplay(posterior,out);
+

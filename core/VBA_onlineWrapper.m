@@ -31,7 +31,7 @@ if options.sources.type > 1
 end
 
 %------------------- Initialize variables ------------------%
-[suffStat] = VBA_getSuffStat(options,[],1);
+[suffStat] = VBA_getSuffStat(options,[]);
 suffStat.F = 0;
 posterior.muX = zeros(dim.n,dim.n_t);
 posterior.SigmaX.current = cell(dim.n_t,1);
