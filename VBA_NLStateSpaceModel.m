@@ -203,7 +203,7 @@ end
 
 %-------------------- Initialization -------------------%
 
-if exist('in','var')
+if exist('in','var') && isstruct (in)
     
     try  % Skip initialization [see, e.g., VBA_hyperparameters.m]
         
@@ -273,9 +273,11 @@ end
 
 
 % Display initialized posterior
+if ~ (options.OnLine && isfield(options,'display'))
 [options] = VBA_initDisplay(options);
 try
     delete(intersect(findobj('tag','diagnostics_tabs'),get(options.display.hfp,'children')));
+end
 end
 VBA_updateDisplay(posterior,suffStat,options,y,0)
 
