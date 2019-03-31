@@ -177,7 +177,7 @@ gsi = find([options.sources.type]==0);
 for i=1:numel(gsi)
     for t=1:dim.n_t
         diQ = (diag(priors.iQy{t,i}) == 0) | options.isYout(options.sources(gsi(i)).out,t);
-        options.isYout(options.sources(gsi(i)).out,t) = diQ;
+        options.isYout(options.sources(gsi(i)).out,t) = +diQ;
         priors.iQy{t,i} = diag(~diQ)*priors.iQy{t,i}*diag(~diQ);
     end
 end
