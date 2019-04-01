@@ -36,8 +36,12 @@ for t = 1 : size(y,2)
 
     [posterior_online(t),out_online(t)] = VBA_NLStateSpaceModel(y_online,u_online,f_fname,g_fname,dim,options_online, in);
 
-    plot(h1,1:t,[posterior_online.muPhi]);
-    plot(h2,1:t,[posterior_online.SigmaPhi]);
+   
+  %  cla(h1)
+        muPhi = cat(2,out_online(1).options.priors.muPhi,[posterior_online.muPhi]);
+        SigmaPhi = cat(2,diag(out_online(1).options.priors.SigmaPhi),VBA_getVar({posterior_online.SigmaPhi}));
+        plotUncertainTimeSeries(muPhi,SigmaPhi,0:t,h1);
+    
     
     options_online.display = out_online(t).options.display;
 

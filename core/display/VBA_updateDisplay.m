@@ -220,9 +220,18 @@ drawnow
         % ---------------------------------------------------------------------
         if options.sources(currentSource).type < 2
             
+           
+            
             % predictive density
             resetColors (options.display.ha(1));
             plotUncertainTimeSeries (g_src, vy_src, 1:T, options.display.ha(1));
+            
+            % axis
+            if options.sources(currentSource).type == 0
+                ylim(options.display.ha(1),'auto');
+            else
+                ylim(options.display.ha(1),[-0.2 1.2]);
+            end
             
             % data points
             p_in = findobj(options.display.ha(1),'Tag','yPoint');
