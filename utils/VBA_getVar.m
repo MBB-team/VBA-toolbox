@@ -12,12 +12,10 @@ function V = VBA_getVar(Sigma,T)
 
 
 if iscell(Sigma)
-    try;T;catch;T=length(Sigma);end
-    n = size(Sigma{1},1);
-    V = zeros(n,T);
-    for t=1:T
-        V(:,t) = diag(Sigma{t});
+    if nargin < 2
+        T = length (Sigma);
     end
+    V = cell2mat (cellfun (@diag, Sigma(1 : T), 'UniformOutput', false));
 else
     V = diag(Sigma);
 end
