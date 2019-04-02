@@ -233,16 +233,16 @@ drawnow
                 ylim(options.display.ha(1),[-0.2 1.2]);
             end
             
-            % data points
-            p_in = findobj(options.display.ha(1),'Tag','yPoint');
-            if ~ isempty(p_in)
-                for i = 1 : numel (p_in)
-                    set(p_in(i), 'XData', 1:T, 'YData', y_src_in(i,:));
+            % data lines
+            p_l = findobj(options.display.ha(1),'Tag','yLine');
+            if ~ isempty(p_l)
+                for i = 1 : numel (p_l)
+                    set(p_l(i), 'XData', 1:T, 'YData', y_src(i,:));
                 end
             else
                 resetColors(options.display.ha(1));
-                plot(options.display.ha(1),1:T,y_src_in','.','MarkerSize',9,'Tag','yPoint');
-            end
+                plot(options.display.ha(1),1:T,y_src',':','Tag','yLine','MarkerSize',9);
+            end  
             
             % excluded data points
             p_out = findobj(options.display.ha(1),'Tag','yOut');
@@ -254,15 +254,15 @@ drawnow
                 plot(options.display.ha(1),1:T, y_src_out, '.', 'MarkerEdgeColor',[.7 .7 .7],'MarkerSize',9,'Tag','yOut');
             end
             
-            % data lines
-            p_l = findobj(options.display.ha(1),'Tag','yLine');
-            if ~ isempty(p_l)
-                for i = 1 : numel (p_l)
-                    set(p_l(i), 'XData', 1:T, 'YData', y_src(i,:));
+            % data points
+            p_in = findobj(options.display.ha(1),'Tag','yPoint');
+            if ~ isempty(p_in)
+                for i = 1 : numel (p_in)
+                    set(p_in(i), 'XData', 1:T, 'YData', y_src_in(i,:));
                 end
             else
                 resetColors(options.display.ha(1));
-                plot(options.display.ha(1),1:T,y_src',':','Tag','yLine','MarkerSize',9);
+                plot(options.display.ha(1),1:T,y_src_in','.','MarkerSize',9,'Tag','yPoint');
             end
             
         % categorical source case: heatmap + points
@@ -279,14 +279,6 @@ drawnow
                 colormap (flipud (colormap ('bone')));
             end
             
-            % data points
-            p_in = findobj (options.display.ha(1), 'Tag', 'yPoint');
-            if ~ isempty (p_in)
-                set (p_in, 'YData', VBA_indicator (y_src_in, [], true));
-            else
-                plot (options.display.ha(1), VBA_indicator (y_src_in, [], true), '.','ZData',2*ones(size(1:T)),'MarkerEdgeColor',[.9 0 0], 'MarkerSize', 9, 'Tag', 'yPoint');
-            end
-            
             % excluded points
             p_out = findobj (options.display.ha(1), 'Tag', 'yOut');
             if ~ isempty (p_out)
@@ -295,6 +287,14 @@ drawnow
                 plot (options.display.ha(1), VBA_indicator (y_src_out, [], true), '.','ZData',ones(size(1:T)),'MarkerEdgeColor',[.7 .7 .7], 'Tag', 'yOut');
             end
             
+            % data points
+            p_in = findobj (options.display.ha(1), 'Tag', 'yPoint');
+            if ~ isempty (p_in)
+                set (p_in, 'YData', VBA_indicator (y_src_in, [], true));
+            else
+                plot (options.display.ha(1), VBA_indicator (y_src_in, [], true), '.','ZData',2*ones(size(1:T)),'MarkerEdgeColor',[.9 0 0], 'MarkerSize', 9, 'Tag', 'yPoint');
+            end
+    
         end
         
         % ensure proper scaling of the axis
@@ -325,6 +325,14 @@ drawnow
         % gaussian source case
         % ---------------------------------------------------------------------
         if options.sources(currentSource).type == 0
+             
+            % excluded points
+            p_out = findobj (options.display.ha(2), 'Tag', 'yOut');
+            if ~ isempty(p_out)
+                set (p_out, 'XData', g_src_out(:), 'YData', y_src_out(:));
+            else
+                plot (options.display.ha(2), g_src_out(:), y_src_out(:), '.', 'MarkerEdgeColor', [.7 .7 .7], 'MarkerSize', 9, 'Tag', 'yOut');
+            end
             
             % included points
             p_in = findobj(options.display.ha(2), 'Tag', 'yIn');
@@ -335,14 +343,6 @@ drawnow
             else
                 resetColors (options.display.ha(2));
                 plot (options.display.ha(2), g_src_in', y_src_in', '.', 'MarkerSize', 9,'Tag', 'yIn');
-            end
-            
-            % excluded points
-            p_out = findobj (options.display.ha(2), 'Tag', 'yOut');
-            if ~ isempty(p_out)
-                set (p_out, 'XData', g_src_out(:), 'YData', y_src_out(:));
-            else
-                plot (options.display.ha(2), g_src_out(:), y_src_out(:), '.', 'MarkerEdgeColor', [.7 .7 .7], 'MarkerSize', 9, 'Tag', 'yOut');
             end
             
             % binary or categorical source case
@@ -359,20 +359,6 @@ drawnow
                 plot (options.display.ha(2), grid_p, grid_p - grid_std, 'r--', 'Tag', 'ellpise');
             end
             
-            % included points
-            [stackyin, stdyin, gridgin] = VBA_Bin2Cont (g_src_in, y_src_in);
-            
-            p_in = findobj (options.display.ha(2), 'Tag', 'yIn');
-            if ~ isempty (p_in)
-                set (p_in, ...
-                    'XData', gridgin, ...
-                    'YData', stackyin, ...
-                    'LData', stdyin, ...
-                    'UData', stdyin);
-            else
-                errorbar (gridgin, stackyin, stdyin, '.', 'MarkerSize', 9, 'parent', options.display.ha(2), 'Tag', 'yIn');
-            end
-            
             % excluded points
             [stackyout, stdyout, gridgout] = VBA_Bin2Cont (g_src_out, y_src_out);
             
@@ -385,6 +371,20 @@ drawnow
                     'UData', stdyout);
             else
                 errorbar (gridgout, stackyout, stdyout, '.', 'Color', [.7 .7 .7], 'MarkerSize', 9, 'parent', options.display.ha(2), 'Tag', 'yOut');
+            end
+            
+            % included points
+            [stackyin, stdyin, gridgin] = VBA_Bin2Cont (g_src_in, y_src_in);
+            
+            p_in = findobj (options.display.ha(2), 'Tag', 'yIn');
+            if ~ isempty (p_in)
+                set (p_in, ...
+                    'XData', gridgin, ...
+                    'YData', stackyin, ...
+                    'LData', stdyin, ...
+                    'UData', stdyin);
+            else
+                errorbar (gridgin, stackyin, stdyin, '.', 'MarkerSize', 9, 'parent', options.display.ha(2), 'Tag', 'yIn');
             end
         end
     end
