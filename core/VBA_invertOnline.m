@@ -16,9 +16,9 @@ end
 %
 options_online = options;
 
-figure;
-h1 = subplot(2,1,1);
-h2 = subplot(2,1,2);
+VBA_figure;
+hPhi = subplot(2,1,1);
+hTheta = subplot(2,1,2);
 
 in = NaN;
 for t = 1 : size(y,2)
@@ -37,11 +37,18 @@ for t = 1 : size(y,2)
     [posterior_online(t),out_online(t)] = VBA_NLStateSpaceModel(y_online,u_online,f_fname,g_fname,dim,options_online, in);
 
    
-  %  cla(h1)
+    if out_online(end).options.dim.n_phi > 0
         muPhi = cat(2,out_online(1).options.priors.muPhi,[posterior_online.muPhi]);
         SigmaPhi = cat(2,diag(out_online(1).options.priors.SigmaPhi),VBA_getVar({posterior_online.SigmaPhi}));
-        plotUncertainTimeSeries(muPhi,SigmaPhi,0:t,h1);
-    
+        plotUncertainTimeSeries(muPhi,SigmaPhi,0:t,hPhi);
+        xlim([0,size(y,2)])
+    end
+    if out_online(end).options.dim.n_theta > 0
+        muTheta = cat(2,out_online(1).options.priors.muTheta,[posterior_online.muTheta]);
+        SigmaTheta = cat(2,diag(out_online(1).options.priors.SigmaTheta),VBA_getVar({posterior_online.SigmaTheta}));
+        plotUncertainTimeSeries(muTheta,SigmaTheta,0:t,hTheta);
+        xlim([0,size(y,2)])
+    end
     
     options_online.display = out_online(t).options.display;
 
