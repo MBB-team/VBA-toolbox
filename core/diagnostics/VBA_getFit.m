@@ -47,7 +47,7 @@ for i=1:length(gsi)
     si=gsi(i);
     idx = out.options.sources(si).out;
     % sample size
-    fit.ny(si) = sum(1-VBA_vec(out.options.isYout(idx,:)));
+    fit.ny(si) = sum(1-VBA_vec(out.options.isYout(idx,1:out.dim.n_t)));
     % log-likelihood
     if out.options.UNL % to be rationalized...
         fit.LL = out.suffStat.logL;
@@ -64,7 +64,7 @@ for i=1:length(gsi)
     fit.AIC(si) = fit.LL(si) - fit.np;
     fit.BIC(si) = fit.LL(si) - 0.5*fit.np.*log(fit.ny(si));
     % coefficient of determination
-    fit.R2(si) = VBA_r2 (suffStat.gx(idx,:), out.y(idx,:), out.options.isYout(idx,:));
+    fit.R2(si) = VBA_r2 (suffStat.gx(idx,1:out.dim.n_t), out.y(idx,1:out.dim.n_t), out.options.isYout(idx,1:out.dim.n_t));
     
     % classification accuracies [irrelevant]
     fit.acc(si) = NaN;
@@ -78,17 +78,17 @@ for i=1:length(bsi)
     si=bsi(i);
     idx = out.options.sources(si).out;
     % sample size
-    fit.ny(si) = sum(1-VBA_vec(out.options.isYout(idx,:)));
+    fit.ny(si) = sum(1-VBA_vec(out.options.isYout(idx,1:out.dim.n_t)));
     % log-likelihood
     fit.LL(si) = out.suffStat.logL(si);
     % AIC/BIC
     fit.AIC(si) = fit.LL(si) - fit.np;
     fit.BIC(si) = fit.LL(si) - 0.5*fit.np.*log(fit.ny(si));
     % coefficient of determination
-    fit.R2(si) = VBA_r2 (suffStat.gx(idx,:), out.y(idx,:), out.options.isYout(idx,:));
+    fit.R2(si) = VBA_r2 (suffStat.gx(idx,1:out.dim.n_t), out.y(idx,1:out.dim.n_t), out.options.isYout(idx,1:out.dim.n_t));
 
     % classification accuracies    
-    [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,:), out.y(idx,:), 1, out.options.isYout(idx,:));
+    [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,1:out.dim.n_t), out.y(idx,1:out.dim.n_t), 1, out.options.isYout(idx,1:out.dim.n_t));
     
 end
 
@@ -98,17 +98,17 @@ for i=1:length(msi)
     si=msi(i);
     idx = out.options.sources(si).out;
     % sample size
-    fit.ny(si) = sum(1-any(out.options.isYout(idx,:)));
+    fit.ny(si) = sum(1-any(out.options.isYout(idx,1:out.dim.n_t)));
     % log-likelihood
     fit.LL(si) = out.suffStat.logL(si);
     % AIC/BIC
     fit.AIC(si) = fit.LL(si) - fit.np;
     fit.BIC(si) = fit.LL(si) - 0.5*fit.np.*log(fit.ny(si));
     % coefficient of determination    
-    fit.R2(si) = VBA_r2 (suffStat.gx(idx,:), out.y(idx,:), out.options.isYout(idx,:));
+    fit.R2(si) = VBA_r2 (suffStat.gx(idx,1:out.dim.n_t), out.y(idx,1:out.dim.n_t), out.options.isYout(idx,1:out.dim.n_t));
 
     % classification accuracies [to be rationalized!]
-    [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,:), out.y(idx,:), 2, out.options.isYout(idx,:));
+    [fit.acc(si), fit.bacc(si)] = VBA_accuracy (suffStat.gx(idx,1:out.dim.n_t), out.y(idx,1:out.dim.n_t), 2, out.options.isYout(idx,1:out.dim.n_t));
     
 end
 
