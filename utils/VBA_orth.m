@@ -1,13 +1,18 @@
 function A = VBA_orth (A, norm)
-% serial orthogonalisation of matrix A
-% function A = VBA_orth(A,norm)
-% This function considers each column serially, projecting it in the null
+% // VBA toolbox //////////////////////////////////////////////////////////
+%
+% A = VBA_orth (A, norm)
+% Iteratively orthogonalize the columns of A. In other words, this function
+% considers each column serially to project it in the null
 % space of the previous columns of A.
+%
 % IN:
 %   - A: nXp matrix
-%   - norm: a flag for normalization of A's columns
+%   - norm: a flag for normalization of A's columns (z-scoring, default = false)
 % OUT:
 %   - A: the serially orthogonalized matrix A
+%
+% /////////////////////////////////////////////////////////////////////////% serial orthogonalisation of matrix A
 
 if nargin < 2
     norm = false;
