@@ -18,10 +18,16 @@ switch class (X)
         flag = any (isinf (X(:)) | isnan (X(:)) | ~ isreal (X(:)));   
         
     case 'cell'
-        flag = any (cellfun (@VBA_isWeird, X));
+        flag = false;
+        for i = 1 : numel (X)
+            flag = flag || VBA_isWeird (X{i});
+        end
         
     case 'struct'
-        flag = any (structfun (@VBA_isWeird, X));
+        flag = false;
+        for i = 1 : numel (X)
+            flag = flag || any (structfun (@VBA_isWeird, X(i)));
+        end
     
     otherwise
         flag = NaN;
