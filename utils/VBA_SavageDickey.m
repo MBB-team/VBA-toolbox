@@ -99,7 +99,7 @@ options.sources = struct('type', 0 , ...
                          'out' , 1:dim.p          );
                      
 fn                  = fieldnames(priors);
-priors0             = VBA_priors(dim,options);
+priors0             = VBA_defaultPriors(dim,options);
 fn0                 = fieldnames(priors0);
 io                  = ismember(fn0,fn);
 ind                 = find(io==0);

@@ -58,7 +58,7 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %   regarding the model, ie (see VBA_check.m):
 %       .priors: a structure variable containing the priors sufficient
 %       statistics over the evolution/observation/precision parameters and
-%       hidden-states initial condition (see VBA_priors.m for standard
+%       hidden-states initial condition (see VBA_defaultPriors() for standard
 %       output)
 %       ! NB: if the prior about the stochastic innovations precision is a
 %        Dirac delta (priors.a_alpha = Inf, priors.b_alpha = 0), the model
