@@ -115,7 +115,7 @@ hf = figure('color',[1 1 1],'name','Performance patterns');
 if noisy
     na = 2;
     mP2 = VBA_nanmean(Perf2,3);
-    sP2 = std(Perf2,0,3,'omitnan');
+    sP2 = sqrt(VBA_nanvar(Perf2,3));
 else
     na = 1;
 end
