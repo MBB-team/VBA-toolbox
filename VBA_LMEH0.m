@@ -21,7 +21,7 @@ for s=1:length(s_g)
     y_i = options.sources(s_g(s)).out ;
     y_s = y(y_i,:);
     y_s = y_s(options.isYout(y_i,:)==0);
-    LLH0 = LLH0 + lev_GLM(vec(y_s),ones(numel(y_s),1));
+    LLH0 = LLH0 + lev_GLM(VBA_vec(y_s),ones(numel(y_s),1));
 %     try
 %         a0 = options.priors.a_sigma(s);
 %         b0 = options.priors.b_sigma(s);

@@ -22,4 +22,4 @@ function r = VBA_spm_gamrnd(a,b,varargin)
 % $Id: spm_gamrnd.m 3251 2009-07-06 17:29:44Z guillaume $
 
 %-This is merely the help file for the compiled routine
-error('VBA_spm_gamrnd.c not compiled - see Makefile');
+error('spm_gamrnd.c not compiled - see Makefile');

@@ -67,9 +67,9 @@ if ~isempty(options.families)
             out = [];
             return
         end
-        tmp = [tmp;vec(indf)];
+        tmp = [tmp; VBA_vec(indf)];
     end
-    if ~isequal(vec(unique(tmp)),vec(1:nm))
+    if ~isequal(VBA_vec(unique(tmp)),VBA_vec(1:nm))
         if numel(unique(tmp)) < nm
             disp('Error: families do not cover the entire set of models!')
         else
@@ -80,11 +80,11 @@ if ~isempty(options.families)
         return
     end    
 else
-    Cfam = vec(1:nm);
+    Cfam = VBA_vec(1:nm);
 end
 
 
-try;factors;catch;factors=vec(1:nc);end
+try;factors;catch;factors=VBA_vec(1:nc);end
 sf = size(factors);
 sf(sf<=1) = [];
 nf = size(sf,2); % number of factors/dimensions across conditions
@@ -97,7 +97,7 @@ for f=1:nf
     strpar(end) = [];
     strpar(2*(f-1)+1) = 'k';
     for k=1:nlevels
-        eval(['indf{f}(:,k) = vec(factors(',strpar,'));'])
+        eval(['indf{f}(:,k) = VBA_vec(factors(',strpar,'));'])
     end
 end
 % form nc-tuples

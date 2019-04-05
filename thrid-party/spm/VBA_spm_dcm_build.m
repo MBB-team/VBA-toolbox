@@ -73,7 +73,7 @@ catch % old DCM structure
     DCM.options.stochastic = 0;
     DCM.options.two_state = 0;
 end
-ud.Pcorr = cov2corr(DCM.Cp);
+ud.Pcorr = VBA_cov2corr(DCM.Cp);
 pos0 = get(0,'screenSize');
 pos = [0.51*pos0(3),0.05*pos0(4),0.45*pos0(3),0.9*pos0(4)];
 [pathstr,filename,ext] = fileparts(DCM.filename);
@@ -225,7 +225,7 @@ title(ha,...
 grid(ha,'on')
 xlabel(ha,'time (seconds)')
 legend(ha,DCM.Y.name)
-try;getSubplots; end
+try; VBA_getSubplots (); end
 
 
 function mySpec(hfp)
@@ -367,7 +367,7 @@ if isfield(DCM,'xY')
     end
     line([0 4],[y y],'parent',ha)
     axis(ha,'off')
-    try;getSubplots; end
+    try;VBA_getSubplots; end
 else
     ht = uicontrol('style','text',...
         'parent',ud.tabs.handles2.hp,...
@@ -409,7 +409,7 @@ for i = 1:ud.dim.m
     grid(ha,'on')
     box(ha,'on')
 end
-try;getSubplots; end
+try;VBA_getSubplots; end
 
 
 
@@ -491,7 +491,7 @@ if ud.estimated
     xlabel(ha,'predicted');
 end
 
-try;getSubplots; end
+try;VBA_getSubplots; end
 
 
 
@@ -710,7 +710,7 @@ col = colormap('jet');
 col(1,:) = 0.5*ones(1,3);
 colormap(ha,col);
 cb = colorbar('peer',ha);
-try;getSubplots;end
+try;VBA_getSubplots;end
 
 
 function ha = displayMat(a,hParent,DCM,matType,dim)
@@ -793,17 +793,5 @@ for i = 1:size(a,1)
     end
 end
 
-try;getSubplots; end
+try;VBA_getSubplots; end
 
-
-function [C] = cov2corr(V)
-% computes correlation matrix from covariance matrix
-
-dv = diag(V);
-n = size(V,1);
-C = zeros(n,n);
-for i=1:n
-    for j=1:n
-        C(i,j) = V(i,j)./sqrt(dv(i).*dv(j));
-    end
-end

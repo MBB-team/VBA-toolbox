@@ -116,7 +116,7 @@ axis square
 % posterior correlations among all parameters
 %--------------------------------------------------------------------------
 subplot(2,2,4)
-imagesc(cov2corr(DCM.Cp))
+imagesc(VBA_cov2corr(DCM.Cp))
 title('posterior correlations','FontSize',16)
 str = sprintf('estimable parameters %0.0f', D(3));
 str = {'posterior correlations',str};
