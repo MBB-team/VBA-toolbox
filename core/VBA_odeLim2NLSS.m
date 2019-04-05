@@ -26,6 +26,7 @@ suffStat.ODE_suffStat = suffStat;
 dim = options.inG.old.dim;
 options = options.inG.old.options;
 try; options.init = options0.init; end
+try; options.display = options0.display; end
 
 % Recover observation parameters posterior
 if dim.n_phi > 0

@@ -136,7 +136,6 @@ VBA_getSubplots ();
 % Now OBSERVE THE OBSERVER:
 y = RT + 1./sigma*randn(size(RT)); % add (motor) noise
 % y = y  - min(y);
-options.GnFigs = 0;
 options.inF.flag = flag;
 switch options.inF.flag
     case 1

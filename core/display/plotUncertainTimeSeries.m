@@ -18,7 +18,9 @@ function [haf,hf,hp] = plotUncertainTimeSeries(muX,SX,dTime,hParent,ind,color)
 %   - hf: the patchs handles (for later error bar corrections)
 %   - hp: the bar/line plot handles
 
-try,color;catch,color=[];end
+if nargin < 6
+	color=[];
+end
 
 % Get dimensions
 n = size(muX,1);
@@ -34,9 +36,7 @@ try
     if ~isax
         hf = figure('color',ones(1,3));
         haf = axes('parent',hf);
-        box(haf,'off');
-    else
-        
+        box(haf,'off');        
     end
 catch
     hf = figure('color',ones(1,3));

@@ -264,6 +264,8 @@ else
     styleLabel(xlabel(h,x_label_str));
     styleLabel(ylabel(h,y_label_str));
     
+    plotUncertainTimeSeries(zeros(options.dim.n_phi,1),zeros(options.dim.n_phi,1),1,h);
+
 end
 display.ha(5) = h;
 

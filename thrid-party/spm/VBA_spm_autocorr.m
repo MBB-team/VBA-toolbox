@@ -15,7 +15,7 @@ function R= VBA_spm_autocorr(y)
 R = zeros(n,t*2);
 % standardize y
 my = VBA_nanmean(y,2);
-sy = VBA_nanstd(y,[],2);
+sy = sqrt(VBA_nanvar(y,2));
 sy(sy==0) = 1; % correct for identically constant time series
 y = y - repmat(my,1,t);
 y = diag(1./sy)*y;

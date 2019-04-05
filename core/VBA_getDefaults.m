@@ -17,7 +17,7 @@ in                  = 'only for inversion refinement (can be unspecified)';
 
 
 %------- Options structure -------%
-options.priors = 'structure containing the first two moments of all prior pdfs [see VBA_priors.m]';
+options.priors = 'structure containing the first two moments of all prior pdfs [see VBA_defaultPriors()]';
 options.decim = 'for micro-time resolution';
 options.microU = 'flag for micro-time input u';
 options.inF = '(internal) parameters of the evolution function';

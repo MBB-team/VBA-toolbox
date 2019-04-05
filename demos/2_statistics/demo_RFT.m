@@ -30,6 +30,7 @@ for j=1:length(v)
         if disp_and_verbose
             drawnow
             pause
+            close(out.hf)
         end
         hpeak(j,ii) = length(find(out.peaks.prft<0.05))>=1;
         hclu(j,ii) = length(find(out.clusters.prft<0.05))>=1;

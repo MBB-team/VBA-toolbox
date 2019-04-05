@@ -1,5 +1,4 @@
 function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
-% Generic model inversion routine
 % [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options,in)
 %
 % This function inverts any nonlinear state-space model of the form:
@@ -59,7 +58,7 @@ function [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options
 %   regarding the model, ie (see VBA_check.m):
 %       .priors: a structure variable containing the priors sufficient
 %       statistics over the evolution/observation/precision parameters and
-%       hidden-states initial condition (see VBA_priors.m for standard
+%       hidden-states initial condition (see VBA_defaultPriors() for standard
 %       output)
 %       ! NB: if the prior about the stochastic innovations precision is a
 %        Dirac delta (priors.a_alpha = Inf, priors.b_alpha = 0), the model
@@ -278,16 +277,8 @@ end
 try
     delete(intersect(findobj('tag','diagnostics_tabs'),get(options.display.hfp,'children')));
 end
-VBA_updateDisplay(posterior,suffStat,options,y,0,'precisions')
-if dim.n_phi > 0
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'phi')
-end
-if dim.n > 0
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'X')
-end
-if dim.n_theta > 0
-    VBA_updateDisplay(posterior,suffStat,options,y,0,'theta')
-end
+VBA_updateDisplay(posterior,suffStat,options,y,0)
+
 
 %------------------------------------------------------------%
 %----------------- Main VB learning scheme ------------------%
@@ -295,7 +286,7 @@ end
 
 stop = it>=options.MaxIter; % flag for exiting VB scheme
 while ~stop
-    
+    try
     it = it +1; % iteration index
     F0 = suffStat.F(end);
     
@@ -352,6 +343,15 @@ while ~stop
         end
     end
     
+    catch err
+        switch err.identifier
+            case 'MATLAB:class:InvalidHandle'
+                [options] = VBA_initDisplay(options);
+                continue;
+            otherwise
+                rethrow(err);
+        end
+    end
 end
 
 

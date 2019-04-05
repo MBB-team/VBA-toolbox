@@ -11,7 +11,7 @@ function [options,params2update] = VBA_fillInPriors(dim,options)
 
 
 % VBA default priors
-default_priors = VBA_priors(dim,options);
+default_priors = VBA_defaultPriors(dim, options);
 if ~isfield(options,'priors')
     options.priors = struct();
 end

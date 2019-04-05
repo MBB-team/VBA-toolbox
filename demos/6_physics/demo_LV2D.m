@@ -42,8 +42,10 @@ dim.n       = 2;
 % Build time series of hidden states and observations
 ok = false;
 while ~ ok
-    [y,x,x0,eta,e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
-    ok = ~ VBA_isWeird ({x, y});
+    try
+        [y,x,x0,eta,e] = VBA_simulate (n_t,f_fname,g_fname,theta,phi,u,alpha,sigma,options);
+        ok = ~ VBA_isWeird ({x, y});
+    end
 end
 
 
