@@ -1,4 +1,4 @@
-function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group, options_group)
+function [p_sub,o_sub,posterior_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group, options_group)
 % VB treatment of mixed-effects analysis
 % function [posterior,out] = VBA_MFX(y,u,f_fname,g_fname,dim,options)
 % This function approaches model inversion from an empirical Bayes
@@ -57,28 +57,44 @@ function [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options
 %       (initialization).
 
 
-
-ns = length(y); % # subjects
-dim.ns = ns;
-
-if exist('options_group', 'var')
-    opt  = options_group;
-else
-    opt = [];
+%% Check parameters
+% =========================================================================
+if ~ exist('priors_group','var')
+    priors_group = struct ();
 end
 
+if ~ exist('options_group','var')
+    priors_group = struct ();
+end
+
+%% Shortcuts
+% =========================================================================
+% Number of subjects
+nS = length(y); 
+
+% expand inputs to an array if necessary
+if isnumeric (u)
+    temp = cell (1, nS);
+    temp(:) = {u};
+    u = temp;
+end
+
+
+dim.ns = nS;
+
+opt = options_group;
 opt.dim = dim;
 opt.g_fname = g_fname;
 opt.f_fname = f_fname;
 
 
-% set default options
-opt = VBA_check_struct(opt, ...
-    'TolFun'     , 2e-2  , ...     % Minimum change in the free energy
-    'MaxIter'    , 16    , ...     % Maximum number of iterations
-    'DisplayWin' , 1     , ...     % VB display window
-    'verbose'    , 1       ...     % matlab window messages
-    ) ;
+% % set default options
+% opt = VBA_check_struct(opt, ...
+%     'TolFun'     , 2e-2  , ...     % Minimum change in the free energy
+%     'MaxIter'    , 16    , ...     % Maximum number of iterations
+%     'DisplayWin' , 1     , ...     % VB display window
+%     'verbose'    , 1       ...     % matlab window messages
+%     ) ;
 
 o_group.options = opt;
 o_group.tStart  = tic;  % start time
@@ -87,83 +103,51 @@ o_group.tStart  = tic;  % start time
 [o_group.options] = VBA_displayMFX([],[],[],o_group,1,'off');
 
 
-% 0- Check priors
+%% Check priors
+% =========================================================================
 % Default priors are used if priors are not explicitly provided through the
 % priors_group structure. This means Gaussian(0,1) priors for the
 % population mean of observation/evolution parameters and initial
 % conditions, and Gamma(1,1) for the corresponding population precisions.
-try,priors_group;catch,priors_group=[];end
-if dim.n_phi > 0
-    priors_group = VBA_check_struct(priors_group, ...
-        'muPhi'      , zeros(dim.n_phi,1) , ... % prior mean on population average
-        'SigmaPhi'   , eye(dim.n_phi)     , ... % prior variance on population average
-        'a_vPhi'     , ones(dim.n_phi,1)  , ... % prior shape param on population variance
-        'b_vPhi'     , ones(dim.n_phi,1)    ... % prior rate param on population variance
-        ) ;
-end
-if dim.n_theta > 0
-    priors_group = VBA_check_struct(priors_group, ...
-        'muTheta'      , zeros(dim.n_theta,1) , ...
-        'SigmaTheta'   , eye(dim.n_theta)     , ...
-        'a_vTheta'     , ones(dim.n_theta,1)  , ...
-        'b_vTheta'     , ones(dim.n_theta,1)    ...
-        ) ;
-end
-if dim.n >0
-    priors_group = VBA_check_struct(priors_group, ...
-        'muX0'      , zeros(dim.n,1) , ...
-        'SigmaX0'   , eye(dim.n)     , ...
-        'a_vX0'     , ones(dim.n,1)  , ...
-        'b_vX0'     , ones(dim.n,1)    ...
-        ) ;
-end
-opt.priors_group = priors_group;
 
-if isempty(u)
-    for i=1:ns
-        u{i} = [];
-    end
-end
+priors_group = VBA_check_struct (priors_group, VBA_defaultMFXPriors (dim));
 
-% 1- Initialization
+%% Initialization
+% =========================================================================
 % Here, we simply initialize the posterior on the population's mean and
 % precision over observation/evolution parameters and initial conditions
 % using their prior.
-fprintf(1,['VBA treatment of MFX analysis: initialization...'])
-for i=1:ns
-    if dim.n_phi > 0
-        p_group.muPhi = priors_group.muPhi;
-        p_group.SigmaPhi = priors_group.SigmaPhi;
+
+VBA_disp ('VBA treatment of MFX analysis: initialization...', options)
+
+posterior_group = priors_group;
+for i=1:nS
+    %if dim.n_phi > 0
         iV_phi = VBA_inv(priors_group.SigmaPhi);
-        p_group.a_vPhi = priors_group.a_vPhi;
-        p_group.b_vPhi = priors_group.b_vPhi;
-        ind.phi_ffx = find(infLimit(p_group.a_vPhi,p_group.b_vPhi)==1);
+        ind.phi_ffx = find(isInfLimit(posterior_group.a_vPhi,posterior_group.b_vPhi));
         ind.phi_in = find(diag(priors_group.SigmaPhi)~=0);
-    end
-    if dim.n_theta > 0
-        p_group.muTheta = priors_group.muTheta;
-        p_group.SigmaTheta = priors_group.SigmaTheta;
+    %end
+    %if dim.n_theta > 0
         iV_theta = VBA_inv(priors_group.SigmaTheta);
-        p_group.a_vTheta = priors_group.a_vTheta;
-        p_group.b_vTheta = priors_group.b_vTheta;
-        ind.theta_ffx = find(infLimit(p_group.a_vTheta,p_group.b_vTheta)==1);
+        ind.theta_ffx = find(isInfLimit(posterior_group.a_vTheta,posterior_group.b_vTheta));
         ind.theta_in = find(diag(priors_group.SigmaTheta)~=0);
-    end
-    if dim.n >0
-        p_group.muX0 = priors_group.muX0;
-        p_group.SigmaX0 = priors_group.SigmaX0;
+    %end
+    %if dim.n >0
         iV_x0 = VBA_inv(priors_group.SigmaX0);
-        p_group.a_vX0 = priors_group.a_vX0;
-        p_group.b_vX0 = priors_group.b_vX0;
-        ind.x0_ffx = find(infLimit(p_group.a_vX0,p_group.b_vX0)==1);
+        ind.x0_ffx = find(isInfLimit(posterior_group.a_vX0,posterior_group.b_vX0));
         ind.x0_in = find(diag(priors_group.SigmaX0)~=0);
-    end
+    %end
 end
 
 
+opt.priors_group = priors_group;
+
+
+
+
 % 2- evaluate within-subject free energies under the prior
-p_sub = cell(ns,1);
-o_sub = cell(ns,1);
+p_sub = cell(nS,1);
+o_sub = cell(nS,1);
 if opt.verbose
     fprintf(1,'%6.2f %%',0)
 end
@@ -171,41 +155,17 @@ kernelSize0 = 0; % max lag of volterra kernel
 
 % save here to acces subject specific trial numbers later
 if numel(dim.n_t) == 1
-    n_t = repmat(dim.n_t,1,ns);
+    n_t = repmat(dim.n_t,1,nS);
 else
     n_t = dim.n_t;
 end
 
-for i=1:ns
-    if opt.verbose
-        fprintf(1,repmat('\b',1,8))
-        fprintf(1,'%6.2f %%',floor(100*i/ns))
-    end
-    % define within-subject priors
-    if dim.n_phi > 0
-        options{i}.priors.muPhi = p_group.muPhi;
-        options{i}.priors.SigmaPhi = diag(p_group.b_vPhi./p_group.a_vPhi);
-        if ~isempty(ind.phi_ffx)
-            options{i}.priors.muPhi(ind.phi_ffx) = priors_group.muPhi(ind.phi_ffx);
-            options{i}.priors.SigmaPhi(ind.phi_ffx,ind.phi_ffx) = ns*priors_group.SigmaPhi(ind.phi_ffx,ind.phi_ffx);
-        end
-    end
-    if dim.n_theta > 0
-        options{i}.priors.muTheta = p_group.muTheta;
-        options{i}.priors.SigmaTheta = diag(p_group.b_vTheta./p_group.a_vTheta);
-        if ~isempty(ind.theta_ffx)
-            options{i}.priors.muTheta(ind.theta_ffx) = priors_group.muTheta(ind.theta_ffx);
-            options{i}.priors.SigmaTheta(ind.theta_ffx,ind.theta_ffx) = ns*priors_group.SigmaTheta(ind.theta_ffx,ind.theta_ffx);
-        end
-    end
-    if dim.n >0
-        options{i}.priors.muX0 = p_group.muX0;
-        options{i}.priors.SigmaX0 = diag(p_group.b_vX0./p_group.a_vX0);
-        if ~isempty(ind.x0_ffx)
-            options{i}.priors.muX0(ind.x0_ffx) = priors_group.muX0(ind.x0_ffx);
-            options{i}.priors.SigmaX0(ind.x0_ffx,ind.x0_ffx) = ns*priors_group.SigmaX0(ind.x0_ffx,ind.x0_ffx);
-        end
-    end
+for i=1:nS
+    VBA_disp ([repmat('\b',1,8) '%6.2f %%',floor(100*i/nS)], opt);
+    
+    options{i}.priors = getSubjectPriors(priors_group, posterior_group, ind, nS);
+    
+  
     % VBA model inversion
     options{i}.MaxIter = 0;
     options{i} = VBA_check_struct(options{i},'kernelSize',16);
@@ -219,7 +179,7 @@ for i=1:ns
     options{i} = o_sub{i}.options;
     options{i}.MaxIter = 32;
 end
-F(1) = MFX_F(p_sub,o_sub,p_group,priors_group,dim,ind);
+F(1) = MFX_F(p_sub,o_sub,posterior_group,priors_group,dim,ind);
 o_group.F = F;
 o_group.it = 0;
 o_group.ind = ind;
@@ -228,7 +188,7 @@ if opt.verbose
     fprintf(' OK.')
     fprintf('\n')
 end
-[o_group.options] = VBA_displayMFX(p_sub,o_sub,p_group,o_group,0,'off');
+[o_group.options] = VBA_displayMFX(p_sub,o_sub,posterior_group,o_group,0,'off');
 
 
 
@@ -244,38 +204,16 @@ fprintf(1,['Main VB inversion...'])
 while ~stop
     
     % perform within-subject model inversions
-    for i=1:ns
+    for i=1:nS
         
         
         try
-            set(o_group.options.display.ho,'string',['VB iteration #',num2str(it),': within-subject model inversions (',num2str(floor(100*(i-1)/ns)),'%)'])
+            set(o_group.options.display.ho,'string',['VB iteration #',num2str(it),': within-subject model inversions (',num2str(floor(100*(i-1)/nS)),'%)'])
         end
         
         % re-define within-subject priors
-        if dim.n_phi > 0
-            options{i}.priors.muPhi = p_group.muPhi;
-            options{i}.priors.SigmaPhi = diag(p_group.b_vPhi./p_group.a_vPhi);
-            if ~isempty(ind.phi_ffx)
-                options{i}.priors.muPhi(ind.phi_ffx) = priors_group.muPhi(ind.phi_ffx);
-                options{i}.priors.SigmaPhi(ind.phi_ffx,ind.phi_ffx) = ns*priors_group.SigmaPhi(ind.phi_ffx,ind.phi_ffx);
-            end
-        end
-        if dim.n_theta > 0
-            options{i}.priors.muTheta = p_group.muTheta;
-            options{i}.priors.SigmaTheta = diag(p_group.b_vTheta./p_group.a_vTheta);
-            if ~isempty(ind.theta_ffx)
-                options{i}.priors.muTheta(ind.theta_ffx) = priors_group.muTheta(ind.theta_ffx);
-                options{i}.priors.SigmaTheta(ind.theta_ffx,ind.theta_ffx) = ns*priors_group.SigmaTheta(ind.theta_ffx,ind.theta_ffx);
-            end
-        end
-        if dim.n >0
-            options{i}.priors.muX0 = p_group.muX0;
-            options{i}.priors.SigmaX0 = diag(p_group.b_vX0./p_group.a_vX0);
-            if ~isempty(ind.x0_ffx)
-                options{i}.priors.muX0(ind.x0_ffx) = priors_group.muX0(ind.x0_ffx);
-                options{i}.priors.SigmaX0(ind.x0_ffx,ind.x0_ffx) = ns*priors_group.SigmaX0(ind.x0_ffx,ind.x0_ffx);
-            end
-        end
+        options{i}.priors = getSubjectPriors(priors_group, posterior_group, ind, nS);
+
         
         % bypass VBA initialization
         in.posterior = p_sub{i};
@@ -309,49 +247,49 @@ while ~stop
     
     % update moments of the parent population distribution
     if dim.n_phi > 0
-        [p_group.muPhi,p_group.SigmaPhi,p_group.a_vPhi,p_group.b_vPhi] = ...
+        [posterior_group.muPhi,posterior_group.SigmaPhi,posterior_group.a_vPhi,posterior_group.b_vPhi] = ...
             MFX_VBupdate(...
             priors_group.muPhi,...
             iV_phi,...
             mphi,...
             Vphi,...
-            p_group.a_vPhi,...
-            p_group.b_vPhi,...
+            posterior_group.a_vPhi,...
+            posterior_group.b_vPhi,...
             priors_group.a_vPhi,...
             priors_group.b_vPhi,...
             ind.phi_ffx,...
             ind.phi_in);
     end
     if dim.n_theta > 0
-        [p_group.muTheta,p_group.SigmaTheta,p_group.a_vTheta,p_group.b_vTheta] = ...
+        [posterior_group.muTheta,posterior_group.SigmaTheta,posterior_group.a_vTheta,posterior_group.b_vTheta] = ...
             MFX_VBupdate(...
             priors_group.muTheta,...
             iV_theta,...
             mtheta,...
             Vtheta,...
-            p_group.a_vTheta,...
-            p_group.b_vTheta,...
+            posterior_group.a_vTheta,...
+            posterior_group.b_vTheta,...
             priors_group.a_vTheta,...
             priors_group.b_vTheta,...
             ind.theta_ffx,...
             ind.theta_in);
     end
     if dim.n >0
-        [p_group.muX0,p_group.SigmaX0,p_group.a_vX0,p_group.b_vX0] = ...
+        [posterior_group.muX0,posterior_group.SigmaX0,posterior_group.a_vX0,posterior_group.b_vX0] = ...
             MFX_VBupdate(...
             priors_group.muX0,...
             iV_x0,...
             mx0,...
             Vx0,...
-            p_group.a_vX0,...
-            p_group.b_vX0,...
+            posterior_group.a_vX0,...
+            posterior_group.b_vX0,...
             priors_group.a_vX0,...
             priors_group.b_vX0,...
             ind.x0_ffx,...
             ind.x0_in);
     end
     
-    F(it+1) = MFX_F(p_sub,o_sub,p_group,priors_group,dim,ind);
+    F(it+1) = MFX_F(p_sub,o_sub,posterior_group,priors_group,dim,ind);
     
     o_group.F = F;
     o_group.it = it;
@@ -360,9 +298,9 @@ while ~stop
         % store initial within-subject VBA model inversion
         o_group.initVBA.p_sub = p_sub;
         o_group.initVBA.o_sub = o_sub;
-        [o_group.options] = VBA_displayMFX(p_sub,o_sub,p_group,o_group,0,'off');
+        [o_group.options] = VBA_displayMFX(p_sub,o_sub,posterior_group,o_group,0,'off');
     else
-        [o_group.options] = VBA_displayMFX(p_sub,o_sub,p_group,o_group);
+        [o_group.options] = VBA_displayMFX(p_sub,o_sub,posterior_group,o_group);
     end
     
     dF = F(it+1) - F(it);
@@ -376,14 +314,14 @@ fprintf([' done.','\n'])
 o_group.date = clock;
 o_group.dt = toc(o_group.tStart);
 o_group.options.sources = o_sub{1}.options.sources;
-for i=1:ns
+for i=1:nS
     o_group.within_fit.F(i) = o_sub{i}.F(end);
     o_group.within_fit.R2(i,:) = o_sub{i}.fit.R2;
     o_group.within_fit.LLH0(i) = VBA_LMEH0(o_sub{i}.y,o_sub{i}.options);
     o_sub{i}.options.kernelSize = kernelSize0;
     [tmp,o_sub{i}] = VBA_getDiagnostics(p_sub{i},o_sub{i});
 end
-[o_group.options] = VBA_displayMFX(p_sub,o_sub,p_group,o_group);
+[o_group.options] = VBA_displayMFX(p_sub,o_sub,posterior_group,o_group);
 try
     if floor(o_group.dt./60) == 0
         timeString = [num2str(floor(o_group.dt)),' sec'];
@@ -506,7 +444,24 @@ function S = entropyGaussian(V)
 n = size(V,1);
 S = 0.5*n*(1+log(2*pi)) + 0.5*VBA_logDet(V);
 
-function il = infLimit(a,b)
-il = isinf(a).*eq(b,0);
+function il = isInfLimit (a, b)
+il = isinf (a) & eq (b, 0);
 
+% define within-subject priors
+function priors = getSubjectPriors(priors_group, posterior_group, ind, nS)
+
+    priors.muPhi = posterior_group.muPhi;
+    priors.SigmaPhi = diag(posterior_group.b_vPhi./posterior_group.a_vPhi);
+    priors.muPhi(ind.phi_ffx) = priors_group.muPhi(ind.phi_ffx);
+    priors.SigmaPhi(ind.phi_ffx,ind.phi_ffx) = nS*priors_group.SigmaPhi(ind.phi_ffx,ind.phi_ffx);
+
+    priors.muTheta = posterior_group.muTheta;
+    priors.SigmaTheta = diag(posterior_group.b_vTheta./posterior_group.a_vTheta);
+    priors.muTheta(ind.theta_ffx) = priors_group.muTheta(ind.theta_ffx);
+    priors.SigmaTheta(ind.theta_ffx,ind.theta_ffx) = nS*priors_group.SigmaTheta(ind.theta_ffx,ind.theta_ffx);
+
+    priors.muX0 = posterior_group.muX0;
+    priors.SigmaX0 = diag(posterior_group.b_vX0./posterior_group.a_vX0);
+    priors.muX0(ind.x0_ffx) = priors_group.muX0(ind.x0_ffx);
+    priors.SigmaX0(ind.x0_ffx,ind.x0_ffx) = nS*priors_group.SigmaX0(ind.x0_ffx,ind.x0_ffx);
 
