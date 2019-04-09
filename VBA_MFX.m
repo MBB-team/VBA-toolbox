@@ -1,4 +1,4 @@
-function [p_sub,o_sub,posterior_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group, options_group)
+function [p_sub,o_sub,posterior_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options, options_group)
 % VB treatment of mixed-effects analysis
 % function [posterior,out] = VBA_MFX(y,u,f_fname,g_fname,dim,options)
 % This function approaches model inversion from an empirical Bayes
@@ -59,9 +59,6 @@ function [p_sub,o_sub,posterior_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim
 
 %% Check parameters
 % =========================================================================
-if ~ exist('priors_group','var')
-    priors_group = struct ();
-end
 
 if ~ exist('options_group','var')
     priors_group = struct ();
@@ -110,7 +107,10 @@ o_group.tStart  = tic;  % start time
 % population mean of observation/evolution parameters and initial
 % conditions, and Gamma(1,1) for the corresponding population precisions.
 
-priors_group = VBA_check_struct (priors_group, VBA_defaultMFXPriors (dim));
+if ~ isfield(options,'priors')
+    options.priors = struct ();
+end
+priors_group = VBA_check_struct (options.priors, VBA_defaultMFXPriors (dim));
 
 %% Initialization
 % =========================================================================
@@ -125,16 +125,19 @@ for i=1:nS
     %if dim.n_phi > 0
         iV_phi = VBA_inv(priors_group.SigmaPhi);
         ind.phi_ffx = find(isInfLimit(posterior_group.a_vPhi,posterior_group.b_vPhi));
+        ind.phi_rfx = find(~ isInfLimit(posterior_group.a_vPhi,posterior_group.b_vPhi));
         ind.phi_in = find(diag(priors_group.SigmaPhi)~=0);
     %end
     %if dim.n_theta > 0
         iV_theta = VBA_inv(priors_group.SigmaTheta);
         ind.theta_ffx = find(isInfLimit(posterior_group.a_vTheta,posterior_group.b_vTheta));
+        ind.theta_rfx = find(~ isInfLimit(posterior_group.a_vPhi,posterior_group.b_vPhi));
         ind.theta_in = find(diag(priors_group.SigmaTheta)~=0);
     %end
     %if dim.n >0
         iV_x0 = VBA_inv(priors_group.SigmaX0);
         ind.x0_ffx = find(isInfLimit(posterior_group.a_vX0,posterior_group.b_vX0));
+        ind.x0_rfx = find(~ isInfLimit(posterior_group.a_vX0,posterior_group.b_vX0));
         ind.x0_in = find(diag(priors_group.SigmaX0)~=0);
     %end
 end
@@ -448,6 +451,22 @@ function il = isInfLimit (a, b)
 il = isinf (a) & eq (b, 0);
 
 % define within-subject priors
+function priors = updateSubjectPriors(priors, posterior_group, ind, nS)
+  
+    priors.muPhi(ind.phi_rfx) = posterior_group.muPhi(ind.phi_rfx);
+    priors.SigmaPhi(ind.phi_rfx, ind.phi_rfx) = diag(posterior_group.b_vPhi(ind.phi_rfx)./posterior_group.a_vPhi(ind.phi_rfx));
+% 
+% 
+%     priors.muTheta = posterior_group.muTheta;
+%     priors.SigmaTheta = diag(posterior_group.b_vTheta./posterior_group.a_vTheta);
+%     priors.muTheta(ind.theta_ffx) = priors_group.muTheta(ind.theta_ffx);
+%     priors.SigmaTheta(ind.theta_ffx,ind.theta_ffx) = nS*priors_group.SigmaTheta(ind.theta_ffx,ind.theta_ffx);
+% 
+%     priors.muX0 = posterior_group.muX0;
+%     priors.SigmaX0 = diag(posterior_group.b_vX0./posterior_group.a_vX0);
+%     priors.muX0(ind.x0_ffx) = priors_group.muX0(ind.x0_ffx);
+%     priors.SigmaX0(ind.x0_ffx,ind.x0_ffx) = nS*priors_group.SigmaX0(ind.x0_ffx,ind.x0_ffx);
+
 function priors = getSubjectPriors(priors_group, posterior_group, ind, nS)
 
     priors.muPhi = posterior_group.muPhi;
