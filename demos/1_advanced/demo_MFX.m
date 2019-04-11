@@ -1,50 +1,48 @@
 function demo_MFX
 % this demo exemplifies the use of mixed-effects analysis in VBA
 
-ns = 8; % #subjects
-dim.n_phi = 2;
+ns = 30; % #subjects
+dim.n_phi = 1;
 dim.n = 1;
 dim.n_theta = 2;
 dim.p = 1; % data dim (within-subject)
-dim.n_t = 16; % trials (within-subject)
+dim.n_t = 200; % trials (within-subject)
 
 % simulate MFX
 y = cell(ns,1);
 nu = ones(5,1); % population mean
-alpha = 100; % population precision
-sigmas = ones(ns,1); % within-subject residual variance
-g_fname = @g_vgo;
-f_fname = @f_vgo;
+alpha = 1; % population precision
+sigmas = ones(ns,1)./20; % within-subject residual variance
+g_fname = @g_mfx;
+f_fname = @f_mfx;
 for i=1:ns
     % draw within-subject effects from population distribution
-    params(:,i) = nu + randn(5,1)./sqrt(alpha);
-    theta(:,i) = params(1:2,i);
-    phi(:,i) = params(3:4,i);
-    x0(:,i) = params(5,i);
-    u{i} = randn(1,dim.n_t);
+    theta(:,i) = VBA_random('Gaussian',[0 2],alpha*eye(2));
+    phi(:,i) = VBA_random('Gaussian',[3],alpha*eye(1));
+    x0(:,i) = VBA_random('Gaussian',0,0);
+    u{i} = cumsum(randn(1,dim.n_t));
     options{i}.DisplayWin = 0;
     options{i}.verbose = 0;
     options{i}.dim = dim;
-    options{i}.sources.type = 0;
-    [y{i}] = VBA_simulate (dim.n_t,f_fname,g_fname,theta(:,i),phi(:,i),u{i},Inf,Inf,options{i},x0(:,i));
+    [y{i}] = VBA_simulate (dim.n_t,f_fname,g_fname,theta(:,i),phi(:,i),u{i},Inf,sigmas(i),options{i},x0(:,i));
 end
 
-% TO REMOVE: obsolete syntax ??
-% priors_group.QPhi = 0.*eye(dim.n_phi);
-% priors_group.QTheta = 0.*eye(dim.n_theta);
-% priors_group.QX0 = 0.*eye(dim.n);
-% priors_group.QPhi(2,2) = 0; % ffx
-priors_group.muPhi = ones(dim.n_phi,1);
-priors_group.SigmaPhi = eye(dim.n_phi);
+priors_group = struct();
+priors_group.SigmaTheta = 100*eye(dim.n_theta);
+priors_group.SigmaPhi = 100*eye(dim.n_phi);
+priors_group.SigmaX0 = zeros(dim.n);
+priors_group.a_vX0(1) = Inf;
+priors_group.b_vX0(1) = 0;
 
-% TEST CASES (to comment/uncomment)
-% 1. fix population mean to 0 for phi(1)
-priors_group.SigmaPhi(1,1) = 0;
-% 2. fixed-effect over the population for phi(1)
-priors_group.a_vPhi = ones(dim.n_phi,1);
-priors_group.b_vPhi = ones(dim.n_phi,1);
-priors_group.a_vPhi(1) = Inf;
-priors_group.b_vPhi(1) = 0;
+
+% % TEST CASES (to comment/uncomment)
+% % 1. fix population mean to 0 for phi(1)
+% priors_group.SigmaPhi(1,1) = 0;
+% % 2. fixed-effect over the population for phi(1)
+% priors_group.a_vPhi = ones(dim.n_phi,1);
+% priors_group.b_vPhi = ones(dim.n_phi,1);
+% priors_group.a_vPhi(1) = Inf;
+% priors_group.b_vPhi(1) = 0;
 
 [p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,struct('priors',priors_group));%,priors_group);
 
@@ -59,6 +57,11 @@ for i=1:ns
     Phi(:,i,2) = o_group.initVBA.p_sub{i}.muPhi;
     X0(:,i,2) = o_group.initVBA.p_sub{i}.muX0;
 end
+
+squeeze(mean(Theta,2))
+mean(squeeze(Phi))
+p_group.muTheta
+p_group.muPhi
 
 hf = figure('name','btw-subject variability','color',[1 1 1]);
 col = getColors(max([dim.n;dim.n_theta;dim.n_phi]));
@@ -76,7 +79,7 @@ for j=1:2
             leg{i} = ['dim #',num2str(i)];
         end
     end
-    axis(ha,'tight')
+    axis(ha,'tight');
     title(ha,['evolution params',tistr{j}])
     xlabel(ha,'simulated')
     ylabel(ha,'estimated')
@@ -149,9 +152,15 @@ ylim = get(ha,'ylim');
 set(ha,'nextplot','add');
 col = get(ho,'color');
 yhat = [VBA_vec(xlim),ones(2,1)]*out.b;
-out.hp = plot(ha,xlim,yhat','color',col)
+out.hp = plot(ha,xlim,yhat','color',col);
 set(ha,'nextplot',status,'xlim',xlim,'ylim',ylim);
 
 end
 
+function [fx] = f_mfx(x,P,u,in)
+fx = (1-VBA_sigmoid(P(1))) * x + P(2) * u ;
+end
 
+function  [gx] = g_mfx(x,P,u,in)
+gx = P(1) + x;
+end
