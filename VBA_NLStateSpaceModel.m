@@ -203,7 +203,7 @@ end
 
 %-------------------- Initialization -------------------%
 
-if exist('in','var')
+if exist('in','var') && isstruct (in)
     
     try  % Skip initialization [see, e.g., VBA_hyperparameters.m]
         
@@ -246,11 +246,11 @@ else
         % NB: when inverting a full state-space model, the initialization
         % actually inverts its deterministic variant, i.e. an ODE-like
         % state-space model.
-    catch e
+    catch err
         VBA_disp(' ',options)
         VBA_disp('Error: VBA could not initialize summary statistics',options)
-        VBA_disp(e.message,options)
-        return
+        VBA_disp(err.message,options)
+        rethrow(err)
     end
     
     % Store free energy after the initialization step
@@ -273,9 +273,11 @@ end
 
 
 % Display initialized posterior
+if ~ (options.OnLine && isfield(options,'display'))
 [options] = VBA_initDisplay(options);
 try
     delete(intersect(findobj('tag','diagnostics_tabs'),get(options.display.hfp,'children')));
+end
 end
 VBA_updateDisplay(posterior,suffStat,options,y,0)
 

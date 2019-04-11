@@ -16,13 +16,8 @@ set(hres,'name','Simulation results','position',[pos(1),pos(2)-pos(4),pos(3),2*p
     else
     xtick = 1:out.dim.n_theta;
     set(hs,'xtick',xtick,'nextplot','add','xlim',[.2,out.dim.n_theta+.8])
-    if ~out.options.OnLine
-        V = VBA_getVar(posterior.SigmaTheta);
-        muTheta = posterior.muTheta;
-    else
-        V = VBA_getVar(posterior.SigmaTheta{end});
-        muTheta = posterior.muTheta(:,end);
-    end
+    V = VBA_getVar(posterior.SigmaTheta);
+    muTheta = posterior.muTheta;
     plotUncertainTimeSeries(muTheta,V,[],hs);
     VBA_title(hs,'theta')
     plot(hs,theta,'go')
@@ -34,13 +29,8 @@ if isempty(phi)
 else
     xtick = 1:out.dim.n_phi;
     set(hs,'xtick',xtick,'nextplot','add','xlim',[.2,out.dim.n_phi+.8])
-    if ~out.options.OnLine
-        V = VBA_getVar(posterior.SigmaPhi);
-        muPhi = posterior.muPhi;
-    else
-        V = VBA_getVar(posterior.SigmaPhi{end});
-        muPhi = posterior.muPhi(:,end);
-    end
+    V = VBA_getVar(posterior.SigmaPhi);
+    muPhi = posterior.muPhi;
     plotUncertainTimeSeries(muPhi,V,[],hs);
     VBA_title(hs,'phi')
     plot(hs,phi,'go')

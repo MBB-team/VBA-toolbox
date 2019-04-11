@@ -103,13 +103,8 @@ if out.dim.n_phi > 0 % observation parameters
     IN = out.options.params2update.phi;
     m0 = out.options.priors.muPhi(IN);
     v0 = out.options.priors.SigmaPhi(IN,IN);
-    if ~out.options.OnLine
-        m = posterior.muPhi(IN);
-        v = posterior.SigmaPhi(IN,IN);
-    else
-        m = posterior.muPhi(IN,end);
-        v = posterior.SigmaPhi{end}(IN,IN);
-    end
+    m = posterior.muPhi(IN);
+    v = posterior.SigmaPhi(IN,IN);
     DKL.Phi = VBA_KL(m0,v0,m,v,'Normal');
 else
     efficiency.Phi = NaN;
@@ -120,13 +115,8 @@ if out.dim.n_theta > 0 % evolution parameters
     IN = out.options.params2update.theta;
     m0 = out.options.priors.muTheta(IN);
     v0 = out.options.priors.SigmaTheta(IN,IN);
-    if ~out.options.OnLine
-        m = posterior.muTheta(IN);
-        v = posterior.SigmaTheta(IN,IN);
-    else
-        m = posterior.muTheta(IN,end);
-        v = posterior.SigmaTheta{end}(IN,IN);
-    end
+    m = posterior.muTheta(IN);
+    v = posterior.SigmaTheta(IN,IN);
     DKL.Theta = VBA_KL(m0,v0,m,v,'Normal');
 else
     efficiency.Theta = NaN;
@@ -215,29 +205,17 @@ else
     S = NaN*zeros(out.dim.n+out.dim.n_theta+out.dim.n_phi);
     ind = 0;
     if out.dim.n_phi > 0
-        if iscell(posterior.SigmaPhi) % online version
-            SP = posterior.SigmaPhi{end};
-        else
-            SP = posterior.SigmaPhi;
-        end
+        SP = posterior.SigmaPhi;
         S(1:out.dim.n_phi,1:out.dim.n_phi) = SP;
         ind = out.dim.n_phi;
     end
     if out.dim.n_theta > 0
-        if iscell(posterior.SigmaTheta) % online version
-            SP = posterior.SigmaTheta{end};
-        else
-            SP = posterior.SigmaTheta;
-        end
+        SP = posterior.SigmaTheta{end};
         S(ind+1:ind+out.dim.n_theta,ind+1:ind+out.dim.n_theta) = SP;
         ind = ind + out.dim.n_theta;
     end
     if out.dim.n > 0 && out.options.updateX0
-        if iscell(posterior.SigmaX0) % online version
-            SP = posterior.SigmaX0{end};
-        else
-            SP = posterior.SigmaX0;
-        end
+        SP = posterior.SigmaX0{end};
         S(ind+1:ind+out.dim.n,ind+1:ind+out.dim.n) = SP;
     end
 end

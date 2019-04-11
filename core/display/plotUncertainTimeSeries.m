@@ -85,8 +85,7 @@ if indEnd > 1
             yp = [muX(ind(i),1:indEnd)+sc*sqrt(SX(ind(i),1:indEnd)),fliplr(muX(ind(i),1:indEnd)-sc*sqrt(SX(ind(i),1:indEnd)))];
             yp(isnan(yp)) = VBA_nanmean(yp);
             xp = [dTime,fliplr(dTime)];
-            %hf(i) = fill(xp,yp,'r','parent',haf,'facecolor',col,'edgealpha',0,'facealpha',0.25);
-            set(hf(i), 'Vertices', [xp', yp']);
+            set(hf(i), 'Vertices', [xp', yp'],'Faces',1:2*indEnd);
         end
     end
     %end

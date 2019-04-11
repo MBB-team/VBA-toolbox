@@ -11,13 +11,17 @@ function V = VBA_getVar(Sigma,T)
 %   the nXn matrices contained in the cell array Sigma.
 
 
-if iscell(Sigma)
-    try;T;catch;T=length(Sigma);end
-    n = size(Sigma{1},1);
+if isempty (Sigma)
+    V = [];
+elseif isnumeric (Sigma)
+    V = diag(Sigma);
+else
+    if nargin < 2
+        T = length(Sigma);
+    end
+    n = size(Sigma{1}, 1);
     V = zeros(n,T);
     for t=1:T
         V(:,t) = diag(Sigma{t});
     end
-else
-    V = diag(Sigma);
 end
