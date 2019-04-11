@@ -226,8 +226,10 @@ if exist('in','var') && isstruct (in)
         % re-initialize iteration counter
         it = in.out.it; % index of VB iterations
         
-    catch
+    catch err
+        err
         disp('Error: the ''in'' structure was flawed...')
+        rethrow(err)
         return
     end
     

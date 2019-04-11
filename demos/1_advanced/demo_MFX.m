@@ -46,7 +46,7 @@ priors_group.b_vPhi = ones(dim.n_phi,1);
 priors_group.a_vPhi(1) = Inf;
 priors_group.b_vPhi(1) = 0;
 
-[p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,options,priors_group);%,priors_group);
+[p_sub,o_sub,p_group,o_group] = VBA_MFX(y,u,f_fname,g_fname,dim,struct('priors',priors_group));%,priors_group);
 
 % extract within-subject parameter estimates
 for i=1:ns
