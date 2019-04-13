@@ -101,20 +101,20 @@ VBA_disp ('VBA treatment of MFX analysis: initialization...', options)
 for i=1:nS
     %if dim.n_phi > 0
         iV_phi = VBA_inv(priors_group.SigmaPhi);
-        ind.phi_ffx = find(isInfLimit(priors_group.a_vPhi,priors_group.b_vPhi));
-        ind.phi_rfx = find(~ isInfLimit(priors_group.a_vPhi,priors_group.b_vPhi));
+        ind.phi_ffx = find(isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
+        ind.phi_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
         ind.phi_in = find(diag(priors_group.SigmaPhi)~=0);
     %end
     %if dim.n_theta > 0
         iV_theta = VBA_inv(priors_group.SigmaTheta);
-        ind.theta_ffx = find(isInfLimit(priors_group.a_vTheta,priors_group.b_vTheta));
-        ind.theta_rfx = find(~ isInfLimit(priors_group.a_vPhi,priors_group.b_vPhi));
+        ind.theta_ffx = find(isFixedEffect(priors_group.a_vTheta,priors_group.b_vTheta));
+        ind.theta_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
         ind.theta_in = find(diag(priors_group.SigmaTheta)~=0);
     %end
     %if dim.n >0
         iV_x0 = VBA_inv(priors_group.SigmaX0);
-        ind.x0_ffx = find(isInfLimit(priors_group.a_vX0,priors_group.b_vX0));
-        ind.x0_rfx = find(~ isInfLimit(priors_group.a_vX0,priors_group.b_vX0));
+        ind.x0_ffx = find(isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
+        ind.x0_rfx = find(~ isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
         ind.x0_in = find(diag(priors_group.SigmaX0)~=0);
     %end
 end
@@ -410,22 +410,20 @@ F = -0.5*ns*sum(log(a./b)) ...
     - 0.5*VBA_logDet(V0) ...
     - 0.5*e'*iv0*e ...
     - 0.5*trace(iv0*V) ...
-    + sum(entropyGamma(a,b)) + entropyGaussian(V) ...
+    + sum(VBA_entropy('Gamma',a,1./b)) + VBA_entropy('Gaussian',V) ...
     + 0.5*(ns-1).*length(indffx).*log(2*pi);
 
-function S = entropyGamma(a,b)
-S = a - log(b) + gammaln(a) + (1-a).*psi(a);
 
-function S = entropyGaussian(V)
-n = size(V,1);
-S = 0.5*n*(1+log(2*pi)) + 0.5*VBA_logDet(V);
-
-function il = isInfLimit (a, b)
-il = isinf (a) & eq (b, 0);
+% check if parameter is fixed or random from group variance hyperparams
+% -------------------------------------------------------------------------
+function il = isFixedEffect (a, b)
+    il = isinf (a) & eq (b, 0);
 
 % initialize within-subject priors
+% -------------------------------------------------------------------------
 function priors = getSubjectPriors(priors_group, ind, nS)
 
+    % start with fixed effects
     priors.muPhi = priors_group.muPhi;
     priors.SigmaPhi = nS * priors_group.SigmaPhi;
     
@@ -435,18 +433,23 @@ function priors = getSubjectPriors(priors_group, ind, nS)
     priors.muX0 = priors_group.muX0;
     priors.SigmaX0 = nS * priors_group.SigmaX0;
     
+    % set random effects priors from group
     priors = updateSubjectPriors(priors, priors_group, ind);
     
 % update within-subject priors from group posterior
-function priors = updateSubjectPriors(priors, posterior_group, ind)
+% -------------------------------------------------------------------------
+function priors = updateSubjectPriors(priors, posterior_grp, ind)
   
-    priors.muPhi(ind.phi_rfx) = posterior_group.muPhi(ind.phi_rfx);
-    priors.SigmaPhi(ind.phi_rfx, ind.phi_rfx) = diag(posterior_group.b_vPhi(ind.phi_rfx)./posterior_group.a_vPhi(ind.phi_rfx));
+    priors.muPhi(ind.phi_rfx) = posterior_grp.muPhi(ind.phi_rfx);
+    priors.SigmaPhi(ind.phi_rfx, ind.phi_rfx) = ...
+        diag (posterior_grp.b_vPhi(ind.phi_rfx) ./ posterior_grp.a_vPhi(ind.phi_rfx));
 
-    priors.muTheta(ind.theta_rfx) = posterior_group.muTheta(ind.theta_rfx);
-    priors.SigmaTheta(ind.theta_rfx, ind.theta_rfx) = diag(posterior_group.b_vTheta(ind.theta_rfx)./posterior_group.a_vTheta(ind.theta_rfx));
+    priors.muTheta(ind.theta_rfx) = posterior_grp.muTheta(ind.theta_rfx);
+    priors.SigmaTheta(ind.theta_rfx, ind.theta_rfx) = ...
+        diag (posterior_grp.b_vTheta(ind.theta_rfx) ./ posterior_grp.a_vTheta(ind.theta_rfx));
 
-    priors.muX0(ind.x0_rfx) = posterior_group.muX0(ind.x0_rfx);
-    priors.SigmaX0(ind.x0_rfx, ind.x0_rfx) = diag(posterior_group.b_vX0(ind.x0_rfx)./posterior_group.a_vX0(ind.x0_rfx));
+    priors.muX0(ind.x0_rfx) = posterior_grp.muX0(ind.x0_rfx);
+    priors.SigmaX0(ind.x0_rfx, ind.x0_rfx) = ...
+        diag (posterior_grp.b_vX0(ind.x0_rfx) ./ posterior_grp.a_vX0(ind.x0_rfx));
 
 

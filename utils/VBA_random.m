@@ -80,7 +80,7 @@ function X = VBA_random (name, varargin)
 % ----------
 %     + parameters:
 %           - mu: scalar or k x 1 vector, mean of the Normal distribution
-%           - Sigma2: scalar or k x k array, (co-)variance of
+%           - Sigma2: scalar or k x k array, (co-)variance of the Normal distribution
 %     + output: if parameters are scalars, samples from the univariate
 %           normal distribution N(mu, Sigma).
 %           If mu and Sigma are respectively a vector and an array of
