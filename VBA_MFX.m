@@ -405,9 +405,9 @@ function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, ind)
     % ---------------------------------------------------------------------
        
     % number of random effects
-    n = sum (ind.rfx);
+    n_rfx = sum (ind.rfx);
     
-    if n > 0
+    if n_rfx > 0
         % keep only random effects
         % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
         mu0 = mu0(ind.rfx);
@@ -437,7 +437,7 @@ function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, ind)
             + sum ((a0 + 0.5 * ns - 1) .* E_log_lambda) ...
             - sum ((0.5 * ns * diag (V) + b0) .* E_lambda) ...
             + sum (a0 .* log (b0) + gammaln (b0)) ... TODO: check this line
-            - 0.5 * n * log (2 * pi) ...
+            - 0.5 * n_rfx * log (2 * pi) ...
             - 0.5 * VBA_logDet (V0) ...
             - 0.5 * e' * iV0 * e ...
             - 0.5 * trace (iV0 * V) ... TODO: check this line
@@ -447,9 +447,9 @@ function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, ind)
     
     % Fixed effects
     % ---------------------------------------------------------------------
-    n = length (ind.ffx);
-    if n > 0
-        F = F + 0.5 * (ns - 1) * n * log (2 * pi);
+    n_ffx = length (ind.ffx);
+    if n_rfx > 0
+        F = F + 0.5 * (ns - 1) * n_ffx * log (2 * pi);
     end
    
 end
