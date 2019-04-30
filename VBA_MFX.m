@@ -59,7 +59,6 @@ function [posterior_sub,out_sub,posterior_group,out_group] = VBA_MFX(y,u,f_fname
 
 %% Check parameters
 % =========================================================================
-
 if ~ exist('options','var')
     options = struct ();
 end
@@ -77,6 +76,12 @@ if isnumeric (u)
     u = temp;
 end
 
+% expand number of observations if necessary
+if numel (dim.n_t) == 1
+    n_t = repmat (dim.n_t, 1, nS);
+else
+    n_t = dim.n_t;
+end
 
 %% Check priors
 % =========================================================================
@@ -84,7 +89,6 @@ end
 % priors_group structure. This means Gaussian(0,1) priors for the
 % population mean of observation/evolution parameters and initial
 % conditions, and Gamma(1,1) for the corresponding population precisions.
-
 if ~ isfield(options,'priors')
     options.priors = struct ();
 end
@@ -96,47 +100,33 @@ priors_group = VBA_check_struct (options.priors, VBA_defaultMFXPriors (dim));
 % precision over observation/evolution parameters and initial conditions
 % using their prior.
 
+% display
 VBA_disp ('VBA treatment of MFX analysis: initialization...', options)
 
-for i=1:nS
-    %if dim.n_phi > 0
-        iV_phi = VBA_inv(priors_group.SigmaPhi);
-        ind.phi_ffx = find(isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
-        ind.phi_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
-        ind.phi_in = find(diag(priors_group.SigmaPhi)~=0);
-    %end
-    %if dim.n_theta > 0
-        iV_theta = VBA_inv(priors_group.SigmaTheta);
-        ind.theta_ffx = find(isFixedEffect(priors_group.a_vTheta,priors_group.b_vTheta));
-        ind.theta_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
-        ind.theta_in = find(diag(priors_group.SigmaTheta)~=0);
-    %end
-    %if dim.n >0
-        iV_x0 = VBA_inv(priors_group.SigmaX0);
-        ind.x0_ffx = find(isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
-        ind.x0_rfx = find(~ isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
-        ind.x0_in = find(diag(priors_group.SigmaX0)~=0);
-    %end
-end
+% indices of fixed, random, and locked effects
+ind.phi_ffx = find(isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
+ind.phi_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
+ind.phi_in = find(diag(priors_group.SigmaPhi)~=0);
 
+ind.theta_ffx = find(isFixedEffect(priors_group.a_vTheta,priors_group.b_vTheta));
+ind.theta_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
+ind.theta_in = find(diag(priors_group.SigmaTheta)~=0);
 
-%%
-options.dim = dim;
-options.dim.ns = nS;
+ind.x0_ffx = find(isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
+ind.x0_rfx = find(~ isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
+ind.x0_in = find(diag(priors_group.SigmaX0)~=0);
 
 out_group.ind = ind;
 
-%%
-% 2- evaluate within-subject free energies under the prior
+% options
+options.dim = dim;
+options.dim.ns = nS;
 
-% save here to acces subject specific trial numbers later
-if numel(dim.n_t) == 1
-    n_t = repmat(dim.n_t,1,nS);
-else
-    n_t = dim.n_t;
-end
+%% Evaluate within-subject free energies under the prior
+% =========================================================================
 
-for i=1:nS
+% loop over subjects
+for i = 1 : nS
     
     options_subject{i}.priors = getSubjectPriors(priors_group, ind, nS);
 
@@ -145,14 +135,14 @@ for i=1:nS
     options_subject{i}.verbose = 0;
     options_subject{i}.MaxIter = 0;
     
-    dim.n_t = n_t(i);  % subject number of trials
+    % subject's number of observation
+    dim.n_t = n_t(i);  
     
-    in{i} = [];
-    
-    [posterior_sub{i},out_sub{i}] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options_subject{i});
+    % dummy inversion
+    [posterior_sub(i),out_sub(i)] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options_subject{i});
     
     % store options for future inversions
-    options_subject{i} = out_sub{i}.options;
+    options_subject{i} = out_sub(i).options;
     options_subject{i}.MaxIter = 32;
 
 end
@@ -160,65 +150,48 @@ end
 posterior_group = priors_group;
 out_group.options = options;
 
-F(1) = MFX_F(posterior_sub,out_sub,posterior_group,priors_group,dim,ind);
+F(1) = MFX_F (posterior_sub, out_sub, posterior_group, priors_group, dim, ind);
 
 out_group.F = F;
 out_group.it = 0;
-out_group.ind = ind;
 out_group.options = options;
 
-[out_group.options] = VBA_displayMFX(posterior_sub,out_sub,posterior_group,out_group,0,'off');
+[out_group.options] = VBA_displayMFX (posterior_sub, out_sub, posterior_group, out_group, 0, 'off');
 
-
-
-% 3- VB: iterate until convergence...
+%% Iterate VB until convergence
+% =========================================================================
 % We now update the within-subject effects as well as respective population
 % moments according to the mean-field VB scheme. This effectively
 % iteratively replaces the priors over within-subject effects by the VB
 % estimate of the group mean and precision. The free energy of the ensuing
 % MFX procedure is computed for tracking algorithmic convergence.
-stop = 0;
-it = 1;
-fprintf(1,['Main VB inversion...'])
-while ~stop
+
+fprintf (1, ['Main VB inversion...']);
+
+for it = 1 : options.MaxIter
     
     % perform within-subject model inversions
-    for i=1:nS
+    for i = 1 : nS
         
-        
+        % display
         try
             set(out_group.options.display.ho,'string',['VB iteration #',num2str(it),': within-subject model inversions (',num2str(floor(100*(i-1)/nS)),'%)'])
         end
         
         % re-define within-subject priors
-        options_subject{i}.priors = updateSubjectPriors(options_subject{i}.priors, posterior_group, ind);
+        options_subject{i}.priors = updateSubjectPriors (options_subject{i}.priors, posterior_group, ind);
 
-        
         % bypass VBA initialization
-
-        % VBA model inversion
-        [posterior_sub{i},out_sub{i}] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options_subject{i},in{i});
-        
-        in{i}.posterior = posterior_sub{i};
-        in{i}.out = out_sub{i};
+        in{i}.posterior = posterior_sub(i);
+        in{i}.out = out_sub(i);
         in{i}.out.options = options_subject{i};
         
-        % store sufficient statistics
-        if dim.n_phi > 0
-            mphi(:,i) = posterior_sub{i}.muPhi;
-            Vphi{i} = posterior_sub{i}.SigmaPhi;
-        end
-        if dim.n_theta > 0
-            mtheta(:,i) = posterior_sub{i}.muTheta;
-            Vtheta{i} = posterior_sub{i}.SigmaTheta;
-        end
-        if dim.n >0
-            mx0(:,i) = posterior_sub{i}.muX0;
-            Vx0{i} = posterior_sub{i}.SigmaX0;
-        end
-        
+        % VBA model inversion
+        [posterior_sub(i), out_sub(i)] = VBA_NLStateSpaceModel(y{i},u{i},f_fname,g_fname,dim,options_subject{i},in{i});
+          
     end
     
+    % display
     try
         set(out_group.options.display.ho,'string',['MFX: updating moments of parent distribution...'])
     end
@@ -226,76 +199,87 @@ while ~stop
     % update moments of the parent population distribution
     if dim.n_phi > 0
         [posterior_group.muPhi,posterior_group.SigmaPhi,posterior_group.a_vPhi,posterior_group.b_vPhi] = ...
-            MFX_VBupdate(...
-            priors_group.muPhi,...
-            iV_phi,...
-            mphi,...
-            Vphi,...
-            posterior_group.a_vPhi,...
-            posterior_group.b_vPhi,...
-            priors_group.a_vPhi,...
-            priors_group.b_vPhi,...
-            ind.phi_ffx,...
-            ind.phi_in);
+            MFX_VBupdate ( ...
+                priors_group.muPhi, ...
+                priors_group.SigmaPhi, ...
+                {posterior_sub.muPhi}, ...
+                {posterior_sub.SigmaPhi}, ...
+                posterior_group.a_vPhi, ...
+                posterior_group.b_vPhi, ...
+                priors_group.a_vPhi, ...
+                priors_group.b_vPhi, ...
+                ind.phi_ffx, ...
+                ind.phi_in ...
+            );
     end
     if dim.n_theta > 0
         [posterior_group.muTheta,posterior_group.SigmaTheta,posterior_group.a_vTheta,posterior_group.b_vTheta] = ...
-            MFX_VBupdate(...
-            priors_group.muTheta,...
-            iV_theta,...
-            mtheta,...
-            Vtheta,...
-            posterior_group.a_vTheta,...
-            posterior_group.b_vTheta,...
-            priors_group.a_vTheta,...
-            priors_group.b_vTheta,...
-            ind.theta_ffx,...
-            ind.theta_in);
+            MFX_VBupdate ( ...
+                priors_group.muTheta, ...
+                priors_group.SigmaTheta, ...
+                {posterior_sub.muTheta}, ...
+                {posterior_sub.SigmaTheta}, ...
+                posterior_group.a_vTheta, ...
+                posterior_group.b_vTheta, ...
+                priors_group.a_vTheta, ...
+                priors_group.b_vTheta, ...
+                ind.theta_ffx, ...
+                ind.theta_in ...
+            );
     end
-    if dim.n >0
+    if dim.n > 0
         [posterior_group.muX0,posterior_group.SigmaX0,posterior_group.a_vX0,posterior_group.b_vX0] = ...
-            MFX_VBupdate(...
-            priors_group.muX0,...
-            iV_x0,...
-            mx0,...
-            Vx0,...
-            posterior_group.a_vX0,...
-            posterior_group.b_vX0,...
-            priors_group.a_vX0,...
-            priors_group.b_vX0,...
-            ind.x0_ffx,...
-            ind.x0_in);
+            MFX_VBupdate ( ...
+                priors_group.muX0, ...
+                priors_group.SigmaX0, ...
+                {posterior_sub.muX0}, ...
+                {posterior_sub.SigmaX0}, ...
+                posterior_group.a_vX0, ...
+                posterior_group.b_vX0, ...
+                priors_group.a_vX0, ...
+                priors_group.b_vX0, ...
+                ind.x0_ffx, ...
+                ind.x0_in ...
+            );
     end
     
-    F(it+1) = MFX_F(posterior_sub,out_sub,posterior_group,priors_group,dim,ind);
-    
+    % free energy
+    F(it + 1) = MFX_F(posterior_sub,out_sub,posterior_group,priors_group,dim,ind);
     out_group.F = F;
-    out_group.it = it;
-    
+
+    % store initial within-subject VBA model inversion
     if it == 1
-        % store initial within-subject VBA model inversion
         out_group.initVBA.p_sub = posterior_sub;
         out_group.initVBA.o_sub = out_sub;
-        [out_group.options] = VBA_displayMFX(posterior_sub,out_sub,posterior_group,out_group,0,'off');
-    else
-        [out_group.options] = VBA_displayMFX(posterior_sub,out_sub,posterior_group,out_group);
     end
     
+    % display
+    [out_group.options] = VBA_displayMFX(posterior_sub,out_sub,posterior_group,out_group);
+    
+    % if convergence, no need to continue iterating
     dF = F(it+1) - F(it);
-    if abs(dF) <= options.TolFun || it >= options.MaxIter
-        stop = 1;
+    if abs(dF) <= options.TolFun 
+        break;
     end
-    it = it +1;
     
 end
+
+% Wrapping up
+% =========================================================================
+
+    % keep track of iterations
+    out_group.it = it;
+
+    
 fprintf([' done.','\n'])
 out_group.date = clock;
-out_group.options.sources = out_sub{1}.options.sources;
-for i=1:nS
-    out_group.within_fit.F(i) = out_sub{i}.F(end);
-    out_group.within_fit.R2(i,:) = out_sub{i}.fit.R2;
-    out_group.within_fit.LLH0(i) = VBA_LMEH0(out_sub{i}.y,out_sub{i}.options);
-    [tmp,out_sub{i}] = VBA_getDiagnostics(posterior_sub{i},out_sub{i});
+out_group.options.sources = out_sub(1).options.sources;
+[out_sub.diagnostics] = deal(NaN);
+for i = 1 : nS
+    out_group.within_fit.F(i) = out_sub(i).F(end);
+    out_group.within_fit.R2(i,:) = out_sub(i).fit.R2;
+    out_group.within_fit.LLH0(i) = VBA_LMEH0(out_sub(i).y,out_sub(i).options);
+    [tmp,out_sub(i)] = VBA_getDiagnostics(posterior_sub(i),out_sub(i));
 end
 [out_group.options] = VBA_displayMFX(posterior_sub,out_sub,posterior_group,out_group);
 try
@@ -312,148 +296,198 @@ try
 end
 out_group.options.display = [];
 
-% subfunctions
-
-function [m,V,a,b] = MFX_VBupdate(m0,iV0,ms,Vs,a,b,a0,b0,indffx,indIn)
-ns = size(ms,2);
-n = size(m0,1);
-sm = 0;
-sv = 0;
-wsm = 0;
-sP = 0;
-indrfx = setdiff(1:n,indffx);
-indrfx = intersect(indrfx,indIn);
-indffx = intersect(indffx,indIn);
-iQ = diag(a(indrfx)./b(indrfx));
-for i=1:ns
-    % RFX
-    sm = sm + ms(indrfx,i);
-    e = ms(indrfx,i)-m0(indrfx);
-    sv = sv + e.^2 + diag(Vs{i}(indrfx,indrfx));
-    % FFX
-    tmp = VBA_inv(Vs{i});
-    wsm = wsm + tmp*ms(:,i);
-    sP = sP + tmp;
-end
-% RFX
-V = zeros(n,n);
-m = m0;
-V(indrfx,indrfx) = VBA_inv(iV0(indrfx,indrfx)+ns*iQ);
-m(indrfx) = V(indrfx,indrfx)*(iV0(indrfx,indrfx)*m0(indrfx)+iQ*sm);
-a(indrfx) = a0(indrfx) + 0.5*ns;
-% b(indrfx) = b0(indrfx) + 0.5*(sv(indrfx)+ns*diag(V(indrfx,indrfx)));
-% fix: do not index because 'sv' is by definition updated only for the rfx
-%      parameters
-b(indrfx) = b0(indrfx) + 0.5*(sv+ns*diag(V(indrfx,indrfx))); % do not index sv b
-
-% FFX
-if ~isempty(indffx)
-    tmp = VBA_inv(sP);
-    V(indffx,indffx) = tmp(indffx,indffx);
-    m(indffx) = V(indffx,indffx)*wsm(indffx);
 end
 
+%% ########################################################################
+%  Subroutines
+% #########################################################################
 
+%% Variational step of the group level statistics
+% =========================================================================
+function [m, V, a, b] = MFX_VBupdate (mu_0, V_0, mu_s, Vs, a, b, a0, b0, iFfx, iIn)
 
-function F = MFX_F (p_sub, o_sub, p_group, priors_group, dim, ind)
+    % initialisation
+    % ---------------------------------------------------------------------
+    % number of subjects
+    n_s = numel (mu_s);
+    % number of parameters
+    n = size (mu_0, 1);
+    % inverse prior precision
+    iV_0 = VBA_inv (V_0);
 
-ns = length (p_sub);
+    % Locked effects (no update)
+    % ---------------------------------------------------------------------
+    m = mu_0;
+    V = iV_0;
+    
+    % Random effects
+    % ---------------------------------------------------------------------
+    % parameter indices
+    iRfx = setdiff (1 : n, iFfx);
+    iRfx = intersect (iRfx, iIn);
 
-% within subject free energy
-F = sum ([o_sub.F]);
+    if ~ isempty (iRfx)
+        
+        % posterior over group mean
+        iQ = diag (a(iRfx) ./ b(iRfx));
+        sm = sum ([mu_s{:}], 2); 
 
-% group level correction terms
-if dim.n_phi > 0
-    F = F + FreeEnergy_var ( ...
-            ns, ...
-            p_group.muPhi, p_group.SigmaPhi,...
-            priors_group.muPhi, priors_group.SigmaPhi,...
-            p_group.a_vPhi,p_group.b_vPhi,...
-            priors_group.a_vPhi, priors_group.b_vPhi,...
-            ind.phi_ffx, ind.phi_in ...
-        );
+        V(iRfx, iRfx) = VBA_inv (iV_0(iRfx, iRfx) + n_s * iQ);
+        m(iRfx) = V(iRfx, iRfx) * (iV_0(iRfx, iRfx) * mu_0(iRfx) + iQ * sm(iRfx));
+
+        % posterior of group variance
+        sv = 0;
+        for i = 1 : n_s
+            sv = sv ...
+                + (mu_s{i}(iRfx) - mu_0(iRfx)) .^ 2 ...
+                + diag (Vs{i}(iRfx,iRfx));
+        end
+
+        a(iRfx) = a0(iRfx) + 0.5 * n_s;
+        b(iRfx) = b0(iRfx) + 0.5 * (sv + n_s * diag (V(iRfx, iRfx))); % do not index sv
+    end
+    
+    % Fixed effects
+    % ---------------------------------------------------------------------
+    % parameter indices
+    iFfx = intersect (iFfx, iIn);
+
+    if ~ isempty (iFfx)
+
+        % posterior over group mean
+        wsm = 0;
+        sum_iVs = 0;
+
+        for i = 1 : n_s
+            iVs = VBA_inv (Vs{i});
+            wsm = wsm + iVs * mu_s{i};
+            sum_iVs = sum_iVs + iVs;
+        end
+        tmp = VBA_inv (sum_iVs);
+        V(iFfx, iFfx) = tmp(iFfx, iFfx);
+        m(iFfx) = V(iFfx, iFfx) * wsm(iFfx);
+        
+        % posterior of group variance (not updated, by definition)
+        a(iFfx) = a0(iFfx);
+        b(iFfx) = b0(iFfx);
+    end
 end
-if dim.n_theta > 0
-    F = F + FreeEnergy_var ( ...
+
+%% Free energy of the full hierarchical model
+% =========================================================================
+function F = MFX_F (posterior_sub, out_sub, posterior_group, priors_group, dim, ind)
+
+    ns = length (posterior_sub);
+
+    % within subject free energy
+    F = sum ([out_sub.F]);
+
+    % group level correction terms
+    if dim.n_phi > 0
+        F = F + FreeEnergy_var ( ...
                 ns, ...
-                p_group.muTheta, p_group.SigmaTheta,...
-                priors_group.muTheta, priors_group.SigmaTheta,...
-                p_group.a_vTheta, p_group.b_vTheta,...
-                priors_group.a_vTheta, priors_group.b_vTheta,...
-                ind.theta_ffx, ind.theta_in ...
+                posterior_group.muPhi, posterior_group.SigmaPhi,...
+                priors_group.muPhi, priors_group.SigmaPhi,...
+                posterior_group.a_vPhi,posterior_group.b_vPhi,...
+                priors_group.a_vPhi, priors_group.b_vPhi,...
+                ind.phi_ffx, ind.phi_in ...
             );
-end
-if dim.n > 0
-    F = F + FreeEnergy_var ( ...
-                ns,...
-                p_group.muX0, p_group.SigmaX0,...
-                priors_group.muX0, priors_group.SigmaX0,...
-                p_group.a_vX0, p_group.b_vX0,...
-                priors_group.a_vX0, priors_group.b_vX0,...
-                ind.x0_ffx, ind.x0_in ...
-            );
+    end
+    if dim.n_theta > 0
+        F = F + FreeEnergy_var ( ...
+                    ns, ...
+                    posterior_group.muTheta, posterior_group.SigmaTheta,...
+                    priors_group.muTheta, priors_group.SigmaTheta,...
+                    posterior_group.a_vTheta, posterior_group.b_vTheta,...
+                    priors_group.a_vTheta, priors_group.b_vTheta,...
+                    ind.theta_ffx, ind.theta_in ...
+                );
+    end
+    if dim.n > 0
+        F = F + FreeEnergy_var ( ...
+                    ns,...
+                    posterior_group.muX0, posterior_group.SigmaX0,...
+                    priors_group.muX0, priors_group.SigmaX0,...
+                    posterior_group.a_vX0, posterior_group.b_vX0,...
+                    priors_group.a_vX0, priors_group.b_vX0,...
+                    ind.x0_ffx, ind.x0_in ...
+                );
+    end
 end
 
 % variable-specific free energy group-level correction term
-% -------------------------------------------------------------------------
-function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, indffx, indIn)
-% shortcuts
-% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-% number of variables
-n = length (mu);
-% index of random effects
-indrfx = setdiff (1 : n, indffx);
-indrfx = intersect (indrfx, indIn);
-% number of random effects
-n = length (indrfx);
+% =========================================================================
+function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, iFfx, iIn)
 
-% keep only random effects
-% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-mu0 = mu0(indrfx);
-mu = mu(indrfx);
-V = V(indrfx, indrfx);
-V0 = V0(indrfx, indrfx);
-iv0 = VBA_inv (V0);
-a = a(indrfx);
-b = b(indrfx);
-a0 = a0(indrfx);
-b0 = b0(indrfx);
+    F = 0;
+    
+    % Random effects
+    % ---------------------------------------------------------------------
+    % index of random effects
+    iRfx = setdiff (1 : numel (mu), iFfx);
+    iRfx = intersect (iRfx, iIn);
+       
+    % number of random effects
+    n = length (iRfx);
+    
+    if n > 0
+        % keep only random effects
+        % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        mu0 = mu0(iRfx);
+        mu = mu(iRfx);
+        V = V(iRfx, iRfx);
+        V0 = V0(iRfx, iRfx);
+        iv0 = VBA_inv (V0);
+        a = a(iRfx);
+        b = b(iRfx);
+        a0 = a0(iRfx);
+        b0 = b0(iRfx);
 
-% intermediary variables
-% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-% expected group level variance
-E_lambda = a ./ b;
-% expected log group level variance
-E_log_lambda = psi (a) - log (b);
-% error
-e = mu - mu0;
+        % intermediary variables
+        % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        % expected group level variance
+        E_lambda = a ./ b;
+        % expected log group level variance
+        E_log_lambda = psi (a) - log (b);
+        % excursion
+        e = mu - mu0;
 
-% compute free energy correction term
-% '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-% random effects
-F_rfx = - 0.5 * ns * sum (log (E_lambda)) ...
-	+ sum ((a0 + 0.5 * ns - 1) .* E_log_lambda) ...
-    - sum ((0.5 * ns * diag (V) + b0) .* E_lambda) ...
-    + sum (a0 .* log (b0) + gammaln (b0)) ...
-    - 0.5 * n * log (2 * pi) ...
-    - 0.5 * VBA_logDet (V0) ...
-    - 0.5 * e' * iv0 * e ...
-    - 0.5 * trace (iv0 * V) ...
-    + sum (VBA_entropy ('Gamma', a, 1 ./ b)) ...
-    + VBA_entropy ('Gaussian', V);
-% fixed effects
-F_ffx = 0.5 * (ns - 1) .* length (indffx) .* log (2 * pi);
-% total
-F = F_rfx + F_ffx;
+        % compute free energy correction term
+        % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+        % random effects
+        F = F ...
+            - 0.5 * ns * sum (log (E_lambda)) ...
+            + sum ((a0 + 0.5 * ns - 1) .* E_log_lambda) ...
+            - sum ((0.5 * ns * diag (V) + b0) .* E_lambda) ...
+            + sum (a0 .* log (b0) + gammaln (b0)) ...
+            - 0.5 * n * log (2 * pi) ...
+            - 0.5 * VBA_logDet (V0) ...
+            - 0.5 * e' * iv0 * e ...
+            - 0.5 * trace (iv0 * V) ...
+            + sum (VBA_entropy ('Gamma', a, 1 ./ b)) ...
+            + VBA_entropy ('Gaussian', V);
+    end
+    
+    % Fixed effects
+    % ---------------------------------------------------------------------
+    iFfx = intersect (iFfx, iIn);
+    % number of random effects
+    n = length (iFfx);
+    if n > 0
+        F = F + 0.5 * (ns - 1) .* n .* log (2 * pi);
+    end
+   
+end
 
 % check if parameter is fixed or random from group variance hyperparams
-% -------------------------------------------------------------------------
+% =========================================================================
 function il = isFixedEffect (a, b)
     il = isinf (a) & eq (b, 0);
+end
 
 % initialize within-subject priors
-% -------------------------------------------------------------------------
-function priors = getSubjectPriors(priors_group, ind, nS)
+% =========================================================================
+function priors = getSubjectPriors (priors_group, ind, nS)
 
     % start with fixed effects
     priors.muPhi = priors_group.muPhi;
@@ -467,12 +501,13 @@ function priors = getSubjectPriors(priors_group, ind, nS)
     
     % set random effects priors from group
     priors = updateSubjectPriors(priors, priors_group, ind);
-    
+end
+
 % update within-subject priors from group posterior
-% -------------------------------------------------------------------------
+% =========================================================================
 % Update random effects only, as the prior for fixed effect is, by
 % definition, fixed.
-function priors = updateSubjectPriors(priors, posterior_grp, ind)
+function priors = updateSubjectPriors (priors, posterior_grp, ind)
   
     priors.muPhi(ind.phi_rfx) = posterior_grp.muPhi(ind.phi_rfx);
     priors.SigmaPhi(ind.phi_rfx, ind.phi_rfx) = ...
@@ -485,5 +520,5 @@ function priors = updateSubjectPriors(priors, posterior_grp, ind)
     priors.muX0(ind.x0_rfx) = posterior_grp.muX0(ind.x0_rfx);
     priors.SigmaX0(ind.x0_rfx, ind.x0_rfx) = ...
         diag (posterior_grp.b_vX0(ind.x0_rfx) ./ posterior_grp.a_vX0(ind.x0_rfx));
-
+end
 
