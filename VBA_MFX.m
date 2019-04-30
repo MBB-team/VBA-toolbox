@@ -104,17 +104,9 @@ priors_group = VBA_check_struct (options.priors, VBA_defaultMFXPriors (dim));
 VBA_disp ('VBA treatment of MFX analysis: initialization...', options)
 
 % indices of fixed, random, and locked effects
-ind.phi.update = diag (priors_group.SigmaPhi) > 0;
-ind.phi.ffx = ind.phi.update & isFixedEffect (priors_group.a_vPhi, priors_group.b_vPhi);
-ind.phi.rfx = ind.phi.update & ~ isFixedEffect (priors_group.a_vPhi, priors_group.b_vPhi);
-
-ind.theta.update = diag (priors_group.SigmaTheta) > 0;
-ind.theta.ffx = ind.theta.update & isFixedEffect (priors_group.a_vTheta, priors_group.b_vTheta);
-ind.theta.rfx = ind.theta.update & ~ isFixedEffect (priors_group.a_vPhi, priors_group.b_vPhi);
-
-ind.x0.update = diag (priors_group.SigmaX0) > 0;
-ind.x0.ffx = ind.x0.update & isFixedEffect (priors_group.a_vX0, priors_group.b_vX0);
-ind.x0.rfx = ind.x0.update & ~ isFixedEffect(priors_group.a_vX0, priors_group.b_vX0);
+ind.phi = getFxIndices (priors_group.SigmaPhi, priors_group.a_vPhi, priors_group.b_vPhi);
+ind.theta = getFxIndices (priors_group.SigmaTheta, priors_group.a_vTheta, priors_group.b_vTheta);
+ind.x0 = getFxIndices (priors_group.SigmaX0, priors_group.a_vX0, priors_group.b_vX0);
 
 out_group.ind = ind;
 
@@ -442,8 +434,8 @@ function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, ind)
         % random effects
         F = F ...
             - 0.5 * ns * sum (log (E_lambda)) ...
-            + sum (a0 + 0.5 * ns - 1) .* E_log_lambda ...
-            - sum (0.5 * ns * diag (V) + b0) .* E_lambda ...
+            + sum ((a0 + 0.5 * ns - 1) .* E_log_lambda) ...
+            - sum ((0.5 * ns * diag (V) + b0) .* E_lambda) ...
             + sum (a0 .* log (b0) + gammaln (b0)) ... TODO: check this line
             - 0.5 * n * log (2 * pi) ...
             - 0.5 * VBA_logDet (V0) ...
@@ -466,6 +458,15 @@ end
 % =========================================================================
 function il = isFixedEffect (a, b)
     il = isinf (a) & eq (b, 0);
+end
+
+% check if parameter is fixed or random from group variance hyperparams
+% =========================================================================
+% identify the parameters to update, the fixed one, and the random ones
+function ind = getFxIndices (Sigma, a, b)
+    ind.update = diag (Sigma) > 0;
+    ind.ffx = ind.update & isFixedEffect (a, b);
+    ind.rfx = ind.update & ~ isFixedEffect (a, b);
 end
 
 % initialize within-subject priors
