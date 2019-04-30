@@ -104,17 +104,17 @@ priors_group = VBA_check_struct (options.priors, VBA_defaultMFXPriors (dim));
 VBA_disp ('VBA treatment of MFX analysis: initialization...', options)
 
 % indices of fixed, random, and locked effects
-ind.phi_ffx = find(isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
-ind.phi_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
-ind.phi_in = find(diag(priors_group.SigmaPhi)~=0);
+ind.phi.update = diag (priors_group.SigmaPhi) > 0;
+ind.phi.ffx = ind.phi.update & isFixedEffect (priors_group.a_vPhi, priors_group.b_vPhi);
+ind.phi.rfx = ind.phi.update & ~ isFixedEffect (priors_group.a_vPhi, priors_group.b_vPhi);
 
-ind.theta_ffx = find(isFixedEffect(priors_group.a_vTheta,priors_group.b_vTheta));
-ind.theta_rfx = find(~ isFixedEffect(priors_group.a_vPhi,priors_group.b_vPhi));
-ind.theta_in = find(diag(priors_group.SigmaTheta)~=0);
+ind.theta.update = diag (priors_group.SigmaTheta) > 0;
+ind.theta.ffx = ind.theta.update & isFixedEffect (priors_group.a_vTheta, priors_group.b_vTheta);
+ind.theta.rfx = ind.theta.update & ~ isFixedEffect (priors_group.a_vPhi, priors_group.b_vPhi);
 
-ind.x0_ffx = find(isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
-ind.x0_rfx = find(~ isFixedEffect(priors_group.a_vX0,priors_group.b_vX0));
-ind.x0_in = find(diag(priors_group.SigmaX0)~=0);
+ind.x0.update = diag (priors_group.SigmaX0) > 0;
+ind.x0.ffx = ind.x0.update & isFixedEffect (priors_group.a_vX0, priors_group.b_vX0);
+ind.x0.rfx = ind.x0.update & ~ isFixedEffect(priors_group.a_vX0, priors_group.b_vX0);
 
 out_group.ind = ind;
 
@@ -208,8 +208,7 @@ for it = 1 : options.MaxIter
                 posterior_group.b_vPhi, ...
                 priors_group.a_vPhi, ...
                 priors_group.b_vPhi, ...
-                ind.phi_ffx, ...
-                ind.phi_in ...
+                ind.phi ...
             );
     end
     if dim.n_theta > 0
@@ -223,8 +222,7 @@ for it = 1 : options.MaxIter
                 posterior_group.b_vTheta, ...
                 priors_group.a_vTheta, ...
                 priors_group.b_vTheta, ...
-                ind.theta_ffx, ...
-                ind.theta_in ...
+                ind.theta ...
             );
     end
     if dim.n > 0
@@ -238,8 +236,7 @@ for it = 1 : options.MaxIter
                 posterior_group.b_vX0, ...
                 priors_group.a_vX0, ...
                 priors_group.b_vX0, ...
-                ind.x0_ffx, ...
-                ind.x0_in ...
+                ind.x0 ...
             );
     end
     
@@ -304,14 +301,12 @@ end
 
 %% Variational step of the group level statistics
 % =========================================================================
-function [m, V, a, b] = MFX_VBupdate (mu_0, V_0, mu_s, Vs, a, b, a0, b0, iFfx, iIn)
+function [m, V, a, b] = MFX_VBupdate (mu_0, V_0, mu_s, Vs, a, b, a0, b0, ind)
 
     % initialisation
     % ---------------------------------------------------------------------
     % number of subjects
     n_s = numel (mu_s);
-    % number of parameters
-    n = size (mu_0, 1);
     % inverse prior precision
     iV_0 = VBA_inv (V_0);
 
@@ -322,37 +317,30 @@ function [m, V, a, b] = MFX_VBupdate (mu_0, V_0, mu_s, Vs, a, b, a0, b0, iFfx, i
     
     % Random effects
     % ---------------------------------------------------------------------
-    % parameter indices
-    iRfx = setdiff (1 : n, iFfx);
-    iRfx = intersect (iRfx, iIn);
-
-    if ~ isempty (iRfx)
+    if sum (ind.rfx) > 0
         
         % posterior over group mean
-        iQ = diag (a(iRfx) ./ b(iRfx));
+        iQ = diag (a(ind.rfx) ./ b(ind.rfx));
         sm = sum ([mu_s{:}], 2); 
 
-        V(iRfx, iRfx) = VBA_inv (iV_0(iRfx, iRfx) + n_s * iQ);
-        m(iRfx) = V(iRfx, iRfx) * (iV_0(iRfx, iRfx) * mu_0(iRfx) + iQ * sm(iRfx));
+        V(ind.rfx, ind.rfx) = VBA_inv (iV_0(ind.rfx, ind.rfx) + n_s * iQ);
+        m(ind.rfx) = V(ind.rfx, ind.rfx) * (iV_0(ind.rfx, ind.rfx) * mu_0(ind.rfx) + iQ * sm(ind.rfx));
 
         % posterior of group variance
         sv = 0;
         for i = 1 : n_s
             sv = sv ...
-                + (mu_s{i}(iRfx) - mu_0(iRfx)) .^ 2 ...
-                + diag (Vs{i}(iRfx,iRfx));
+                + (mu_s{i}(ind.rfx) - mu_0(ind.rfx)) .^ 2 ...
+                + diag (Vs{i}(ind.rfx,ind.rfx));
         end
 
-        a(iRfx) = a0(iRfx) + 0.5 * n_s;
-        b(iRfx) = b0(iRfx) + 0.5 * (sv + n_s * diag (V(iRfx, iRfx))); % do not index sv
+        a(ind.rfx) = a0(ind.rfx) + 0.5 * n_s;
+        b(ind.rfx) = b0(ind.rfx) + 0.5 * (sv + n_s * diag (V(ind.rfx, ind.rfx))); % do not index sv
     end
     
     % Fixed effects
     % ---------------------------------------------------------------------
-    % parameter indices
-    iFfx = intersect (iFfx, iIn);
-
-    if ~ isempty (iFfx)
+    if sum (ind.ffx) > 0
 
         % posterior over group mean
         wsm = 0;
@@ -364,12 +352,12 @@ function [m, V, a, b] = MFX_VBupdate (mu_0, V_0, mu_s, Vs, a, b, a0, b0, iFfx, i
             sum_iVs = sum_iVs + iVs;
         end
         tmp = VBA_inv (sum_iVs);
-        V(iFfx, iFfx) = tmp(iFfx, iFfx);
-        m(iFfx) = V(iFfx, iFfx) * wsm(iFfx);
+        V(ind.ffx, ind.ffx) = tmp(ind.ffx, ind.ffx);
+        m(ind.ffx) = V(ind.ffx, ind.ffx) * wsm(ind.ffx);
         
         % posterior of group variance (not updated, by definition)
-        a(iFfx) = a0(iFfx);
-        b(iFfx) = b0(iFfx);
+        a(ind.ffx) = a0(ind.ffx);
+        b(ind.ffx) = b0(ind.ffx);
     end
 end
 
@@ -390,7 +378,7 @@ function F = MFX_F (posterior_sub, out_sub, posterior_group, priors_group, dim, 
                 priors_group.muPhi, priors_group.SigmaPhi,...
                 posterior_group.a_vPhi,posterior_group.b_vPhi,...
                 priors_group.a_vPhi, priors_group.b_vPhi,...
-                ind.phi_ffx, ind.phi_in ...
+                ind.phi ...
             );
     end
     if dim.n_theta > 0
@@ -400,7 +388,7 @@ function F = MFX_F (posterior_sub, out_sub, posterior_group, priors_group, dim, 
                     priors_group.muTheta, priors_group.SigmaTheta,...
                     posterior_group.a_vTheta, posterior_group.b_vTheta,...
                     priors_group.a_vTheta, priors_group.b_vTheta,...
-                    ind.theta_ffx, ind.theta_in ...
+                    ind.theta ...
                 );
     end
     if dim.n > 0
@@ -410,38 +398,35 @@ function F = MFX_F (posterior_sub, out_sub, posterior_group, priors_group, dim, 
                     priors_group.muX0, priors_group.SigmaX0,...
                     posterior_group.a_vX0, posterior_group.b_vX0,...
                     priors_group.a_vX0, priors_group.b_vX0,...
-                    ind.x0_ffx, ind.x0_in ...
+                    ind.x0 ...
                 );
     end
 end
 
 % variable-specific free energy group-level correction term
 % =========================================================================
-function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, iFfx, iIn)
+function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, ind)
 
     F = 0;
     
     % Random effects
     % ---------------------------------------------------------------------
-    % index of random effects
-    iRfx = setdiff (1 : numel (mu), iFfx);
-    iRfx = intersect (iRfx, iIn);
        
     % number of random effects
-    n = length (iRfx);
+    n = sum (ind.rfx);
     
     if n > 0
         % keep only random effects
         % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-        mu0 = mu0(iRfx);
-        mu = mu(iRfx);
-        V = V(iRfx, iRfx);
-        V0 = V0(iRfx, iRfx);
-        iv0 = VBA_inv (V0);
-        a = a(iRfx);
-        b = b(iRfx);
-        a0 = a0(iRfx);
-        b0 = b0(iRfx);
+        mu0 = mu0(ind.rfx);
+        mu = mu(ind.rfx);
+        V = V(ind.rfx, ind.rfx);
+        V0 = V0(ind.rfx, ind.rfx);
+        iV0 = VBA_inv (V0);
+        a = a(ind.rfx);
+        b = b(ind.rfx);
+        a0 = a0(ind.rfx);
+        b0 = b0(ind.rfx);
 
         % intermediary variables
         % '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -457,24 +442,22 @@ function F = FreeEnergy_var (ns, mu, V, mu0, V0, a, b, a0, b0, iFfx, iIn)
         % random effects
         F = F ...
             - 0.5 * ns * sum (log (E_lambda)) ...
-            + sum ((a0 + 0.5 * ns - 1) .* E_log_lambda) ...
-            - sum ((0.5 * ns * diag (V) + b0) .* E_lambda) ...
-            + sum (a0 .* log (b0) + gammaln (b0)) ...
+            + sum (a0 + 0.5 * ns - 1) .* E_log_lambda ...
+            - sum (0.5 * ns * diag (V) + b0) .* E_lambda ...
+            + sum (a0 .* log (b0) + gammaln (b0)) ... TODO: check this line
             - 0.5 * n * log (2 * pi) ...
             - 0.5 * VBA_logDet (V0) ...
-            - 0.5 * e' * iv0 * e ...
-            - 0.5 * trace (iv0 * V) ...
+            - 0.5 * e' * iV0 * e ...
+            - 0.5 * trace (iV0 * V) ... TODO: check this line
             + sum (VBA_entropy ('Gamma', a, 1 ./ b)) ...
             + VBA_entropy ('Gaussian', V);
     end
     
     % Fixed effects
     % ---------------------------------------------------------------------
-    iFfx = intersect (iFfx, iIn);
-    % number of random effects
-    n = length (iFfx);
+    n = length (ind.ffx);
     if n > 0
-        F = F + 0.5 * (ns - 1) .* n .* log (2 * pi);
+        F = F + 0.5 * (ns - 1) * n * log (2 * pi);
     end
    
 end
@@ -509,16 +492,16 @@ end
 % definition, fixed.
 function priors = updateSubjectPriors (priors, posterior_grp, ind)
   
-    priors.muPhi(ind.phi_rfx) = posterior_grp.muPhi(ind.phi_rfx);
-    priors.SigmaPhi(ind.phi_rfx, ind.phi_rfx) = ...
-        diag (posterior_grp.b_vPhi(ind.phi_rfx) ./ posterior_grp.a_vPhi(ind.phi_rfx));
+    priors.muPhi(ind.phi.rfx) = posterior_grp.muPhi(ind.phi.rfx);
+    priors.SigmaPhi(ind.phi.rfx, ind.phi.rfx) = ...
+        diag (posterior_grp.b_vPhi(ind.phi.rfx) ./ posterior_grp.a_vPhi(ind.phi.rfx));
 
-    priors.muTheta(ind.theta_rfx) = posterior_grp.muTheta(ind.theta_rfx);
-    priors.SigmaTheta(ind.theta_rfx, ind.theta_rfx) = ...
-        diag (posterior_grp.b_vTheta(ind.theta_rfx) ./ posterior_grp.a_vTheta(ind.theta_rfx));
+    priors.muTheta(ind.theta.rfx) = posterior_grp.muTheta(ind.theta.rfx);
+    priors.SigmaTheta(ind.theta.rfx, ind.theta.rfx) = ...
+        diag (posterior_grp.b_vTheta(ind.theta.rfx) ./ posterior_grp.a_vTheta(ind.theta.rfx));
 
-    priors.muX0(ind.x0_rfx) = posterior_grp.muX0(ind.x0_rfx);
-    priors.SigmaX0(ind.x0_rfx, ind.x0_rfx) = ...
-        diag (posterior_grp.b_vX0(ind.x0_rfx) ./ posterior_grp.a_vX0(ind.x0_rfx));
+    priors.muX0(ind.x0.rfx) = posterior_grp.muX0(ind.x0.rfx);
+    priors.SigmaX0(ind.x0.rfx, ind.x0.rfx) = ...
+        diag (posterior_grp.b_vX0(ind.x0.rfx) ./ posterior_grp.a_vX0(ind.x0.rfx));
 end
 

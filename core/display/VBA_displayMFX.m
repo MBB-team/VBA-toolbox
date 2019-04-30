@@ -120,8 +120,7 @@ if dim.n_phi > 0
     set(display.ha(1,1),'visible','on');
     [haf,hf,hp] = plotUncertainTimeSeries(m,v,1,display.ha(1,1));
     set(display.ha(1,1),'xlim',[0.5,options.dim.n_phi+0.5],'box','off');
-    indrfx = setdiff(1:dim.n_phi,o_group.ind.phi_ffx);
-    indrfx = intersect(indrfx,o_group.ind.phi_in);
+    indrfx = setdiff(1:dim.n_phi,o_group.ind.phi.rfx);
     if ~isempty(indrfx)
         VBA_title(display.ha(1,1),'phi: population mean')
         cla(display.ha(1,2))
@@ -143,8 +142,7 @@ if dim.n_theta > 0
     set(display.ha(2,1),'visible','on');
     [haf,hf,hp] = plotUncertainTimeSeries(m,v,1,display.ha(2,1));
     set(display.ha(2,1),'xlim',[0.5,options.dim.n_theta+0.5],'box','off');
-    indrfx = setdiff(1:dim.n_theta,o_group.ind.theta_ffx);
-    indrfx = intersect(indrfx,o_group.ind.theta_in);
+    indrfx = setdiff(1:dim.n_theta,o_group.ind.theta.rfx);
     if ~isempty(indrfx)
         VBA_title(display.ha(2,1),'theta: population mean')
         cla(display.ha(2,2))
@@ -166,8 +164,7 @@ if dim.n >0
     set(display.ha(3,1),'visible','on');
     [haf,hf,hp] = plotUncertainTimeSeries(m,v,1,display.ha(3,1));
     set(display.ha(3,1),'xlim',[0.5,options.dim.n+0.5],'box','off');
-    indrfx = setdiff(1:dim.n,o_group.ind.x0_ffx);
-    indrfx = intersect(indrfx,o_group.ind.x0_in);
+    indrfx = setdiff(1:dim.n,o_group.ind.x0.rfx);
     if ~isempty(indrfx)
         VBA_title(display.ha(3,1),'x0: population mean')
         cla(display.ha(3,2))
