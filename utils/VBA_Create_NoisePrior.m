@@ -27,7 +27,7 @@ a = fmincon(@(x)D(x,mu,sig),a0,[],[],[],[],1,Inf,[],options);
 
 b = (mu./(exp(gammaln(a-0.5)-gammaln(a)))).^2;
 
-[m,s] = Convert_ab(a,b);
+[m,s] = VBA_Convert_ab(a,b);
 
 % Check results, reject if error on either mu or sig is greater than 1%
 if abs(m-mu)/mu>1e-2 || abs(s-sig)/mu>1e-2
