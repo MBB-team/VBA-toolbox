@@ -29,19 +29,17 @@ One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function
 
 One may also want to impose a specific non-Gaussian prior to some parameters. For example, one may want to set [Beta](https://en.wikipedia.org/wiki/Beta_distribution) or [Gamma](https://en.wikipedia.org/wiki/Gamma_distribution) priors on model parameters. Although, superficially, VBA only deals with Gaussian priors, one can use parameter transformations to emulate non-Gaussian priors. This is exemplified below.
 
-## Setting a pre-specified prior density
+## Setting a specific prior density
 
-Let $$z$$ be some model parameter, which one may want to set some specific prior density $$p_z(z)$$ on (e.g. Beta, Gamma, etc...). This can be done by mapping VBA's native parameter $$x$$ through the following transformation $$h(x)$$:
+Let $$z$$ be some model parameter, which one may want to set some specific prior density $$p_z(z)$$ on (e.g. Beta, Gamma, etc...). This can be done by mapping VBA's native parameter $$x$$ through the following transformation $$h(x)$$ (in the corresponding evolution or observation function):
 
-$$ h(x)=P_z\left(\Phi^{-1}\left(x\right)\right) $$
+$$ h(x)=P_z^{-1}\left(\Phi\left(x\right)\right) $$
 
-where $$\Phi(x)$$ is the cumulative distribution function of VBA's Gaussian priors on $$x$$ and $$P_z\left(z\right)$$ is the target cumulative distribution function of $$z$$ (ie. the integral of $$p_z(z)$$).
+where $$\Phi(x)$$ is the cumulative distribution function of VBA's Gaussian priors on $$x$$ and $$P_z^{-1}\left(z\right)$$ is the inverse cumulative distribution function of $$z$$. The transformation $$h(x)$$ is the composition of two mappings:
+- the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces a uniform distribution over [0,1] from any (here: gaussian) density,
+- and the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling), which produces any distribution (here: $$p_z(z)$$) from the uniform distribution over [0,1].
 
-Note that the transformation $$h(x)$$ is the composition of two mappings:
-- the [inverse transform sampling](https://en.wikipedia.org/wiki/Inverse_transform_sampling) which produces a uniform distribution over [0,1] from any (here: gaussian) density,
-- and the [probability integral transform](https://en.wikipedia.org/wiki/Probability_integral_transform), which produces any distribution (here: $$p_z(z)$$) from the uniform distribution over [0,1].
-
-Note that VBA's posterior inference does not depend on the way the native Gaussian prior is specified, as long as the tansformation $$h(x)$$ uses the ensuing normal cumulative distribution function...
+The ensuing transformed parameter $$z=h(x)$$ follows the distribution $$p_z(z)$$, irrespective of the way VBA's native prior is specified, as long as the tansformation $$h(x)$$ uses the corresponding normal cumulative distribution function (with identical mean and variance). 
 
 > NB: this section was inspired from a comment made by **Emma** on VBA's forum: thank you!
 
