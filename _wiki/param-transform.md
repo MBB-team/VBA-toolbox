@@ -48,13 +48,13 @@ The ensuing transformed parameter $$z=h(x)$$ follows the distribution $$p_z(z)$$
 
 So-called [sparse estimators](https://en.wikipedia.org/wiki/Sparse_approximation) arise in the context of model fitting, when one a priori assumes that only a few (unknown) model parameters deviate from zero. Sparsity constraints can be useful when the estimation problem is under-determined, i.e. when the number of model parameters is much higher than the number of data points. In the context of [regularization](https://en.wikipedia.org/wiki/Regularization_(mathematics)) approaches, such constraints are enforced by minimizing [L1](http://mathworld.wolfram.com/L1-Norm.html) or [L0](https://en.wikipedia.org/wiki/Lp_space#When_p_=_0) norms, which yield the so-called [LASSO estimator](https://en.wikipedia.org/wiki/Lasso_(statistics)). 
 
-Note that L1-norm minimization aprpoaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. For example, emulating L1-like sparsity priors can be done by mapping VBA's native parameters $$x$$ through the following simple transform: 
+Note that L1-norm minimization approaches can be seen as a subcase of bayesian parameter estimation under non-Gaussian priors, more precisely: [Laplacian](https://en.wikipedia.org/wiki/Laplace_distribution) priors. In fact, this intuition generalizes to most sparsity constraints (cf. $$Lp$$-norm with $$p<2$$), which have their "sparsity prior" equivalent. For example, emulating L1-like sparsity priors can be done by mapping VBA's native parameters $$x$$ through the following simple transform: 
 
 $$ g_s(x)= \left(2 s(x) -1\right)x^2 $$
 
 where $$s(x)$$ is the standard sigmoid function.
 
-> This trick is justified and demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of the ensuing (sparse) VBA estimators.
+> This trick is justified and demonstrated in this [technical note](https://arxiv.org/abs/1703.07168), which discloses the properties of the ensuing (sparse) VBA estimators. Note that, to ensure that VBA's estimation converges, one has to ensure that the prior mean of native VBA parameters $$x$$ is not exactly equal to 0. This is because otherwise, the gradient of $$g_s(x)$$ w.r.t. model parameters is null, which prevents VBA from updating the prior.
 
 
 # Recovering the re-mapped posterior density
