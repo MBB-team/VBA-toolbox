@@ -129,7 +129,7 @@ end
 % Here, we simply initialize the posterior on the population's mean and
 % precision over observation/evolution parameters and initial conditions
 % using their prior.
-fprintf(1,['VBA treatment of MFX analysis: initialization...'])
+fprintf(1,['VBA treatment of MFX analysis: Initialization...'])
 for i=1:ns
     if dim.n_phi > 0
         p_group.muPhi = priors_group.muPhi;
@@ -240,7 +240,7 @@ end
 % MFX procedure is computed for tracking algorithmic convergence.
 stop = 0;
 it = 1;
-fprintf(1,['Main VB inversion...'])
+fprintf(1,[' Main VB inversion...'])
 while ~stop
     
     % perform within-subject model inversions
