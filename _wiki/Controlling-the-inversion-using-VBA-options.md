@@ -5,7 +5,7 @@ title: "Controlling the inversion options"
 {:toc}
 
 Strictly speaking, the main VBA inversion routine (`VBA_NLStateSpaceModel.m`) only requires the specification of evolution/observation functions and the model dimension (see [this page]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps) for a quick introduction).
-However, optional arguments can be passed to this function, that allow the user to control the inversion. These are reviewed here.
+However, optional arguments can be passed to this function through VBA's `options` input, which enables users to control the inversion. These are reviewed here.
 
 # Dealing with categorical data
 

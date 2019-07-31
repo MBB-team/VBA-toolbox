@@ -66,16 +66,39 @@ The following figure summarizes the model structure:
 
 > The plate denotes repetitions over time or trials. Nodes represent model variables. Gray nodes represent variables that are known by the experimenter (observed data and controlled inputs). White nodes represent unknown variables (hidden states and parameters of the model). Arrows represent causal dependencies between the variables.
 
-One may have to deal with deterministic systems ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$.
+## A few specific subcases
 
-Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters):
+Nonlinear state-space models (with unknown evolution, observation and precision parameters) grand-fathers most [causal models](https://en.wikipedia.org/wiki/Causal_model) of the statistical literature. A notable exception are models that include unknown "switch" or [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable). We refer the interested reader to [this page]({{ site.baseurl }}/wiki/generativeModels) for an (almost) exhaustive list of generative models that can be emulated using VBA (e.g., auto-regressive models, GARCH models, etc...). Below, we provide two simple specific subcases...
+
+### Deterministic dynamical models
+
+One may have to deal with [deterministic systems]((https://en.wikipedia.org/wiki/Deterministic_system)). These simply correspond to the case where the state noise (i.e. the stochastic perturbations of the states' dynamics) is null ($$\eta=0$$). In this case, the trajectory of hidden states $$x$$ through time is entirely determined by inputs $$u$$, evolution parameters $$\theta$$ and initial conditions $$x_0$$. Given the above definition of nonlinear state-space models, determinisic systems arise if you set the priors on the states' noise precision appropriately ($$\alpha \rightarrow \infty$$, see below).
+
+> Unless you tell it otherwise, VBA assumes, by default, that your model is deterministic. In fact, even if you change the default prior on the states' noise precision, VBA initializes the inversion of the (stochastic) model with an inversion of its deterministic variant...
+
+
+
+### Static models
+
+Note that the above class of generative models encompasses static models, i.e. models without hidden states (nor evolution parameters). In other words, static models simply reduce to a (possibly nonlinear) observation function, i.e.:
+
+\\[y_t=g(\phi,u_t)+\epsilon_t\\]
+
+where the observation mapping $$g$$ has no notion of "hidden states". The ensuing graphical model is depicted below:
 
 
 ![]({{ site.baseurl }}/images/wiki/graph_static_models.png)
 
-> This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning.
+The simplest variant of all static models is the [*General Linear Model*](https://en.wikipedia.org/wiki/General_linear_model) (GLM), where the observation function $$g$$ now reduces to a linear mapping, i.e.:
 
-Note: state-space models (with unknown evolution, observation and precision parameters) grand-fathers most [causal models](https://en.wikipedia.org/wiki/Causal_model) of the statistical literature. A notable exception are models that include unknown "switch" or [categorical variables](https://en.wikipedia.org/wiki/Categorical_variable). We refer the interested reader to [this page]({{ site.baseurl }}/wiki/generativeModels) for an (almost) exhaustive list of generative models that can be emulated using VBA (e.g., auto-regressive models, GARCH models, etc...).
+\\[y=X\phi+\epsilon\\]
+
+where $$X$$ is the so-called [design matrix](https://en.wikipedia.org/wiki/Design_matrix).
+
+
+> In VBA, static models arise if you don't specify any evolution function. This simpler structure is closer to, e.g., decision making models, whereby subject do not engage in learning. In other terms, there is no need for a temporal structure in decision making models, because there is (typically) no trial-by-trial spillover effect to model...
+
+
 
 
 ## Prior knowledge
@@ -91,3 +114,8 @@ Priors can vary in how "informative" they are. This is important because highly 
 - $$p(\alpha\mid m)$$ and $$p(\sigma\mid m)$$: priors on state and observation noise precisions are [Gamma distributions](https://en.wikipedia.org/wiki/Gamma_distribution) that are fully parameterized by their scale ($$a$$) and shape ($$b$$) hyperparameters. For example, a deterministic system has no state noise $$\eta$$, which follows from assuming a priori that $$\alpha$$ is 0 with infinite precision $$(a_{\alpha}=0$$ and $$b_{\alpha}\rightarrow  \infty)$$.
 
 In brief, the generative model $$m$$ includes the evolution and observation functions as well as the above priors on evolution, observation and precision parameters. All these are required to perform a bayesian analysis of experimental data.
+
+> In any bayesian data analysis, setting the priors is a subtle issue. Of course, VBA is endowed with "default" priors, which you can change and adapt to your needs (cf. [model inversion in 4 steps]({{ site.baseurl }}/wiki/VBA-model-inversion-in-4-steps). Alternatively, VBA enables so-called "empirical Bayes" approaches, e.g. by performing [mixed-effect (MFX) modelling]({{ site.baseurl }}/wiki/VBA-MFX)...
+
+
+
