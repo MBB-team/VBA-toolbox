@@ -90,6 +90,7 @@ fep = out.families.ep ;
 
 > (Same format as before). NB: in the lower-left panel, one can also eyeball the "family null" log-evidence (here, it is confounded with the above "model null"). **Lower-right panel**: model space partition and estimated frequencies (y-axis) over families (x-axis).
 
+Check ```demo_modelComparison.m``` for a more detailed example.
 
 ## Between-conditions RFX-BMS
 
@@ -172,7 +173,7 @@ where `Fd` is the log-evidence of the group-hypothesis $$H_{\neq}$$.
 The posterior probability $$P\left(H_= \mid y \right)$$ that the two groups have the same model frequencies is thus simply given by:
 
 ```matlab
-p = 1/(1+exp(Fd-Fe)) 
+p = 1/(1+exp(Fd-Fe))
 ```
 
 Note that one can directly test for a group difference with the function `VBA_groupBMC_btwGroups` which directly performs the above analysis:
@@ -182,6 +183,3 @@ Note that one can directly test for a group difference with the function `VBA_gr
 ```
 
 where `p` is $$P\left(H_= \mid y \right)$$.
-
-
-

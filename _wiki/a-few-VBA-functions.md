@@ -14,14 +14,14 @@ Note: the function `VBA_getLaplace.m` does the same thing, but under a parametri
 
 ## Want to check whether any variable is numerically weird?
 
-Numerical variables can be "weird", e.g. be complex-valued, be infinite or contain NaNs. The function `ìsweird.m` will return 1 if this is the case. Note: this function works on N-D arrays, structures, cell arrays or any combination of these.
+Numerical variables can be "weird", e.g. be complex-valued, be infinite or contain NaNs. The function `VBA_isweird.m` will return 1 if this is the case. Note: this function works on N-D arrays, structures, cell arrays or any combination of these.
 
 
 ## Want to sample from an arbitrary 1D probability distribution?
 
-Have a look at `sampleFromarbitraryP.m` :)
+Have a look at `VBA_random('Arbirary', p, values)`
 
-> Alternatively, the function `VBA_sample.m` can be used to sample from gaussian, gamma, dirichlet, or multinomial densities...
+> Alternatively, the function `VBA_random.m` can be used to sample from gaussian, gamma, dirichlet, or multinomial densities...
 
 
 ## Want to estimate impulse responses to a sequence of inputs?
@@ -39,7 +39,7 @@ The function `VBA_conv2glm.m` allows you to transform a sequence of inputs into 
 
 ## Want to get the square-root of a matrix?
 
-Have a look at `VBA_getISqrtMat.m` :)
+Have a look at `VBA_sqrtm.m` :)
 
 
 ## Want to get errorbars on estimated model residuals?
@@ -116,6 +116,4 @@ VBA includes a function (`GLM_contrast.m`) that enables [classical (i.e. frequen
 
 ## Want to extract a subplot into a single matlab figure?
 
-VBA makes intensive use of "subplots", i.e. multiple graphis within the same matlab window. These may, at times, be difficult to eyeball. Running the function `getSubplots.m` effectively attaches a "context menu" to every axis of the current matlab session. In turn, right-clicking on any axis enables one to extract the subplot into a single matlab figure. This can then be used to copy-paste the graphics, e.g., into powerpoint. Note: closing the figure will automatically replace the axis at its original location.
-
-
+VBA makes intensive use of "subplots", i.e. multiple graphis within the same matlab window. These may, at times, be difficult to eyeball. Running the function `VBA_getSubplots.m` effectively attaches a "context menu" to every axis of the current matlab session. In turn, right-clicking on any axis enables one to extract the subplot into a single matlab figure. This can then be used to copy-paste the graphics, e.g., into powerpoint. Note: closing the figure will automatically replace the axis at its original location.

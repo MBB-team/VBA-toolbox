@@ -9,43 +9,54 @@ The task is the so-called two-armed bandit problem, which captures the essence o
 
 
 ```matlab
-% define evolution and observation functions (as well as feedback function)
-f_fname = @f_Qlearn2; % evolution function (Q-learning)
-g_fname = @g_softmax; % observation function (softmax mapping)
-h_fname = @h_randOutcome; % feedback function (reward schedule)
+% reformat data
+% =========================================================================
+% observations
+y = choices;
+% inputs
+u = [ nan, choices(1:end-1)   ;  % previous choice
+      nan, feedbacks(1:end-1) ]; % previous feedback
 
-% allocate feedback struture for simulations (see simulateNLSS_fb.m)
-fb.inH.er = 1;
-fb.inH.vr = 0;
-fb.h_fname = h_fname;
-fb.indy = 1;
-fb.indfb = 2;
-u0 = [randn(1,25)>-0.25]; % possible feedbacks
-fb.inH.u0 = [u0,~u0,u0,~u0,u0,~u0]; % with reversals
+% specify model
+% =========================================================================
+f_fname = @f_Qlearning; % evolution function (Q-learning)
+g_fname = @g_QLearning; % observation function (softmax mapping)
 
-% simulation parameters
-theta = sigm(0.75,struct('INV',1)); % learning rate = 0.75
-phi = log(2); % inverse temperature = 2
-x0 = zeros(2,1); % initial action values = 0
-n_t = size(fb.inH.u0,2)+1; % number of trials
-options.binomial = 1; % choice data = 0 or 1
-options.skipf = [1,zeros(1,n_t-1)]; % apply identity mapping from x0 to x1.
+% provide dimensions
+dim = struct( ...
+    'n', 2, ... number of hidden states (2 Q-values)
+    'n_theta', 1, ... number of evolution parameters (1: learning rate)
+    'n_phi', 1 ... number of observation parameters (1: temperature)
+   );
 
-% simulate Q-learner and plot choices
-[y,x,x0,eta,e,u] = simulateNLSS_fb(n_t,f_fname,g_fname,theta,phi,[0;0],Inf,Inf,options,x0,fb);
-hf = figure('color',[1 1 1]);
-ha = axes('parent',hf,'nextplot','add');
-plot(ha,y,'kx')
-plot(ha,y-e,'r')
-legend(ha,{'y: agent''s choices','p(y=1|theta,phi,m): behavioural tendency'})
+% options for the simulation
+% -------------------------------------------------------------------------
+% use the default priors except for the initial state
+options.priors.muX0 = [0.5; 0.5];
+options.priors.SigmaX0 = 0.1 * eye(2);
 
+% options for the simulation
+% -------------------------------------------------------------------------
+% number of trials
+n_t = numel(choices);
+% fitting binary data
+options.sources.type = 1;
+% Normally, the expected first observation is g(x1), ie. after
+% a first iteratition x1 = f(x0, u0). The skipf flag will prevent this evolution
+% and thus set x1 = x0
+options.skipf = [1 zeros(1,n_t-1)];
 
-% VBA model inversion (given simulated choices)
-dim = struct('n',2,'n_theta',1,'n_phi',1); % 2 hidden states, 1 evolution param, 1 observation param
-[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+% invert model
+% =========================================================================
+[posterior, out] = VBA_NLStateSpaceModel(y, u, f_fname, g_fname, dim, options);
 
 % compare simulated and estimated model variables
-displayResults(posterior,out,y,x,x0,theta,phi,Inf,Inf);
+% =========================================================================
+displayResults( ...
+        posterior, out, choices, ...
+        simulation.state, simulation.initial, simulation.evolution, simulation.observation, ...
+        Inf, Inf ...
+     );
 ```
 
 Below are graphical outputs of the demonstration script. First, let us focus on the simulated behavioural tendency and agent's choices:
@@ -65,3 +76,4 @@ One can see that the posterior [credible intervals](https://en.wikipedia.org/wik
 
 Of course, analysis of experimental data does not allow one to evaluate the accuracy of parameter estimation, as was done here using simulated data. However, VBA provides a number of [inversion diagnostics]({{ site.baseurl }}/wiki/VBA-output-structure) that are useful to review, such as the structure of model residuals, the parameter posterior correlation matrix, Volterra kernels, etc...
 
+If you want to go further, have a look at the `demo_QlearningAsymmetric` for a more general model (n-armed bandit with asymmetric learning rate).

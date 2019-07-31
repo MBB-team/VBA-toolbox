@@ -15,3 +15,5 @@ A classical example of such models is the so-called "[Q-learning](https://en.wik
 - a behavioural temperature. This (observation) parameter controls the amount of noise there is in peoples' choices. Note that such noise is not only related to exploration: model residuals are also captured by the behavioural temperature.
 
 A demonstration script for Q-learning (`demo_Qlearning.m`) is described [here]({{ site.baseurl }}/wiki/Fast-demo-Q-learning-model).
+
+For more advanced applications, check `demo_QlearningAsymmetric.m` and `demo_dynLearningRate.m`.

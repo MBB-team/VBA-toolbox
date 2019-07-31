@@ -12,13 +12,18 @@ However, optional arguments can be passed to this function, that allow the user 
 By default, VBA's generative model assumes observed data are [continuous](https://en.wikipedia.org/wiki/Continuous_function), for which there is a natural [distance metric](https://en.wikipedia.org/wiki/Metric_(mathematics)). Now if the data is categorical, there is no such natural metric, and one has to resort to probability distributions dealing with discrete events. For example, [binary](https://en.wikipedia.org/wiki/Binary_number) data can be treated as [binomial](https://en.wikipedia.org/wiki/Binomial_distribution) (Bernouilli) samples, whose sufficient statistic (first-order moment) is given by the observation function. This can be done by setting:
 
 ```matlab
-options.binomial = 1 ;
+options.sources.type = 1 ;
 ```
 
 Note that this renders the measurement noise precision (and associated covariance components, see below) irrelevant. It turns out that this does not induce any major change in the VB inversion scheme under the Laplace approximation. In fact, when the dimension of the data is high enough, the empirical distribution of the "residuals" $$\epsilon = y - g(\vartheta)$$ will tend to a Gaussian density (this is actually used during VBA's initialization).
 
-> **TIP:** data can be categorical without being binary. In particular, it can have more than two "levels" (as for, e.g., colours or emotions, etc...). From a statistical perspective, this type of data can be modelled in terms of [multinomial](https://en.wikipedia.org/wiki/Multinomial_distribution) variables, which VBA can handle. See [this page]({{site.baseurl }}/wiki/Multisources) for details regarding how to set up a multinomial likelihood.
+Data can also be categorical without being binary. In particular, it can have more than two "levels" (as for, e.g., colours or emotions, etc...). From a statistical perspective, this type of data can be modeled in terms of [multinomial](https://en.wikipedia.org/wiki/Multinomial_distribution) variables, which VBA can handle using:
 
+```matlab
+options.sources.type = 2 ;
+```
+
+In fact, the toolbox can concurrently fit a combination of multiple observations "sources" with different distributions and noise precisions. See [this page]({{site.baseurl }}/wiki/Multisources) for details regarding how to set up such a composite likelihood.
 
 # Dealing with missing data
 

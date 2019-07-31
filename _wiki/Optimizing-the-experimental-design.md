@@ -25,8 +25,7 @@ e = VBA_designEfficiency(f_fname,g_fname,dim,options,u,'parameters')
 ```
 where `u` is the time series of experimental control variables (inputs) that defines the design and `e` is the design efficiency (minus the trace of the expected posterior covariance matrix).
 
-> **Tip**: in the context of classical GLM hypothesis testing, the statistical power can be derived using the function `testPower.m`. 
-
+Have a look at `demo_designOptimization.m` for an example of implementation.
 
 ## Model selection
 
@@ -46,7 +45,7 @@ As for parameter estimation, one can derive a posterior estimate of this error, 
 
 $$P\big(e=1 \mid u \big) = \int_Y{ P\big(e=1 \mid y,u \big) p\big(y \mid u \big) dy }$$
 
-where the expectation is taken under the marginal likelihood $$p\big(y \mid u \big)$$. Of course, the expected model selection error rate increases with the similarity of model predictions: 
+where the expectation is taken under the marginal likelihood $$p\big(y \mid u \big)$$. Of course, the expected model selection error rate increases with the similarity of model predictions:
 
 ![]({{ site.baseurl }}/images/wiki/optim/optim0.jpg)
 
@@ -63,22 +62,32 @@ where `f_fname`, `g_fname`, `dim`, `options` are nx1 cell arrays (n models), `e`
 
 One can then either compare different designs on the basis of their efficiency (e.g. on a predefined set of inputs $$u$$), or perform numerical optimization of the design efficiency w.r.t. $$u$$ (or some parametric form of it).
 
-
 # Online adaptive designs
 
 In the context of, e.g., experimental psychophysics, adaptive designs such as ["staircase" methods](https://en.wikipedia.org/wiki/Psychophysics#Staircase_procedures) are typically used to estimate some individual sensory detection or discrimination threshold. Such procedures operate in real-time in the sense that the next stimulation depends on the previous behavioral response and is computed in order to optimize model fitting. More generally, adaptive (online) designs can be used to improve on three problems: (i) model parameter estimation; (ii) hypothesis testing (or BMS); (iii) choosing the duration of the experiment (e.g., the number of trials).
 
-We have implemented an example of online adaptive design in the demonstration script `demo_binomial_AdaptDesign.m`. This demo simulates a psychophysics paradigm similar to a signal detection task, whereby the detection probability is a sigmoidal function of the stimulus contrast (which is the design control variable). The goal of the dummy experiment is to estimate the sigmoid's [inflexion point](https://en.wikipedia.org/wiki/Inflection_point) ([detection threshold](https://en.wikipedia.org/wiki/Sensory_threshold)) and the sigmoid's slope (aka [d-prime](https://en.wikipedia.org/wiki/Sensitivity_index)). Here, the design is adapted online, in the aim of providing the most efficient estimate of these model parameters, given trial-by-trial subjects' binary choice data (`y=1`: "seen", `y=0`: "unseen").
+# Practical application
 
-![]({{ site.baseurl }}/images/wiki/optim/optim1.jpg)
+We have implemented an example of offline and online adaptive design in the demonstration script `demo_designOptimization.m`. This demo simulates a psychophysics paradigm similar to a signal detection task, whereby the detection probability is a sigmoidal function of the stimulus contrast (which is the design control variable). The goal of the dummy experiment is to estimate the sigmoid's [inflexion point](https://en.wikipedia.org/wiki/Inflection_point) ([detection threshold](https://en.wikipedia.org/wiki/Sensory_threshold)) and the sigmoid's slope (aka [d-prime](https://en.wikipedia.org/wiki/Sensitivity_index)). Here, the design is adapted either offline or online in the aim of providing the most efficient estimate of these model parameters, either before the experiment (offline) or given trial-by-trial (online) subjects' binary choice data (`y=1`: "seen", `y=0`: "unseen").
 
-On the upper-left graph, one can see the evolution of the posterior credible intervals over the model parameters (y-axis; blue: sigmoid slope, green: inflexion point) as a function of trial index (x-axis). These converge very quickly (and precisely) around the simulated values. The upper-right graph shows the estimated response curve, in terms of the detection probability (y-axis) as a function of stimulus contrast (x-axis). The lower-left graph plots the design efficiency (y-axis) as a function of stimulus contrast (x-axis), at the last trial. One can see that the design is most efficient when the sigmoid function is sampled around the maximal curvature regions. The lower-right graph depicts the histogram of design control variables over trials, which has essentially focused the sigmoid sampling around the inflexion points.
+![]({{ site.baseurl }}/images/wiki/optim/design_optimisation.svg)
 
-Note that the experiment could have been stopped much before (after about 20 trials), on the basis of the convergence of the design efficiency score:
+## No optimization
 
-![]({{ site.baseurl }}/images/wiki/optim/optim2.jpg)
+On the upper graph, one can see the histogram of stimulus intensity presentation. Without optimization, one strategy is simply to present all possible intensities an equal number of times (left).
 
+The middle left graph shows the subject's responses (black dots) simulated using a known psychometric model (green), and the estimated response curve, in terms of the detection probability (y-axis) as a function of stimulus contrast (x-axis).
 
+On the bottom-left graph, one can see the true value (green dots) and the posterior estimates of the model parameters. These converge around the simulated values.
+
+## Offline optimization
+
+In the center plots, we first generate a large number of random designs (ie. random sequences of stimulus intensities). Keeping only designs of increasing efficiency (blue curve, 2nd line of plots), one can see that the design is most efficient when the sigmoid function is sampled around the expected maximal curvature regions, ie. on both sides of the expected inflection point (here: 0). As the exact position of this inflection point is not know in advance, a rather large range of stimulus intensities needs to be presented.
+
+## Online optimization
+
+For online optimization, the stimulus intensity is selected trial-by-trial.
+The upper right plot shows the design efficiency (blue line, right y-axis) as a function of stimulus contrast (x-axis) for the upcoming trial. The histogram of the previously presented intensities essentially focuses the sigmoid sampling at the maximal curvature regions, ie. around the estimated (so far) inflection point.
+
+Note that the experiment could have been stopped before (after about 40 trials), on the basis of the convergence of the design efficiency score.
 Early-stopping rules can be enforced by setting a threshold on design efficiency, in the aim of performing short and efficient experiments...
-
-

@@ -4,9 +4,9 @@ title: "Mixed observations"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-The toolbox allows to develop models of multiple concurrent observations. For example [behavioural-DCM]({{ site.baseurl }}/wiki/behavioural-DCM) can fit both behavioural responses _and_ BOLD timeseries. You may also want to develop a single model explaining both binary button responses _and_ reaction times (e.g., [diffusion-drift models](https://en.wikipedia.org/wiki/Two-alternative_forced_choice#Drift-diffusion_model)). In fact, you can combine virtually as many recordings as you want in a unique generative model where some parameters will impact on multiple observations. In VBA, one can invert such models using the ```multisources``` option. The estimation procedure will then try to estimate the parameter values that best explain all data simultaneously.
+The toolbox allows to develop models of multiple concurrent observations. For example [behavioural-DCM]({{ site.baseurl }}/wiki/behavioural-DCM) can fit both behavioural responses _and_ BOLD timeseries. You may also want to develop a single model explaining both binary button responses _and_ reaction times (e.g., [diffusion-drift models](https://en.wikipedia.org/wiki/Two-alternative_forced_choice#Drift-diffusion_model)). In fact, you can combine virtually as many recordings as you want in a unique generative model where some parameters will impact on multiple observations. In VBA, one can invert such models using the ```sources``` option. The estimation procedure will then try to estimate the parameter values that best explain all data simultaneously.
 
-Please refer to the script ```demo_multisource.m``` for an interactive example.
+Please refer to the script ```demo_sources.m``` for an interactive example.
 
 # Creating the observation matrix
 
@@ -14,7 +14,7 @@ To begin with, one needs to form a single observation matrix with all the observ
 
 * _button responses_ are a **binary** source. Note: it can also be a multinomial source if more than two alternative button presses are available to subjects within a given trial.
 * _(log)-reaction times_ are a **normal** source.
-* _BOLD timeseries_ are a **normal** source. If multiple ROIs are recorded, as for a DCM, they can be considered a single multivariate source: VBA will then assume that noise precision is identical accross ROIs. 
+* _BOLD timeseries_ are a **normal** source. If multiple ROIs are recorded, as for a DCM, they can be considered a single multivariate source: VBA will then assume that noise precision is identical accross ROIs.
 
 One forms the multisource observation matrix as follows:
 
@@ -27,7 +27,7 @@ y = [ y_source_1 ;
 
 ## Case 1: synchronous data
 
-In the simplest case, your observations are always synchronous, i.e. you have one (potentiallay multivariate) observation for each source at each time sample. 
+In the simplest case, your observations are always synchronous, i.e. you have one (potentiallay multivariate) observation for each source at each time sample.
 Let's say for example you recorded `N` button responses during a learning task, where `N` is the number of trials. You have for each trial ```t``` the observed choice ```y_choice(t)``` and the reaction time ```y_RT(t)```. Then you can construct two horizontal vectors ```y_choice``` and ```y_RT``` having ```N``` values each. The combined observation ```y``` is then directly the 2xN matrix:
 
 ```matlab
@@ -38,7 +38,7 @@ y = [ y_choice ; y_RT ] ;
 
 Different sources can also be recorded with different sampling rates. For example, BOLD timeseries will typically consist of one time sample every 2s or so (1 TR), while button responses will be sparser (with one datapoint per trial, whose onset depends on the ITI, the jitter, and the RT). In such cases, one needs to resample the observations to feed VBa's model inversion with a unique observation matrix, where all datapoints are aligned on the same temporal sampling grid.
 
-First, one chooses a common (re)sampling rate. This sampling rate should be high enough to capture the fastest dynamics. Note that using higher sampling rates will automatically incurr a computational cost (i.e. slower inversion). For behavioural DCM for example, you can resample the data using a sampling period between 10ms and 1s (depending on whether you think trial-by-trial variations in the RTs carry interesting information or not). 
+First, one chooses a common (re)sampling rate. This sampling rate should be high enough to capture the fastest dynamics. Note that using higher sampling rates will automatically incurr a computational cost (i.e. slower inversion). For behavioural DCM for example, you can resample the data using a sampling period between 10ms and 1s (depending on whether you think trial-by-trial variations in the RTs carry interesting information or not).
 
 First, one resamples the data accordingly. Resampling does not mean interpolation here. Rather, one simply padds the time series with NaNs ("not a number") between datapoints to tell VBA that nothing was recorded there. For example, let's consider an fMRI timeseries that was recorded with a TR of 2s:
 
@@ -46,12 +46,12 @@ First, one resamples the data accordingly. Resampling does not mean interpolatio
 y_fmri = [ data_mri(1) data_mri(2) ... data_mri(N) ] ;
 ```
 
-To resample it with a new sampling period of 500ms, we simply insert 3 NaNs between all datapoints: 
+To resample it with a new sampling period of 500ms, we simply insert 3 NaNs between all datapoints:
 
 ```matlab
 y_fmri_resampled = [data_mri(1) NaN NaN NaN ...
                     data_mri(2) NaN NaN NaN ...
-                    ... 
+                    ...
                     data_mri(N) NaN NaN NaN] ;
 ```
 
@@ -62,28 +62,28 @@ old_timestep = 2   ; % old TR in s
 new_timestep = 0.5 ; % new timestep is 0.5s
 
 % how many new points for an old one
-dilution = old_timestep / new_timestep ; 
+dilution = old_timestep / new_timestep ;
 
 % initialize resampled observation with nans
-y_fmri_resampled = nan(1, N*dilution) ; 
- 
+y_fmri_resampled = nan(1, N*dilution) ;
+
 % insert one mri datapoint every four observation points
-y_fmri_resampled(1:dilution:end) = data_mri ; 
+y_fmri_resampled(1:dilution:end) = data_mri ;
 
 ```
 
-Now, let's say you want to pair the fMRI timeseries with some trial-by-trial button responses (e.g., to perform a behavioural-DCM analysis). Let's assume that you have recorded the onset time ```onset(t)``` of each response ```response(t)```, where the onset times are measured in seconds (beginning at the first fMRI sample). You first have to round those onsets to align them on the same sampling rate as the resampled BOLD. Then, you can use those timings to construct the resampled response vector: 
+Now, let's say you want to pair the fMRI timeseries with some trial-by-trial button responses (e.g., to perform a behavioural-DCM analysis). Let's assume that you have recorded the onset time ```onset(t)``` of each response ```response(t)```, where the onset times are measured in seconds (beginning at the first fMRI sample). You first have to round those onsets to align them on the same sampling rate as the resampled BOLD. Then, you can use those timings to construct the resampled response vector:
 
 ```matlab
 % initialize resampled observation with nans
-y_resp_resampled = nan(1, numel(y_fmri_resampled)) ; 
- 
+y_resp_resampled = nan(1, numel(y_fmri_resampled)) ;
+
 % find the rounded onsets
 onsets_resampled = round(onsets / new_timestep) ;
- 
+
 % set the observed responses at the correct timing
 y_resp_resampled(onsets_resampled+1) = response ;
- 
+
 ```
 
 It's now time to wrap up. You have one vector for the BOLD timeseries, ```y_fmri_resampled```, and one vector for the behavioural responses, ```y_resp_resampled```, both resampled at the same rate. It is then straightforward to concatenate them to get the mixed observation matrix:
@@ -108,13 +108,13 @@ g(x,u) = [ g_source_1(x,u) ;
 For example, behavioural-DCM uses the following multisource observation function:
 
 ```matlab
-g_bdcm(x,u) = [ g_hrf(x,u)     ;   % predicts BOLD signal  
+g_bdcm(x,u) = [ g_hrf(x,u)     ;   % predicts BOLD signal
                 g_softmax(x,u) ] ; % predicts the binary response
 ```
 
 # Specifying the observation mixture
 
-We now have a model that can predict multiple sources of observations stored in a unique matrix ```y```. This matrix however contains data following different distributions. In order to derive the data likelihood, we need to specify how each observation should be treated. 
+We now have a model that can predict multiple sources of observations stored in a unique matrix ```y```. This matrix however contains data following different distributions. In order to derive the data likelihood, we need to specify how each observation should be treated.
 
 To do so, the ```options``` structure must have a ```sources``` field that describes how to split the observation matrix. More precisely, each source ```i``` should be described as follows:
 
@@ -169,5 +169,3 @@ max_ev = 0.15 ; % and 15%
 This effectively sets the prior weight of each source in proportion to the amount of expected explained variance.
 
 Multisource inversion can then be performed by calling `VBA_NLStateSpaceModel.m` as usual, but having set the `options` structure as described above.
-
-
