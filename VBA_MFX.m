@@ -101,7 +101,7 @@ priors_group = VBA_check_struct (options.priors, VBA_defaultMFXPriors (dim));
 % using their prior.
 
 % display
-VBA_disp ('VBA treatment of MFX analysis: initialization...', options)
+VBA_disp ('VBA treatment of MFX analysis: Initialization...', options)
 
 % indices of fixed, random, and locked effects
 ind.phi = getFxIndices (priors_group.SigmaPhi, priors_group.a_vPhi, priors_group.b_vPhi);
@@ -110,8 +110,11 @@ ind.x0 = getFxIndices (priors_group.SigmaX0, priors_group.a_vX0, priors_group.b_
 
 out_group.ind = ind;
 
+
 % options
 options.dim = dim;
+options.g_fname = g_fname;
+options.f_fname = f_fname;
 options.dim.ns = nS;
 
 %% Evaluate within-subject free energies under the prior
@@ -140,12 +143,12 @@ for i = 1 : nS
 end
 
 posterior_group = priors_group;
-out_group.options = options;
 
 F(1) = MFX_F (posterior_sub, out_sub, posterior_group, priors_group, dim, ind);
 
 out_group.F = F;
 out_group.it = 0;
+out_group.tStart  = tic;  % start time
 out_group.options = options;
 
 [out_group.options] = VBA_displayMFX (posterior_sub, out_sub, posterior_group, out_group, 0, 'off');
@@ -158,7 +161,7 @@ out_group.options = options;
 % estimate of the group mean and precision. The free energy of the ensuing
 % MFX procedure is computed for tracking algorithmic convergence.
 
-fprintf (1, ['Main VB inversion...']);
+VBA_disp('Main VB inversion...', options)
 
 for it = 1 : options.MaxIter
     
@@ -250,6 +253,7 @@ for it = 1 : options.MaxIter
     if abs(dF) <= options.TolFun 
         break;
     end
+    drawnow
     
 end
 
@@ -259,9 +263,13 @@ end
     % keep track of iterations
     out_group.it = it;
 
-    
-fprintf([' done.','\n'])
+try
+        set(out_group.options.display.ho,'string',['MFX: wrapping up...'])
+end    
+VBA_disp('Done!\n',out_group.options)
+
 out_group.date = clock;
+out_group.dt = toc(out_group.tStart);
 out_group.options.sources = out_sub(1).options.sources;
 [out_sub.diagnostics] = deal(NaN);
 for i = 1 : nS
@@ -281,7 +289,7 @@ try
 end
 try
     str = VBA_summaryMFX(out_group);
-    VBA_disp(str,opt)
+    VBA_disp(str,out_group.options)
 end
 out_group.options.display = [];
 

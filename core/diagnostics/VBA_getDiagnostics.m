@@ -210,12 +210,12 @@ else
         ind = out.dim.n_phi;
     end
     if out.dim.n_theta > 0
-        SP = posterior.SigmaTheta{end};
+        SP = posterior.SigmaTheta;
         S(ind+1:ind+out.dim.n_theta,ind+1:ind+out.dim.n_theta) = SP;
         ind = ind + out.dim.n_theta;
     end
     if out.dim.n > 0 && out.options.updateX0
-        SP = posterior.SigmaX0{end};
+        SP = posterior.SigmaX0;
         S(ind+1:ind+out.dim.n,ind+1:ind+out.dim.n) = SP;
     end
 end

@@ -55,7 +55,7 @@ for t=1:dim.n_t
         VBA_disp('---------------',options)
         VBA_disp('CAUSE :',options)
         VBA_disp([ME.message],options);
-        fid = fopen([name,'.m'],options);
+        fid = fopen([name,'.m'],'r');
         for l = 1:line
             codeline = fgets(fid);
         end

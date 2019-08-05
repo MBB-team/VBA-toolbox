@@ -80,8 +80,6 @@ dim_multi.u = dim.u+1 ;
 %% reshape priors to deal with duplicate parameters
 % =========================================================================
 
-priors_multi = options.priors;
-
 % get initial indices of parameters
 % -------------------------------------------------------------------------
 theta_multi = 1 : dim.n_theta;
@@ -111,7 +109,13 @@ phi_multi   = setdiff(phi_multi, fixed.phi  );
 % expand (duplicate) priors and dimensions to cover all sessions
 % -------------------------------------------------------------------------
 
-priors = options.priors;
+
+if isfield(options,'priors')
+    priors = options.priors;
+else
+    priors = struct ();
+end
+priors = VBA_check_struct (priors, VBA_defaultPriors (dim, options));
 
 % hidden state
 dim_multi.n = expanded_dimension (dim.n, X0_multi, n_session);

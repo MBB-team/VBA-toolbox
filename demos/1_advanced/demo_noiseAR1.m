@@ -152,5 +152,6 @@ options.priors.SigmaX0 = 1e-1 * eye(dim.n);
 % Display results
 [h(1), h(2)] = displayResults(posterior.WN,out.WN,y-e,x(1:2,:),x0(1:2),theta,phi,alpha,sigma);
 h(3) = out.WN.options.hf;
+
 set (h, 'Name', 'Results: white noise');
 

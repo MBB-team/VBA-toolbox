@@ -201,16 +201,16 @@ try
     ud = get(get(i1,'parent'),'userdata');
     is = get(ud.display.hl,'value');
     if get(ud.display.hr1,'value')
-        posterior = ud.p_sub{is};
-        out = ud.o_sub{is};
+        posterior = ud.p_sub(is);
+        out = ud.o_sub(is);
         out.options.figName = ['VBA MFX: within-subject model inversion: subject #',num2str(is),' (empirical Bayes priors)'];
     else
-        posterior = ud.o_group.initVBA.p_sub{is};
-        out = ud.o_group.initVBA.o_sub{is};
+        posterior = ud.o_group.initVBA.p_sub(is);
+        out = ud.o_group.initVBA.o_sub(is);
         out.options.figName = ['VBA MFX: within-subject model inversion: subject #',num2str(is),' (initial priors)'];
     end
     [hfp,out] = VBA_ReDisplay(posterior,out,1);
-catch
+catch err
     disp(' --- Oops: something went wrong when displaying within-subject VBA model inversion! ---')
 end
 
