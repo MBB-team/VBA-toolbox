@@ -34,7 +34,7 @@ switch nargin
     case 0
         fprintf ('No inputs provided, generating simulated behavior...\n\n');
         [data, simulation] = simulateQlearningAsym ();
-    case 2
+    case 1
         fprintf ('Performing inversion of provided behaviour...\n\n');
     otherwise
         error ('*** Wrong number of arguments.')
