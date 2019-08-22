@@ -20,13 +20,11 @@ end
 function demos = findDemos ()
     
     vba_info = VBA_version();
-    [~,list]=system(['find ' vba_info.path filesep 'demos -name demo_*.m']) ;
-
+    d = dir(fullfile(vba_info.path, '**', 'demo_*.m'));
+    
     demos = {};
-    for p = strsplit(list)  
-        if ~isempty(p{1})
-            [~,demos{end+1},~] = fileparts(p{1});
-        end
+    for i = 1 : numel (d)  
+        demos{end+1} = d(i).name(1:end-2);
     end
     
 end
