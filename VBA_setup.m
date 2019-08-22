@@ -13,9 +13,9 @@ fprintf('\n');
 
 %%
 
-IsWin = ~isempty(strfind(computer, 'PCWIN')) || strcmp(computer, 'i686-pc-mingw32');
-IsOSX = ~isempty(strfind(computer, 'MAC')) || ~isempty(strfind(computer, 'apple-darwin'));
-IsLinux = strcmp(computer,'GLNX86') || strcmp(computer,'GLNXA64') || ~isempty(strfind(computer, 'linux-gnu'));
+isWin = ~isempty(strfind(computer, 'PCWIN')) || strcmp(computer, 'i686-pc-mingw32');
+isOSX = ~isempty(strfind(computer, 'MAC')) || ~isempty(strfind(computer, 'apple-darwin'));
+isLinux = strcmp(computer,'GLNX86') || strcmp(computer,'GLNXA64') || ~isempty(strfind(computer, 'linux-gnu'));
 
 
 %%
@@ -55,7 +55,12 @@ end
 
 %%
 % Remove old "VBA-toolbox" from path:
-p = strsplit(path,':');
+if isOSX || isLinux
+    p = strsplit(path,':');
+elseif isWin
+    p = strsplit(path,';');
+end
+    
 r = regexp(p, '^.*VBA-toolbox.*$','match');
 r = r(~cell2mat(cellfun(@isempty,r,'UniformOutput',false)));
 

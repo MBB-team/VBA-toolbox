@@ -95,7 +95,8 @@ nAttempts = 1e4;
 % initialization
 fprintf('Offline optimisation: optimizing (  0%%)');
 efficiency_offOpt = - Inf;
-efficiency = nan(1, length (uRange));
+efficiencyDesign = nan(1, nAttempts);
+keepDesign = [1];
 
 % loop over designs
 for attempt = 1 : nAttempts
@@ -104,13 +105,17 @@ for attempt = 1 : nAttempts
     u_attempt = uRange(randi (numel (uRange), 1, N))';
         
     % estimate efficiency
-    efficiency(attempt) = VBA_designEfficiency([],@g_psychometric,dim,options,u_attempt,'parameters');
+    efficiencyDesign(attempt) = VBA_designEfficiency([],@g_psychometric,dim,options,u_attempt,'parameters');
 
     % if better, store and display
-    if efficiency(attempt) > efficiency_offOpt
-        efficiency_offOpt = efficiency(attempt);
+    if efficiencyDesign(attempt) > efficiency_offOpt 
+        efficiency_offOpt = efficiencyDesign(attempt);
         u = sort(u_attempt);
-        plot_design(2, 'offline optimisation', u, y, []);
+        keepDesign(end+1) = attempt;
+    end
+    
+    if efficiencyDesign(attempt) > efficiency_offOpt || mod(attempt, 50) == 0
+        plot_design(2, 'offline optimisation', u, y, [], [], efficiencyDesign(keepDesign));
     end
     
     % progress bar
@@ -138,7 +143,8 @@ plot_design(2, 'offline optimisation', u, y, posterior_offline);
 % initialization
 opt = options;
 u = nan(N, 1);
-efficiency = nan(1, length (uRange));
+efficiencyInput = nan(1, length (uRange));
+efficiencyDesign = nan(1, length (uRange));
 
 % run experiment
 for t = 1 : N
@@ -153,11 +159,11 @@ for t = 1 : N
     % compute efficiency of potential stimuli
     dim.p = 1;
     for i = 1 : length (uRange)
-        efficiency(i) = VBA_designEfficiency([],@g_psychometric,dim,opt,uRange(i),'parameters');
+        efficiencyInput(i) = VBA_designEfficiency([],@g_psychometric,dim,opt,uRange(i),'parameters');
     end
     
     % find best next stimulus to present
-    [~, idxMaxEff] = max (efficiency);
+    [efficiencyDesign(t), idxMaxEff] = max (efficiencyInput);
     u(t) = uRange(idxMaxEff);
 
     % simulate 1 responses
@@ -171,7 +177,7 @@ for t = 1 : N
 
     % display
     % ---------------------------------------------------------------------
-    plot_design(3, 'online optimisation', u, y, posterior_online, efficiency);
+    plot_design(3, 'online optimisation', u, y, posterior_online, efficiencyInput, efficiencyDesign);
 
 end
 
@@ -196,7 +202,7 @@ disp (table ( ...
 %  display subfunction
 %  ########################################################################
 
-function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
+function plot_design(idx, titleTxt, u, y, posterior, uEfficiency, dEfficiency)
         
     % jitter for data display
     persistent jitter;
@@ -205,9 +211,9 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
     end
 
     % experimental design 
-    subplot(3,3,idx)
+    subplot(4,3,idx)
     
-    if nargin == 6 % if efficiency given
+    if nargin > 5 && ~ isempty (uEfficiency)% if efficiency given
         
         [ax,h1,h2] = plotyy(u,10,uRange,uEfficiency,@myHistogram,@myPlot);
          xlim([uRange(1)-0.05, uRange(end)+0.05]);
@@ -229,13 +235,29 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
     end
      % show type of optimisation
      VBA_title(gca,titleTxt);
+       
+    if nargin > 6 % if efficiency given
+        subplot(4,3,3+idx)
+        plot(dEfficiency);
+        xlim([1 numel(dEfficiency)])
+        ylim([1.1*min(dEfficiency) 0])
+        switch idx
+            case 2
+                xlabel('selected design');
+            case 3
+                xlabel('trial');
+        end
+
+        ylabel('efficiency');
+        box off
+    end
 
      % show results if any
      if ~isempty(posterior)
          
         % + observations
         
-        subplot(3,3,3+idx)
+        subplot(4,3,6+idx)
         % predictions
         opt_plot = options;
         opt_plot.priors = posterior;
@@ -264,7 +286,7 @@ function plot_design(idx, titleTxt, u, y, posterior, uEfficiency)
      
         % + parameters
 
-        subplot(3,3,6+idx);
+        subplot(4,3,9+idx);
         
         % posterior estimates
         plotUncertainTimeSeries(posterior.muPhi,sqrt(diag(posterior.SigmaPhi)),[],gca);
