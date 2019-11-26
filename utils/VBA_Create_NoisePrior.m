@@ -22,8 +22,7 @@ else
 a0 = 1/8*(1+sqrt(49+mu^4/sig^4+50*mu^2/sig^2)+mu^2/sig^2);
 
 % Find a
-options = optimoptions('fmincon','Display','none','Tolfun',1e-8,'TolX',1e-8);
-a = fmincon(@(x)D(x,mu,sig),a0,[],[],[],[],1,Inf,[],options);
+a = fminbnd(@(x)D(x,mu,sig),1,a0);
 
 b = (mu./(exp(gammaln(a-0.5)-gammaln(a)))).^2;
 
