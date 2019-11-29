@@ -1,4 +1,4 @@
-function [ a,b ] = VBA_Create_NoisePrior( mu,sig )
+function [a, b] = VBA_Create_NoisePrior(mu, sig)
 %[ a,b ] = Create_NoisePrior( mu,sig )
 %
 % Converts mu and sig defining a prior distribution over noise standardard
@@ -13,30 +13,34 @@ function [ a,b ] = VBA_Create_NoisePrior( mu,sig )
 % 
 %  M. Eichenlaub 13/05/2019
 
-if nargin==1 % Return this if system noise shall be switched off
+if sig==0 % Return this if system noise shall be switched off
     a = Inf;
     b = 0;
 else
+    
+assert(nargin==2,' *** VBA_Create_NoisePrior: Both mu and sigma must be provided')
+assert(mu>5e-3,' *** VBA_Create_NoisePrior: mu must be greater than 5e-3')
+assert(sig/mu>0.005,' *** VBA_Create_NoisePrior: sig must be greater than 0.005*mu')
+assert(sig/mu<5,' *** VBA_Create_NoisePrior: sig must be smaller than 5*mu')
 
-% Starting value
+
+
+% Upper bound
 a0 = 1/8*(1+sqrt(49+mu^4/sig^4+50*mu^2/sig^2)+mu^2/sig^2);
 
-% Find a
+% Find minimum for 1<a<a0
 a = fminbnd(@(x)D(x,mu,sig),1,a0);
 
+% Calculate b
 b = (mu./(exp(gammaln(a-0.5)-gammaln(a)))).^2;
 
-[m,s] = VBA_Convert_ab(a,b);
-
 % Check results, reject if error on either mu or sig is greater than 1%
-if abs(m-mu)/mu>1e-2 || abs(s-sig)/mu>1e-2
-    a=0;
-    b=0;
-    disp('optimization Error');
-end
+% [m,s] = VBA_Convert_ab(a,b);
+% if abs(m-mu)/mu>1e-2 || abs(s-sig)/mu>1e-2
+%     error('Optimization failed');
+% end
 
 end
-
 end
 
 function [ D ] = D(a,mu,sig)
