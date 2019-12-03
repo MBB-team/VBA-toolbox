@@ -48,7 +48,7 @@ Its intputs and outputs are described below:
 - `p_group`: structure containing the sufficient statistics of the posterior over the moments of the parent population distribution.
 - `o_group`: output structure of the VBA_MFX approach. In particular, it contains the Free Energy of the MFX model (for model comparison purposes).
 
-> A complete mathematical description of the approach is available [on this page](https://sites.google.com/site/jeandaunizeauswebsite/links/resources).
+> A complete mathematical description of the approach is available [here](https://arxiv.org/abs/1903.09003).
 
 
 
