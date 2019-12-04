@@ -11,36 +11,37 @@ function [a, b] = VBA_Create_NoisePrior(mu, sig)
 %   a,b: Can either be a_sigma/b_sigma or a_alpha/b_alpha defining
 %   prior distributions over measurement/system noise precision
 % 
-%  M. Eichenlaub 13/05/2019
+%  M. Eichenlaub 04/12/2019
 
-if sig==0 % Return this if system noise shall be switched off
+if sig == 0     % Return Inf and 0 if stochstic inversion shall be disabled
     a = Inf;
     b = 0;
 else
-    
+
+% Check mu and sig to prevent errors in numerical approximation        
 assert(nargin==2,' *** VBA_Create_NoisePrior: Both mu and sigma must be provided')
 assert(mu>5e-3,' *** VBA_Create_NoisePrior: mu must be greater than 5e-3')
 assert(sig/mu>0.005,' *** VBA_Create_NoisePrior: sig must be greater than 0.005*mu')
 assert(sig/mu<5,' *** VBA_Create_NoisePrior: sig must be smaller than 5*mu')
 
-
-
-% Upper bound
+% Upper bound for a
 a0 = 1/8*(1+sqrt(49+mu^4/sig^4+50*mu^2/sig^2)+mu^2/sig^2);
 
-% Find minimum for 1<a<a0
+% Find a by minimizing the function D for 1<a<a0
 a = fminbnd(@(x)D(x,mu,sig),1,a0);
 
 % Calculate b
 b = (mu./(exp(gammaln(a-0.5)-gammaln(a)))).^2;
 
+% Obsolete because errors should be prevented earlier
 % Check results, reject if error on either mu or sig is greater than 1%
 % [m,s] = VBA_Convert_ab(a,b);
 % if abs(m-mu)/mu>1e-2 || abs(s-sig)/mu>1e-2
-%     error('Optimization failed');
+%     error(' *** VBA_Create_NoisePrior: a and b could not be caluclated');
 % end
 
 end
+
 end
 
 function [ D ] = D(a,mu,sig)
