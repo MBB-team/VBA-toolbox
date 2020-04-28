@@ -117,7 +117,7 @@ Qvalues = posterior.muX;
 theta = [Inf; 0];
 % for each trial, recompute the state evolution
 for t = 1 : n_t
-    PE(t) =   sum (f_QlearningAsym (Qvalues(:,t), theta, u(:,t+1), struct) - Qvalues(:,t));
+    posterior.PE(t) =   sum (f_QlearningAsym (Qvalues(:,t), theta, u(:,t+1), struct) - Qvalues(:,t));
 end
 
 end
