@@ -59,7 +59,7 @@ The statistical properties of the variational-Laplace approach (e.g., in terms o
 
 ## Limitations
 
-As one might guess, VBA relies on a combination of the above mean-field and Laplace approximations to perform Bayesian inference (for both parameter estimation and model comparison. Practically speaking, the interest here lies in that the resulting VB algorithms are much more efficient than sampling-based approaches (such as, e.g., [Gibbs sampling](https://en.wikipedia.org/wiki/Gibbs_sampling), [rejection sampling](https://en.wikipedia.org/wiki/Rejection_sampling), [MCMC](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), etc). This is important, because slow inference schemes may not, even with the help of modern distributed computing, be applicable for state-of-the-art data analysis.
+As one might guess, VBA relies on a combination of the above mean-field and Laplace approximations to perform Bayesian inference. Practically speaking, the interest here lies in that the resulting VB algorithms are much more efficient than sampling-based approaches (such as, e.g., [Gibbs sampling](https://en.wikipedia.org/wiki/Gibbs_sampling), [rejection sampling](https://en.wikipedia.org/wiki/Rejection_sampling), [MCMC](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), etc). This is important, because slow inference schemes may not, even with the help of modern distributed computing, be applicable for state-of-the-art data analysis.
 
 However, VB algorithms have their drawbacks. Some of these are less problematic than they sound, essentially because one can easily diagnose the issue and find a way around. Below, we list the two main VB limitations, which we think one should be aware of:
 
