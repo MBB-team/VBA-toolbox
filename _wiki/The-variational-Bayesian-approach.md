@@ -4,7 +4,9 @@ title: "The variational Bayes approach"
 * Will be replaced with the ToC, excluding the "Contents" header
 {:toc}
 
-Typically, the likelihood function contains high-order interaction terms between subsets of the unknown model parameters $$\vartheta$$ (e.g., because of nonlinearities in the model). This implies that the high-dimensional integrals required for Bayesian [parameter estimation](https://en.wikipedia.org/wiki/Estimation_theory) and [model comparison](https://en.wikipedia.org/wiki/Model_selection) cannot be evaluated analytically. Also, it might be computationally very costly to evaluate them using numerical brute force or [Monte-Carlo sampling](https://en.wikipedia.org/wiki/Monte_Carlo_method) schemes. This motivates the use of [variational approaches](https://en.wikipedia.org/wiki/Calculus_of_variations) to approximate Bayesian inference ([Beal, 2003](https://en.wikipedia.org/wiki/Variational_Bayesian_methods)). In brief, **[variational Bayes](https://en.wikipedia.org/wiki/Variational_Bayesian_methods)** (VB) is an iterative scheme that indirectly optimizes an approximation to both the model evidence $$p(y\mid m)$$ and the posterior density $$p(\vartheta\mid y,m)$$. The key trick is to decompose the log model evidence into:
+This section summarizes the approximate bayesian inference approach, which VBA relies on.
+
+Recall that, typically, generative models have some form of nonlinearity, in the way the unknown model parameters $$\vartheta$$ impact the data $$y$$. In particular, the ensuing likelihood function may contain high-order interaction terms between subsets of the unknown model parameters (e.g., because of nonlinearities in the model). This implies that the high-dimensional integrals required for Bayesian [parameter estimation](https://en.wikipedia.org/wiki/Estimation_theory) and [model comparison](https://en.wikipedia.org/wiki/Model_selection) cannot be evaluated analytically. Also, it might be computationally very costly to evaluate them using numerical brute force or [Monte-Carlo sampling](https://en.wikipedia.org/wiki/Monte_Carlo_method) schemes. This motivates the use of [variational approaches](https://en.wikipedia.org/wiki/Calculus_of_variations) to approximate Bayesian inference ([Beal, 2003](https://en.wikipedia.org/wiki/Variational_Bayesian_methods)). In brief, **[variational Bayes](https://en.wikipedia.org/wiki/Variational_Bayesian_methods)** (VB) is an iterative scheme that indirectly optimizes an approximation to both the model evidence $$p(y\mid m)$$ and the posterior density $$p(\vartheta\mid y,m)$$. The key trick is to decompose the log model evidence into:
 
 $$\ln p(y\mid m)=F(q)+D_{KL} (q(\vartheta);p(\vartheta\mid y,m))$$
 
@@ -53,6 +55,21 @@ Here, $$I_1\left(\vartheta_1\right) = \langle \ln\:p(\vartheta\mid m) + \ln(y\mi
 >In this mock example, the bidimensional landscape is the (unknown) true joint posterior distribution over both model parameters. The mean-field approximation essentially summarizes this landscape in terms of the product of the respective marginal distributions (cf. black plain lines). Under the Laplace approximation, these marginal distributions further simplify into Gaussian densities (cf. red dotted lines).
 
 The statistical properties of the variational-Laplace approach (e.g., in terms of the quality of the ensuing approximation), for the class of models considered in VBA, were first described in [Daunizeau et al. (2009)](http://www.sciencedirect.com/science/article/pii/S0167278909002425). Additional mathematical details regarding the variational-Laplace approach can be found in [this technical note](https://arxiv.org/abs/1703.02089)
+
+
+## Limitations
+
+As one might guesses, VBA relies on a combination of the above mean-field and Laplace approximations to perform Bayesian inference (for both parameter estimation and model comparison. Practically speaking, the interest here lies in that the resulting VB algorithms are much more efficient than sampling-based approaches (such as, e.g., [Gibbs sampling](https://en.wikipedia.org/wiki/Gibbs_sampling), [rejection sampling](https://en.wikipedia.org/wiki/Rejection_sampling), [MCMC](https://en.wikipedia.org/wiki/Markov_chain_Monte_Carlo), etc). This is important, because slow inference schemes may not, even with the help of modern distributed computing, be applicable for state-of-the-art data analysis.
+
+However, VB algorithms have their drawbacks. Some of these are less problematic than they sound, essentially because one can easily diagnose the issue and find a way around. Below, we list a few limitations, as well as potential solutions, that one should be aware of:
+
+* **Local optima**: VB is an iterative optimization scheme (informed by the Free Energy gradient). As any optimization scheme, it can get stuck in [local optima](https://en.wikipedia.org/wiki/Local_optimum). This may impact on the accuracy of both parameter estimation and model comparison. Fortunately, local optima typically induce some form of [under-fitting](https://en.wikipedia.org/wiki/Overfitting#Underfitting). Sometimes, under-fitting can easily be diagnosed using fit accuracy metrics (such as [percentage of explained variance](https://en.wikipedia.org/wiki/Explained_variation), which VBA provides). In more subtle cases, one might have to inspect the structure of fit residuals (which can be eyballed from VBA's graphical outputs). Anyway, in such cases, a simple solution is to re-run the analysis with a different initialization (cf, e.g., so-called "multi-start" algorithms), and use [Bayesian MOdel Averaging] ...
+* **Overconfidence**: VB typically neglects conditional dependencies, in particular when relying on mean-field approximations. This may yield "overconfident" parameter estimates, i.e. posterior variances may be under-estimated. This issue may be deemed as less severe than 
+getting stuck in a local optimum, but it is in fact slightly more difficult to diagnose and resolve. In principle, it is always possible to re-parameterize the generative model in order to relax most (if not all) mean-field separability assumptions. However, 
+
+
+* 
+
 
 
 
