@@ -29,6 +29,7 @@ end
 options = in.old.options;
 dim = in.old.dim;
 
+
 % Check whether the system is at initial state
 if isempty(t)
     t = 1;
@@ -38,9 +39,33 @@ if isempty(t)
     else
         xt = options.priors.muX0;
     end
-else
+else 
     t = t+1;
 end
+
+
+multiSess = zeros(sum(options.multisession.split),1);
+idx = cumsum(options.multisession.split)+1;
+idx = [1, idx(1:end-1)];
+multiSess(idx) = 1;
+
+if multiSess(t)
+    if t ~=1
+        for ii = 1:size(options.inG{2}.indices.X0,1)
+            dxdTheta(:,ii) = 0;
+            if options.inG{2}.indices.X0(ii,find(idx==t)) == ii
+                if options.updateX0
+                    temp = P(dim.n_phi+dim.n_theta+1:end);
+                    xt(ii) = temp(ii);
+                else
+                    xt(ii) = options.priors.muX0(ii);
+                end
+            end
+        end
+    end
+end
+
+
 
 % apply ODE forward step:
 [xt,dF_dX,dF_dP] = VBA_evalFun('f',xt,Theta,ut,options,dim,t);
