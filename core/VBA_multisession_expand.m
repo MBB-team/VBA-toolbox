@@ -69,11 +69,11 @@ fixed = VBA_check_struct(options.multisession.fixed, ...
 % syntactic sugar handling 
 if isequal(fixed.theta ,'all'), fixed.theta = 1:dim.n_theta; end
 if isequal(fixed.phi   ,'all'), fixed.phi   = 1:dim.n_phi; end
-%if isequal(fixed.X0    ,'all'), fixed.X0    = 1:dim.n; end
+if isequal(fixed.X0    ,'all'), fixed.X0    = 1:dim.n; end
     
 theta_multi = setdiff(theta_multi,fixed.theta);
 phi_multi   = setdiff(phi_multi  ,fixed.phi  );
-%X0_multi    = setdiff(X0_multi   ,fixed.X0   );
+X0_multi    = setdiff(X0_multi   ,fixed.X0   );
 
 % = expand (duplicate) priors and dimensions to cover all sessions
 priors = options.priors;
