@@ -38,8 +38,32 @@ Constraints and comments for applying the existing VBA's k-ToM models are as fol
 > Some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
 
 
-### Running a k-ToM lmodel inversion
-Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures that k-ToM observation and evolution functions require.
+### Running a k-ToM model inversion
+Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures, which are specific to k-ToM observation and evolution functions. Below is an example piece of code that would run a k-ToM model inversion in VBA (with k=2):
+```matlab
+% prepare specific dim and options structure for k-ToM model inversion
+K = 2; % depth of k-ToM's recursive beliefs
+payoffTable = cat(3,[1,0;0,1],[0,1;1,0]); % game payoff matrix (here: hide-and-seek)
+role = 1;  % subject's 'role' (here: 1=seeker, 2=hider)
+[options,dim] = prepare_kToM(K,payoffTable,role,0);
+% run inversion
+f_fname = @f_kToM; % k-ToM model evolution function
+g_fname = @g_kToM; % k-ToM model observation function
+y = SubjectChoices; % sequence of choice data 
+u = [zeros(2,1),[OpponentChoices(1:end-1);SubjectChoices(1:end-1)]]; % sequence of players' actions (at the previous trial)
+options.skipf = zeros(1,N);
+options.skipf(1) = 1; % skip 1st trial (no learning until trial #2)
+options.binomial = 1; % inform VBA about binomial data
+options.priors.SigmaTheta = 1e2*eye(dim.n_theta); % relax prior on evolution param
+[posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
+```
+Here, `SubjectChoices` and `OpponentChoices` are the binary actions of the participant and his/her "opponent", respectively.
+
+Note that:
+
+- `SubjectChoices` enters as data to be fitted (`y`), but also as an input to the model (second row of `u`). This is because k-ToM's learning rule requires the knowledge of her own action at the previous trial...
+- the incentive rule of the game is completely specified by the payoff table. Here, `payoffTable` is a 3D-array, which is such that `payoffTable(:,:,role)` (resp., `payoffTable(:,:,3-role)`) provides the payoff for the participant (resp., for his/her opponent) for all possible action pairs in the game, where `role` is set appropriately.
+
 
 
 ### Eyeballing inversion results
