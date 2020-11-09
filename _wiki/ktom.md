@@ -32,8 +32,6 @@ In VBA, there is a pair of generic evolution and observation functions for k-ToM
 - the game has to be a 2X2 game (2 agents, 2 actions)
 - the structure of the utillity table of k-ToM's opponent is fixed, but does not need to be identical to k-ToM's.
 
-> Some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
-
 
 ### Running a k-ToM model inversion
 Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures, which are specific to k-ToM observation and evolution functions. Below is an example piece of code that would run a k-ToM model inversion in VBA (with $$k=2$$):
@@ -93,6 +91,10 @@ Many optional features of k-ToM learners can be changed to adapt the model to on
 - the possibility to include "belief dilution" effects (e.g. forgetting effects)
 
 Other features have to be reset by editing the function `prepare_kToM.m`, or by directly modifying the appropriate optional inputs stored in `options.inF` and `options.inG`. For example, one can reset the field `options.inF.dummyPar`, which is a 3x1 binary vector that specifies which hidden parameter(s) of her opponent k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to `[1;0;0]`, which means that k-ToM assumes that her opponent's volatility is the only thing that changes across trials. The impact of setting any of these entries to 1 is that the induced learning rule includes some form of "forgetting effect" which results from the dilution of belief precision from one trial to the next.
+
+
+> Some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
+
 
 The script `demo_recur.m` exemplifies the simulation and inversion of a k-ToM learner (using a competitive 2X2 game, namely: "hide-and-seek"), where some of these features are edited...
 
