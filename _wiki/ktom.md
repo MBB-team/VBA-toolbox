@@ -31,7 +31,6 @@ In VBA, there is a pair of generic evolution and observation functions for k-ToM
 
 - the game has to be a 2X2 game (2 agents, 2 actions)
 - the structure of the utillity table of k-ToM's opponent is fixed, but does not need to be identical to k-ToM's.
-- states indexing has to be set according to a standard. In the demo, this is done using the function `defIndlev.m`.
 
 > Some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
 
@@ -49,7 +48,7 @@ f_fname = @f_kToM; % k-ToM model evolution function
 g_fname = @g_kToM; % k-ToM model observation function
 y = SubjectChoices; % sequence of choice data 
 u = [zeros(2,1),[OpponentChoices(1:end-1);SubjectChoices(1:end-1)]]; % sequence of players' actions (at the previous trial)
-options.skipf = [1,zeros(1,size(y,2)-1);  % skip 1st trial (no learning until trial #2)
+options.skipf = [1,zeros(1,size(y,2)-1)];  % skip 1st trial (no learning until trial #2)
 options.binomial = 1; % inform VBA about binomial data
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
@@ -59,6 +58,7 @@ Note that:
 
 - `SubjectChoices` enters as data to be fitted (`y`), but also as an input to the model (second row of `u`). This is because k-ToM's learning rule requires the knowledge of her own action at the previous trial...
 - the incentive rule of the game is completely specified by the payoff table. Here, the game is "[hide-and-seek](https://en.wikipedia.org/wiki/Hide-and-seek)", and `payoffTable` is a 3D-array, which is such that `payoffTable(:,:,role)` (resp., `payoffTable(:,:,3-role)`) provides the payoff for the participant (resp., for his/her opponent) for all possible action pairs (2x2 possibilities) in the game, where `role` is set appropriately (1="seeker", 2="hider").
+- The states' indexing of the k-ToM model is automatically set by `prepare_kToM.m` (see below).
 
 
 
