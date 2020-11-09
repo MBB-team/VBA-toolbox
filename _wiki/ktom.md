@@ -22,7 +22,7 @@ Second, according to Bayesian [decision theory](https://en.wikipedia.org/wiki/De
 
 Here, the recursion depth ($$k$$) induces distinct ToM sophistication levels, which differ in how they update their (recursive) beliefs and the ensuing trial-by-trial predictions about their opponent's next move. Note that one can derive the learning rule of any k-ToM agent recursively, from the learning rule of 0-ToM.
 
-> The mathematical details of k-ToM learning models are described in [Devaine et al. (2014a)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0087619) and [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992).
+> The mathematical details of k-ToM learning models are described in [Devaine et al. (2014a)](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0087619) and [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992). Empirical applications of this model to ethology and computational psychiatry can be found in [Devaine et al. (2017)](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1005833) and [Devaine et al. (2020)](https://journals.plos.org/ploscompbiol/article/comments?id=10.1371/journal.pcbi.1007700).
 
 
 ## k-ToM mentalizing models in VBA
@@ -38,9 +38,11 @@ Constraints and comments for applying the existing VBA's k-ToM models are as fol
 > Some additional behavioural forces (e.g., [perseveration](https://en.wikipedia.org/wiki/Perseveration) and/or directed [exploration](https://en.wikipedia.org/wiki/Exploration)) may be easily inserted in k-ToM's observation function.
 
 
-Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures...
+### Running a k-ToM lmodel inversion
+Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures that k-ToM observation and evolution functions require.
 
 
+### Eyeballing inversion results
 Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. Note that `prepare_kToM.m` stores the states' indexing in the structure `options.inG.indlev`. It's a bit tricky because both the types and the number of states depend upon $$k$$ (`f_kToM.m` is recursive). Nevertheless, the hidden states of a k-ToM agent can be simply eyeballed using the function `unwrapKTOM.m`, whose  graphical output is exemplified below:
 
 ![]({{ site.baseurl }}/images/wiki/unwrapkTom.bmp)
@@ -55,6 +57,7 @@ Editing `unwrapKTOM.m` enables users to extract any internal state (or a transfo
 - Finally, the [sufficient statistics](https://en.wikipedia.org/wiki/Sufficient_statistic) of the agent's posterior belief about his virtual opponents' learning parameters (mean and variance for each learning parameter: [M1,V1,M2,V2,...]). The corresponding indices are stored in `options.inG.indlev(2).Par` (for a 2-ToM virtual opponent).
 
 
+### Adapting k-ToM models to one's experimental needs
 Many optional features of k-ToM learners can be changed to adapt the model to one's specific experiment. Some of these features are in fact inputs to the function `prepare_kToM.m`:
 
 - the recursion depth $$k$$ of k-ToM learners
