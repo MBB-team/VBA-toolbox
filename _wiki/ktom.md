@@ -27,9 +27,7 @@ Here, the recursion depth ($$k$$) induces distinct ToM sophistication levels, wh
 
 ## k-ToM mentalizing models in VBA
 
-In VBA, there is a pair of generic evolution and observation functions for k-ToM agents, namely: `f_kToM.m` and `g_kToM.m`. These can be used in conjunction with the appropriate inputs (previous players' choices) to fit the series of observed choices in a 2x2 game, whose utility table is given. The script `demo_recur.m` exemplifies the simulation and inversion of such k-ToM learner (using a competitive 2X2 game, namely: "[hide-and-seek](https://en.wikipedia.org/wiki/Hide-and-seek)").
-
-Constraints and comments for applying the existing VBA's k-ToM models are as follows:
+In VBA, there is a pair of generic evolution and observation functions for k-ToM agents, namely: `f_kToM.m` and `g_kToM.m`. These can be used in conjunction with the appropriate inputs (previous players' choices) to fit the series of observed choices in a 2x2 game. Constraints and comments for applying the existing VBA's k-ToM models are as follows:
 
 - the game has to be a 2X2 game (2 agents, 2 actions)
 - the structure of the utillity table of k-ToM's opponent is fixed, but does not need to be identical to k-ToM's.
@@ -39,9 +37,9 @@ Constraints and comments for applying the existing VBA's k-ToM models are as fol
 
 
 ### Running a k-ToM model inversion
-Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures, which are specific to k-ToM observation and evolution functions. Below is an example piece of code that would run a k-ToM model inversion in VBA (with k=2):
+Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures, which are specific to k-ToM observation and evolution functions. Below is an example piece of code that would run a k-ToM model inversion in VBA (with $$k=2$$):
 ```matlab
-% prepare specific dim and options structure for k-ToM model inversion
+% prepare specific dim and options structures for k-ToM model inversion
 K = 2; % depth of k-ToM's recursive beliefs
 payoffTable = cat(3,[1,0;0,1],[0,1;1,0]); % game payoff matrix (here: hide-and-seek)
 role = 1;  % subject's 'role' (here: 1=seeker, 2=hider)
@@ -51,10 +49,8 @@ f_fname = @f_kToM; % k-ToM model evolution function
 g_fname = @g_kToM; % k-ToM model observation function
 y = SubjectChoices; % sequence of choice data 
 u = [zeros(2,1),[OpponentChoices(1:end-1);SubjectChoices(1:end-1)]]; % sequence of players' actions (at the previous trial)
-options.skipf = zeros(1,N);
-options.skipf(1) = 1; % skip 1st trial (no learning until trial #2)
+options.skipf = [1,zeros(1,size(y,2)-1);  % skip 1st trial (no learning until trial #2)
 options.binomial = 1; % inform VBA about binomial data
-options.priors.SigmaTheta = 1e2*eye(dim.n_theta); % relax prior on evolution param
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
 Here, `SubjectChoices` and `OpponentChoices` are the binary actions of the participant and his/her "opponent", respectively.
@@ -62,7 +58,7 @@ Here, `SubjectChoices` and `OpponentChoices` are the binary actions of the parti
 Note that:
 
 - `SubjectChoices` enters as data to be fitted (`y`), but also as an input to the model (second row of `u`). This is because k-ToM's learning rule requires the knowledge of her own action at the previous trial...
-- the incentive rule of the game is completely specified by the payoff table. Here, `payoffTable` is a 3D-array, which is such that `payoffTable(:,:,role)` (resp., `payoffTable(:,:,3-role)`) provides the payoff for the participant (resp., for his/her opponent) for all possible action pairs in the game, where `role` is set appropriately.
+- the incentive rule of the game is completely specified by the payoff table. Here, the game is "[hide-and-seek](https://en.wikipedia.org/wiki/Hide-and-seek)", and `payoffTable` is a 3D-array, which is such that `payoffTable(:,:,role)` (resp., `payoffTable(:,:,3-role)`) provides the payoff for the participant (resp., for his/her opponent) for all possible action pairs (2x2 possibilities) in the game, where `role` is set appropriately (1="seeker", 2="hider").
 
 
 
@@ -88,7 +84,9 @@ Many optional features of k-ToM learners can be changed to adapt the model to on
 - the game's payoff table $$U(a,b)$$
 - the possibility to include "belief dilution" effects (e.g. forgetting effects)
 
-Other features have to be reset by modifying the function `prepare_kToM.m`, or directly the appropriate optional inputs stored in `options.inF` and `options.inG`. For example, one can reset the field `options.inF.dummyPar`, which is a 3x1 binary vector that specifies which hidden parameter(s) of her opponent k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to `[1;0;0]`, which means that only k-ToM's opponent's volatility is assumed to change across trials. The impact of setting any of these entries to 1 is that the induced learning rule includes some form of "forgetting effect" which results from the dilution of belief precision from one trial to the next.
+Other features have to be reset by editing the function `prepare_kToM.m`, or by directly modifying the appropriate optional inputs stored in `options.inF` and `options.inG`. For example, one can reset the field `options.inF.dummyPar`, which is a 3x1 binary vector that specifies which hidden parameter(s) of her opponent k-ToM assumes to vary across trials (volatility, temperature and bias). By default, it is set to `[1;0;0]`, which means that k-ToM assumes that her opponent's volatility is the only thing that changes across trials. The impact of setting any of these entries to 1 is that the induced learning rule includes some form of "forgetting effect" which results from the dilution of belief precision from one trial to the next.
+
+The script `demo_recur.m` exemplifies the simulation and inversion of a k-ToM learner (using a competitive 2X2 game, namely: "hide-and-seek").
 
 > Practical experience with k-ToM models show that the statistical power, in terms of both estimating unknown model parameters and/or comparing different learning models, critically depends upon the experimental design. In [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992), we had participants play "hide-and-seek" against on-line k-ToM artificial learners. This was shown to yield much better model discriminability than, e.g., if participants had played cooperative and/or coordination games (e.g., "[battle-of-the-sexes](https://en.wikipedia.org/wiki/Battle_of_the_sexes_(game_theory))"). We encourage users of k-ToM models to perform some form of a [confusion analysis](https://en.wikipedia.org/wiki/Confusion_matrix) to chack that their intended experimental design eventully provide reasonable statistical power.
 
