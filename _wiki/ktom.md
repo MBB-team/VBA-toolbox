@@ -34,7 +34,7 @@ In VBA, there is a pair of generic evolution and observation functions for k-ToM
 
 
 ### Running a k-ToM model inversion
-Setting k-ToM models may at first seem tedious. But in fact, VBA provides a simple function that generates simulation and inversion input arguments, namely: `prepare_kToM.m`. More precisely, this function outputs VBA's `options` and `dim` structures, which are specific to k-ToM observation and evolution functions. Below is an example piece of code that would run a k-ToM model inversion in VBA (with $$k=2$$):
+Setting k-ToM models may at first seem tedious, because it requires specific optional arguments. But in fact, VBA provides a simple function that generates simulation and/or inversion input arguments, namely: `prepare_kToM.m`. Below is an example piece of code that would run a k-ToM model inversion in VBA (with $$k=2$$):
 ```matlab
 % prepare specific dim and options structures for k-ToM model inversion
 K = 2; % depth of k-ToM's recursive beliefs
