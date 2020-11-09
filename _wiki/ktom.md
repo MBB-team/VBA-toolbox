@@ -63,7 +63,13 @@ Note that:
 
 
 ### Eyeballing inversion results
-Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. Note that `prepare_kToM.m` stores the states' indexing in the structure `options.inG.indlev`. It's a bit tricky because both the types and the number of states depend upon $$k$$ (`f_kToM.m` is recursive). Nevertheless, the hidden states of a k-ToM agent can be simply eyeballed using the function `unwrapKTOM.m`, whose  graphical output is exemplified below:
+Once the model has been inverted, one may be willing to recover and interpret the estimated hidden states. Note that `prepare_kToM.m` stores the states' indexing in the structure `options.inG.indlev`. It's a bit tricky because both the types and the number of states depend upon $$k$$ (`f_kToM.m` is recursive). Nevertheless, the hidden states of a k-ToM agent can be simply eyeballed using the function `unwrapKTOM.m`:
+```matlab
+hf = unwrapKTOM(posterior.muX,options.inG);
+```
+where `posterior` is the output of the above VBA inversion of the k-ToM model
+
+An example graphical output is appended below:
 
 ![]({{ site.baseurl }}/images/wiki/unwrapkTom.bmp)
 
