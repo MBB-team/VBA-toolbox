@@ -50,12 +50,12 @@ options.skipf = [1,zeros(1,size(y,2)-1)];  % skip 1st trial (no learning until t
 options.binomial = 1; % inform VBA about binomial data
 [posterior,out] = VBA_NLStateSpaceModel(y,u,f_fname,g_fname,dim,options);
 ```
-Here, `SubjectChoices` and `OpponentChoices` are the binary actions of the participant and his/her "opponent", respectively.
+Here, `SubjectChoices` and `OpponentChoices` are the binary actions of the participant and of his/her "opponent", respectively.
 
 Note that:
 
 - `SubjectChoices` enters as data to be fitted (`y`), but also as an input to the model (second row of `u`). This is because k-ToM's learning rule requires the knowledge of her own action at the previous trial...
-- the incentive rule of the game is completely specified by the payoff table. Here, the game is "[hide-and-seek](https://en.wikipedia.org/wiki/Hide-and-seek)", and `payoffTable` is a 3D-array, which is such that `payoffTable(:,:,role)` (resp., `payoffTable(:,:,3-role)`) provides the payoff for the participant (resp., for his/her opponent) for all possible action pairs (2x2 possibilities) in the game, where `role` is set appropriately (1="seeker", 2="hider").
+- the incentive rule of the game is completely specified by the payoff table (here, the game is "[hide-and-seek](https://en.wikipedia.org/wiki/Hide-and-seek)"). In our example, `payoffTable` is a 3D-array, which is such that `payoffTable(:,:,role)` (resp., `payoffTable(:,:,3-role)`) provides the payoff for the participant (resp., for his/her opponent) for all possible action pairs (2x2 possibilities) in the game, where `role` is set appropriately (1="seeker", 2="hider").
 - The states' indexing of the k-ToM model is automatically set by `prepare_kToM.m` (see below).
 
 
