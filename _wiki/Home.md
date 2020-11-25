@@ -16,7 +16,7 @@ title: "home"
 - [VBA: a fast demo (Q-learning)](Fast-demo-Q-learning-model)
 - [VBA: graphical output](VBA-graphical-output)
 
-## Going further
+## What VBA users need to know
 
 - [VBA: results and diagnostics](VBA-output-structure)
 - [VBA: controlling the inversion options](Controlling-the-inversion-using-VBA-options)
