@@ -6,29 +6,29 @@ title: "Bayesian mentalizing (k-ToM)"
 
 When it comes to interpreting others' behaviour, we almost irrepressibly engage in the attribution of mental states (beliefs, emotions...). Such "[mentalizing](https://en.wikipedia.org/wiki/Mentalization)" or [Theory of Mind](https://en.wikipedia.org/wiki/Theory_of_mind) (ToM) can become very sophisticated, eventually endowing us with highly adaptive skills such as convincing, teaching or deceiving. Here, sophistication can be captured in terms of the depth of our [recursive beliefs](https://en.wikipedia.org/wiki/Hierarchy_of_beliefs), as in "I think that you think that I think...". In [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992), we show that such sophisticated recursive beliefs subtend learning in the context of social interactions (e.g., repeated [dyadic](https://en.wikipedia.org/wiki/Dyad_(sociology)) games). Critical here is the notion that update rules that account for recursive beliefs of this sort (hereafter: *k-ToM* models) induce behavioural responses that are very different from typical [trial-and-error learning](https://en.wikipedia.org/wiki/Trial_and_error) schemes.
 
-> References for the k-ToM models:
+> **References for the k-ToM models**:
 > 
-> Dissecting the functional contributions of the social brain to strategic behavior. 
+> - *Dissecting the functional contributions of the social brain to strategic behavior.* 
 > A. Konovalov, C. Hill, J. Daunizeau, C. Ruff. 
 > Neuron (2021), S0896-6273(21)00569-9.
 > 
-> Social behavioural adaptation in Autism. 
+> - *Social behavioural adaptation in Autism.* 
 > B. Forgeot d'Arc, M. Devaine,  J. Daunizeau. 
 > PLoS Comp. Biol. (2020), 16(3): e1007700.
 > 
-> Reading wild minds: a computational assay of Theory of Mind sophistication across seven primate species. 
+> - *Reading wild minds: a computational assay of Theory of Mind sophistication across seven primate species.* 
 > M. Devaine, A. San-Galli, C. Trapanese, G. Bardino, C. Hano,  M. St Jalme, S. Bouret, S. Masi, J. Daunizeau. 
 > PLoS Comp. Biol. (2017), 13(11): e1005833.
 > 
-> Does the way we read others' mind change over the lifespan? Insights from a massive web poll of cognitive skills from childhood to late adulthood.
+> - *Does the way we read others' mind change over the lifespan? Insights from a massive web poll of cognitive skills from childhood to late adulthood.*
 > D. Klindt, M. Devaine, J. Daunizeau.
 > Cortex (2016), 86: 205-215.
 > 
-> The social Bayesian brain: does mentalizing make a difference when we learn?
+> - *The social Bayesian brain: does mentalizing make a difference when we learn?*
 > M. Devaine, G. Hollard, J. Daunizeau.
 > PLoS Comp. Biol. (2014), 10(12): e1003992.
 > 
-> Theory of Mind: did evolution fool us? 
+> - *Theory of Mind: did evolution fool us?* 
 > M. Devaine, G. Hollard, J. Daunizeau. 
 > PLoS ONE (2014), 9(2): e87619.
 
