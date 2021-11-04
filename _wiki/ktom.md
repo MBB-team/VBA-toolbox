@@ -6,6 +6,33 @@ title: "Bayesian mentalizing (k-ToM)"
 
 When it comes to interpreting others' behaviour, we almost irrepressibly engage in the attribution of mental states (beliefs, emotions...). Such "[mentalizing](https://en.wikipedia.org/wiki/Mentalization)" or [Theory of Mind](https://en.wikipedia.org/wiki/Theory_of_mind) (ToM) can become very sophisticated, eventually endowing us with highly adaptive skills such as convincing, teaching or deceiving. Here, sophistication can be captured in terms of the depth of our [recursive beliefs](https://en.wikipedia.org/wiki/Hierarchy_of_beliefs), as in "I think that you think that I think...". In [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992), we show that such sophisticated recursive beliefs subtend learning in the context of social interactions (e.g., repeated [dyadic](https://en.wikipedia.org/wiki/Dyad_(sociology)) games). Critical here is the notion that update rules that account for recursive beliefs of this sort (hereafter: *k-ToM* models) induce behavioural responses that are very different from typical [trial-and-error learning](https://en.wikipedia.org/wiki/Trial_and_error) schemes.
 
+> References for the k-ToM models:
+> 
+> Dissecting the functional contributions of the social brain to strategic behavior. 
+> A. Konovalov, C. Hill, J. Daunizeau, C. Ruff. 
+> Neuron (2021), S0896-6273(21)00569-9.
+> 
+> Social behavioural adaptation in Autism. 
+> B. Forgeot d'Arc, M. Devaine,  J. Daunizeau. 
+> PLoS Comp. Biol. (2020), 16(3): e1007700.
+> 
+> Reading wild minds: a computational assay of Theory of Mind sophistication across seven primate species. 
+> M. Devaine, A. San-Galli, C. Trapanese, G. Bardino, C. Hano,  M. St Jalme, S. Bouret, S. Masi, J. Daunizeau. 
+> PLoS Comp. Biol. (2017), 13(11): e1005833.
+> 
+> Does the way we read others' mind change over the lifespan? Insights from a massive web poll of cognitive skills from childhood to late adulthood.
+> D. Klindt, M. Devaine, J. Daunizeau.
+> Cortex (2016), 86: 205-215.
+> 
+> The social Bayesian brain: does mentalizing make a difference when we learn?
+> M. Devaine, G. Hollard, J. Daunizeau.
+> PLoS Comp. Biol. (2014), 10(12): e1003992.
+> 
+> Theory of Mind: did evolution fool us? 
+> M. Devaine, G. Hollard, J. Daunizeau. 
+> PLoS ONE (2014), 9(2): e87619.
+
+
 The next sections explain how to use VBA's k-ToM Bayesian mentalizing models.
 
 
@@ -98,7 +125,7 @@ Other features have to be reset by editing the function `prepare_kToM.m`, or by 
 
 The script `demo_recur.m` exemplifies the simulation and inversion of a k-ToM learner (using a competitive 2X2 game, namely: "hide-and-seek"), where some of these features are edited...
 
-> Practical experience with k-ToM models show that the statistical power, in terms of both estimating unknown model parameters and/or comparing different learning models, critically depends upon the experimental design. In [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992), we had participants play "hide-and-seek" against on-line k-ToM artificial learners. This was shown to yield much better model discriminability than, e.g., if participants had played cooperative and/or coordination games (e.g., "[battle-of-the-sexes](https://en.wikipedia.org/wiki/Battle_of_the_sexes_(game_theory))"). We encourage users of k-ToM models to perform some form of a [confusion analysis](https://en.wikipedia.org/wiki/Confusion_matrix) to chack that their intended experimental design eventully provide reasonable statistical power.
+> Practical experience with k-ToM models show that the statistical power, in terms of both estimating unknown model parameters and/or comparing different learning models, critically depends upon the experimental design. In [Devaine et al. (2014b)](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003992), we had participants play "hide-and-seek" against on-line k-ToM artificial learners. This was shown to yield much better model discriminability than, e.g., if participants had played cooperative and/or coordination games (e.g., "[battle-of-the-sexes](https://en.wikipedia.org/wiki/Battle_of_the_sexes_(game_theory))"). We encourage users of k-ToM models to perform some form of a [confusion analysis](https://en.wikipedia.org/wiki/Confusion_matrix) to check that their intended experimental design eventully provide reasonable statistical power.
 
 
 
