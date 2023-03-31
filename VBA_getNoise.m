@@ -23,50 +23,55 @@ v_e = cell(1,dim.n_t);
 etahat = zeros(dim.n,dim.n_t);
 v_eta = cell(1,dim.n_t);
 
-% initial condition
-if dim.n > 0
-    [fx,dfdx,dfdp] = VBA_evalFun('f',posterior.muX0,posterior.muTheta,u(:,1),options,dim,1);
-    etahat(:,1) = posterior.muX(:,1) - fx;
-    if isinf(posterior.a_alpha) && isequal(posterior.b_alpha,0)
-        v_eta{1} = zeros(dim.n,dim.n);
-    else
-        v_eta{1} = posterior.SigmaX.current{1} ...
-            + dfdx'*posterior.SigmaX0*dfdx;
-        if dim.n_theta > 0
-            v_eta{1} = v_eta{1} + dfdp'*posterior.SigmaTheta*dfdp;
-        end
-    end
-end
-[gx,dgdx,dgdp] = VBA_evalFun('g',posterior.muX(:,1),posterior.muPhi,u(:,1),options,dim,1);
-ehat(:,1) = y(:,1) - gx;
-v_e{1} = zeros(dim.p,dim.p);
-if dim.n > 0
-    v_e{1} = dgdx'*posterior.SigmaX.current{1}*dgdx;
-end
-if dim.n_phi > 0
-    v_e{1} = v_e{1} + dgdp'*posterior.SigmaPhi*dgdp;
-end
+X = [posterior.muX0 posterior.muX];
 
-% loop over time samples
-for t = 2:dim.n_t
+%% loop over time samples
+
+for t = 1 : dim.n_t
+
+    % evolution noie
+    % =====================================================================
     if dim.n > 0
-        [fx,dfdx,dfdp] = VBA_evalFun('f',posterior.muX(:,t-1),posterior.muTheta,u(:,t),options,dim,t);
-        etahat(:,t) = posterior.muX(:,t) - fx;
-        if isinf(posterior.a_alpha) && isequal(posterior.b_alpha,0)
+        
+        % (1st moment)
+        % -----------------------------------------------------------------
+        [fx,dfdx,dfdp] = VBA_evalFun('f',X(:,t),posterior.muTheta,u(:,t),options,dim,t);
+        etahat(:,t) = X(:,t+1) - fx;
+        
+        % (2nd moment)
+        % -----------------------------------------------------------------
+        % deterministic system
+        if isinf(posterior.a_alpha) && isequal(posterior.b_alpha,0)     
             v_eta{t} = zeros(dim.n,dim.n);
+
+        % stochastic system
         else
-            P = [-dfdx',eye(dim.n)];
-            jointCov = ...
-                [ posterior.SigmaX.current{t}  posterior.SigmaX.inter{t-1}'
-                posterior.SigmaX.inter{t-1}  posterior.SigmaX.current{t-1} ];
-            v_eta{t} = P*jointCov*P';
+            if t == 1
+                v_eta{t} = posterior.SigmaX.current{t} ...
+                    + dfdx'*posterior.SigmaX0*dfdx;
+            else
+                P = [-dfdx',eye(dim.n)];
+                jointCov = ...
+                    [ posterior.SigmaX.current{t}  posterior.SigmaX.inter{t-1}'
+                    posterior.SigmaX.inter{t-1}  posterior.SigmaX.current{t-1} ];
+                v_eta{t} = P*jointCov*P';
+            end
             if dim.n_theta > 0
                 v_eta{t} = v_eta{t} + dfdp'*posterior.SigmaTheta*dfdp;
             end
         end
     end
-    [gx,dgdx,dgdp] = VBA_evalFun('g',posterior.muX(:,t),posterior.muPhi,u(:,t),options,dim,t);
+
+    % observation
+    % =====================================================================
+
+    % (1st moment)
+    % ---------------------------------------------------------------------
+    [gx,dgdx,dgdp] = VBA_evalFun('g',X(:,t+1),posterior.muPhi,u(:,t),options,dim,t);
     ehat(:,t) = y(:,t) - gx;
+
+    % (2nd moment)
+    % ---------------------------------------------------------------------
     v_e{t} = zeros(dim.p,dim.p);
     if dim.n > 0
         v_e{t} = dgdx'*posterior.SigmaX.current{t}*dgdx;
