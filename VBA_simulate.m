@@ -54,11 +54,19 @@ end
 
 feedback =  exist('fb','var');
 if feedback
-    try
-    u(fb.indy,1);
-    u(fb.indfb,1);
-    catch
-        error('*** Simulation with feedback requires allocated inputs');   
+    assert (...
+        all (ismember (fb.indy, 1 : size (u, 1))), ...
+        '*** Simulation with feedback requires allocated inputs for observations');
+
+    if isfield (fb, 'h_fname')
+        assert (...
+            isempty (fb.h_fname) || isa(fb.h_fname,' function_handle'), ...
+            '*** Simulation with feedback requires a valid feedback function.'); 
+        assert (...
+            all (ismember (fb.indfb, 1 : size (u, 1))), ...
+            '*** Simulation with feedback requires allocated inputs for outcomes'); 
+    else
+        fb.h_fname = {};
     end
 end
 
