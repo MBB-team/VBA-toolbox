@@ -47,6 +47,6 @@ r2 = max (0, 1 - (SS2_err / SS2_tot));
 
 end
 
-function s = sumall(z)
-    s = nansum (nansum (z));
+function s = sumall (z)
+    s = sum (z, 'all', 'omitnan');
 end

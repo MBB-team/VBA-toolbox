@@ -155,7 +155,7 @@ legend (ha, ...
 ha = subplot (1, 2, 2, 'parent', hf);
 for i = 1 : length (gridP)
     ps = interp1 (sx(i, :), normpdf (x, 0, 1), x);
-    ps = ps / nansum (ps);
+    ps = ps / sum (ps, 'omitnan');
     hb(i) = plot (ha, x, ps);
     hold on;
 end
