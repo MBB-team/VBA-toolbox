@@ -1,4 +1,3 @@
-
 function [posterior, out] = demo_dynamicalSystem ()
 % // VBA toolbox //////////////////////////////////////////////////////////
 %
@@ -185,7 +184,11 @@ function plotGridSearch (y, g, g_theta1, g_theta2, LL, n_t, dt)
     eLL = exp(LL/100);
     hb(1) = subplot (1, 2, 2, 'parent', hf);
     imagesc(eLL, 'Parent', hb(1));
-    colorLims = [-0.15 1.1*VBA_maxMat(eLL)];
+    [v,i,j] = VBA_maxMat (eLL);
+    colorLims = [-0.15 1.1*v];
+    hold on
+    plot (j,i,"xw");
+    hold off
     set(hb(1),'XTick',1 : numel(g_theta2), 'XTickLabel', g_theta2);
     set(hb(1),'YTick',1 : numel(g_theta1), 'YTickLabel', g_theta1);
     set(hb(1),'Clim',colorLims);
@@ -205,8 +208,8 @@ function plotGridSearch (y, g, g_theta1, g_theta2, LL, n_t, dt)
     set (hb(2), 'box', 'off', 'ygrid', 'on');
 
     % color predictions as function of likelihood
-    xLL = linspace(colorLims(1),colorLims(2), 64);
     cLL = colormap(flipud(colormap('hot')));
+    xLL = linspace(colorLims(1),colorLims(2), size(cLL,1));
     for i1 = 1 : numel (g_theta1)
         for i2 = 1 : numel (g_theta2)
         l = plot(hb(2),timeline,g{i1,i2});
