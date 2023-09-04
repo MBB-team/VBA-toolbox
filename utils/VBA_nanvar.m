@@ -45,7 +45,7 @@ if nargin < 2
 end
 % Find NaNs in x and nanmean(x)
 nans = isnan(x);
-avg = nanmean(x,dim);
+avg = VBA_nanmean(x,dim);
 % create array indicating number of element 
 % of x in dimension DIM (needed for subtraction of mean)
 tile = ones(1,max(ndims(x),dim));
