@@ -19,7 +19,7 @@ The Lorenz attractor was originally proposed as a simplified version of the Navi
 
 # Double-well bistable system
 
-The double-well potential system models a dissipative system, whose potential energy is a quadratic (double-well) function of position. As a consequence, the system is bistable with two basins of attraction to two stable fixed points. In its deterministic variant, the system ends up spiralling around one or the other attractors, depending on its initial conditions and the magnitude of a damping force or dissipative term. Because we consider state-noise, the stochastic DCM can switch (tunnel) from one basin to the other, which leads to itinerant behaviour; this is why the double-well system can be used to model bistable perception. See `demo_doubleWell.m`.
+The double-well potential system models a dissipative system, whose potential energy is a quartic (double-well) function of position. As a consequence, the system is bistable with two basins of attraction around two stable fixed points. In its deterministic variant, the system ends up spiralling around one or the other attractors, depending on its initial conditions and the magnitude of a damping force or dissipative term. Because we consider state-noise, the stochastic DCM can switch (tunnel) from one basin to the other, which leads to itinerant behaviour; this is why the double-well system can be used to model bistable perception. See `demo_doubleWell.m`.
 
 ![]({{ site.baseurl }}/images/wiki/tabs/dbw1.jpg)
 
