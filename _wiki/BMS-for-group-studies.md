@@ -183,3 +183,17 @@ Note that one can directly test for a group difference with the function `VBA_gr
 ```
 
 where `p` is $$P\left(H_= \mid y \right)$$.
+
+
+## A note on model scores: VB Free Eneergy, AIC or BIC?
+
+The above bayesian model selection approaches (either FFX or RFX) are typically meant to be used with a specific within-subject model scoring metric: namely, the (Bayesian) **log model evidence**. The issue is that, for most genrative models, the mathematical derivation of the log evidence is not computationally tractable. If used in conjunction with VBA's model inversion approach, then one may perform bayesian model selection using **VB Free Energies** in lieu of models' log evidences. However, one may also want to use other model scoring metrics, such as [**AIC** (Akaike Information Criterion)](https://en.wikipedia.org/wiki/Akaike_information_criterion) or [**BIC** (Bayesian Information Criterion)](https://en.wikipedia.org/wiki/Bayesian_information_criterion). In fact, VBA automatically computes AIC and BIC (in addition to VB Free Energy). We refer the interested reader to the [description VBA's output]({{ site.baseurl}}/wiki/VBA-output-structure/). In principle, VB Free Energy, AIC and BIC are all information-threoretic measures of the compromise between fit accuracy (as measured with log likelihood, evaluated at the estimated parameters) and model complexity. They essentially differ w.r.t. the complexity penalty term. So which one should be used?
+
+Formally speaking, VB Free Energy is a lower bound on the model's log evidence, which makes it an obvious default choice (at least for the advanced VBA user ;)). Note that BIC can be regarded as an asymptotic approximation to VB Free Energy. This means that BIC effectively involves additional simplifying assumptions than VB Free Energy. This is not the case for AIC, which was originally derived under a frequentist inferential framework. When compared to BIC, AIC underestimates model complexity when sample size increases, which is typically used as an argument against AIC. But retrospectively, none of these metrics can be deemed a priori better, until one of them is proven to be (e.g., using a [model confusion analysis]({{ site.baseurl}}/wiki/identifiability/#model-confusion-analysis)), for the specific model selection problem of interest.
+
+
+> Note: AIC and BIC have a sign convention. More precisely, they typically decrease when log likelihood increase (i.e. they write: AIC/BIC = -2*log(Likelihood) + complexity penalty). In VBA, this sign convention is reversed, such that they typically increase with log likelihood. This is the proper sign convention, when using AIC or BIC with the above group-level Bayesian model selection aapproach!
+
+
+
+
