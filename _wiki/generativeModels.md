@@ -78,7 +78,7 @@ In brief, [autoregressive conditional heteroskedastic (ARCH)](https://en.wikiped
 
 $$x_t= a\left(x_{t-1}\right) + \beta\left(x_{t-1}\right)\eta_t$$
 
-where $$a\left(x\right)$$ is an arbitrary mapping of system's states and $$\beta\left(x\right)$$ acts as the state-dependent standard deviation of state noise $$\eta$$. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\beta$$ is high) interspersed with periods of relative calm (when $$\beta$$ is low).
+where $$a\left(x\right)$$ is an arbitrary mapping of system's states and $$\beta\left(x\right)$$ acts as the state-dependent standard deviation of state noise $$\eta$$. Note that this dependency can be arbitrary, which endows ARCH models with a great deal of flexibility. Typically, ARCH models are employed in modeling financial time series that exhibit time-varying [volatility](https://en.wikipedia.org/wiki/Stochastic_volatility), i.e. periods of swings (when $$\beta\left(x\right)$$ is high) interspersed with periods of relative calm (when $$\beta\left(x\right)$$ is low).
 
 In its native form, VBA's generative model does not apprently handle state-dependent noise. But in fact, one can use the same trick as for AR(p) models. First, one augments the native state-space with dummy states $$w_t$$ as follows:
 
@@ -96,7 +96,7 @@ $$ L_1 = \left[\begin{array}{l} 1 \\ 0 \end{array}\right],L_2 = \left[\begin{arr
 
 Since the deterministic flow of dummy states is null, their stochastic dynamics are solely driven by state noise, i.e. $$w_t = \eta_t$$. 
 
-> Both the native deterministic flow $$a(x)$$ and the state-dependent standard-deviation $$\beta(x)$$ can be parameterized through evolution parameters, i.e.: $$a(x)=a(x,\theta)$$ and $$\beta(x)=\beta(x,\theta)$$. These can then be estimated using VBA.
+> Both the native deterministic flow $$a(x)$$ and the state-dependent standard-deviation $$\beta(x)$$ can be parameterized through some evolution parameter set $$\theta$$, i.e.: $$a(x)=a(x,\theta)$$ and $$\beta(x)=\beta(x,\theta)$$. These evolution parameters can then be estimated using VBA. 
 
 Third, one resets the state noise precision matrix $${Q_x}^{-1}$$ as follows:
 
@@ -139,9 +139,9 @@ Setting i.i.d. normal priors on dummy variables $$z$$ would then emulate covaria
 
 > If the covariance components reduce to channel-specific variances, then one can use VBA's ["multi-source" inversion]({{ site.baseurl }}/wiki/Multisources) as a simple and elegant shortcut!
 
-Note that, by construction, native model parameters $$\phi$$ and dummy noise variables $$z$$ compete for explaining variability in observed data $$y$$. This is not an artefactucal consequence of our way of treating covariance component models. This competition is simply more implicit in the standard covariance component model, whereby one does not directly derive posterior densities over noise variables, but rather provide estimates of model residuals from the posterior prediction error $$y-g(\hat{\phi})$$...
+Note that, by construction, native model parameters $$\phi$$ and dummy noise variables $$z$$ compete for explaining variability in observed data $$y$$. This is not an artefactucal consequence of our way of treating covariance component models. This competition is simply more implicit in the standard covariance component model, whereby one does not directly derive posterior densities over noise variables, but rather provide estimates of model residuals from the posterior prediction error: $$\hat{\eta} = y-g(\hat{\phi})$$...
 
-> The posterior distribution of variables $$z_i$$ can deviate from their prior distribution. To make sure the dummy residual variables $$w_i$$ have the proper covariance structure, one can constrain the sample mean of $$z_i$$ to be zero, and their sample variance to be one. This can be done by zscoring the $$z_i$$ prior to entering the abve augmented observation function $$h$$.
+> The posterior distribution of variables $$z_i$$ can deviate from their prior distribution. To make sure the dummy residual variables $$w_i$$ have the proper covariance structure, one can constrain the sample mean of $$z_i$$ to be zero, and their sample variance to be one. This can be done by zscoring the $$z_i$$ prior to entering the above augmented observation function $$h$$.
 
 
 
