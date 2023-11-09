@@ -27,7 +27,7 @@ One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function
 
 ## Constraining _sample moments_ of parameter subsets
 
-It may happen that proper model parameterization requires to constrain the sample moments of some parameter subsets. For example, one may wish to make sure that observation parameters $$\phi$$ have a zero sample mean (i.e. $$\overline{\phi}= 1/n \sum_i \phi_i =0$$) and unitary sample variance (i.e. $$1/n\sum_i \left(\phi_i-\overline{\phi}\right)^2 =1$$. This is useful, e.g., in the context of [(re-parameterized) covariance component models]({{ site.baseurl }}/wiki/param-transform/). This kind of constraint can be easily enforced by zscoring the parameter vector $$\phi$$ prior to entering the observation function.
+It may happen that proper model parameterization requires to constrain the sample moments of some parameter subsets. For example, one may wish to make sure that observation parameters $$\phi$$ have a zero sample mean (i.e. $$\overline{\phi}= 1/n \sum_i \phi_i =0$$) and unitary sample variance (i.e. $$1/n\sum_i \left(\phi_i-\overline{\phi}\right)^2 =1$$). This is useful, e.g., in the context of [(re-parameterized) covariance component models]({{ site.baseurl }}/wiki/generativeModels/#covariance-component-models). This kind of constraint can be easily enforced by zscoring the parameter vector $$\phi$$ prior to entering the observation function.
 
 
 # Setting non-Gaussian priors
