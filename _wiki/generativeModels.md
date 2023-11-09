@@ -135,11 +135,13 @@ $$ h(\phi,z,\lambda) = g(\phi) + \sum_i \sqrt{\lambda_i} U_i z_i$$
 
 where $$U_i$$ are the known [matricial square root](https://en.wikipedia.org/wiki/Square_root_of_a_matrix) of covariance components $$Q_i$$, i.e.: $$Q_i=U_i U_i^T$$ (these can be obtained from numerical [SVD decompositions](https://en.wikipedia.org/wiki/Singular_value_decomposition)).
 
-Setting i.i.d. Gaussian priors on dummy variables $$z$$ would then emulate covariance component models. On a practical note, parameter estimation would be better behaved if one used some form of [hard positivity constraint]({{ site.baseurl }}/wiki/param-transform) on the $$\lambda$$s.
+Setting i.i.d. normal priors on dummy variables $$z$$ would then emulate covariance component models. On a practical note, parameter estimation would be better behaved if one used some form of [hard positivity constraint]({{ site.baseurl }}/wiki/param-transform) on the $$\lambda$$s.
 
 > If the covariance components reduce to channel-specific variances, then one can use VBA's ["multi-source" inversion]({{ site.baseurl }}/wiki/Multisources) as a simple and elegant shortcut!
 
-Note that, by construction, native model parameters $$\phi$$ and dummy noise variables $$z$$ compete for explaining variability in observed data $$y$$. This is not an artefactucal consequence of our way of treating covariance component models. This competition is simply more implicit in the usual model inversion framework, whereby one does not directly derive posterior densities over noise variables, but rather provide estimates from the prediction error $$y-g(\phi)$$...
+Note that, by construction, native model parameters $$\phi$$ and dummy noise variables $$z$$ compete for explaining variability in observed data $$y$$. This is not an artefactucal consequence of our way of treating covariance component models. This competition is simply more implicit in the standard covariance component model, whereby one does not directly derive posterior densities over noise variables, but rather provide estimates from the prediction error $$y-g(\phi)$$...
+
+> The posterior distribution of variables $$z_i$$ can deviate from their prior distribution. To make sure the dummy residual variables $$w_i$$ have the proper covariance structure, one can constrain the sample mean of $$z_i$$ to be zero, and their sample variance to be one. This can be done by zscoring the $$z_i$$ prior to entering the abve augmented observation function $$h$$.
 
 
 
