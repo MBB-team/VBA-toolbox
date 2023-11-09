@@ -139,7 +139,7 @@ Setting i.i.d. normal priors on dummy variables $$z$$ would then emulate covaria
 
 > If the covariance components reduce to channel-specific variances, then one can use VBA's ["multi-source" inversion]({{ site.baseurl }}/wiki/Multisources) as a simple and elegant shortcut!
 
-Note that, by construction, native model parameters $$\phi$$ and dummy noise variables $$z$$ compete for explaining variability in observed data $$y$$. This is not an artefactucal consequence of our way of treating covariance component models. This competition is simply more implicit in the standard covariance component model, whereby one does not directly derive posterior densities over noise variables, but rather provide estimates from the prediction error $$y-g(\phi)$$...
+Note that, by construction, native model parameters $$\phi$$ and dummy noise variables $$z$$ compete for explaining variability in observed data $$y$$. This is not an artefactucal consequence of our way of treating covariance component models. This competition is simply more implicit in the standard covariance component model, whereby one does not directly derive posterior densities over noise variables, but rather provide estimates of model residuals from the posterior prediction error $$y-g(\hat{\phi})$$...
 
 > The posterior distribution of variables $$z_i$$ can deviate from their prior distribution. To make sure the dummy residual variables $$w_i$$ have the proper covariance structure, one can constrain the sample mean of $$z_i$$ to be zero, and their sample variance to be one. This can be done by zscoring the $$z_i$$ prior to entering the abve augmented observation function $$h$$.
 
