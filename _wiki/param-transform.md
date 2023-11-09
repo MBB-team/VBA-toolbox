@@ -25,7 +25,7 @@ One may use the [exponential](https://en.wikipedia.org/wiki/Exponential_function
 > Note that Bayesian inference is **not invariant through changes in model parameterization**. For example, let us consider the mapping $$x \rightarrow x^3$$. This mapping does not insert any hard constraint, in the sense that the mapped parameter $$x^3$$ is allowed to vary without finite bounds. Nevertheless, Bayesian inference on a model that uses parameter $$x$$ does not yield the same result as inference on the same model, but this time using the mapped parameter $$x^3$$. This is because passing through the $$x \rightarrow x^3$$ mapping can be seen as setting a non-Gaussian prior on $$x^3$$...
 
 
-## Constraining _sample moments_ of parameter subsets
+## Constraining sample moments of parameter subsets
 
 It may happen that proper model parameterization requires to constrain the sample moments of some parameter subsets. For example, one may wish to make sure that observation parameters $$\Phi$$ have a zero sample mean (i.e. $$\overline{\phi}= 1/n \sum_i \phi_i =0$$) and aunitary sample variance (i.e. $$1/n\sum_i \left(\phi_i-\overline{\phi}\right)^2 =1$$. This is useful, e.g., in the context of [(re-parameterized) covariance component models]({{ site.baseurl }}/wiki/param-transform/). This kind of constraint can be easily enforced by zscoring the parameter vector $$\Phi$$ prior to entering the observation function.
 
