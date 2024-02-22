@@ -29,6 +29,7 @@ end
 options = in.old.options;
 dim = in.old.dim;
 
+
 % Check whether the system is at initial state
 if isempty(t)
     t = 1;
@@ -38,9 +39,37 @@ if isempty(t)
     else
         xt = options.priors.muX0;
     end
-else
+else 
     t = t+1;
 end
+
+% do we fit multiple sessions at once?
+if isfield(options.multisession,'split') ...
+        && numel(options.multisession.split) > 1
+    % if yes then find out if a new sessions begins right now
+    [newSess, idx] = ismember(t,cumsum(options.multisession.split)+1);
+else
+    newSess = 0;
+end
+
+if newSess
+    % we treat the beginning of a new session just like the inital state
+    % for each X0 check ...
+    for ii = 1:size(options.inG{2}.indices.X0,1) 
+        % ... if it is fixed across sessions ...
+        if options.inG{2}.indices.X0(ii,idx+1) == ii
+            % ... and set it to the value of the prior.
+            if options.updateX0
+                temp = P(dim.n_phi+dim.n_theta+1:end);
+                xt(ii) = temp(ii);
+            else
+                xt(ii) = options.priors.muX0(ii);
+            end
+        end
+    end
+end
+
+
 
 % apply ODE forward step:
 [xt,dF_dX,dF_dP] = VBA_evalFun('f',xt,Theta,ut,options,dim,t);
@@ -52,7 +81,17 @@ if dim.n_theta > 0
 end
 % ... and initial conditions
 if options.updateX0
-    if ~isempty(dxdx0)
+    if newSess % reset derivatives if a new session begins
+        dxdx0 = dxdx0*dF_dX; % first update normally  
+        % but then for the X0 that are fixed across sessions ...
+        for ii = 1:size(options.inG{2}.indices.X0,1) 
+            if options.inG{2}.indices.X0(ii,idx+1) == ii
+                % ... reset their rows and columns
+                dxdx0(ii,:) = dF_dX(ii,:);
+                dxdx0(:,ii) = dF_dX(:,ii);
+            end
+        end
+    elseif ~isempty(dxdx0)
         dxdx0 = dxdx0*dF_dX;
     else % initial condition (t=0)
         dxdx0 = dF_dX;
