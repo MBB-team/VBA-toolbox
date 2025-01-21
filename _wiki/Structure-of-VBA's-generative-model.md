@@ -48,7 +48,7 @@ Let us first recall the notations that are used in VBA:
 
 The goal of the statistical analysis is to derive both the posterior density $$p(x,\theta,\phi\mid y,m)$$ and the model evidence $$p(y\mid m)$$. The former quantifies the amount of information one possesses about unknown model parameters, and the latter is used for model comparison.
 
-> VBA's generative model also includes **precision hyperparameters** $$\sigma$$ and $$\alpha$$, which are associated with observation and evolution mappings, respectively (see below). In most cases, these are treated as nuisance parameters, i.e. they are not key targets of model inversion. In addition, the generative model may also include **initial conditions** ($$x_0$$). All these are detailed below!
+> VBA's generative model also includes **precision hyperparameters** $$\sigma$$ and $$\alpha$$, which are associated with observation and evolution mappings, respectively. In addition, the generative model may also include **initial conditions** ($$x_0$$). In most cases, $$\sigma$$, $$\alpha$$ and $$x_0$$ are treated as nuisance parameters, i.e. they are not key targets of model inversion. But see below for more information...
 
 
 ## Evolution and observation mappings
