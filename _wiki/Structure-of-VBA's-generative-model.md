@@ -110,7 +110,7 @@ Any data analysis relies upon prior knowledge. For example, the form of the evol
 
 Priors can vary in how "informative" they are. This is important because highly informative priors have a strong influence on the posterior. Here, the informativeness is related to how tight the prior probability density is. For Gaussian densities, this is controlled with the covariance matrix (informative = low variance, uninformative = high variance). Note: the contribution of the priors to the posterior tends to be null as the size of data tends to infinity.
 
-- $$p(x\mid \theta,\alpha,m)$$: priors on hidden states are provided through the form of the evolution function $$f$$, which induces a (gaussian) transition probability density $$p(x_{t+1}\mid x_t,\theta,\alpha,m)$$ with mean $$f(x_t,\theta,u_t)$$ and precision $$\alpha$$
+- $$p(x\mid \theta,\alpha,m)$$: priors on hidden states are provided through the form of the evolution function $$f$$, which induces a (gaussian) transition probability density $$p(x_{t+1}\mid x_t,\theta,\alpha,m)$$ with mean $$f(x_t,\theta,u_t)$$ and precision $$\alpha$$. In addition, VBA relies upon a Gaussian prior $$p(x_0\mid m)$$ on the system's initial states, which is parameterized by its first two moments.
 
 - $$p(\theta\mid m)$$ and $$p(\phi\mid m)$$: priors on evolution and observation parameters are Gaussian distributions that are fully parameterized by their first two moments.
 
