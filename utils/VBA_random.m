@@ -4,7 +4,7 @@ function X = VBA_random (name, varargin)
 % X = VBA_random (name, p1, p2, ..., [N, M, ...])
 % generate random numbers following the requested distribution
 %
-% If you the MATLAB statistics toolbox, this merely serve as an overload of 
+% If you have the MATLAB statistics toolbox, this merely serve as an overload of 
 % the random() function, although with a slightly different syntax and
 % behaviour. If the statistics toolbox is not installed, VBA_random will 
 % fall back to in-house generators (mainly using SPM routines).
@@ -26,7 +26,7 @@ function X = VBA_random (name, varargin)
 % Available distributions:
 % ~~~~~~~~~~~~~~~~~~~~~~~~
 %
-% 'Arbirary'
+% 'Arbitrary'
 % ----------
 %     + parameters:
 %         - p: k x 1 vector  describing the density of possible values
@@ -80,7 +80,7 @@ function X = VBA_random (name, varargin)
 % ----------
 %     + parameters:
 %           - mu: scalar or k x 1 vector, mean of the Normal distribution
-%           - Sigma2: scalar or k x k array, (co-)variance of
+%           - Sigma2: scalar or k x k array, (co-)variance of the Normal distribution
 %     + output: if parameters are scalars, samples from the univariate
 %           normal distribution N(mu, Sigma).
 %           If mu and Sigma are respectively a vector and an array of
